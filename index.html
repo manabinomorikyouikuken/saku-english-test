@@ -891,16 +891,21 @@
     .test-letter-row {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
-      gap: 7px;
-      margin-top: 7px;
+      gap: 9px;
+      margin-top: 8px;
     }
     .test-letter-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      aspect-ratio: 1 / 1;
       border: 1px solid #cbd5e1;
       background: #f8fafc;
       color: #1a2a4a;
-      border-radius: 12px;
-      min-height: 42px;
-      font-size: 17px;
+      border-radius: 16px;
+      min-width: 0;
+      min-height: 0;
+      font-size: clamp(21px, 6vw, 28px);
       font-weight: 900;
       cursor: pointer;
       touch-action: manipulation;
@@ -911,33 +916,13 @@
       opacity: 0.86;
     }
     .test-feedback {
-      min-height: 26px;
-      margin-top: 10px;
-      color: #475569;
-      font-size: 13px;
-      font-weight: 800;
-      text-align: center;
-      line-height: 1.35;
+      display: none;
     }
     .test-next-btn {
-      display: block;
-      visibility: hidden;
-      pointer-events: none;
-      width: 100%;
-      margin-top: 8px;
-      border: none;
-      background: #15803d;
-      color: white;
-      border-radius: 13px;
-      padding: 12px 16px;
-      font-size: 14px;
-      font-weight: 900;
-      cursor: pointer;
-      touch-action: manipulation;
+      display: none;
     }
     .test-next-btn.is-visible {
-      visibility: visible;
-      pointer-events: auto;
+      display: none;
     }
     .test-next-btn:active {
       transform: scale(0.98);
@@ -949,6 +934,7 @@
     }
     body.test-mode header {
       padding: 8px 14px;
+      margin-top: 46px;
     }
     body.test-mode .header-sub {
       display: none;
@@ -964,11 +950,11 @@
       margin-top: 1px;
     }
     body.test-mode #learn-view {
-      height: calc(100svh - 48px);
+      height: calc(100svh - 92px);
       min-height: 0;
       overflow: hidden;
       padding-top: 8px;
-      padding-bottom: calc(66px + env(safe-area-inset-bottom));
+      padding-bottom: calc(26px + env(safe-area-inset-bottom));
     }
     body.test-mode .progress-wrap {
       flex: 0 0 auto;
@@ -1046,35 +1032,22 @@
       font-size: 11px;
     }
     body.test-mode .test-letter-row {
-      gap: 6px;
-      margin-top: 6px;
+      gap: 8px;
+      margin-top: 8px;
     }
     body.test-mode .test-letter-btn {
-      min-height: 38px;
-      border-radius: 11px;
-      font-size: 16px;
+      border-radius: 14px;
+      font-size: clamp(20px, 5.8vw, 26px);
     }
     body.test-mode .test-feedback {
-      flex: 0 0 auto;
-      min-height: 22px;
-      max-height: 36px;
-      margin-top: 7px;
-      font-size: 12px;
-      line-height: 1.25;
-      overflow: hidden;
-      display: -webkit-box;
-      -webkit-line-clamp: 2;
-      -webkit-box-orient: vertical;
+      display: none;
     }
     body.test-mode .test-next-btn {
-      flex: 0 0 auto;
-      margin-top: 6px;
-      padding: 10px 14px;
-      border-radius: 12px;
-      font-size: 13px;
+      display: none;
     }
     body.test-mode .learn-bottom-bar {
-      bottom: calc(8px + env(safe-area-inset-bottom));
+      top: calc(8px + env(safe-area-inset-top));
+      bottom: auto;
       width: min(94vw, 420px);
       gap: 6px;
     }
@@ -1083,13 +1056,22 @@
       font-size: 12px;
       box-shadow: 0 8px 20px rgba(15,23,42,0.18);
     }
+    body.test-mode .swipe-msg {
+      display: block;
+      flex: 0 0 auto;
+      margin-top: 10px;
+      margin-bottom: 0;
+      color: #94a3b8;
+      font-size: 12px;
+      letter-spacing: 0;
+    }
 
     @media (max-height: 700px) {
-      body.test-mode header { padding: 7px 12px; }
+      body.test-mode header { padding: 7px 12px; margin-top: 42px; }
       body.test-mode #learn-view {
-        height: calc(100svh - 44px);
+        height: calc(100svh - 86px);
         padding-top: 6px;
-        padding-bottom: calc(64px + env(safe-area-inset-bottom));
+        padding-bottom: calc(18px + env(safe-area-inset-bottom));
       }
       body.test-mode .progress-wrap { margin-bottom: 6px; }
       body.test-mode .test-word-card { flex-basis: clamp(78px, 19svh, 100px); }
@@ -1109,12 +1091,13 @@
         font-size: 12.5px;
       }
       body.test-mode .test-letter-btn {
-        min-height: 34px;
-        font-size: 15px;
+        border-radius: 13px;
+        font-size: 20px;
       }
-      body.test-mode .test-feedback { min-height: 20px; margin-top: 6px; }
-      body.test-mode .test-next-btn { padding: 9px 12px; margin-top: 5px; }
+      body.test-mode .test-feedback,
+      body.test-mode .test-next-btn { display: none; }
       body.test-mode .learn-bottom-bar .settings-open-btn { padding: 8px 7px; font-size: 11.5px; }
+      body.test-mode .swipe-msg { margin-top: 7px; font-size: 11.5px; }
     }
 
     /* Complete screen */
@@ -12148,7 +12131,9 @@ function startTestSession() {
   document.getElementById('session-complete').style.display = 'none';
   document.getElementById('study-prompt').style.display = 'none';
   document.getElementById('card-container').style.display = 'none';
-  document.getElementById('swipe-msg').style.display = 'none';
+  const swipeMsg = document.getElementById('swipe-msg');
+  swipeMsg.style.display = 'block';
+  swipeMsg.textContent = '右スワイプで次へ　→';
   document.getElementById('test-panel').style.display = 'flex';
   showTestQuestion();
   updateStats();
@@ -12325,11 +12310,8 @@ function answerTestChoice(button, word) {
     sessionReviewedKeys.add(key);
   }
 
-  document.getElementById('test-feedback').textContent = isCorrect
-    ? '正解！'
-    : `正解は「${word.m}」`;
+  document.getElementById('test-feedback').textContent = '';
   setTestCardFlipped(false);
-  document.getElementById('test-next-btn').classList.add('is-visible');
   updateStats();
 }
 
@@ -12521,10 +12503,14 @@ let touchStartX = 0, touchStartY = 0;
 let lastTouchTime = 0;
 let touchStartedOnControl = false;
 const learnViewEl = document.getElementById('learn-view');
+const testPanelEl = document.getElementById('test-panel');
 const settingsViewEl = document.getElementById('settings-view');
 let settingsTouchStartX = 0, settingsTouchStartY = 0;
 let settingsSwipeActive = false;
 let suppressSettingsClickUntil = 0;
+let testTouchStartX = 0, testTouchStartY = 0;
+let testSwipeActive = false;
+let suppressTestClickUntil = 0;
 
 function isControlTarget(target) {
   return Boolean(target.closest('button, a, input, select, textarea, label'));
@@ -12582,6 +12568,46 @@ function bindSettingsSwipeTarget(target) {
 }
 
 bindSettingsSwipeTarget(settingsViewEl);
+
+if (testPanelEl) {
+  testPanelEl.addEventListener('touchstart', e => {
+    if (currentMode !== 'test' || !testAnswered) return;
+    testTouchStartX = e.changedTouches[0].clientX;
+    testTouchStartY = e.changedTouches[0].clientY;
+    testSwipeActive = false;
+  }, { passive: true });
+
+  testPanelEl.addEventListener('touchmove', e => {
+    if (currentMode !== 'test' || !testAnswered) return;
+    const dx = e.changedTouches[0].clientX - testTouchStartX;
+    const dy = e.changedTouches[0].clientY - testTouchStartY;
+    const absDx = Math.abs(dx), absDy = Math.abs(dy);
+    if (absDx > 12 && absDx > absDy * 1.15) {
+      testSwipeActive = true;
+      e.preventDefault();
+    }
+  }, { passive: false });
+
+  testPanelEl.addEventListener('touchend', e => {
+    if (currentMode !== 'test' || !testAnswered) return;
+    const dx = e.changedTouches[0].clientX - testTouchStartX;
+    const dy = e.changedTouches[0].clientY - testTouchStartY;
+    const absDx = Math.abs(dx), absDy = Math.abs(dy);
+    if (dx > 0 && (testSwipeActive || absDx > 40) && absDx > absDy) {
+      e.preventDefault();
+      suppressTestClickUntil = Date.now() + 450;
+      if (navigator.vibrate) navigator.vibrate(35);
+      showNextTestQuestion();
+    }
+    testSwipeActive = false;
+  }, { passive: false });
+
+  testPanelEl.addEventListener('click', e => {
+    if (Date.now() > suppressTestClickUntil) return;
+    e.preventDefault();
+    e.stopPropagation();
+  }, true);
+}
 
 learnViewEl.addEventListener('click', e => {
   if (currentMode !== 'learn') return;
