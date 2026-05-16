@@ -98,7 +98,11 @@
       touch-action: pan-y;
     }
     [hidden] { display: none !important; }
-    .settings-view { padding-top: 14px; }
+    .settings-view {
+      min-height: calc(100svh - 76px);
+      padding-top: 14px;
+      touch-action: pan-y;
+    }
     .settings-page-head {
       display: flex;
       justify-content: space-between;
@@ -117,6 +121,70 @@
       font-size: 12px;
       line-height: 1.55;
       margin-top: 4px;
+    }
+    .settings-tabs {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 5px;
+      margin: 0 0 14px;
+      position: sticky;
+      top: 0;
+      z-index: 4;
+      padding: 6px 0;
+      background: #eef2f7;
+    }
+    .settings-tab {
+      border: 1px solid #cbd5e1;
+      background: white;
+      color: #334155;
+      border-radius: 12px;
+      padding: 8px 3px;
+      font-size: 10.5px;
+      line-height: 1.15;
+      font-weight: 900;
+      cursor: pointer;
+      touch-action: pan-y;
+    }
+    .settings-tab.active {
+      background: #1a2a4a;
+      border-color: #1a2a4a;
+      color: white;
+    }
+    .settings-pager {
+      position: relative;
+      overflow: hidden;
+      transition: height 0.18s cubic-bezier(0.22, 1, 0.36, 1);
+      touch-action: pan-y;
+    }
+    .settings-track {
+      display: flex;
+      align-items: flex-start;
+      width: 100%;
+      transition: transform 0.22s cubic-bezier(0.22, 1, 0.36, 1);
+      will-change: transform;
+    }
+    .settings-pane {
+      display: block;
+      flex: 0 0 100%;
+      min-width: 100%;
+      opacity: 0;
+      pointer-events: none;
+      transform: scale(0.985);
+      transition:
+        opacity 0.14s ease,
+        transform 0.22s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .settings-pane.active {
+      opacity: 1;
+      pointer-events: auto;
+      transform: scale(1);
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .settings-pager,
+      .settings-track,
+      .settings-pane {
+        transition: none;
+      }
     }
     .settings-page-head .back-to-learn-btn {
       background: #1a2a4a;
@@ -629,10 +697,29 @@
       background: white;
       border-radius: 20px;
       box-shadow: 0 6px 30px rgba(0,0,0,0.1);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 24px 18px;
+      position: relative;
+      overflow: hidden;
+      perspective: 900px;
+      cursor: default;
+      touch-action: manipulation;
+    }
+    .test-word-card.can-flip {
+      cursor: pointer;
+    }
+    .test-word-card.can-flip::after {
+      content: 'タップで裏面';
+      position: absolute;
+      right: 10px;
+      bottom: 8px;
+      z-index: 2;
+      border-radius: 999px;
+      background: rgba(26,42,74,0.82);
+      color: white;
+      padding: 4px 8px;
+      font-size: 10px;
+      font-weight: 900;
+      line-height: 1;
+      pointer-events: none;
     }
     .test-word-card.wrong-cue {
       animation: wrongCue 0.34s ease-in-out;
@@ -645,6 +732,33 @@
       72% { transform: translateX(4px); }
       100% { transform: translateX(0); box-shadow: 0 6px 30px rgba(0,0,0,0.1); }
     }
+    .test-card-inner {
+      position: absolute;
+      inset: 0;
+      transform-style: preserve-3d;
+      transition: transform 0.26s ease;
+    }
+    .test-word-card.is-flipped .test-card-inner {
+      transform: rotateY(180deg);
+    }
+    .test-card-face {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px 18px;
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+    }
+    .test-card-back-face {
+      transform: rotateY(180deg);
+      flex-direction: column;
+      align-items: stretch;
+      justify-content: center;
+      gap: 5px;
+      color: #334155;
+    }
     .test-word-text {
       color: #1a2a4a;
       font-size: clamp(34px, 10vw, 44px);
@@ -653,11 +767,71 @@
       text-align: center;
       overflow-wrap: anywhere;
     }
+    .test-back-pos {
+      align-self: flex-start;
+      border-radius: 999px;
+      background: #e0ecff;
+      color: #1d4ed8;
+      padding: 3px 8px;
+      font-size: 10px;
+      font-weight: 900;
+      line-height: 1.1;
+    }
+    .test-back-meaning {
+      color: #1a2a4a;
+      font-size: 17px;
+      font-weight: 900;
+      line-height: 1.25;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .test-back-pron {
+      color: #64748b;
+      font-size: 11px;
+      font-weight: 800;
+      line-height: 1.25;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+    .test-back-origin {
+      color: #0f766e;
+      font-size: 10.5px;
+      font-weight: 800;
+      line-height: 1.25;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+    .test-back-origin[hidden] {
+      display: none;
+    }
+    .test-back-example,
+    .test-back-example-ja {
+      color: #475569;
+      font-size: 10.5px;
+      font-weight: 700;
+      line-height: 1.25;
+      display: -webkit-box;
+      -webkit-line-clamp: 1;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .test-back-example-ja {
+      color: #64748b;
+      font-weight: 800;
+    }
     .test-choice-grid {
       display: grid;
       grid-template-columns: 1fr;
       gap: 9px;
       margin-top: 12px;
+    }
+    .test-answer-zone {
+      display: flex;
+      flex-direction: column;
     }
     .test-choice-card {
       border: 1px solid #d8e1ee;
@@ -674,6 +848,22 @@
       touch-action: manipulation;
       box-shadow: 0 3px 12px rgba(15,23,42,0.05);
     }
+    .test-choice-label {
+      display: inline-grid;
+      place-items: center;
+      min-width: 24px;
+      height: 24px;
+      margin-right: 8px;
+      border-radius: 999px;
+      background: #e0ecff;
+      color: #1d4ed8;
+      font-size: 12px;
+      font-weight: 900;
+      vertical-align: middle;
+    }
+    .test-choice-meaning {
+      vertical-align: middle;
+    }
     .test-choice-card:disabled {
       cursor: default;
       opacity: 0.82;
@@ -688,6 +878,38 @@
       background: #fef2f2;
       color: #991b1b;
     }
+    .test-choice-card.correct .test-choice-label,
+    .test-letter-btn.correct {
+      background: #16a34a;
+      color: white;
+    }
+    .test-choice-card.wrong .test-choice-label,
+    .test-letter-btn.wrong {
+      background: #ef4444;
+      color: white;
+    }
+    .test-letter-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 7px;
+      margin-top: 7px;
+    }
+    .test-letter-btn {
+      border: 1px solid #cbd5e1;
+      background: #f8fafc;
+      color: #1a2a4a;
+      border-radius: 12px;
+      min-height: 42px;
+      font-size: 17px;
+      font-weight: 900;
+      cursor: pointer;
+      touch-action: manipulation;
+      box-shadow: 0 3px 10px rgba(15,23,42,0.05);
+    }
+    .test-letter-btn:disabled {
+      cursor: default;
+      opacity: 0.86;
+    }
     .test-feedback {
       min-height: 26px;
       margin-top: 10px;
@@ -698,7 +920,9 @@
       line-height: 1.35;
     }
     .test-next-btn {
-      display: none;
+      display: block;
+      visibility: hidden;
+      pointer-events: none;
       width: 100%;
       margin-top: 8px;
       border: none;
@@ -711,9 +935,186 @@
       cursor: pointer;
       touch-action: manipulation;
     }
+    .test-next-btn.is-visible {
+      visibility: visible;
+      pointer-events: auto;
+    }
     .test-next-btn:active {
       transform: scale(0.98);
       filter: brightness(0.95);
+    }
+
+    body.test-mode {
+      overflow: hidden;
+    }
+    body.test-mode header {
+      padding: 8px 14px;
+    }
+    body.test-mode .header-sub {
+      display: none;
+    }
+    body.test-mode .stats {
+      gap: 10px;
+    }
+    body.test-mode .stat-num {
+      font-size: 17px;
+    }
+    body.test-mode .stat-label {
+      font-size: 9px;
+      margin-top: 1px;
+    }
+    body.test-mode #learn-view {
+      height: calc(100svh - 48px);
+      min-height: 0;
+      overflow: hidden;
+      padding-top: 8px;
+      padding-bottom: calc(66px + env(safe-area-inset-bottom));
+    }
+    body.test-mode .progress-wrap {
+      flex: 0 0 auto;
+      margin-bottom: 8px;
+    }
+    body.test-mode .progress-label {
+      font-size: 11px;
+      margin-bottom: 4px;
+    }
+    body.test-mode .progress-bar {
+      height: 6px;
+    }
+    body.test-mode #card-area {
+      flex: 1 1 auto;
+      min-height: 0;
+      padding-top: 0;
+      justify-content: flex-start;
+    }
+    body.test-mode .test-panel {
+      flex: 1 1 auto;
+      min-height: 0;
+      max-height: 100%;
+      flex-direction: column;
+      justify-content: flex-end;
+      width: min(94%, 420px);
+    }
+    body.test-mode .test-word-card {
+      flex: 0 0 clamp(88px, 22svh, 126px);
+      min-height: 0;
+      border-radius: 16px;
+    }
+    body.test-mode .test-card-face {
+      padding: 12px 12px;
+    }
+    body.test-mode .test-word-text {
+      font-size: clamp(29px, 8.4vw, 40px);
+      line-height: 1.05;
+    }
+    body.test-mode .test-card-back-face {
+      gap: 3px;
+    }
+    body.test-mode .test-back-meaning {
+      font-size: 14px;
+      line-height: 1.18;
+    }
+    body.test-mode .test-back-pron,
+    body.test-mode .test-back-origin,
+    body.test-mode .test-back-example,
+    body.test-mode .test-back-example-ja {
+      font-size: 9.8px;
+      line-height: 1.18;
+    }
+    body.test-mode .test-choice-grid {
+      flex: 0 1 auto;
+      gap: 7px;
+      margin-top: 8px;
+    }
+    body.test-mode .test-answer-zone {
+      flex: 0 0 auto;
+      margin-top: 8px;
+    }
+    body.test-mode .test-choice-card {
+      min-height: 46px;
+      max-height: 58px;
+      padding: 9px 11px;
+      border-radius: 12px;
+      font-size: 13px;
+      line-height: 1.25;
+      overflow: hidden;
+    }
+    body.test-mode .test-choice-label {
+      min-width: 22px;
+      height: 22px;
+      margin-right: 7px;
+      font-size: 11px;
+    }
+    body.test-mode .test-letter-row {
+      gap: 6px;
+      margin-top: 6px;
+    }
+    body.test-mode .test-letter-btn {
+      min-height: 38px;
+      border-radius: 11px;
+      font-size: 16px;
+    }
+    body.test-mode .test-feedback {
+      flex: 0 0 auto;
+      min-height: 22px;
+      max-height: 36px;
+      margin-top: 7px;
+      font-size: 12px;
+      line-height: 1.25;
+      overflow: hidden;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+    }
+    body.test-mode .test-next-btn {
+      flex: 0 0 auto;
+      margin-top: 6px;
+      padding: 10px 14px;
+      border-radius: 12px;
+      font-size: 13px;
+    }
+    body.test-mode .learn-bottom-bar {
+      bottom: calc(8px + env(safe-area-inset-bottom));
+      width: min(94vw, 420px);
+      gap: 6px;
+    }
+    body.test-mode .learn-bottom-bar .settings-open-btn {
+      padding: 9px 8px;
+      font-size: 12px;
+      box-shadow: 0 8px 20px rgba(15,23,42,0.18);
+    }
+
+    @media (max-height: 700px) {
+      body.test-mode header { padding: 7px 12px; }
+      body.test-mode #learn-view {
+        height: calc(100svh - 44px);
+        padding-top: 6px;
+        padding-bottom: calc(64px + env(safe-area-inset-bottom));
+      }
+      body.test-mode .progress-wrap { margin-bottom: 6px; }
+      body.test-mode .test-word-card { flex-basis: clamp(78px, 19svh, 100px); }
+      body.test-mode .test-word-text { font-size: clamp(27px, 7.8vw, 36px); }
+      body.test-mode .test-card-face { padding: 10px 11px; }
+      body.test-mode .test-back-pos { font-size: 9px; padding: 2px 7px; }
+      body.test-mode .test-back-meaning { font-size: 13px; }
+      body.test-mode .test-back-pron,
+      body.test-mode .test-back-origin,
+      body.test-mode .test-back-example,
+      body.test-mode .test-back-example-ja { font-size: 9px; }
+      body.test-mode .test-choice-grid { gap: 6px; margin-top: 7px; }
+      body.test-mode .test-choice-card {
+        min-height: 42px;
+        max-height: 52px;
+        padding: 8px 10px;
+        font-size: 12.5px;
+      }
+      body.test-mode .test-letter-btn {
+        min-height: 34px;
+        font-size: 15px;
+      }
+      body.test-mode .test-feedback { min-height: 20px; margin-top: 6px; }
+      body.test-mode .test-next-btn { padding: 9px 12px; margin-top: 5px; }
+      body.test-mode .learn-bottom-bar .settings-open-btn { padding: 8px 7px; font-size: 11.5px; }
     }
 
     /* Complete screen */
@@ -864,12 +1265,27 @@
     </div>
 
     <div class="test-panel" id="test-panel" aria-live="polite">
-      <div class="test-word-card">
-        <div class="test-word-text" id="test-word-text">—</div>
+      <div class="test-word-card" id="test-word-card" role="button" tabindex="0" aria-pressed="false" aria-disabled="true" aria-label="解答後に単語カードを反転して裏面情報を表示できます" onclick="toggleTestCardFlip()" onkeydown="handleTestCardKey(event)">
+        <div class="test-card-inner">
+          <div class="test-card-face test-card-front-face">
+            <div class="test-word-text" id="test-word-text">—</div>
+          </div>
+          <div class="test-card-face test-card-back-face">
+            <div class="test-back-pos" id="test-back-pos">—</div>
+            <div class="test-back-meaning" id="test-back-meaning">—</div>
+            <div class="test-back-pron" id="test-back-pron">—</div>
+            <div class="test-back-origin" id="test-back-origin" hidden></div>
+            <div class="test-back-example" id="test-back-example">—</div>
+            <div class="test-back-example-ja" id="test-back-example-ja">—</div>
+          </div>
+        </div>
       </div>
-      <div class="test-choice-grid" id="test-choice-grid"></div>
-      <div class="test-feedback" id="test-feedback"></div>
-      <button class="test-next-btn" id="test-next-btn" type="button" onclick="showNextTestQuestion()">次へ</button>
+      <div class="test-answer-zone">
+        <div class="test-choice-grid" id="test-choice-grid"></div>
+        <div class="test-letter-row" id="test-letter-row" aria-label="ABCD解答ボタン"></div>
+        <div class="test-feedback" id="test-feedback"></div>
+        <button class="test-next-btn" id="test-next-btn" type="button" onclick="showNextTestQuestion()">次へ</button>
+      </div>
     </div>
 
     <div id="session-complete" class="session-complete">
@@ -907,22 +1323,36 @@
   <div class="settings-page-head">
     <div>
       <div class="settings-page-title">設定</div>
-      <div class="settings-page-lead">覚える範囲、テスト、発音表示、補助表示、履歴はここで管理します。学習画面は単語カードだけに集中できます。</div>
+      <div class="settings-page-lead">レベル、テーマ、テスト、表示、履歴を分けて管理します。学習画面は単語カードだけに集中できます。</div>
     </div>
     <button class="back-to-learn-btn" type="button" onclick="showLearnView()">戻る</button>
   </div>
 
-  <div class="part-panel" aria-label="品詞選択">
-    <div class="settings-section-title">覚える品詞を選択</div>
-    <div class="part-buttons">
-      <button class="part-btn active" type="button" data-part="random" onclick="setPart('random')">ランダム<span id="part-count-random">921</span></button>
-      <button class="part-btn" type="button" data-part="noun" onclick="setPart('noun')">名詞<span id="part-count-noun">426</span></button>
-      <button class="part-btn" type="button" data-part="verb" onclick="setPart('verb')">動詞<span id="part-count-verb">332</span></button>
-      <button class="part-btn" type="button" data-part="adjective" onclick="setPart('adjective')">形容詞<span id="part-count-adjective">138</span></button>
-      <button class="part-btn" type="button" data-part="adverb" onclick="setPart('adverb')">副詞<span id="part-count-adverb">42</span></button>
-    </div>
+  <div class="settings-tabs" aria-label="設定ページ切り替え">
+    <button class="settings-tab active" type="button" data-settings-page="level" onclick="setSettingsPage('level')">レベル</button>
+    <button class="settings-tab" type="button" data-settings-page="theme" onclick="setSettingsPage('theme')">テーマ</button>
+    <button class="settings-tab" type="button" data-settings-page="test" onclick="setSettingsPage('test')">テスト</button>
+    <button class="settings-tab" type="button" data-settings-page="display" onclick="setSettingsPage('display')">表示</button>
+    <button class="settings-tab" type="button" data-settings-page="history" onclick="setSettingsPage('history')">履歴</button>
   </div>
 
+  <div class="settings-pager" id="settings-pager">
+  <div class="settings-track" id="settings-track">
+  <div class="settings-pane active" data-settings-page="level">
+  <div class="level-panel" aria-label="レベル選択">
+    <div class="settings-section-title">レベルを選ぶ</div>
+    <div class="level-buttons">
+      <button class="level-btn active" type="button" data-level="all" onclick="setLevel('all')">すべて<span id="level-count-all">914項目</span></button>
+      <button class="level-btn" type="button" data-level="junior" onclick="setLevel('junior')">中学復習<span id="level-count-junior">176項目</span></button>
+      <button class="level-btn" type="button" data-level="highBasic" onclick="setLevel('highBasic')">高校基礎<span id="level-count-highBasic">333項目</span></button>
+      <button class="level-btn" type="button" data-level="standard" onclick="setLevel('standard')">句動詞・実用<span id="level-count-standard">139項目</span></button>
+      <button class="level-btn" type="button" data-level="advanced" onclick="setLevel('advanced')">発展<span id="level-count-advanced">266項目</span></button>
+    </div>
+    <div class="storage-note">レベル名は学習の目安です。句動詞・実用は、get up などの句動詞や日常で使うまとまり表現を中心にしています。</div>
+  </div>
+  </div>
+
+  <div class="settings-pane" data-settings-page="theme">
   <div class="category-panel" aria-label="カテゴリ選択">
     <div class="settings-section-title">テーマを選ぶ</div>
     <div class="category-buttons">
@@ -939,6 +1369,20 @@
     <div class="storage-note">テーマ別に確認できます。カタカナ注意は意味のズレ、句動詞は会話のまとまり、略語は分野別、発音注意は音と綴りの違いを集中的に学べます。</div>
   </div>
 
+  <div class="part-panel" aria-label="品詞選択">
+    <div class="settings-section-title">品詞でしぼる</div>
+    <div class="part-buttons">
+      <button class="part-btn active" type="button" data-part="random" onclick="setPart('random')">ランダム<span id="part-count-random">921</span></button>
+      <button class="part-btn" type="button" data-part="noun" onclick="setPart('noun')">名詞<span id="part-count-noun">426</span></button>
+      <button class="part-btn" type="button" data-part="verb" onclick="setPart('verb')">動詞<span id="part-count-verb">332</span></button>
+      <button class="part-btn" type="button" data-part="adjective" onclick="setPart('adjective')">形容詞<span id="part-count-adjective">138</span></button>
+      <button class="part-btn" type="button" data-part="adverb" onclick="setPart('adverb')">副詞<span id="part-count-adverb">42</span></button>
+    </div>
+    <div class="storage-note">テーマを選んだあと、必要に応じて品詞でさらに範囲をしぼれます。</div>
+  </div>
+  </div>
+
+  <div class="settings-pane" data-settings-page="test">
   <div class="session-panel" aria-label="サクサクテスト設定">
     <div class="settings-section-title">サクサクテスト</div>
     <div class="test-choice-count-buttons">
@@ -946,56 +1390,17 @@
       <button class="test-choice-count-btn" type="button" data-test-choices="3" onclick="setTestChoiceCount(3)">3択</button>
       <button class="test-choice-count-btn active" type="button" data-test-choices="4" onclick="setTestChoiceCount(4)">4択</button>
     </div>
-    <div class="storage-note">英単語だけを見て、日本語カードを選びます。テストは20問で区切ります。</div>
+    <div class="storage-note">英単語だけを見て、日本語カードを選びます。テストは20問で区切ります。解答後は出題カードをタップすると裏面を確認できます。</div>
+  </div>
   </div>
 
-  <div class="level-panel" aria-label="レベル選択">
-    <div class="settings-section-title">レベルを選ぶ</div>
-    <div class="level-buttons">
-      <button class="level-btn active" type="button" data-level="all" onclick="setLevel('all')">すべて<span id="level-count-all">914項目</span></button>
-      <button class="level-btn" type="button" data-level="junior" onclick="setLevel('junior')">かんたん<span id="level-count-junior">176項目</span></button>
-      <button class="level-btn" type="button" data-level="high" onclick="setLevel('high')">標準<span id="level-count-high">472項目</span></button>
-      <button class="level-btn" type="button" data-level="eiken2" onclick="setLevel('eiken2')">しっかり<span id="level-count-eiken2">266項目</span></button>
-    </div>
-  </div>
-
-  <div class="achievement-panel" aria-label="学習状況">
-    <div class="settings-section-title">履歴の概要</div>
-    <div class="achievement-grid">
-      <div class="achievement-item">
-        <span class="achievement-num" id="stat-today-panel">0</span>
-        <div class="achievement-label">今回</div>
-      </div>
-      <div class="achievement-item">
-        <span class="achievement-num" id="stat-due">0</span>
-        <div class="achievement-label">出題候補</div>
-      </div>
-      <div class="achievement-item">
-          <span class="achievement-num" id="stat-left">921</span>
-        <div class="achievement-label">未習得</div>
-      </div>
-    </div>
-  </div>
-
-  <div class="settings-panel">
-    <div class="utility-panel" aria-label="学習データ管理">
-      <div class="settings-section-title">履歴管理</div>
-      <div class="utility-buttons">
-        <button class="small-btn" type="button" onclick="exportData()">履歴を保存</button>
-        <button class="small-btn" type="button" onclick="document.getElementById('import-file').click()">履歴を読込</button>
-        <button class="small-btn danger" type="button" onclick="resetData()">履歴リセット</button>
-      </div>
-      <input id="import-file" type="file" accept="application/json" style="display:none" onchange="importData(event)">
-      <div class="storage-note">学習履歴はこの端末内に保存されます。履歴管理は必要なときだけ使えば十分です。</div>
-    </div>
-  </div>
-
+  <div class="settings-pane" data-settings-page="display">
   <div class="settings-panel">
     <div class="utility-panel">
       <div class="settings-section-title">カード表面の補助表示</div>
       <div class="front-display-grid">
         <div>
-          <div class="front-display-label">レベル（標準など）</div>
+          <div class="front-display-label">レベル（中学復習など）</div>
           <div class="phonetic-assist-buttons" aria-label="レベル表示">
             <button class="front-meta-btn" type="button" data-front-meta="level-show" onclick="setFrontLevelVisible(true)">表示</button>
             <button class="front-meta-btn active" type="button" data-front-meta="level-hide" onclick="setFrontLevelVisible(false)">非表示</button>
@@ -1039,6 +1444,42 @@
       </div>
       <div class="storage-note">暗記の手がかりとして、確認済みの語だけ表示します。語源の厳密な分解ではなく、覚えやすさを優先した補助表示です。</div>
     </div>
+  </div>
+  </div>
+
+  <div class="settings-pane" data-settings-page="history">
+  <div class="achievement-panel" aria-label="学習状況">
+    <div class="settings-section-title">履歴の概要</div>
+    <div class="achievement-grid">
+      <div class="achievement-item">
+        <span class="achievement-num" id="stat-today-panel">0</span>
+        <div class="achievement-label">今回</div>
+      </div>
+      <div class="achievement-item">
+        <span class="achievement-num" id="stat-due">0</span>
+        <div class="achievement-label">出題候補</div>
+      </div>
+      <div class="achievement-item">
+          <span class="achievement-num" id="stat-left">921</span>
+        <div class="achievement-label">未習得</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="settings-panel">
+    <div class="utility-panel" aria-label="学習データ管理">
+      <div class="settings-section-title">履歴管理</div>
+      <div class="utility-buttons">
+        <button class="small-btn" type="button" onclick="exportData()">履歴を保存</button>
+        <button class="small-btn" type="button" onclick="document.getElementById('import-file').click()">履歴を読込</button>
+        <button class="small-btn danger" type="button" onclick="resetData()">履歴リセット</button>
+      </div>
+      <input id="import-file" type="file" accept="application/json" style="display:none" onchange="importData(event)">
+      <div class="storage-note">学習履歴はこの端末内に保存されます。履歴管理は必要なときだけ使えば十分です。</div>
+    </div>
+  </div>
+  </div>
+  </div>
   </div>
 
   <div class="settings-bottom">
@@ -10807,18 +11248,27 @@ const STORAGE_KEY = 'vocab_trainer_v2';
 const LEVEL_STORAGE_KEY = 'vocab_trainer_level_v1';
 const PART_STORAGE_KEY = 'vocab_trainer_part_v1';
 const CATEGORY_STORAGE_KEY = 'vocab_trainer_category_v1';
-const TEST_CHOICE_COUNT_STORAGE_KEY = 'vocab_trainer_test_choice_count_v1';
+const TEST_CHOICE_COUNT_STORAGE_KEY = 'vocab_trainer_test_choice_count_v2';
+const DEFAULT_TEST_CHOICE_COUNT = 4;
 const PHONETIC_ASSIST_STORAGE_KEY = 'vocab_trainer_phonetic_assist_v2';
 const FRONT_LEVEL_STORAGE_KEY = 'vocab_trainer_front_level_v2';
 const FRONT_PART_STORAGE_KEY = 'vocab_trainer_front_part_v2';
 const TEST_CHOICE_COUNT_OPTIONS = [2, 3, 4];
 const TEST_CARD_LIMIT = 20;
+const TEST_CHOICE_LABELS = ['A', 'B', 'C', 'D'];
 const PHONETIC_FINAL_MARKS = { t: 'ᵗ', s: 'ˢ', d: 'ᵈ' };
 const LEVEL_LABELS = {
   all: 'すべて',
-  junior: 'かんたん',
-  high: '標準',
-  eiken2: 'しっかり'
+  junior: '中学復習',
+  highBasic: '高校基礎',
+  standard: '句動詞・実用',
+  advanced: '発展'
+};
+const LEGACY_LEVEL_MAP = {
+  high: 'highBasic',
+  eiken2: 'advanced',
+  'かんたん': 'junior',
+  'しっかり': 'advanced'
 };
 const PART_LABELS = {
   random: 'ランダム',
@@ -10976,18 +11426,56 @@ const MORPHEME_SUFFIX_HINTS = {
   ure: new Set('exposure'.split(' '))
 };
 let currentLevel = localStorage.getItem(LEVEL_STORAGE_KEY) || 'all';
+if (LEGACY_LEVEL_MAP[currentLevel]) currentLevel = LEGACY_LEVEL_MAP[currentLevel];
 if (!LEVEL_LABELS[currentLevel]) currentLevel = 'all';
 let currentPart = localStorage.getItem(PART_STORAGE_KEY) || 'random';
 if (!PART_LABELS[currentPart]) currentPart = 'random';
 let currentCategory = localStorage.getItem(CATEGORY_STORAGE_KEY) || 'all';
 if (!CATEGORY_LABELS[currentCategory]) currentCategory = 'all';
-let currentTestChoiceCount = Number(localStorage.getItem(TEST_CHOICE_COUNT_STORAGE_KEY)) || 4;
-if (!TEST_CHOICE_COUNT_OPTIONS.includes(currentTestChoiceCount)) currentTestChoiceCount = 4;
+let currentTestChoiceCount = Number(localStorage.getItem(TEST_CHOICE_COUNT_STORAGE_KEY)) || DEFAULT_TEST_CHOICE_COUNT;
+if (!TEST_CHOICE_COUNT_OPTIONS.includes(currentTestChoiceCount)) currentTestChoiceCount = DEFAULT_TEST_CHOICE_COUNT;
 let showPhoneticAssist = localStorage.getItem(PHONETIC_ASSIST_STORAGE_KEY) === 'shown';
 let showFrontLevel = localStorage.getItem(FRONT_LEVEL_STORAGE_KEY) === 'shown';
 let showFrontPart = localStorage.getItem(FRONT_PART_STORAGE_KEY) === 'shown';
+const SETTINGS_PAGE_ORDER = ['level', 'theme', 'test', 'display', 'history'];
+let currentSettingsPage = 'level';
+
+function updateSettingsPagerHeight() {
+  const pager = document.getElementById('settings-pager');
+  const activePane = document.querySelector(`.settings-pane[data-settings-page="${currentSettingsPage}"]`);
+  if (!pager || !activePane) return;
+  const setHeight = () => {
+    const childBottom = [...activePane.children].reduce((max, child) => {
+      const style = getComputedStyle(child);
+      const marginBottom = parseFloat(style.marginBottom) || 0;
+      return Math.max(max, child.offsetTop + child.offsetHeight + marginBottom);
+    }, 0);
+    pager.style.height = `${Math.max(activePane.scrollHeight, childBottom)}px`;
+  };
+  setHeight();
+  requestAnimationFrame(setHeight);
+}
+
+function setSettingsPage(page) {
+  currentSettingsPage = SETTINGS_PAGE_ORDER.includes(page) ? page : 'level';
+  const pageIndex = SETTINGS_PAGE_ORDER.indexOf(currentSettingsPage);
+  const track = document.getElementById('settings-track');
+  if (track) track.style.transform = `translate3d(${-pageIndex * 100}%, 0, 0)`;
+  document.querySelectorAll('.settings-tab').forEach(btn => {
+    const isActive = btn.dataset.settingsPage === currentSettingsPage;
+    btn.classList.toggle('active', isActive);
+    btn.setAttribute('aria-pressed', isActive ? 'true' : 'false');
+  });
+  document.querySelectorAll('.settings-pane').forEach(pane => {
+    const isActive = pane.dataset.settingsPage === currentSettingsPage;
+    pane.classList.toggle('active', isActive);
+    pane.setAttribute('aria-hidden', isActive ? 'false' : 'true');
+  });
+  updateSettingsPagerHeight();
+}
 
 function showSettingsView() {
+  document.body.classList.remove('test-mode');
   updateLevelButtons();
   updateCategoryButtons();
   updatePartButtons();
@@ -10997,10 +11485,12 @@ function showSettingsView() {
   updateStats();
   document.getElementById('learn-view').hidden = true;
   document.getElementById('settings-view').hidden = false;
+  setSettingsPage(currentSettingsPage);
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 function showLearnView() {
+  document.body.classList.toggle('test-mode', currentMode === 'test');
   document.getElementById('settings-view').hidden = true;
   document.getElementById('learn-view').hidden = false;
   window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -11052,17 +11542,17 @@ function getWordLevel(word, index) {
   const explicitLevel = {
     '中学復習': 'junior',
     'かんたん': 'junior',
-    '高校基礎': 'high',
-    '標準': 'high',
-    '発展': 'eiken2',
-    'しっかり': 'eiken2'
+    '高校基礎': 'highBasic',
+    '標準': 'standard',
+    '発展': 'advanced',
+    'しっかり': 'advanced'
   }[word.level];
   if (explicitLevel) return explicitLevel;
   const w = word.w.toLowerCase();
   if (JUNIOR_WORDS.has(w)) return 'junior';
-  if (w.length >= 11 || /(tion|sion|ment|ity|ive|ous|ate|ise|ize|ance|ence|ary|ory|al)$/.test(w)) return 'eiken2';
+  if (w.length >= 11 || /(tion|sion|ment|ity|ive|ous|ate|ise|ize|ance|ence|ary|ory|al)$/.test(w)) return 'advanced';
   if (index >= 435 && w.length <= 8) return 'junior';
-  return 'high';
+  return 'standard';
 }
 
 function getPartOfSpeech(word) {
@@ -11355,7 +11845,7 @@ function updateLevelButtons() {
   document.querySelectorAll('.level-btn').forEach(btn => {
     btn.classList.toggle('active', btn.dataset.level === currentLevel);
   });
-  ['all', 'junior', 'high', 'eiken2'].forEach(level => {
+  ['all', 'junior', 'highBasic', 'standard', 'advanced'].forEach(level => {
     const el = document.getElementById(`level-count-${level}`);
     if (el) el.textContent = `${getLevelCount(level)}項目`;
   });
@@ -11450,7 +11940,7 @@ function updateModeButtons() {
 
 function setTestChoiceCount(count) {
   const nextCount = Number(count);
-  currentTestChoiceCount = TEST_CHOICE_COUNT_OPTIONS.includes(nextCount) ? nextCount : 4;
+  currentTestChoiceCount = TEST_CHOICE_COUNT_OPTIONS.includes(nextCount) ? nextCount : DEFAULT_TEST_CHOICE_COUNT;
   localStorage.setItem(TEST_CHOICE_COUNT_STORAGE_KEY, String(currentTestChoiceCount));
   updateTestChoiceButtons();
   if (currentMode === 'test') {
@@ -11532,6 +12022,7 @@ let testCards = [];
 let testIndex = 0;
 let testCorrect = 0;
 let testAnswered = false;
+let testCardFlipped = false;
 
 function getDueCards() {
   const data = loadData(), now = Date.now();
@@ -11548,6 +12039,7 @@ function shuffle(arr) {
 }
 
 function startSession() {
+  document.body.classList.remove('test-mode');
   currentMode = 'learn';
   updateLevelButtons();
   updateCategoryButtons();
@@ -11637,6 +12129,7 @@ function updateSwipeMessage() {
 }
 
 function startTestSession() {
+  document.body.classList.add('test-mode');
   currentMode = 'test';
   updateLevelButtons();
   updateCategoryButtons();
@@ -11656,7 +12149,7 @@ function startTestSession() {
   document.getElementById('study-prompt').style.display = 'none';
   document.getElementById('card-container').style.display = 'none';
   document.getElementById('swipe-msg').style.display = 'none';
-  document.getElementById('test-panel').style.display = 'block';
+  document.getElementById('test-panel').style.display = 'flex';
   showTestQuestion();
   updateStats();
 }
@@ -11694,26 +12187,98 @@ function buildTestChoices(correctWord) {
   ]);
 }
 
+function setTestCardFlipped(isFlipped) {
+  testCardFlipped = Boolean(isFlipped);
+  const card = document.getElementById('test-word-card');
+  if (!card) return;
+  const canFlip = currentMode === 'test' && testAnswered && Boolean(testCards[testIndex]);
+  card.classList.toggle('is-flipped', testCardFlipped);
+  card.classList.toggle('can-flip', canFlip);
+  card.setAttribute('aria-pressed', testCardFlipped ? 'true' : 'false');
+  card.setAttribute('aria-disabled', canFlip ? 'false' : 'true');
+  card.setAttribute(
+    'aria-label',
+    !canFlip
+      ? '解答後に単語カードを反転して裏面情報を表示できます'
+      : testCardFlipped ? '単語カードを表面に戻す' : '単語カードを反転して裏面情報を表示'
+  );
+}
+
+function toggleTestCardFlip() {
+  if (currentMode !== 'test' || !testCards[testIndex] || !testAnswered) return;
+  setTestCardFlipped(!testCardFlipped);
+}
+
+function handleTestCardKey(event) {
+  if (event.key !== 'Enter' && event.key !== ' ') return;
+  event.preventDefault();
+  event.stopPropagation();
+  toggleTestCardFlip();
+}
+
+function updateTestCardBack(word) {
+  const partOfSpeech = getPartOfSpeech(word);
+  document.getElementById('test-back-pos').textContent = formatPartOfSpeechForDisplay(partOfSpeech);
+  document.getElementById('test-back-meaning').textContent = word.m;
+  document.getElementById('test-back-pron').textContent = `/${word.ipa}/  ${word.ph}`;
+
+  const originEl = document.getElementById('test-back-origin');
+  const origin = getAbbreviationOrigin(word);
+  if (origin && getWordCategories(word).has('abbreviation')) {
+    originEl.hidden = false;
+    originEl.textContent = formatAbbreviationOrigin(word, origin);
+  } else {
+    originEl.hidden = true;
+    originEl.textContent = '';
+  }
+
+  document.getElementById('test-back-example').textContent = word.ex;
+  document.getElementById('test-back-example-ja').textContent = word.exJa;
+}
+
 function showTestQuestion() {
   if (testIndex >= testCards.length || testCards.length === 0) { showTestComplete(); return; }
 
   const word = testCards[testIndex];
   testAnswered = false;
+  setTestCardFlipped(false);
   document.getElementById('test-word-text').textContent = word.w;
   document.querySelector('.test-word-card')?.classList.remove('wrong-cue');
+  updateTestCardBack(word);
   document.getElementById('test-feedback').textContent = '';
-  document.getElementById('test-next-btn').style.display = 'none';
+  document.getElementById('test-next-btn').classList.remove('is-visible');
 
   const choiceGrid = document.getElementById('test-choice-grid');
+  const letterRow = document.getElementById('test-letter-row');
   choiceGrid.innerHTML = '';
-  buildTestChoices(word).forEach(choice => {
+  letterRow.innerHTML = '';
+  buildTestChoices(word).forEach((choice, index) => {
+    const label = TEST_CHOICE_LABELS[index] || String(index + 1);
     const button = document.createElement('button');
     button.type = 'button';
     button.className = 'test-choice-card';
-    button.textContent = choice.word.m;
+    const labelSpan = document.createElement('span');
+    labelSpan.className = 'test-choice-label';
+    labelSpan.textContent = label;
+    const meaningSpan = document.createElement('span');
+    meaningSpan.className = 'test-choice-meaning';
+    meaningSpan.textContent = choice.word.m;
+    button.append(labelSpan, meaningSpan);
+    button.setAttribute('aria-label', `${label} ${choice.word.m}`);
     button.dataset.correct = choice.correct ? 'true' : 'false';
+    button.dataset.choiceIndex = String(index);
     button.onclick = () => answerTestChoice(button, word);
     choiceGrid.appendChild(button);
+
+    const letterButton = document.createElement('button');
+    letterButton.type = 'button';
+    letterButton.className = 'test-letter-btn';
+    letterButton.textContent = label;
+    letterButton.setAttribute('aria-label', `${label}を選ぶ`);
+    letterButton.dataset.correct = choice.correct ? 'true' : 'false';
+    letterButton.dataset.choiceIndex = String(index);
+    letterButton.onclick = () => answerTestChoice(letterButton, word);
+    letterRow.appendChild(letterButton);
   });
 
   const pct = (testIndex / testCards.length) * 100;
@@ -11740,12 +12305,17 @@ function answerTestChoice(button, word) {
   const isCorrect = button.dataset.correct === 'true';
   if (isCorrect) testCorrect++;
   if (!isCorrect) triggerWrongAnswerCue();
+  const selectedChoiceIndex = button.dataset.choiceIndex;
 
-  document.querySelectorAll('.test-choice-card').forEach(choiceButton => {
+  document.querySelectorAll('.test-choice-card, .test-letter-btn').forEach(choiceButton => {
     choiceButton.disabled = true;
     if (choiceButton.dataset.correct === 'true') choiceButton.classList.add('correct');
   });
-  if (!isCorrect) button.classList.add('wrong');
+  if (!isCorrect && selectedChoiceIndex !== undefined) {
+    document.querySelectorAll(`[data-choice-index="${selectedChoiceIndex}"]`).forEach(choiceButton => {
+      choiceButton.classList.add('wrong');
+    });
+  }
 
   const key = getCardKey(word);
   if (!sessionReviewedKeys.has(key)) {
@@ -11758,7 +12328,8 @@ function answerTestChoice(button, word) {
   document.getElementById('test-feedback').textContent = isCorrect
     ? '正解！'
     : `正解は「${word.m}」`;
-  document.getElementById('test-next-btn').style.display = 'block';
+  setTestCardFlipped(false);
+  document.getElementById('test-next-btn').classList.add('is-visible');
   updateStats();
 }
 
@@ -11803,8 +12374,9 @@ async function importData(event) {
     const imported = payload.data && typeof payload.data === 'object' ? payload.data : payload;
     if (!imported || Array.isArray(imported) || typeof imported !== 'object') throw new Error('Invalid data');
     saveData(imported);
-    if (payload.selectedLevel && LEVEL_LABELS[payload.selectedLevel]) {
-      currentLevel = payload.selectedLevel;
+    const importedLevel = LEGACY_LEVEL_MAP[payload.selectedLevel] || payload.selectedLevel;
+    if (importedLevel && LEVEL_LABELS[importedLevel]) {
+      currentLevel = importedLevel;
       localStorage.setItem(LEVEL_STORAGE_KEY, currentLevel);
     }
     if (payload.selectedPart && PART_LABELS[payload.selectedPart]) {
@@ -11949,10 +12521,67 @@ let touchStartX = 0, touchStartY = 0;
 let lastTouchTime = 0;
 let touchStartedOnControl = false;
 const learnViewEl = document.getElementById('learn-view');
+const settingsViewEl = document.getElementById('settings-view');
+let settingsTouchStartX = 0, settingsTouchStartY = 0;
+let settingsSwipeActive = false;
+let suppressSettingsClickUntil = 0;
 
 function isControlTarget(target) {
   return Boolean(target.closest('button, a, input, select, textarea, label'));
 }
+
+function showAdjacentSettingsPage(delta) {
+  const currentIndex = SETTINGS_PAGE_ORDER.indexOf(currentSettingsPage);
+  const nextIndex = currentIndex + delta;
+  if (nextIndex < 0 || nextIndex >= SETTINGS_PAGE_ORDER.length) return;
+  setSettingsPage(SETTINGS_PAGE_ORDER[nextIndex]);
+}
+
+function bindSettingsSwipeTarget(target) {
+  if (!target) return;
+
+  target.addEventListener('touchstart', e => {
+    if (document.getElementById('settings-view').hidden) return;
+    settingsTouchStartX = e.changedTouches[0].clientX;
+    settingsTouchStartY = e.changedTouches[0].clientY;
+    settingsSwipeActive = false;
+  }, { passive: true });
+
+  target.addEventListener('touchmove', e => {
+    if (document.getElementById('settings-view').hidden) return;
+    const dx = e.changedTouches[0].clientX - settingsTouchStartX;
+    const dy = e.changedTouches[0].clientY - settingsTouchStartY;
+    const absDx = Math.abs(dx), absDy = Math.abs(dy);
+    if (absDx > 10 && absDx > absDy * 1.15) {
+      settingsSwipeActive = true;
+      e.preventDefault();
+    }
+  }, { passive: false });
+
+  target.addEventListener('touchend', e => {
+    if (document.getElementById('settings-view').hidden) return;
+    const dx = e.changedTouches[0].clientX - settingsTouchStartX;
+    const dy = e.changedTouches[0].clientY - settingsTouchStartY;
+    const absDx = Math.abs(dx), absDy = Math.abs(dy);
+    if ((settingsSwipeActive || absDx > 38) && absDx > absDy) {
+      const beforePage = currentSettingsPage;
+      showAdjacentSettingsPage(dx < 0 ? 1 : -1);
+      if (beforePage !== currentSettingsPage) {
+        suppressSettingsClickUntil = Date.now() + 450;
+      }
+      e.preventDefault();
+    }
+    settingsSwipeActive = false;
+  }, { passive: false });
+
+  target.addEventListener('click', e => {
+    if (Date.now() > suppressSettingsClickUntil) return;
+    e.preventDefault();
+    e.stopPropagation();
+  }, true);
+}
+
+bindSettingsSwipeTarget(settingsViewEl);
 
 learnViewEl.addEventListener('click', e => {
   if (currentMode !== 'learn') return;
@@ -12008,7 +12637,10 @@ document.addEventListener('keydown', e => {
   if (e.key === '3') rate(5);
 });
 
-window.addEventListener('resize', fitWordText);
+window.addEventListener('resize', () => {
+  fitWordText();
+  updateSettingsPagerHeight();
+});
 
 // ─── 初期化 ────────────────────────────────────────────────────────────
 startSession();
