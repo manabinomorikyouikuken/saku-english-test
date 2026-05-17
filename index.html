@@ -292,7 +292,8 @@
       grid-template-columns: repeat(3, 1fr);
       gap: 8px;
     }
-    .phonetic-assist-buttons {
+    .phonetic-assist-buttons,
+    .haptic-feedback-buttons {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
       gap: 8px;
@@ -340,7 +341,8 @@
       cursor: pointer;
       touch-action: manipulation;
     }
-    .phonetic-assist-btn {
+    .phonetic-assist-btn,
+    .haptic-feedback-btn {
       border: 1px solid #cbd5e1;
       background: white;
       color: #334155;
@@ -400,7 +402,8 @@
       border-color: #15803d;
       color: white;
     }
-    .phonetic-assist-btn.active {
+    .phonetic-assist-btn.active,
+    .haptic-feedback-btn.active {
       background: #1a2a4a;
       border-color: #1a2a4a;
       color: white;
@@ -1196,7 +1199,7 @@
 <header>
   <div class="header-main">
     <div class="header-title">サクサク英単語</div>
-    <div class="header-sub">友人テスト版 / 909語・品詞別914項目 / British English基準</div>
+    <div class="header-sub">友人テスト版 / 916語・品詞別921項目 / British English基準</div>
   </div>
   <div class="header-right">
     <div class="stats">
@@ -1415,6 +1418,17 @@
         <strong>語末の t / s / d:</strong> カタカナで強く読まず、最後に子音だけを軽く添える目印です。カード裏では小さな補助記号として表示します。発音記号はBritish English基準です。
       </div>
       <div class="storage-note">単語の綴りは入試・教材で一般的に使われる表記を含みます。</div>
+    </div>
+  </div>
+
+  <div class="settings-panel">
+    <div class="utility-panel">
+      <div class="settings-section-title">操作時のバイブ</div>
+      <div class="haptic-feedback-buttons" aria-label="操作時のバイブ">
+        <button class="haptic-feedback-btn active" type="button" data-haptic-feedback="on" onclick="setHapticFeedbackEnabled(true)">オン</button>
+        <button class="haptic-feedback-btn" type="button" data-haptic-feedback="off" onclick="setHapticFeedbackEnabled(false)">オフ</button>
+      </div>
+      <div class="storage-note">初期値はオンです。対応端末では、カードめくり、スワイプ、誤答時などの振動だけを切り替えます。</div>
     </div>
   </div>
 
@@ -11320,6 +11334,7 @@ const DEFAULT_TEST_CHOICE_COUNT = 4;
 const PHONETIC_ASSIST_STORAGE_KEY = 'vocab_trainer_phonetic_assist_v2';
 const FRONT_LEVEL_STORAGE_KEY = 'vocab_trainer_front_level_v2';
 const FRONT_PART_STORAGE_KEY = 'vocab_trainer_front_part_v2';
+const HAPTIC_FEEDBACK_STORAGE_KEY = 'vocab_trainer_haptic_feedback_v1';
 const TEST_CHOICE_COUNT_OPTIONS = [2, 3, 4];
 const TEST_CARD_LIMIT = 20;
 const TEST_CHOICE_LABELS = ['A', 'B', 'C', 'D'];
@@ -11511,6 +11526,7 @@ if (!TEST_CHOICE_COUNT_OPTIONS.includes(currentTestChoiceCount)) currentTestChoi
 let showPhoneticAssist = localStorage.getItem(PHONETIC_ASSIST_STORAGE_KEY) === 'shown';
 let showFrontLevel = localStorage.getItem(FRONT_LEVEL_STORAGE_KEY) === 'shown';
 let showFrontPart = localStorage.getItem(FRONT_PART_STORAGE_KEY) === 'shown';
+let hapticFeedbackEnabled = localStorage.getItem(HAPTIC_FEEDBACK_STORAGE_KEY) !== 'off';
 const SETTINGS_PAGE_ORDER = ['level', 'theme', 'test', 'display', 'history'];
 let currentSettingsPage = 'level';
 
@@ -11556,6 +11572,7 @@ function showSettingsView() {
   updateTestChoiceButtons();
   updatePhoneticAssistButtons();
   updateFrontMetaButtons();
+  updateHapticFeedbackButtons();
   updateStats();
   document.getElementById('learn-view').hidden = true;
   document.getElementById('settings-view').hidden = false;
@@ -11997,6 +12014,20 @@ function updateFrontMetaButtons() {
   });
 }
 
+function updateHapticFeedbackButtons() {
+  document.querySelectorAll('.haptic-feedback-btn').forEach(btn => {
+    const isOnButton = btn.dataset.hapticFeedback === 'on';
+    const isActive = isOnButton === hapticFeedbackEnabled;
+    btn.classList.toggle('active', isActive);
+    btn.setAttribute('aria-pressed', isActive ? 'true' : 'false');
+  });
+}
+
+function triggerHapticFeedback(pattern = 20) {
+  if (!hapticFeedbackEnabled || typeof navigator.vibrate !== 'function') return false;
+  return navigator.vibrate(pattern);
+}
+
 function applyFrontMetaVisibility() {
   const levelTag = document.getElementById('level-tag');
   const posTag = document.getElementById('pos-tag');
@@ -12044,6 +12075,13 @@ function setFrontPartVisible(visible) {
   localStorage.setItem(FRONT_PART_STORAGE_KEY, showFrontPart ? 'shown' : 'hidden');
   updateFrontMetaButtons();
   applyFrontMetaVisibility();
+}
+
+function setHapticFeedbackEnabled(enabled) {
+  hapticFeedbackEnabled = Boolean(enabled);
+  localStorage.setItem(HAPTIC_FEEDBACK_STORAGE_KEY, hapticFeedbackEnabled ? 'on' : 'off');
+  updateHapticFeedbackButtons();
+  if (hapticFeedbackEnabled) triggerHapticFeedback(18);
 }
 
 function restartCurrentMode() {
@@ -12195,6 +12233,7 @@ function resetCardToFrontInstantly() {
 function flipCard() {
   isFlipped = !isFlipped;
   document.getElementById('card').classList.toggle('flipped', isFlipped);
+  triggerHapticFeedback(12);
   updateSwipeMessage();
 }
 
@@ -12283,6 +12322,7 @@ function setTestCardFlipped(isFlipped) {
 function toggleTestCardFlip() {
   if (currentMode !== 'test' || !testCards[testIndex] || !testAnswered) return;
   setTestCardFlipped(!testCardFlipped);
+  triggerHapticFeedback(12);
 }
 
 function handleTestCardKey(event) {
@@ -12365,14 +12405,13 @@ function showTestQuestion() {
 
 function triggerWrongAnswerCue() {
   const card = document.querySelector('.test-word-card');
-  const canVibrate = typeof navigator.vibrate === 'function';
-  if (canVibrate) navigator.vibrate([80, 40, 80, 40, 120]);
+  const didVibrate = triggerHapticFeedback([80, 40, 80, 40, 120]);
   if (card) {
     card.classList.remove('wrong-cue');
     void card.offsetWidth;
     card.classList.add('wrong-cue');
   }
-  return canVibrate;
+  return didVibrate;
 }
 
 function answerTestChoice(button, word) {
@@ -12426,6 +12465,7 @@ function exportData() {
     selectedPhoneticAssist: showPhoneticAssist,
     selectedFrontLevelVisible: showFrontLevel,
     selectedFrontPartVisible: showFrontPart,
+    selectedHapticFeedbackEnabled: hapticFeedbackEnabled,
     data: loadData()
   };
   const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
@@ -12475,6 +12515,10 @@ async function importData(event) {
     if (typeof payload.selectedFrontPartVisible === 'boolean') {
       showFrontPart = payload.selectedFrontPartVisible;
       localStorage.setItem(FRONT_PART_STORAGE_KEY, showFrontPart ? 'shown' : 'hidden');
+    }
+    if (typeof payload.selectedHapticFeedbackEnabled === 'boolean') {
+      hapticFeedbackEnabled = payload.selectedHapticFeedbackEnabled;
+      localStorage.setItem(HAPTIC_FEEDBACK_STORAGE_KEY, hapticFeedbackEnabled ? 'on' : 'off');
     }
     reviewedToday = 0;
     restartCurrentMode();
@@ -12610,8 +12654,9 @@ function isControlTarget(target) {
 function showAdjacentSettingsPage(delta) {
   const currentIndex = SETTINGS_PAGE_ORDER.indexOf(currentSettingsPage);
   const nextIndex = currentIndex + delta;
-  if (nextIndex < 0 || nextIndex >= SETTINGS_PAGE_ORDER.length) return;
+  if (nextIndex < 0 || nextIndex >= SETTINGS_PAGE_ORDER.length) return false;
   setSettingsPage(SETTINGS_PAGE_ORDER[nextIndex]);
+  return true;
 }
 
 function bindSettingsSwipeTarget(target) {
@@ -12644,6 +12689,7 @@ function bindSettingsSwipeTarget(target) {
       const beforePage = currentSettingsPage;
       showAdjacentSettingsPage(dx < 0 ? 1 : -1);
       if (beforePage !== currentSettingsPage) {
+        triggerHapticFeedback(18);
         suppressSettingsClickUntil = Date.now() + 450;
       }
       e.preventDefault();
@@ -12687,7 +12733,7 @@ if (testPanelEl) {
     if (dx > 0 && (testSwipeActive || absDx > 40) && absDx > absDy) {
       e.preventDefault();
       suppressTestClickUntil = Date.now() + 450;
-      if (navigator.vibrate) navigator.vibrate(35);
+      triggerHapticFeedback(35);
       showNextTestQuestion();
     }
     testSwipeActive = false;
@@ -12731,7 +12777,7 @@ learnViewEl.addEventListener('touchend', e => {
   }
   if (absDx > absDy && absDx > 50) {
     lastTouchTime = Date.now();
-    if (navigator.vibrate) navigator.vibrate(30);
+    triggerHapticFeedback(30);
     dx > 0 ? rate(5) : showPreviousCard();
   }
 }, { passive: true });
