@@ -1325,11 +1325,11 @@
   <div class="level-panel" aria-label="レベル選択">
     <div class="settings-section-title">レベルを選ぶ</div>
     <div class="level-buttons">
-      <button class="level-btn active" type="button" data-level="all" onclick="setLevel('all')">すべて<span id="level-count-all">914項目</span></button>
+      <button class="level-btn active" type="button" data-level="all" onclick="setLevel('all')">すべて<span id="level-count-all">921項目</span></button>
       <button class="level-btn" type="button" data-level="junior" onclick="setLevel('junior')">中学復習<span id="level-count-junior">176項目</span></button>
       <button class="level-btn" type="button" data-level="highBasic" onclick="setLevel('highBasic')">高校基礎<span id="level-count-highBasic">333項目</span></button>
-      <button class="level-btn" type="button" data-level="standard" onclick="setLevel('standard')">句動詞・実用<span id="level-count-standard">139項目</span></button>
-      <button class="level-btn" type="button" data-level="advanced" onclick="setLevel('advanced')">発展<span id="level-count-advanced">266項目</span></button>
+      <button class="level-btn" type="button" data-level="standard" onclick="setLevel('standard')">句動詞・実用<span id="level-count-standard">144項目</span></button>
+      <button class="level-btn" type="button" data-level="advanced" onclick="setLevel('advanced')">発展<span id="level-count-advanced">268項目</span></button>
     </div>
     <div class="storage-note">レベル名は学習の目安です。句動詞・実用は、get up などの句動詞や日常で使うまとまり表現を中心にしています。</div>
   </div>
@@ -1339,13 +1339,13 @@
   <div class="category-panel" aria-label="カテゴリ選択">
     <div class="settings-section-title">テーマを選ぶ</div>
     <div class="category-buttons">
-      <button class="category-btn active" type="button" data-category="all" onclick="setCategory('all')">すべて<span id="category-count-all">914項目</span></button>
+      <button class="category-btn active" type="button" data-category="all" onclick="setCategory('all')">すべて<span id="category-count-all">921項目</span></button>
       <button class="category-btn" type="button" data-category="katakanaGap" onclick="setCategory('katakanaGap')">カタカナ注意<span id="category-count-katakanaGap">33項目</span></button>
       <button class="category-btn" type="button" data-category="phrasalVerb" onclick="setCategory('phrasalVerb')">句動詞<span id="category-count-phrasalVerb">100項目</span></button>
-      <button class="category-btn" type="button" data-category="abbreviation" onclick="setCategory('abbreviation')">略語<span id="category-count-abbreviation">53項目</span></button>
-      <button class="category-btn" type="button" data-category="abbreviationTech" onclick="setCategory('abbreviationTech')">略語 ICT・AI<span id="category-count-abbreviationTech">24項目</span></button>
+      <button class="category-btn" type="button" data-category="abbreviation" onclick="setCategory('abbreviation')">略語<span id="category-count-abbreviation">60項目</span></button>
+      <button class="category-btn" type="button" data-category="abbreviationTech" onclick="setCategory('abbreviationTech')">略語 ICT・AI<span id="category-count-abbreviationTech">26項目</span></button>
       <button class="category-btn" type="button" data-category="abbreviationBusiness" onclick="setCategory('abbreviationBusiness')">略語 ビジネス<span id="category-count-abbreviationBusiness">13項目</span></button>
-      <button class="category-btn" type="button" data-category="abbreviationPublic" onclick="setCategory('abbreviationPublic')">略語 国際・公的<span id="category-count-abbreviationPublic">15項目</span></button>
+      <button class="category-btn" type="button" data-category="abbreviationPublic" onclick="setCategory('abbreviationPublic')">略語 国際・公的<span id="category-count-abbreviationPublic">19項目</span></button>
       <button class="category-btn" type="button" data-category="abbreviationEducation" onclick="setCategory('abbreviationEducation')">略語 教育・言語<span id="category-count-abbreviationEducation">1項目</span></button>
       <button class="category-btn" type="button" data-category="pronunciationNote" onclick="setCategory('pronunciationNote')">発音注意<span id="category-count-pronunciationNote">9項目</span></button>
     </div>
@@ -10613,6 +10613,90 @@ const WORDS = [
     "exJa": "窓の外でカラスがカーカー鳴いた。"
   },
   {
+    "id": "bbc_noun",
+    "w": "BBC",
+    "cat": "abbreviation",
+    "pos": "名詞",
+    "level": "標準",
+    "ipa": "ˌbiː biː ˈsiː",
+    "ph": "ビー ビー シー",
+    "m": "英国放送協会",
+    "ex": "BBC reports news from around the world.",
+    "exJa": "BBCは世界中のニュースを報道している。"
+  },
+  {
+    "id": "nhk_noun",
+    "w": "NHK",
+    "cat": "abbreviation",
+    "pos": "名詞",
+    "level": "標準",
+    "ipa": "ˌen eɪtʃ ˈkeɪ",
+    "ph": "エン エイチ ケイ",
+    "m": "日本放送協会",
+    "ex": "NHK broadcasts news and educational programs.",
+    "exJa": "NHKはニュースや教育番組を放送している。"
+  },
+  {
+    "id": "cnn_noun",
+    "w": "CNN",
+    "cat": "abbreviation",
+    "pos": "名詞",
+    "level": "標準",
+    "ipa": "ˌsiː en ˈen",
+    "ph": "シー エン エン",
+    "m": "米国のニュース専門局",
+    "ex": "CNN covered the election live.",
+    "exJa": "CNNはその選挙を生中継で報道した。"
+  },
+  {
+    "id": "ict_noun",
+    "w": "ICT",
+    "cat": "abbreviation",
+    "pos": "名詞",
+    "level": "標準",
+    "ipa": "ˌaɪ siː ˈtiː",
+    "ph": "アイ シー ティー",
+    "m": "情報通信技術",
+    "ex": "ICT can support learning in schools.",
+    "exJa": "ICTは学校での学習を支援できる。"
+  },
+  {
+    "id": "icu_noun",
+    "w": "ICU",
+    "cat": "abbreviation",
+    "pos": "名詞",
+    "level": "発展",
+    "ipa": "ˌaɪ siː ˈjuː",
+    "ph": "アイ シー ユー",
+    "m": "集中治療室",
+    "ex": "The patient was moved to the ICU.",
+    "exJa": "その患者はICUに移された。"
+  },
+  {
+    "id": "dohc_noun",
+    "w": "DOHC",
+    "cat": "abbreviation",
+    "pos": "名詞",
+    "level": "発展",
+    "ipa": "ˌdiː əʊ eɪtʃ ˈsiː",
+    "ph": "ディー オウ エイチ シー",
+    "m": "ダブルオーバーヘッドカムシャフト",
+    "ex": "A DOHC engine can control valves efficiently.",
+    "exJa": "DOHCエンジンはバルブを効率よく制御できる。"
+  },
+  {
+    "id": "dc_noun",
+    "w": "D.C.",
+    "cat": "abbreviation",
+    "pos": "名詞",
+    "level": "標準",
+    "ipa": "ˌdiː ˈsiː",
+    "ph": "ディー シー",
+    "m": "コロンビア特別区",
+    "ex": "Washington, D.C. is the capital of the United States.",
+    "exJa": "ワシントンD.C.はアメリカ合衆国の首都だ。"
+  },
+  {
     "id": "ceo_noun",
     "w": "CEO",
     "cat": "abbreviation",
@@ -11282,13 +11366,13 @@ const CATEGORY_TAGS = {
   pronunciationNote: 'pronunciation-note'
 };
 const ABBREVIATION_TECH_WORDS = new Set(
-  'LLM CLI UI UX API SDK IDE OS CPU GPU RAM ROM SSD USB URL HTTP HTML CSS JS JSON SQL AI IoT GPS'.split(' ')
+  'LLM CLI UI UX API SDK IDE OS CPU GPU RAM ROM SSD USB URL HTTP HTML CSS JS JSON SQL AI IoT GPS ICT DOHC'.split(' ')
 );
 const ABBREVIATION_BUSINESS_WORDS = new Set(
   'LCC CEO COO CFO CTO CIO CMO HR PR KPI OKR ROI GDP'.split(' ')
 );
 const ABBREVIATION_PUBLIC_WORDS = new Set(
-  'MIT UCLA CIA FBI MI6 SWAT JICA TPP EEZ CDC WHO UN EU NGO NPO'.split(' ')
+  'MIT UCLA CIA FBI MI6 SWAT JICA TPP EEZ CDC WHO UN EU NGO NPO BBC NHK CNN D.C.'.split(' ')
 );
 const ABBREVIATION_EDUCATION_WORDS = new Set(
   'IPA'.split(' ')
@@ -11318,6 +11402,8 @@ const ABBREVIATION_ORIGINS = {
   AI: 'Artificial Intelligence',
   IoT: 'Internet of Things',
   GPS: 'Global Positioning System',
+  ICT: 'Information and Communication Technology',
+  DOHC: 'Double Overhead Camshaft',
   LCC: 'Low-Cost Carrier',
   CEO: 'Chief Executive Officer',
   COO: 'Chief Operating Officer',
@@ -11333,6 +11419,9 @@ const ABBREVIATION_ORIGINS = {
   GDP: 'Gross Domestic Product',
   MIT: 'Massachusetts Institute of Technology',
   UCLA: 'University of California, Los Angeles',
+  BBC: 'British Broadcasting Corporation',
+  NHK: 'Nippon Hoso Kyokai（日本放送協会）',
+  CNN: 'Cable News Network',
   CIA: 'Central Intelligence Agency',
   FBI: 'Federal Bureau of Investigation',
   MI6: 'Military Intelligence, Section 6（通称。現名称: Secret Intelligence Service）',
@@ -11346,6 +11435,8 @@ const ABBREVIATION_ORIGINS = {
   EU: 'European Union',
   NGO: 'Non-Governmental Organization',
   NPO: 'Non-Profit Organization',
+  'D.C.': 'District of Columbia',
+  ICU: 'Intensive Care Unit',
   IPA: 'International Phonetic Alphabet'
 };
 const ABBREVIATION_ORIGIN_TYPES = {
