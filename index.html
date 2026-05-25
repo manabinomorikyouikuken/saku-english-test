@@ -1227,11 +1227,23 @@
     .swipe-msg {
       width: min(92%, 420px);
       margin: 6px auto 0;
+      padding: 8px 12px;
+      border-radius: 999px;
       font-size: 12px;
       color: #94a3b8;
       font-weight: 800;
       text-align: center;
       white-space: pre;
+      touch-action: pan-y;
+      user-select: none;
+      transition: color 0.12s, background-color 0.12s, transform 0.12s;
+    }
+    .swipe-msg.is-swipe-ready {
+      color: #2563eb;
+      background: rgba(37, 99, 235, 0.08);
+    }
+    .swipe-msg.is-swipe-ready:active {
+      transform: translateX(2px);
     }
 
     @media (max-height: 740px) {
@@ -12440,7 +12452,7 @@ function beginTestSession(cards, kind = 'normal') {
   document.getElementById('card-container').style.display = 'none';
   const swipeMsg = document.getElementById('swipe-msg');
   swipeMsg.style.display = 'block';
-  swipeMsg.textContent = '右スワイプで次へ　→';
+  setTestSwipeHintReady(false);
   document.getElementById('test-panel').style.display = 'flex';
   showTestQuestion();
   updateStats();
@@ -12557,6 +12569,7 @@ function showTestQuestion() {
   feedbackEl.textContent = '';
   feedbackEl.classList.remove('is-visible');
   document.getElementById('test-next-btn').classList.remove('is-visible');
+  setTestSwipeHintReady(false);
 
   const choiceGrid = document.getElementById('test-choice-grid');
   const letterRow = document.getElementById('test-letter-row');
@@ -12669,6 +12682,7 @@ function answerTestChoice(button, word) {
     feedbackEl.classList.add('is-visible');
   }
   setTestCardFlipped(false);
+  setTestSwipeHintReady(true);
   updateStats();
 }
 
@@ -12884,7 +12898,7 @@ let touchStartX = 0, touchStartY = 0;
 let lastTouchTime = 0;
 let touchStartedOnControl = false;
 const learnViewEl = document.getElementById('learn-view');
-const testPanelEl = document.getElementById('test-panel');
+const testSwipeTargetEl = document.getElementById('swipe-msg');
 const settingsViewEl = document.getElementById('settings-view');
 let settingsTouchStartX = 0, settingsTouchStartY = 0;
 let settingsSwipeActive = false;
@@ -12892,6 +12906,20 @@ let suppressSettingsClickUntil = 0;
 let testTouchStartX = 0, testTouchStartY = 0;
 let testSwipeActive = false;
 let suppressTestClickUntil = 0;
+let testPointerId = null;
+
+function setTestSwipeHintReady(isReady) {
+  const swipeMsg = document.getElementById('swipe-msg');
+  if (!swipeMsg) return;
+  swipeMsg.textContent = isReady
+    ? '右スワイプで次へ　→'
+    : '答えを選ぶと右スワイプで次へ　→';
+  swipeMsg.classList.toggle('is-swipe-ready', Boolean(isReady));
+  swipeMsg.setAttribute(
+    'aria-label',
+    isReady ? '右にスワイプすると次の問題に進みます' : '答えを選ぶと右スワイプで次へ進めます'
+  );
+}
 
 function isControlTarget(target) {
   return Boolean(target.closest('button, a, input, select, textarea, label'));
@@ -12952,29 +12980,37 @@ function bindSettingsSwipeTarget(target) {
 
 bindSettingsSwipeTarget(settingsViewEl);
 
-if (testPanelEl) {
-  testPanelEl.addEventListener('touchstart', e => {
-    if (currentMode !== 'test' || !testAnswered) return;
-    testTouchStartX = e.changedTouches[0].clientX;
-    testTouchStartY = e.changedTouches[0].clientY;
+if (testSwipeTargetEl) {
+  testSwipeTargetEl.addEventListener('pointerdown', e => {
+    if (currentMode !== 'test') return;
+    testPointerId = e.pointerId;
+    testTouchStartX = e.clientX;
+    testTouchStartY = e.clientY;
     testSwipeActive = false;
-  }, { passive: true });
+    if (testAnswered) testSwipeTargetEl.setPointerCapture?.(e.pointerId);
+  });
 
-  testPanelEl.addEventListener('touchmove', e => {
+  testSwipeTargetEl.addEventListener('pointermove', e => {
+    if (testPointerId !== null && e.pointerId !== testPointerId) return;
     if (currentMode !== 'test' || !testAnswered) return;
-    const dx = e.changedTouches[0].clientX - testTouchStartX;
-    const dy = e.changedTouches[0].clientY - testTouchStartY;
+    const dx = e.clientX - testTouchStartX;
+    const dy = e.clientY - testTouchStartY;
     const absDx = Math.abs(dx), absDy = Math.abs(dy);
     if (absDx > 12 && absDx > absDy * 1.15) {
       testSwipeActive = true;
       e.preventDefault();
     }
-  }, { passive: false });
+  });
 
-  testPanelEl.addEventListener('touchend', e => {
-    if (currentMode !== 'test' || !testAnswered) return;
-    const dx = e.changedTouches[0].clientX - testTouchStartX;
-    const dy = e.changedTouches[0].clientY - testTouchStartY;
+  testSwipeTargetEl.addEventListener('pointerup', e => {
+    if (testPointerId !== null && e.pointerId !== testPointerId) return;
+    if (currentMode !== 'test' || !testAnswered) {
+      testPointerId = null;
+      testSwipeActive = false;
+      return;
+    }
+    const dx = e.clientX - testTouchStartX;
+    const dy = e.clientY - testTouchStartY;
     const absDx = Math.abs(dx), absDy = Math.abs(dy);
     if (dx > 0 && (testSwipeActive || absDx > 40) && absDx > absDy) {
       e.preventDefault();
@@ -12982,10 +13018,16 @@ if (testPanelEl) {
       triggerHapticFeedback(35);
       showNextTestQuestion();
     }
+    testPointerId = null;
     testSwipeActive = false;
-  }, { passive: false });
+  });
 
-  testPanelEl.addEventListener('click', e => {
+  testSwipeTargetEl.addEventListener('pointercancel', () => {
+    testPointerId = null;
+    testSwipeActive = false;
+  });
+
+  testSwipeTargetEl.addEventListener('click', e => {
     if (Date.now() > suppressTestClickUntil) return;
     e.preventDefault();
     e.stopPropagation();
