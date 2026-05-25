@@ -256,6 +256,51 @@
       color: white;
     }
     .quick-start-btn:active { transform: scale(0.97); filter: brightness(0.96); }
+    .intro-panel {
+      width: min(92%, 420px);
+      margin: 0 auto 10px;
+      background: #f8fafc;
+      border: 1px solid #cbd5e1;
+      border-radius: 14px;
+      padding: 12px;
+      box-shadow: 0 4px 18px rgba(15,23,42,0.05);
+    }
+    .intro-panel[hidden] { display: none; }
+    .intro-title {
+      color: #1a2a4a;
+      font-size: 13px;
+      font-weight: 900;
+      margin-bottom: 6px;
+    }
+    .intro-text {
+      color: #475569;
+      font-size: 12px;
+      font-weight: 700;
+      line-height: 1.55;
+      margin-bottom: 10px;
+    }
+    .intro-actions {
+      display: flex;
+      gap: 8px;
+    }
+    .intro-btn {
+      flex: 1;
+      min-height: 38px;
+      border: 1px solid #cbd5e1;
+      border-radius: 12px;
+      background: #ffffff;
+      color: #334155;
+      font-size: 12px;
+      font-weight: 900;
+      cursor: pointer;
+      touch-action: manipulation;
+    }
+    .intro-btn.primary {
+      background: #2563eb;
+      border-color: #2563eb;
+      color: white;
+    }
+    .intro-btn:active { transform: scale(0.98); filter: brightness(0.96); }
     .learning-summary-panel {
       width: min(92%, 420px);
       margin: 0 auto 10px;
@@ -650,6 +695,39 @@
       margin-left: 1px;
       vertical-align: super;
     }
+    .word-audio-btn {
+      position: absolute;
+      top: 14px;
+      right: 14px;
+      min-width: 46px;
+      min-height: 34px;
+      border: 1px solid #bfdbfe;
+      border-radius: 999px;
+      background: #eff6ff;
+      color: #1d4ed8;
+      font-size: 12px;
+      font-weight: 900;
+      letter-spacing: 0;
+      cursor: pointer;
+      touch-action: manipulation;
+      box-shadow: 0 3px 12px rgba(37,99,235,0.12);
+      z-index: 3;
+    }
+    .word-audio-btn:active {
+      transform: scale(0.96);
+      filter: brightness(0.96);
+    }
+    .word-audio-btn:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+      box-shadow: none;
+    }
+    .card.flipped .card-front .word-audio-btn,
+    .test-word-card.is-flipped + .word-audio-btn {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
     .level-tag {
       background: #eff6ff;
       color: #2563eb;
@@ -778,7 +856,12 @@
       width: min(92%, 420px);
       margin: 0 auto;
     }
+    .test-word-card-wrap {
+      position: relative;
+      min-height: 150px;
+    }
     .test-word-card {
+      height: 100%;
       min-height: 150px;
       background: white;
       border-radius: 20px;
@@ -852,6 +935,14 @@
       line-height: 1.1;
       text-align: center;
       overflow-wrap: anywhere;
+    }
+    .test-word-card-wrap .word-audio-btn {
+      top: 10px;
+      right: 10px;
+      z-index: 3;
+      min-width: 44px;
+      min-height: 32px;
+      font-size: 11px;
     }
     .test-back-pos {
       align-self: flex-start;
@@ -1074,6 +1165,7 @@
       height: 6px;
     }
     body.test-mode .quick-start-panel,
+    body.test-mode .intro-panel,
     body.test-mode .learning-summary-panel {
       display: none;
     }
@@ -1091,8 +1183,11 @@
       justify-content: flex-end;
       width: min(94%, 420px);
     }
-    body.test-mode .test-word-card {
+    body.test-mode .test-word-card-wrap {
       flex: 0 0 clamp(88px, 22svh, 126px);
+      min-height: 0;
+    }
+    body.test-mode .test-word-card {
       min-height: 0;
       border-radius: 16px;
     }
@@ -1187,7 +1282,7 @@
         padding-bottom: calc(18px + env(safe-area-inset-bottom));
       }
       body.test-mode .progress-wrap { margin-bottom: 6px; }
-      body.test-mode .test-word-card { flex-basis: clamp(78px, 19svh, 100px); }
+      body.test-mode .test-word-card-wrap { flex-basis: clamp(78px, 19svh, 100px); }
       body.test-mode .test-word-text { font-size: clamp(27px, 7.8vw, 36px); }
       body.test-mode .test-card-face { padding: 10px 11px; }
       body.test-mode .test-back-pos { font-size: 9px; padding: 2px 7px; }
@@ -1227,10 +1322,45 @@
     }
     .complete-icon { font-size: 38px; margin-bottom: 8px; }
     .complete-title { font-size: 19px; font-weight: 800; color: #1a2a4a; margin-bottom: 6px; }
-    .complete-msg { font-size: 12.5px; color: #64748b; line-height: 1.55; margin-bottom: 14px; white-space: pre-line; }
-    .complete-stats {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
+	    .complete-msg { font-size: 12.5px; color: #64748b; line-height: 1.55; margin-bottom: 14px; white-space: pre-line; }
+	    .perfect-quote-panel {
+	      display: none;
+	      margin: -2px 0 14px;
+	      padding: 12px 2px 4px;
+	      border-top: 1px solid #e2e8f0;
+	      border-bottom: 1px solid #e2e8f0;
+	      text-align: left;
+	    }
+	    .perfect-quote-panel.is-visible { display: block; }
+	    .perfect-badge {
+	      display: inline-block;
+	      margin-bottom: 7px;
+	      color: #15803d;
+	      font-size: 11px;
+	      font-weight: 900;
+	      letter-spacing: 0;
+	    }
+	    .perfect-quote-text {
+	      color: #1a2a4a;
+	      font-size: 15px;
+	      font-weight: 900;
+	      line-height: 1.45;
+	    }
+	    .perfect-quote-source {
+	      margin-top: 5px;
+	      color: #64748b;
+	      font-size: 11px;
+	      font-weight: 800;
+	    }
+	    .perfect-quote-ja {
+	      margin-top: 6px;
+	      color: #64748b;
+	      font-size: 10.5px;
+	      line-height: 1.45;
+	    }
+	    .complete-stats {
+	      display: grid;
+	      grid-template-columns: repeat(3, 1fr);
       gap: 8px;
       margin-bottom: 16px;
     }
@@ -1296,10 +1426,14 @@
       .quick-start-panel { margin-bottom: 8px; padding: 10px; }
       .quick-start-head { margin-bottom: 8px; }
       .quick-start-btn { min-height: 40px; padding: 8px 5px; font-size: 11px; }
+      .intro-panel { margin-bottom: 8px; padding: 10px; }
+      .intro-text { font-size: 11.5px; margin-bottom: 8px; }
+      .intro-btn { min-height: 36px; font-size: 11.5px; }
       .learning-summary-panel { margin-bottom: 8px; }
       .learning-summary-item { padding: 7px 5px; }
       .card-prompt { margin-bottom: 6px; }
       .card-container { height: 258px; margin-bottom: 8px; }
+      .test-word-card-wrap,
       .test-word-card { min-height: 130px; }
       .test-choice-card { min-height: 48px; font-size: 13px; padding: 10px 12px; }
       .card-face { padding: 18px 18px; }
@@ -1310,10 +1444,12 @@
       .example-text { line-height: 1.55; }
       .example-ja-text { line-height: 1.45; margin-top: 6px; }
       .session-complete { padding: 18px 14px; }
-      .complete-icon { font-size: 32px; margin-bottom: 6px; }
-      .complete-title { font-size: 18px; }
-      .complete-msg { font-size: 12px; line-height: 1.45; margin-bottom: 12px; }
-      .complete-stat-num { font-size: 22px; }
+	      .complete-icon { font-size: 32px; margin-bottom: 6px; }
+	      .complete-title { font-size: 18px; }
+	      .complete-msg { font-size: 12px; line-height: 1.45; margin-bottom: 12px; }
+	      .perfect-quote-panel { margin-bottom: 12px; padding-top: 10px; }
+	      .perfect-quote-text { font-size: 14px; }
+	      .complete-stat-num { font-size: 22px; }
       .restart-btn { padding: 10px 22px; }
     }
     @media (max-width: 390px) {
@@ -1325,6 +1461,7 @@
       .learn-bottom-bar .settings-open-btn { font-size: 12px; }
       .quick-start-head { display: block; }
       .quick-start-note { margin-top: 3px; white-space: normal; }
+      .intro-actions { display: grid; grid-template-columns: 1fr; }
     }
   </style>
 </head>
@@ -1360,6 +1497,17 @@
     </div>
   </div>
 
+  <section class="intro-panel" id="intro-panel" aria-label="はじめての案内" hidden>
+    <div class="intro-title">はじめてならここから</div>
+    <div class="intro-text">
+      まずは20問。ミスした語は「ミス復習」に残ります。答えたあとは下の案内を右スワイプで次へ進めます。
+    </div>
+    <div class="intro-actions">
+      <button class="intro-btn primary" type="button" onclick="startIntroQuickTest()">今日の20問へ</button>
+      <button class="intro-btn" type="button" onclick="dismissIntroPanel()">閉じる</button>
+    </div>
+  </section>
+
   <section class="quick-start-panel" id="quick-start-panel" aria-label="今日の入口">
     <div class="quick-start-head">
       <div class="quick-start-title">今日の入口</div>
@@ -1385,7 +1533,7 @@
       </div>
       <div class="learning-summary-item">
         <span class="learning-summary-num" id="stat-miss-cleared-main">0</span>
-        <div class="learning-summary-label">ミス卒業</div>
+        <div class="learning-summary-label">ミス克服</div>
       </div>
     </div>
   </section>
@@ -1395,6 +1543,7 @@
     <div class="card-container" id="card-container" role="button" tabindex="0" aria-label="単語カードを反転">
       <div class="card" id="card">
         <div class="card-face card-front">
+          <button class="word-audio-btn" id="card-audio-btn" type="button" onclick="playCurrentLearningAudio(event)" aria-label="UK音声で単語を再生">UK</button>
           <div class="word-text" id="word-text">—</div>
           <div class="ipa-text" id="ipa-text">/—/</div>
           <div class="phonetic-text" id="phonetic-text">—</div>
@@ -1415,20 +1564,23 @@
     </div>
 
     <div class="test-panel" id="test-panel" aria-live="polite">
-      <div class="test-word-card" id="test-word-card" role="button" tabindex="0" aria-pressed="false" aria-disabled="true" aria-label="解答後に単語カードを反転して裏面情報を表示できます" onclick="toggleTestCardFlip()" onkeydown="handleTestCardKey(event)">
-        <div class="test-card-inner">
-          <div class="test-card-face test-card-front-face">
-            <div class="test-word-text" id="test-word-text">—</div>
-          </div>
-          <div class="test-card-face test-card-back-face">
-            <div class="test-back-pos" id="test-back-pos">—</div>
-            <div class="test-back-meaning" id="test-back-meaning">—</div>
-            <div class="test-back-pron" id="test-back-pron">—</div>
-            <div class="test-back-origin" id="test-back-origin" hidden></div>
-            <div class="test-back-example" id="test-back-example">—</div>
-            <div class="test-back-example-ja" id="test-back-example-ja">—</div>
+      <div class="test-word-card-wrap">
+        <div class="test-word-card" id="test-word-card" role="button" tabindex="0" aria-pressed="false" aria-disabled="true" aria-label="解答後に単語カードを反転して裏面情報を表示できます" onclick="toggleTestCardFlip()" onkeydown="handleTestCardKey(event)">
+          <div class="test-card-inner">
+            <div class="test-card-face test-card-front-face">
+              <div class="test-word-text" id="test-word-text">—</div>
+            </div>
+            <div class="test-card-face test-card-back-face">
+              <div class="test-back-pos" id="test-back-pos">—</div>
+              <div class="test-back-meaning" id="test-back-meaning">—</div>
+              <div class="test-back-pron" id="test-back-pron">—</div>
+              <div class="test-back-origin" id="test-back-origin" hidden></div>
+              <div class="test-back-example" id="test-back-example">—</div>
+              <div class="test-back-example-ja" id="test-back-example-ja">—</div>
+            </div>
           </div>
         </div>
+        <button class="word-audio-btn" id="test-audio-btn" type="button" onclick="playCurrentTestAudio(event)" aria-label="UK音声で単語を再生">UK</button>
       </div>
       <div class="test-answer-zone">
         <div class="test-choice-grid" id="test-choice-grid"></div>
@@ -1440,10 +1592,10 @@
 
     <div id="session-complete" class="session-complete">
       <div class="complete-icon" id="complete-icon">🎉</div>
-      <div class="complete-title" id="complete-title">今回の学習完了！</div>
-      <div class="complete-stats">
-        <div class="complete-stat">
-          <span class="complete-stat-num" id="cs-reviewed">0</span>
+	      <div class="complete-title" id="complete-title">今回の学習完了！</div>
+	      <div class="complete-stats">
+	        <div class="complete-stat">
+	          <span class="complete-stat-num" id="cs-reviewed">0</span>
           <div class="complete-stat-label" id="cs-reviewed-label">今回の学習</div>
         </div>
         <div class="complete-stat">
@@ -1452,12 +1604,18 @@
         </div>
         <div class="complete-stat">
           <span class="complete-stat-num" id="cs-due">0</span>
-          <div class="complete-stat-label" id="cs-due-label">次回候補</div>
-        </div>
-      </div>
-      <div class="complete-msg" id="complete-msg"></div>
-      <button class="restart-btn" id="restart-btn" onclick="restartCurrentMode()">もう一周する</button>
-    </div>
+	          <div class="complete-stat-label" id="cs-due-label">次回候補</div>
+	        </div>
+	      </div>
+	      <div class="complete-msg" id="complete-msg"></div>
+	      <div class="perfect-quote-panel" id="perfect-quote-panel" aria-label="満点時の英語名言">
+	        <div class="perfect-badge">Perfect 20</div>
+	        <div class="perfect-quote-text" id="perfect-quote-text"></div>
+	        <div class="perfect-quote-source" id="perfect-quote-source"></div>
+	        <div class="perfect-quote-ja" id="perfect-quote-ja"></div>
+	      </div>
+	      <button class="restart-btn" id="restart-btn" onclick="restartCurrentMode()">もう一周する</button>
+	    </div>
 
     <div class="swipe-msg" id="swipe-msg"></div>
   </div>
@@ -1626,7 +1784,7 @@
       </div>
       <div class="achievement-item">
         <span class="achievement-num" id="stat-miss-cleared-panel">0</span>
-        <div class="achievement-label">ミス卒業</div>
+        <div class="achievement-label">ミス克服</div>
       </div>
       <div class="achievement-item">
         <span class="achievement-num" id="stat-due">0</span>
@@ -11516,9 +11674,99 @@ const FRONT_LEVEL_STORAGE_KEY = 'vocab_trainer_front_level_v2';
 const FRONT_PART_STORAGE_KEY = 'vocab_trainer_front_part_v2';
 const HAPTIC_FEEDBACK_STORAGE_KEY = 'vocab_trainer_haptic_feedback_v1';
 const MISSED_REVIEW_STORAGE_KEY = 'vocab_trainer_missed_review_v1';
+const INTRO_SEEN_STORAGE_KEY = 'vocab_trainer_intro_seen_v1';
 const TEST_CHOICE_COUNT_OPTIONS = [2, 3, 4];
 const TEST_CARD_LIMIT = 20;
 const TEST_CHOICE_LABELS = ['A', 'B', 'C', 'D'];
+const SPEECH_LANG = 'en-GB';
+const SPEECH_TEXT_OVERRIDES = {
+  AI: 'artificial intelligence',
+  API: 'application programming interface',
+  BBC: 'British Broadcasting Corporation',
+  CDC: 'Centers for Disease Control and Prevention',
+  CEO: 'chief executive officer',
+  CFO: 'chief financial officer',
+  CIA: 'Central Intelligence Agency',
+  CIO: 'chief information officer',
+  CLI: 'command line interface',
+  CMO: 'chief marketing officer',
+  CNN: 'Cable News Network',
+  COO: 'chief operating officer',
+  CPU: 'central processing unit',
+  CSS: 'cascading style sheets',
+  CTO: 'chief technology officer',
+  'D.C.': 'District of Columbia',
+  DOHC: 'double overhead camshaft',
+  EEZ: 'exclusive economic zone',
+  EU: 'European Union',
+  FBI: 'Federal Bureau of Investigation',
+  GDP: 'gross domestic product',
+  GPS: 'global positioning system',
+  GPU: 'graphics processing unit',
+  HR: 'human resources',
+  HTML: 'hypertext markup language',
+  HTTP: 'hypertext transfer protocol',
+  ICT: 'information and communication technology',
+  ICU: 'intensive care unit',
+  IDE: 'integrated development environment',
+  IPA: 'international phonetic alphabet',
+  JICA: 'Japan International Cooperation Agency',
+  JS: 'JavaScript',
+  JSON: 'JavaScript Object Notation',
+  KPI: 'key performance indicator',
+  LCC: 'low cost carrier',
+  LLM: 'large language model',
+  MI6: 'M I six',
+  MIT: 'Massachusetts Institute of Technology',
+  NGO: 'non-governmental organization',
+  NHK: 'Japan Broadcasting Corporation',
+  NPO: 'non-profit organization',
+  OKR: 'objectives and key results',
+  OS: 'operating system',
+  PR: 'public relations',
+  RAM: 'random access memory',
+  ROI: 'return on investment',
+  ROM: 'read only memory',
+  SDK: 'software development kit',
+  SQL: 'structured query language',
+  SSD: 'solid state drive',
+  SWAT: 'special weapons and tactics',
+  TPP: 'Trans Pacific Partnership',
+  UCLA: 'University of California Los Angeles',
+  UI: 'user interface',
+  UN: 'United Nations',
+  URL: 'uniform resource locator',
+  USB: 'universal serial bus',
+  UX: 'user experience',
+  WHO: 'World Health Organization'
+};
+const PERFECT_QUOTE_POOL = [
+  {
+    quote: 'Know yourself, and keep learning.',
+    source: 'Inspired by Socrates',
+    ja: '自分を知り、学び続けよう。'
+  },
+  {
+    quote: 'Courage is choosing what is right.',
+    source: 'Inspired by Plato',
+    ja: '勇気とは、正しいことを選ぶこと。'
+  },
+  {
+    quote: 'Small habits build a strong mind.',
+    source: 'Inspired by Aristotle',
+    ja: '小さな習慣が、強い心をつくる。'
+  },
+  {
+    quote: 'History teaches those who pay attention.',
+    source: 'Inspired by Thucydides',
+    ja: '歴史は、よく見る人に教えてくれる。'
+  },
+  {
+    quote: 'Effort turns possibility into reality.',
+    source: 'Inspired by Napoleon',
+    ja: '努力が、可能性を現実に変える。'
+  }
+];
 const PHONETIC_FINAL_MARKS = { t: 'ᵗ', s: 'ˢ', d: 'ᵈ' };
 const LEVEL_LABELS = {
   all: 'すべて',
@@ -11746,6 +11994,7 @@ function setSettingsPage(page) {
 }
 
 function showSettingsView() {
+  markIntroSeen();
   document.body.classList.remove('test-mode');
   updateLevelButtons();
   updateCategoryButtons();
@@ -12026,6 +12275,115 @@ function fitWordText() {
   }
 }
 
+let britishEnglishVoice = null;
+let speechVoiceReady = false;
+
+function getSpeechEngine() {
+  if (typeof window === 'undefined') return null;
+  if (!('speechSynthesis' in window) || !('SpeechSynthesisUtterance' in window)) return null;
+  return window.speechSynthesis;
+}
+
+function getVoiceRank(voice) {
+  const lang = String(voice.lang || '').toLowerCase();
+  const name = String(voice.name || '').toLowerCase();
+  if (lang === 'en-gb' && /daniel|serena|kate|oliver|martha|google uk|english united kingdom|british/.test(name)) return 0;
+  if (lang === 'en-gb') return 1;
+  if (lang.startsWith('en-') && /uk|british|united kingdom|daniel|serena|kate|oliver|martha/.test(name)) return 2;
+  if (lang.startsWith('en-')) return 3;
+  return 9;
+}
+
+function selectBritishEnglishVoice(voices) {
+  return [...voices]
+    .filter(voice => String(voice.lang || '').toLowerCase().startsWith('en'))
+    .sort((a, b) => getVoiceRank(a) - getVoiceRank(b))[0] || null;
+}
+
+function getAudioAriaLabel() {
+  if (!speechVoiceReady) return 'この端末では音声再生に対応していません';
+  if (britishEnglishVoice && String(britishEnglishVoice.lang || '').toLowerCase() === 'en-gb') {
+    return 'UK音声で単語を再生';
+  }
+  return '英語音声で単語を再生。en-GB音声がない場合は端末の英語音声を使います';
+}
+
+function updateAudioButtons() {
+  const isSupported = Boolean(getSpeechEngine());
+  speechVoiceReady = isSupported;
+  document.querySelectorAll('.word-audio-btn').forEach(button => {
+    button.disabled = !isSupported;
+    button.setAttribute('aria-label', getAudioAriaLabel());
+    button.title = getAudioAriaLabel();
+  });
+}
+
+function refreshSpeechVoices() {
+  const synth = getSpeechEngine();
+  if (!synth) {
+    britishEnglishVoice = null;
+    updateAudioButtons();
+    return;
+  }
+  const voices = synth.getVoices();
+  britishEnglishVoice = selectBritishEnglishVoice(voices);
+  updateAudioButtons();
+}
+
+function setupSpeechAudio() {
+  const synth = getSpeechEngine();
+  if (!synth) {
+    updateAudioButtons();
+    return;
+  }
+  refreshSpeechVoices();
+  synth.onvoiceschanged = refreshSpeechVoices;
+}
+
+function getSpeechText(word) {
+  const text = String(word?.w || '').trim();
+  if (!text) return '';
+  return SPEECH_TEXT_OVERRIDES[text] || text;
+}
+
+function speakEnglishWord(word, event) {
+  if (event) {
+    event.preventDefault();
+    event.stopPropagation();
+  }
+  const text = getSpeechText(word);
+  if (!text) return;
+  const synth = getSpeechEngine();
+  if (!synth) {
+    alert('この端末では音声再生に対応していません。');
+    return;
+  }
+  refreshSpeechVoices();
+  const utterance = new SpeechSynthesisUtterance(text);
+  utterance.lang = SPEECH_LANG;
+  const voice = britishEnglishVoice || selectBritishEnglishVoice(synth.getVoices());
+  if (voice) {
+    utterance.voice = voice;
+    utterance.lang = voice.lang || SPEECH_LANG;
+  }
+  utterance.rate = 0.84;
+  utterance.pitch = 1;
+  utterance.volume = 1;
+  synth.cancel();
+  synth.speak(utterance);
+  triggerHapticFeedback(8);
+}
+
+function playCurrentLearningAudio(event) {
+  if (currentMode !== 'learn') return;
+  speakEnglishWord(sessionCards[currentIndex], event);
+}
+
+function playCurrentTestAudio(event) {
+  if (currentMode !== 'test') return;
+  speakEnglishWord(testCards[testIndex], event);
+}
+
 function getVisiblePronunciationNote(word) {
   if (!word.pronNote) return '';
   if (/同じ|ほぼ同じ|一般的/.test(word.pronNote)) return '';
@@ -12223,12 +12581,14 @@ function applyQuickScope(category) {
 }
 
 function startQuickStudy(category) {
+  markIntroSeen();
   applyQuickScope(category);
   showLearnView();
   startSession();
 }
 
 function startQuickTest(category) {
+  markIntroSeen();
   applyQuickScope(category);
   showLearnView();
   startTestSession();
@@ -12289,6 +12649,31 @@ function updateModeButtons() {
   document.getElementById('learn-mode-btn')?.classList.toggle('active', !isTest);
   document.getElementById('test-mode-btn')?.classList.toggle('active', isTest);
   document.getElementById('quick-start-panel')?.toggleAttribute('hidden', isTest);
+  updateIntroPanelVisibility();
+}
+
+function hasSeenIntro() {
+  return localStorage.getItem(INTRO_SEEN_STORAGE_KEY) === 'seen';
+}
+
+function updateIntroPanelVisibility() {
+  const panel = document.getElementById('intro-panel');
+  if (!panel) return;
+  panel.hidden = currentMode !== 'learn' || hasSeenIntro();
+}
+
+function markIntroSeen() {
+  if (!hasSeenIntro()) localStorage.setItem(INTRO_SEEN_STORAGE_KEY, 'seen');
+  updateIntroPanelVisibility();
+}
+
+function dismissIntroPanel() {
+  markIntroSeen();
+}
+
+function startIntroQuickTest() {
+  markIntroSeen();
+  startQuickTest('all');
 }
 
 function setTestChoiceCount(count) {
@@ -12573,11 +12958,13 @@ function beginTestSession(cards, kind = 'normal') {
 }
 
 function startTestSession() {
+  markIntroSeen();
   const activeWords = getActiveWords();
   beginTestSession(shuffle(activeWords).slice(0, TEST_CARD_LIMIT), 'normal');
 }
 
 function startMissReviewSession() {
+  markIntroSeen();
   const missedWords = getMissedReviewWords();
   if (!missedWords.length) {
     alert('今はミスだけ復習に入れる単語がありません。まず今日の20問に挑戦してみましょう。');
@@ -12893,6 +13280,7 @@ function resetData() {
   if (!confirm('この端末の学習履歴をリセットします。よろしいですか？')) return;
   localStorage.removeItem(STORAGE_KEY);
   localStorage.removeItem(MISSED_REVIEW_STORAGE_KEY);
+  localStorage.removeItem(INTRO_SEEN_STORAGE_KEY);
   reviewedToday = 0;
   restartCurrentMode();
 }
@@ -12934,6 +13322,20 @@ function setText(id, value) {
   if (element) element.textContent = String(value);
 }
 
+function setPerfectQuoteVisible(isVisible) {
+  const panel = document.getElementById('perfect-quote-panel');
+  if (!panel) return;
+  panel.classList.toggle('is-visible', Boolean(isVisible));
+}
+
+function showRandomPerfectQuote() {
+  const quote = PERFECT_QUOTE_POOL[Math.floor(Math.random() * PERFECT_QUOTE_POOL.length)];
+  setText('perfect-quote-text', `"${quote.quote}"`);
+  setText('perfect-quote-source', quote.source);
+  setText('perfect-quote-ja', quote.ja);
+  setPerfectQuoteVisible(true);
+}
+
 function updateStats() {
   const data = loadData();
   const meta = getMeta(data);
@@ -12966,10 +13368,11 @@ function showComplete() {
   document.getElementById('test-panel').style.display = 'none';
   document.getElementById('swipe-msg').style.display = 'none';
   document.getElementById('session-complete').style.display = 'block';
-  document.getElementById('progress-fill').style.width = '100%';
-  document.getElementById('progress-text').textContent = `${sessionCards.length} / ${sessionCards.length}`;
+	  document.getElementById('progress-fill').style.width = '100%';
+	  document.getElementById('progress-text').textContent = `${sessionCards.length} / ${sessionCards.length}`;
+	  setPerfectQuoteVisible(false);
 
-  const data = loadData();
+	  const data = loadData();
   const activeWords = getActiveWords();
   const mastered = activeWords.filter((w, index) => data[getCardKey(w, index)] && data[getCardKey(w, index)].mastered).length;
   const due = getDueCards().length;
@@ -13000,10 +13403,11 @@ function showTestComplete() {
   document.getElementById('progress-text').textContent = `${testCards.length} / ${testCards.length}`;
   document.getElementById('due-text').textContent = getTestScoreLabel();
 
-  const isMissReview = testSessionKind === 'missReview';
-  const misses = testMissedKeys.size;
-  const remainingMisses = getMissedReviewWords().length;
-  const canContinueMissReview = misses > 0 || (isMissReview && remainingMisses > 0);
+	  const isMissReview = testSessionKind === 'missReview';
+	  const misses = testMissedKeys.size;
+	  const isPerfect20 = testCards.length === TEST_CARD_LIMIT && testCorrect === TEST_CARD_LIMIT && misses === 0;
+	  const remainingMisses = getMissedReviewWords().length;
+	  const canContinueMissReview = misses > 0 || (isMissReview && remainingMisses > 0);
   completionAction = canContinueMissReview ? 'missReview' : 'restart';
   document.getElementById('complete-icon').textContent = testCards.length && misses === 0 ? '◎' : '✓';
   document.getElementById('complete-title').textContent = isMissReview ? 'ミスだけ復習完了！' : 'サクサクテスト完了！';
@@ -13016,12 +13420,14 @@ function showTestComplete() {
   document.getElementById('cs-reviewed').textContent = testCards.length;
   document.getElementById('cs-mastered').textContent = testCorrect;
   document.getElementById('cs-due').textContent = misses;
-  document.getElementById('complete-msg').textContent = testCards.length === 0
-    ? '今の条件では出題できる単語がありません。設定で範囲を広げてください。'
-    : misses === 0
-      ? `${isMissReview ? '今回のミス復習はクリア！' : '全問正解！満点です。'}\n「${getScopeLabel()}」${testCards.length}項目をすべて答えられました。`
-      : `「${getScopeLabel()}」${testCards.length}項目中 ${testCorrect}問正解です。\nミスした ${misses} 語だけ、すぐ復習できます。`;
-}
+	  document.getElementById('complete-msg').textContent = testCards.length === 0
+	    ? '今の条件では出題できる単語がありません。設定で範囲を広げてください。'
+	    : misses === 0
+	      ? `${isMissReview ? '今回のミス復習はクリア！' : '全問正解！満点です。'}\n「${getScopeLabel()}」${testCards.length}項目をすべて答えられました。`
+	      : `「${getScopeLabel()}」${testCards.length}項目中 ${testCorrect}問正解です。\nミスした ${misses} 語だけ、すぐ復習できます。`;
+	  if (isPerfect20) showRandomPerfectQuote();
+	  else setPerfectQuoteVisible(false);
+	}
 
 // ─── スワイプ操作 ─────────────────────────────────────────────────────
 let touchStartX = 0, touchStartY = 0;
@@ -13224,6 +13630,7 @@ window.addEventListener('resize', () => {
 });
 
 // ─── 初期化 ────────────────────────────────────────────────────────────
+setupSpeechAudio();
 startSession();
 </script>
 </body>
