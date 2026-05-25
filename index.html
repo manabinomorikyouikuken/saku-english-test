@@ -204,6 +204,58 @@
     .progress-label { font-size: 12px; color: #666; margin-bottom: 6px; display: flex; justify-content: space-between; }
     .progress-bar { background: #d0d8e4; border-radius: 6px; height: 7px; overflow: hidden; }
     .progress-fill { background: linear-gradient(90deg, #3b82f6, #60a5fa); height: 100%; border-radius: 6px; transition: width 0.4s ease; }
+    .quick-start-panel {
+      width: min(92%, 420px);
+      margin: 0 auto 10px;
+      background: #ffffff;
+      border: 1px solid #d8e1ee;
+      border-radius: 14px;
+      padding: 12px;
+      box-shadow: 0 4px 18px rgba(15,23,42,0.06);
+    }
+    .quick-start-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+    .quick-start-title {
+      color: #1a2a4a;
+      font-size: 13px;
+      font-weight: 900;
+      line-height: 1.25;
+    }
+    .quick-start-note {
+      color: #64748b;
+      font-size: 11px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+    .quick-start-actions {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+    }
+    .quick-start-btn {
+      border: 1px solid #cbd5e1;
+      background: #f8fafc;
+      color: #334155;
+      border-radius: 12px;
+      min-height: 44px;
+      padding: 9px 6px;
+      font-size: 12px;
+      font-weight: 900;
+      line-height: 1.2;
+      cursor: pointer;
+      touch-action: manipulation;
+    }
+    .quick-start-btn.primary {
+      background: #15803d;
+      border-color: #15803d;
+      color: white;
+    }
+    .quick-start-btn:active { transform: scale(0.97); filter: brightness(0.96); }
     #card-area {
       flex: 1;
       display: flex;
@@ -970,6 +1022,9 @@
     body.test-mode .progress-bar {
       height: 6px;
     }
+    body.test-mode .quick-start-panel {
+      display: none;
+    }
     body.test-mode #card-area {
       flex: 1 1 auto;
       min-height: 0;
@@ -1166,6 +1221,9 @@
       .part-buttons { gap: 5px; }
       .part-btn { padding: 8px 3px; font-size: 10px; }
       .part-btn span { font-size: 8px; }
+      .quick-start-panel { margin-bottom: 8px; padding: 10px; }
+      .quick-start-head { margin-bottom: 8px; }
+      .quick-start-btn { min-height: 40px; padding: 8px 5px; font-size: 11px; }
       .card-prompt { margin-bottom: 6px; }
       .card-container { height: 258px; margin-bottom: 8px; }
       .test-word-card { min-height: 130px; }
@@ -1191,6 +1249,8 @@
       .settings-open-btn { padding: 8px 10px; }
       .part-buttons { grid-template-columns: repeat(3, 1fr); }
       .learn-bottom-bar .settings-open-btn { font-size: 12px; }
+      .quick-start-head { display: block; }
+      .quick-start-note { margin-top: 3px; white-space: normal; }
     }
   </style>
 </head>
@@ -1225,6 +1285,18 @@
       <div class="progress-fill" id="progress-fill" style="width:0%"></div>
     </div>
   </div>
+
+  <section class="quick-start-panel" id="quick-start-panel" aria-label="今日の入口">
+    <div class="quick-start-head">
+      <div class="quick-start-title">今日の入口</div>
+      <div class="quick-start-note">迷ったらここから</div>
+    </div>
+    <div class="quick-start-actions">
+      <button class="quick-start-btn primary" type="button" onclick="startQuickTest('all')">今日の20問</button>
+      <button class="quick-start-btn" type="button" onclick="startQuickStudy('katakanaGap')">カタカナ注意</button>
+      <button class="quick-start-btn" type="button" onclick="startQuickStudy('phrasalVerb')">句動詞</button>
+    </div>
+  </section>
 
   <div id="card-area">
     <div class="card-prompt" id="study-prompt">タップすると答えが出るよ</div>
@@ -11987,6 +12059,28 @@ function setCategory(category) {
   restartCurrentMode();
 }
 
+function applyQuickScope(category) {
+  currentLevel = 'all';
+  currentPart = 'random';
+  currentCategory = CATEGORY_LABELS[category] ? category : 'all';
+  localStorage.setItem(LEVEL_STORAGE_KEY, currentLevel);
+  localStorage.setItem(PART_STORAGE_KEY, currentPart);
+  localStorage.setItem(CATEGORY_STORAGE_KEY, currentCategory);
+  reviewedToday = 0;
+}
+
+function startQuickStudy(category) {
+  applyQuickScope(category);
+  showLearnView();
+  startSession();
+}
+
+function startQuickTest(category) {
+  applyQuickScope(category);
+  showLearnView();
+  startTestSession();
+}
+
 function updateTestChoiceButtons() {
   document.querySelectorAll('.test-choice-count-btn').forEach(btn => {
     btn.classList.toggle('active', Number(btn.dataset.testChoices) === currentTestChoiceCount);
@@ -12041,6 +12135,7 @@ function updateModeButtons() {
   const isTest = currentMode === 'test';
   document.getElementById('learn-mode-btn')?.classList.toggle('active', !isTest);
   document.getElementById('test-mode-btn')?.classList.toggle('active', isTest);
+  document.getElementById('quick-start-panel')?.toggleAttribute('hidden', isTest);
 }
 
 function setTestChoiceCount(count) {
