@@ -234,7 +234,7 @@
     }
     .quick-start-actions {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
+      grid-template-columns: repeat(2, 1fr);
       gap: 8px;
     }
     .quick-start-btn {
@@ -972,6 +972,26 @@
     }
     .test-feedback {
       display: none;
+      margin-top: 8px;
+      border: 1px solid #fde68a;
+      background: #fffbeb;
+      color: #92400e;
+      border-radius: 12px;
+      padding: 8px 10px;
+      font-size: 11.5px;
+      font-weight: 800;
+      line-height: 1.35;
+      text-align: left;
+      overflow: hidden;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+    }
+    .test-feedback:not(.is-visible) {
+      display: none;
+    }
+    .test-feedback.is-visible {
+      display: -webkit-box;
     }
     .test-next-btn {
       display: none;
@@ -1100,6 +1120,9 @@
     body.test-mode .test-feedback {
       display: none;
     }
+    body.test-mode .test-feedback.is-visible {
+      display: -webkit-box;
+    }
     body.test-mode .test-next-btn {
       display: none;
     }
@@ -1154,6 +1177,7 @@
       }
       body.test-mode .test-feedback,
       body.test-mode .test-next-btn { display: none; }
+      body.test-mode .test-feedback.is-visible { display: -webkit-box; }
       body.test-mode .learn-bottom-bar .settings-open-btn { padding: 8px 7px; font-size: 11.5px; }
       body.test-mode .swipe-msg { margin-top: 7px; font-size: 11.5px; }
     }
@@ -1194,6 +1218,10 @@
       transition: transform 0.12s, filter 0.12s;
     }
     .restart-btn:active { transform: scale(0.97); filter: brightness(0.9); }
+    .restart-btn.miss-review {
+      background: linear-gradient(135deg, #15803d, #22c55e);
+      box-shadow: 0 4px 15px rgba(21,128,61,0.32);
+    }
 
     /* Swipe hint */
     .swipe-msg {
@@ -1293,6 +1321,7 @@
     </div>
     <div class="quick-start-actions">
       <button class="quick-start-btn primary" type="button" onclick="startQuickTest('all')">今日の20問</button>
+      <button class="quick-start-btn" type="button" onclick="startMissReviewSession()">ミス復習</button>
       <button class="quick-start-btn" type="button" onclick="startQuickStudy('katakanaGap')">カタカナ注意</button>
       <button class="quick-start-btn" type="button" onclick="startQuickStudy('phrasalVerb')">句動詞</button>
     </div>
@@ -11407,6 +11436,7 @@ const PHONETIC_ASSIST_STORAGE_KEY = 'vocab_trainer_phonetic_assist_v2';
 const FRONT_LEVEL_STORAGE_KEY = 'vocab_trainer_front_level_v2';
 const FRONT_PART_STORAGE_KEY = 'vocab_trainer_front_part_v2';
 const HAPTIC_FEEDBACK_STORAGE_KEY = 'vocab_trainer_haptic_feedback_v1';
+const MISSED_REVIEW_STORAGE_KEY = 'vocab_trainer_missed_review_v1';
 const TEST_CHOICE_COUNT_OPTIONS = [2, 3, 4];
 const TEST_CARD_LIMIT = 20;
 const TEST_CHOICE_LABELS = ['A', 'B', 'C', 'D'];
@@ -12180,6 +12210,10 @@ function setHapticFeedbackEnabled(enabled) {
 }
 
 function restartCurrentMode() {
+  if (completionAction === 'missReview') {
+    startMissReviewSession();
+    return;
+  }
   if (currentMode === 'test') startTestSession();
   else startSession();
 }
@@ -12192,6 +12226,48 @@ function getCardKey(word, index = WORDS.indexOf(word)) {
 
 function getCard(word, index) {
   return loadData()[getCardKey(word, index)] || { n: 0, ef: 2.5, interval: 1, nextDate: 0 };
+}
+
+function loadMissedReviewKeys() {
+  try {
+    const parsed = JSON.parse(localStorage.getItem(MISSED_REVIEW_STORAGE_KEY)) || [];
+    return Array.isArray(parsed) ? [...new Set(parsed.map(String))] : [];
+  } catch {
+    return [];
+  }
+}
+
+function saveMissedReviewKeys(keys) {
+  localStorage.setItem(MISSED_REVIEW_STORAGE_KEY, JSON.stringify([...new Set(keys.map(String))]));
+}
+
+function getWordByCardKey(key) {
+  return WORDS.find((word, index) => getCardKey(word, index) === key);
+}
+
+function getMissedReviewWords() {
+  const validKeys = [];
+  const words = [];
+  loadMissedReviewKeys().forEach(key => {
+    const word = getWordByCardKey(key);
+    if (!word) return;
+    validKeys.push(key);
+    words.push(word);
+  });
+  if (validKeys.length !== loadMissedReviewKeys().length) saveMissedReviewKeys(validKeys);
+  return words;
+}
+
+function addMissedReviewWord(word) {
+  const key = getCardKey(word);
+  testMissedKeys.add(key);
+  const keys = loadMissedReviewKeys();
+  if (!keys.includes(key)) saveMissedReviewKeys([...keys, key]);
+}
+
+function clearMissedReviewWord(word) {
+  const key = getCardKey(word);
+  saveMissedReviewKeys(loadMissedReviewKeys().filter(savedKey => savedKey !== key));
 }
 
 function updateCard(word, q) {
@@ -12230,6 +12306,9 @@ let testIndex = 0;
 let testCorrect = 0;
 let testAnswered = false;
 let testCardFlipped = false;
+let testMissedKeys = new Set();
+let testSessionKind = 'normal';
+let completionAction = 'restart';
 
 function getDueCards() {
   const data = loadData(), now = Date.now();
@@ -12248,6 +12327,7 @@ function shuffle(arr) {
 function startSession() {
   document.body.classList.remove('test-mode');
   currentMode = 'learn';
+  completionAction = 'restart';
   updateLevelButtons();
   updateCategoryButtons();
   updatePartButtons();
@@ -12336,20 +12416,22 @@ function updateSwipeMessage() {
   document.getElementById('swipe-msg').textContent = '←前へ　　スワイプ　　次へ→';
 }
 
-function startTestSession() {
+function beginTestSession(cards, kind = 'normal') {
   document.body.classList.add('test-mode');
   currentMode = 'test';
+  testSessionKind = kind;
   updateLevelButtons();
   updateCategoryButtons();
   updatePartButtons();
   updateTestChoiceButtons();
   updateModeButtons();
 
-  const activeWords = getActiveWords();
-  testCards = shuffle(activeWords).slice(0, TEST_CARD_LIMIT);
+  testCards = cards;
   testIndex = 0;
   testCorrect = 0;
   testAnswered = false;
+  testMissedKeys = new Set();
+  completionAction = 'restart';
   reviewedToday = 0;
   sessionReviewedKeys = new Set();
 
@@ -12362,6 +12444,21 @@ function startTestSession() {
   document.getElementById('test-panel').style.display = 'flex';
   showTestQuestion();
   updateStats();
+}
+
+function startTestSession() {
+  const activeWords = getActiveWords();
+  beginTestSession(shuffle(activeWords).slice(0, TEST_CARD_LIMIT), 'normal');
+}
+
+function startMissReviewSession() {
+  const missedWords = getMissedReviewWords();
+  if (!missedWords.length) {
+    alert('今はミスだけ復習に入れる単語がありません。まず今日の20問に挑戦してみましょう。');
+    return;
+  }
+  showLearnView();
+  beginTestSession(shuffle(missedWords).slice(0, TEST_CARD_LIMIT), 'missReview');
 }
 
 function getDistractorPool(correctWord, neededDistractors = currentTestChoiceCount - 1) {
@@ -12456,7 +12553,9 @@ function showTestQuestion() {
   document.getElementById('test-word-text').textContent = word.w;
   document.querySelector('.test-word-card')?.classList.remove('wrong-cue');
   updateTestCardBack(word);
-  document.getElementById('test-feedback').textContent = '';
+  const feedbackEl = document.getElementById('test-feedback');
+  feedbackEl.textContent = '';
+  feedbackEl.classList.remove('is-visible');
   document.getElementById('test-next-btn').classList.remove('is-visible');
 
   const choiceGrid = document.getElementById('test-choice-grid');
@@ -12495,7 +12594,7 @@ function showTestQuestion() {
   const pct = (testIndex / testCards.length) * 100;
   document.getElementById('progress-fill').style.width = pct + '%';
   document.getElementById('progress-text').textContent = `${testIndex} / ${testCards.length}`;
-  document.getElementById('due-text').textContent = `テスト: ${testCorrect}問正解`;
+  document.getElementById('due-text').textContent = getTestScoreLabel();
 }
 
 function triggerWrongAnswerCue() {
@@ -12509,12 +12608,38 @@ function triggerWrongAnswerCue() {
   return didVibrate;
 }
 
+function getWrongAnswerHint(word) {
+  const categories = getWordCategories(word);
+  const origin = getAbbreviationOrigin(word);
+  if (origin && categories.has('abbreviation')) {
+    return `ヒント: 略語は元の言葉も確認。${word.w} = ${formatAbbreviationOrigin(word, origin)}`;
+  }
+  if (categories.has('phrasal-verb')) {
+    return `ヒント: 句動詞はまとまりで覚えよう。${word.w} = ${word.m}`;
+  }
+  if (categories.has('katakana-gap')) {
+    return `ヒント: カタカナの印象と英語の意味がずれやすい語です。正解は「${word.m}」。`;
+  }
+  if (categories.has('pronunciation-note')) {
+    return `ヒント: 音も手がかり。/${word.ipa}/ ${word.ph}、意味は「${word.m}」。`;
+  }
+  const { prefix, suffix } = getWordMorphemeParts(word.w);
+  if (prefix || suffix) {
+    return `ヒント: 青や赤のパーツを手がかりに。${word.w} = ${word.m}`;
+  }
+  return `ヒント: 例文で確認しよう。${word.ex}`;
+}
+
 function answerTestChoice(button, word) {
   if (testAnswered) return;
   testAnswered = true;
   const isCorrect = button.dataset.correct === 'true';
   if (isCorrect) testCorrect++;
-  if (!isCorrect) triggerWrongAnswerCue();
+  if (isCorrect) clearMissedReviewWord(word);
+  else {
+    addMissedReviewWord(word);
+    triggerWrongAnswerCue();
+  }
   const selectedChoiceIndex = button.dataset.choiceIndex;
 
   document.querySelectorAll('.test-choice-card, .test-letter-btn').forEach(choiceButton => {
@@ -12535,7 +12660,14 @@ function answerTestChoice(button, word) {
     sessionReviewedKeys.add(key);
   }
 
-  document.getElementById('test-feedback').textContent = '';
+  const feedbackEl = document.getElementById('test-feedback');
+  if (isCorrect) {
+    feedbackEl.textContent = '';
+    feedbackEl.classList.remove('is-visible');
+  } else {
+    feedbackEl.textContent = getWrongAnswerHint(word);
+    feedbackEl.classList.add('is-visible');
+  }
   setTestCardFlipped(false);
   updateStats();
 }
@@ -12561,6 +12693,7 @@ function exportData() {
     selectedFrontLevelVisible: showFrontLevel,
     selectedFrontPartVisible: showFrontPart,
     selectedHapticFeedbackEnabled: hapticFeedbackEnabled,
+    missedReviewKeys: loadMissedReviewKeys(),
     data: loadData()
   };
   const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
@@ -12615,6 +12748,9 @@ async function importData(event) {
       hapticFeedbackEnabled = payload.selectedHapticFeedbackEnabled;
       localStorage.setItem(HAPTIC_FEEDBACK_STORAGE_KEY, hapticFeedbackEnabled ? 'on' : 'off');
     }
+    if (Array.isArray(payload.missedReviewKeys)) {
+      saveMissedReviewKeys(payload.missedReviewKeys);
+    }
     reviewedToday = 0;
     restartCurrentMode();
     alert('学習履歴を読み込みました。');
@@ -12658,6 +12794,12 @@ function showPreviousCard() {
   }
 }
 
+function getTestScoreLabel() {
+  return testSessionKind === 'missReview'
+    ? `ミス復習: ${testCorrect}問正解`
+    : `テスト: ${testCorrect}問正解`;
+}
+
 function updateStats() {
   const data = loadData();
   const activeWords = getActiveWords();
@@ -12669,7 +12811,7 @@ function updateStats() {
   document.getElementById('stat-today-panel').textContent = reviewedToday;
   document.getElementById('stat-due').textContent      = due;
   document.getElementById('due-text').textContent      = currentMode === 'test'
-    ? `テスト: ${testCorrect}問正解`
+    ? getTestScoreLabel()
     : `出題候補: ${due}項目`;
   document.getElementById('stat-left').textContent     = Math.max(0, target - mastered);
 }
@@ -12693,7 +12835,10 @@ function showComplete() {
   document.getElementById('cs-reviewed-label').textContent = '今回の学習';
   document.getElementById('cs-mastered-label').textContent = '習得済み';
   document.getElementById('cs-due-label').textContent = '次回候補';
-  document.getElementById('restart-btn').textContent = 'もう一周する';
+  const restartBtn = document.getElementById('restart-btn');
+  restartBtn.textContent = 'もう一周する';
+  restartBtn.classList.remove('miss-review');
+  completionAction = 'restart';
   document.getElementById('cs-reviewed').textContent = reviewedToday;
   document.getElementById('cs-mastered').textContent = mastered;
   document.getElementById('cs-due').textContent      = due;
@@ -12709,23 +12854,29 @@ function showTestComplete() {
   document.getElementById('session-complete').style.display = 'block';
   document.getElementById('progress-fill').style.width = '100%';
   document.getElementById('progress-text').textContent = `${testCards.length} / ${testCards.length}`;
-  document.getElementById('due-text').textContent = `テスト: ${testCorrect}問正解`;
+  document.getElementById('due-text').textContent = getTestScoreLabel();
 
-  const misses = Math.max(0, testCards.length - testCorrect);
+  const isMissReview = testSessionKind === 'missReview';
+  const misses = testMissedKeys.size;
+  const remainingMisses = getMissedReviewWords().length;
+  const canContinueMissReview = misses > 0 || (isMissReview && remainingMisses > 0);
+  completionAction = canContinueMissReview ? 'missReview' : 'restart';
   document.getElementById('complete-icon').textContent = testCards.length && misses === 0 ? '◎' : '✓';
-  document.getElementById('complete-title').textContent = 'サクサクテスト完了！';
+  document.getElementById('complete-title').textContent = isMissReview ? 'ミスだけ復習完了！' : 'サクサクテスト完了！';
   document.getElementById('cs-reviewed-label').textContent = '出題数';
   document.getElementById('cs-mastered-label').textContent = '正解';
   document.getElementById('cs-due-label').textContent = 'ミス';
-  document.getElementById('restart-btn').textContent = 'もう一度テスト';
+  const restartBtn = document.getElementById('restart-btn');
+  restartBtn.textContent = canContinueMissReview ? 'ミスだけ復習' : 'もう一度テスト';
+  restartBtn.classList.toggle('miss-review', canContinueMissReview);
   document.getElementById('cs-reviewed').textContent = testCards.length;
   document.getElementById('cs-mastered').textContent = testCorrect;
   document.getElementById('cs-due').textContent = misses;
   document.getElementById('complete-msg').textContent = testCards.length === 0
     ? '今の条件では出題できる単語がありません。設定で範囲を広げてください。'
     : misses === 0
-      ? `全問正解！満点です。\n「${getScopeLabel()}」${testCards.length}項目をすべて答えられました。`
-      : `「${getScopeLabel()}」${testCards.length}項目中 ${testCorrect}問正解です。\n間違えた単語は、次の学習でまた出会えるようにしました。`;
+      ? `${isMissReview ? '今回のミス復習はクリア！' : '全問正解！満点です。'}\n「${getScopeLabel()}」${testCards.length}項目をすべて答えられました。`
+      : `「${getScopeLabel()}」${testCards.length}項目中 ${testCorrect}問正解です。\nミスした ${misses} 語だけ、すぐ復習できます。`;
 }
 
 // ─── スワイプ操作 ─────────────────────────────────────────────────────
