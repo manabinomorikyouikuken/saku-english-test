@@ -256,6 +256,37 @@
       color: white;
     }
     .quick-start-btn:active { transform: scale(0.97); filter: brightness(0.96); }
+    .learning-summary-panel {
+      width: min(92%, 420px);
+      margin: 0 auto 10px;
+    }
+    .learning-summary-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 6px;
+    }
+    .learning-summary-item {
+      background: rgba(255,255,255,0.82);
+      border: 1px solid #d8e1ee;
+      border-radius: 12px;
+      padding: 8px 6px;
+      text-align: center;
+      box-shadow: 0 3px 12px rgba(15,23,42,0.05);
+    }
+    .learning-summary-num {
+      display: block;
+      color: #1a2a4a;
+      font-size: 17px;
+      font-weight: 900;
+      line-height: 1;
+    }
+    .learning-summary-label {
+      color: #64748b;
+      font-size: 10px;
+      font-weight: 800;
+      line-height: 1.25;
+      margin-top: 4px;
+    }
     #card-area {
       flex: 1;
       display: flex;
@@ -1042,7 +1073,8 @@
     body.test-mode .progress-bar {
       height: 6px;
     }
-    body.test-mode .quick-start-panel {
+    body.test-mode .quick-start-panel,
+    body.test-mode .learning-summary-panel {
       display: none;
     }
     body.test-mode #card-area {
@@ -1264,6 +1296,8 @@
       .quick-start-panel { margin-bottom: 8px; padding: 10px; }
       .quick-start-head { margin-bottom: 8px; }
       .quick-start-btn { min-height: 40px; padding: 8px 5px; font-size: 11px; }
+      .learning-summary-panel { margin-bottom: 8px; }
+      .learning-summary-item { padding: 7px 5px; }
       .card-prompt { margin-bottom: 6px; }
       .card-container { height: 258px; margin-bottom: 8px; }
       .test-word-card { min-height: 130px; }
@@ -1336,6 +1370,23 @@
       <button class="quick-start-btn" type="button" onclick="startMissReviewSession()">ミス復習</button>
       <button class="quick-start-btn" type="button" onclick="startQuickStudy('katakanaGap')">カタカナ注意</button>
       <button class="quick-start-btn" type="button" onclick="startQuickStudy('phrasalVerb')">句動詞</button>
+    </div>
+  </section>
+
+  <section class="learning-summary-panel" aria-label="学習成果">
+    <div class="learning-summary-grid">
+      <div class="learning-summary-item">
+        <span class="learning-summary-num" id="stat-weekly-main">0</span>
+        <div class="learning-summary-label">今週</div>
+      </div>
+      <div class="learning-summary-item">
+        <span class="learning-summary-num" id="stat-streak-main">0</span>
+        <div class="learning-summary-label">連続日</div>
+      </div>
+      <div class="learning-summary-item">
+        <span class="learning-summary-num" id="stat-miss-cleared-main">0</span>
+        <div class="learning-summary-label">ミス卒業</div>
+      </div>
     </div>
   </section>
 
@@ -1566,8 +1617,24 @@
         <div class="achievement-label">今回</div>
       </div>
       <div class="achievement-item">
+        <span class="achievement-num" id="stat-weekly-panel">0</span>
+        <div class="achievement-label">今週</div>
+      </div>
+      <div class="achievement-item">
+        <span class="achievement-num" id="stat-streak-panel">0</span>
+        <div class="achievement-label">連続日</div>
+      </div>
+      <div class="achievement-item">
+        <span class="achievement-num" id="stat-miss-cleared-panel">0</span>
+        <div class="achievement-label">ミス卒業</div>
+      </div>
+      <div class="achievement-item">
         <span class="achievement-num" id="stat-due">0</span>
         <div class="achievement-label">出題候補</div>
+      </div>
+      <div class="achievement-item">
+        <span class="achievement-num" id="stat-miss-review-panel">0</span>
+        <div class="achievement-label">ミス復習</div>
       </div>
       <div class="achievement-item">
           <span class="achievement-num" id="stat-left">921</span>
@@ -11721,14 +11788,46 @@ function getYesterdayKey() {
   return getDateKey(d);
 }
 
+function isPlainObject(value) {
+  return Boolean(value && typeof value === 'object' && !Array.isArray(value));
+}
+
 function getMeta(data = loadData()) {
-  return data.__meta || { streak: 0, lastStudyDate: '' };
+  const rawMeta = isPlainObject(data.__meta) ? data.__meta : {};
+  const dailyReviews = isPlainObject(rawMeta.dailyReviews) ? rawMeta.dailyReviews : {};
+  return {
+    ...rawMeta,
+    streak: Number.isFinite(Number(rawMeta.streak)) ? Number(rawMeta.streak) : 0,
+    lastStudyDate: typeof rawMeta.lastStudyDate === 'string' ? rawMeta.lastStudyDate : '',
+    dailyReviews,
+    missClearedTotal: Number.isFinite(Number(rawMeta.missClearedTotal)) ? Number(rawMeta.missClearedTotal) : 0
+  };
 }
 
 function saveMeta(meta) {
   const data = loadData();
   data.__meta = meta;
   saveData(data);
+}
+
+function trimDailyReviews(dailyReviews, keepDays = 35) {
+  const entries = Object.entries(dailyReviews)
+    .filter(([dateKey, count]) => /^\d{4}-\d{2}-\d{2}$/.test(dateKey) && Number(count) > 0)
+    .sort(([a], [b]) => b.localeCompare(a))
+    .slice(0, keepDays);
+  return Object.fromEntries(entries);
+}
+
+function getThisWeekReviewCount(meta = getMeta()) {
+  const start = new Date();
+  const diffFromMonday = (start.getDay() + 6) % 7;
+  start.setDate(start.getDate() - diffFromMonday);
+  const startKey = getDateKey(start);
+  const todayKey = getDateKey();
+  return Object.entries(meta.dailyReviews || {}).reduce((total, [dateKey, count]) => {
+    if (dateKey < startKey || dateKey > todayKey) return total;
+    return total + (Number(count) || 0);
+  }, 0);
 }
 
 function recordStudyDay() {
@@ -11738,9 +11837,21 @@ function recordStudyDay() {
   if (meta.lastStudyDate !== today) {
     meta.streak = meta.lastStudyDate === getYesterdayKey() ? (meta.streak || 0) + 1 : 1;
     meta.lastStudyDate = today;
-    data.__meta = meta;
-    saveData(data);
   }
+  meta.dailyReviews = trimDailyReviews({
+    ...(meta.dailyReviews || {}),
+    [today]: (Number(meta.dailyReviews?.[today]) || 0) + 1
+  });
+  data.__meta = meta;
+  saveData(data);
+}
+
+function recordMissCleared() {
+  const data = loadData();
+  const meta = getMeta(data);
+  meta.missClearedTotal = (Number(meta.missClearedTotal) || 0) + 1;
+  data.__meta = meta;
+  saveData(data);
 }
 
 function getWordLevel(word, index) {
@@ -12279,7 +12390,10 @@ function addMissedReviewWord(word) {
 
 function clearMissedReviewWord(word) {
   const key = getCardKey(word);
-  saveMissedReviewKeys(loadMissedReviewKeys().filter(savedKey => savedKey !== key));
+  const keys = loadMissedReviewKeys();
+  if (!keys.includes(key)) return;
+  saveMissedReviewKeys(keys.filter(savedKey => savedKey !== key));
+  recordMissCleared();
 }
 
 function updateCard(word, q) {
@@ -12625,22 +12739,22 @@ function getWrongAnswerHint(word) {
   const categories = getWordCategories(word);
   const origin = getAbbreviationOrigin(word);
   if (origin && categories.has('abbreviation')) {
-    return `ヒント: 略語は元の言葉も確認。${word.w} = ${formatAbbreviationOrigin(word, origin)}`;
+    return 'ヒント: 略語は元の言葉も見よう。';
   }
   if (categories.has('phrasal-verb')) {
-    return `ヒント: 句動詞はまとまりで覚えよう。${word.w} = ${word.m}`;
+    return 'ヒント: 句動詞はセットで覚えよう。';
   }
   if (categories.has('katakana-gap')) {
-    return `ヒント: カタカナの印象と英語の意味がずれやすい語です。正解は「${word.m}」。`;
+    return 'ヒント: カタカナの印象に注意。';
   }
   if (categories.has('pronunciation-note')) {
-    return `ヒント: 音も手がかり。/${word.ipa}/ ${word.ph}、意味は「${word.m}」。`;
+    return 'ヒント: 発音も手がかり。';
   }
   const { prefix, suffix } = getWordMorphemeParts(word.w);
   if (prefix || suffix) {
-    return `ヒント: 青や赤のパーツを手がかりに。${word.w} = ${word.m}`;
+    return 'ヒント: 青や赤のパーツを見よう。';
   }
-  return `ヒント: 例文で確認しよう。${word.ex}`;
+  return 'ヒント: 例文で確認しよう。';
 }
 
 function answerTestChoice(button, word) {
@@ -12778,6 +12892,7 @@ async function importData(event) {
 function resetData() {
   if (!confirm('この端末の学習履歴をリセットします。よろしいですか？')) return;
   localStorage.removeItem(STORAGE_KEY);
+  localStorage.removeItem(MISSED_REVIEW_STORAGE_KEY);
   reviewedToday = 0;
   restartCurrentMode();
 }
@@ -12814,20 +12929,35 @@ function getTestScoreLabel() {
     : `テスト: ${testCorrect}問正解`;
 }
 
+function setText(id, value) {
+  const element = document.getElementById(id);
+  if (element) element.textContent = String(value);
+}
+
 function updateStats() {
   const data = loadData();
+  const meta = getMeta(data);
   const activeWords = getActiveWords();
   const mastered = activeWords.filter((w, index) => data[getCardKey(w, index)] && data[getCardKey(w, index)].mastered).length;
   const target = activeWords.length;
   const due = getDueCards().length;
-  document.getElementById('stat-today').textContent    = reviewedToday;
-  document.getElementById('stat-mastered').textContent = mastered;
-  document.getElementById('stat-today-panel').textContent = reviewedToday;
-  document.getElementById('stat-due').textContent      = due;
-  document.getElementById('due-text').textContent      = currentMode === 'test'
+  const weeklyReviewed = getThisWeekReviewCount(meta);
+  const missedReviewCount = getMissedReviewWords().length;
+  setText('stat-today', reviewedToday);
+  setText('stat-mastered', mastered);
+  setText('stat-today-panel', reviewedToday);
+  setText('stat-weekly-main', weeklyReviewed);
+  setText('stat-weekly-panel', weeklyReviewed);
+  setText('stat-streak-main', meta.streak || 0);
+  setText('stat-streak-panel', meta.streak || 0);
+  setText('stat-miss-cleared-main', meta.missClearedTotal || 0);
+  setText('stat-miss-cleared-panel', meta.missClearedTotal || 0);
+  setText('stat-miss-review-panel', missedReviewCount);
+  setText('stat-due', due);
+  document.getElementById('due-text').textContent = currentMode === 'test'
     ? getTestScoreLabel()
     : `出題候補: ${due}項目`;
-  document.getElementById('stat-left').textContent     = Math.max(0, target - mastered);
+  setText('stat-left', Math.max(0, target - mastered));
 }
 
 function showComplete() {
