@@ -250,6 +250,14 @@
       cursor: pointer;
       touch-action: manipulation;
     }
+    .quick-start-btn span {
+      display: block;
+      margin-top: 2px;
+      color: #64748b;
+      font-size: 10px;
+      font-weight: 800;
+      line-height: 1.15;
+    }
     .quick-start-btn.primary {
       background: #15803d;
       border-color: #15803d;
@@ -309,6 +317,38 @@
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       gap: 6px;
+    }
+    .growth-badge {
+      margin-top: 7px;
+      border: 1px solid #d8e1ee;
+      border-radius: 12px;
+      background: rgba(255,255,255,0.84);
+      padding: 9px 10px;
+      box-shadow: 0 3px 12px rgba(15,23,42,0.05);
+    }
+    .growth-badge-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 4px;
+    }
+    .growth-badge-label {
+      color: #64748b;
+      font-size: 10px;
+      font-weight: 900;
+    }
+    .growth-badge-title {
+      color: #15803d;
+      font-size: 12.5px;
+      font-weight: 900;
+      text-align: right;
+    }
+    .growth-badge-message {
+      color: #334155;
+      font-size: 11.5px;
+      font-weight: 800;
+      line-height: 1.45;
     }
     .learning-summary-item {
       background: rgba(255,255,255,0.82);
@@ -1045,6 +1085,12 @@
       cursor: default;
       opacity: 0.82;
     }
+    .test-choice-card.picked,
+    .test-letter-btn.picked {
+      outline: 2px solid rgba(37,99,235,0.34);
+      outline-offset: 2px;
+      box-shadow: 0 6px 18px rgba(37,99,235,0.18);
+    }
     .test-choice-card.correct {
       border-color: #16a34a;
       background: #ecfdf5;
@@ -1064,6 +1110,15 @@
     .test-letter-btn.wrong {
       background: #ef4444;
       color: white;
+    }
+    .test-choice-card.answer-pop,
+    .test-letter-btn.answer-pop {
+      animation: answerPop 0.28s ease-out;
+    }
+    @keyframes answerPop {
+      0% { transform: scale(1); }
+      42% { transform: scale(1.055); }
+      100% { transform: scale(1); }
     }
     .test-letter-row {
       display: grid;
@@ -1106,7 +1161,7 @@
       text-align: left;
       overflow: hidden;
       display: -webkit-box;
-      -webkit-line-clamp: 2;
+      -webkit-line-clamp: 3;
       -webkit-box-orient: vertical;
     }
     .test-feedback:not(.is-visible) {
@@ -1114,6 +1169,18 @@
     }
     .test-feedback.is-visible {
       display: -webkit-box;
+    }
+    .test-feedback.correct-feedback {
+      border-color: #bbf7d0;
+      background: #ecfdf5;
+      color: #166534;
+      text-align: center;
+    }
+    .test-feedback.wrong-feedback {
+      border-color: #fde68a;
+      background: #fffbeb;
+      color: #92400e;
+      text-align: left;
     }
     .test-next-btn {
       display: none;
@@ -1516,7 +1583,7 @@
     <div class="quick-start-actions">
       <button class="quick-start-btn primary" type="button" onclick="startQuickTest('all')">今日の20問</button>
       <button class="quick-start-btn" type="button" onclick="startMissReviewSession()">ミス復習</button>
-      <button class="quick-start-btn" type="button" onclick="startQuickStudy('katakanaGap')">カタカナ注意</button>
+      <button class="quick-start-btn" type="button" onclick="startQuickStudy('katakanaGap')">カタカナ注意<span>知ってるつもり</span></button>
       <button class="quick-start-btn" type="button" onclick="startQuickStudy('phrasalVerb')">句動詞</button>
     </div>
   </section>
@@ -1535,6 +1602,13 @@
         <span class="learning-summary-num" id="stat-miss-cleared-main">0</span>
         <div class="learning-summary-label">ミス克服</div>
       </div>
+    </div>
+    <div class="growth-badge" aria-label="今日の称号">
+      <div class="growth-badge-head">
+        <span class="growth-badge-label">今日の称号</span>
+        <span class="growth-badge-title" id="growth-title">ウォームアップ</span>
+      </div>
+      <div class="growth-badge-message" id="growth-message">まずは今日の20問に入ろう。</div>
     </div>
   </section>
 
@@ -1665,7 +1739,7 @@
     <div class="settings-section-title">テーマを選ぶ</div>
     <div class="category-buttons">
       <button class="category-btn active" type="button" data-category="all" onclick="setCategory('all')">すべて<span id="category-count-all">921項目</span></button>
-      <button class="category-btn" type="button" data-category="katakanaGap" onclick="setCategory('katakanaGap')">カタカナ注意<span id="category-count-katakanaGap">33項目</span></button>
+      <button class="category-btn" type="button" data-category="katakanaGap" onclick="setCategory('katakanaGap')" aria-label="カタカナ注意 知ってるつもりになりやすい語">カタカナ注意<span id="category-count-katakanaGap">33項目</span></button>
       <button class="category-btn" type="button" data-category="phrasalVerb" onclick="setCategory('phrasalVerb')">句動詞<span id="category-count-phrasalVerb">100項目</span></button>
       <button class="category-btn" type="button" data-category="abbreviation" onclick="setCategory('abbreviation')">略語<span id="category-count-abbreviation">60項目</span></button>
       <button class="category-btn" type="button" data-category="abbreviationTech" onclick="setCategory('abbreviationTech')">略語 ICT・AI<span id="category-count-abbreviationTech">26項目</span></button>
@@ -1674,7 +1748,7 @@
       <button class="category-btn" type="button" data-category="abbreviationEducation" onclick="setCategory('abbreviationEducation')">略語 教育・言語<span id="category-count-abbreviationEducation">1項目</span></button>
       <button class="category-btn" type="button" data-category="pronunciationNote" onclick="setCategory('pronunciationNote')">発音注意<span id="category-count-pronunciationNote">9項目</span></button>
     </div>
-    <div class="storage-note">テーマ別に確認できます。カタカナ注意は意味のズレ、句動詞は会話のまとまり、略語は分野別、発音注意は音と綴りの違いを集中的に学べます。</div>
+    <div class="storage-note">テーマ別に確認できます。カタカナ注意は「知ってるつもり」になりやすい意味のズレ、句動詞は会話のまとまり、略語は分野別、発音注意は音と綴りの違いを集中的に学べます。</div>
   </div>
 
   <div class="part-panel" aria-label="品詞選択">
@@ -12079,6 +12153,10 @@ function getThisWeekReviewCount(meta = getMeta()) {
   }, 0);
 }
 
+function getTodayReviewCount(meta = getMeta()) {
+  return Number(meta.dailyReviews?.[getDateKey()]) || 0;
+}
+
 function recordStudyDay() {
   const data = loadData();
   const meta = getMeta(data);
@@ -12815,6 +12893,8 @@ let currentMode = 'learn';
 let testCards = [];
 let testIndex = 0;
 let testCorrect = 0;
+let testCurrentStreak = 0;
+let testBestStreak = 0;
 let testAnswered = false;
 let testCardFlipped = false;
 let testMissedKeys = new Set();
@@ -12940,6 +13020,8 @@ function beginTestSession(cards, kind = 'normal') {
   testCards = cards;
   testIndex = 0;
   testCorrect = 0;
+  testCurrentStreak = 0;
+  testBestStreak = 0;
   testAnswered = false;
   testMissedKeys = new Set();
   completionAction = 'restart';
@@ -13068,7 +13150,7 @@ function showTestQuestion() {
   updateTestCardBack(word);
   const feedbackEl = document.getElementById('test-feedback');
   feedbackEl.textContent = '';
-  feedbackEl.classList.remove('is-visible');
+  feedbackEl.classList.remove('is-visible', 'correct-feedback', 'wrong-feedback');
   document.getElementById('test-next-btn').classList.remove('is-visible');
   setTestSwipeHintReady(false);
 
@@ -13088,9 +13170,11 @@ function showTestQuestion() {
     meaningSpan.className = 'test-choice-meaning';
     meaningSpan.textContent = choice.word.m;
     button.append(labelSpan, meaningSpan);
-    button.setAttribute('aria-label', `${label} ${choice.word.m}`);
+    button.setAttribute('aria-label', `${index + 1}キーで${label} ${choice.word.m}を選ぶ`);
+    button.title = `${index + 1}キーで選択`;
     button.dataset.correct = choice.correct ? 'true' : 'false';
     button.dataset.choiceIndex = String(index);
+    button.dataset.choiceKey = getCardKey(choice.word);
     button.onclick = () => answerTestChoice(button, word);
     choiceGrid.appendChild(button);
 
@@ -13098,9 +13182,11 @@ function showTestQuestion() {
     letterButton.type = 'button';
     letterButton.className = 'test-letter-btn';
     letterButton.textContent = label;
-    letterButton.setAttribute('aria-label', `${label}を選ぶ`);
+    letterButton.setAttribute('aria-label', `${index + 1}キーで${label}を選ぶ`);
+    letterButton.title = `${index + 1}キーで選択`;
     letterButton.dataset.correct = choice.correct ? 'true' : 'false';
     letterButton.dataset.choiceIndex = String(index);
+    letterButton.dataset.choiceKey = getCardKey(choice.word);
     letterButton.onclick = () => answerTestChoice(letterButton, word);
     letterRow.appendChild(letterButton);
   });
@@ -13122,39 +13208,93 @@ function triggerWrongAnswerCue() {
   return didVibrate;
 }
 
-function getWrongAnswerHint(word) {
+function getShortMeaning(meaning, limit = 20) {
+  const clean = String(meaning || '').replace(/\s*\/\s*/g, '、').trim();
+  const first = clean.split(/[、,，]/)[0] || clean;
+  return first.length > limit ? `${first.slice(0, limit)}…` : first;
+}
+
+function getFocusHint(word) {
   const categories = getWordCategories(word);
   const origin = getAbbreviationOrigin(word);
   if (origin && categories.has('abbreviation')) {
-    return 'ヒント: 略語は元の言葉も見よう。';
+    return `元の言葉: ${origin}`;
   }
   if (categories.has('phrasal-verb')) {
-    return 'ヒント: 句動詞はセットで覚えよう。';
+    return '句動詞は、動詞と小さい語のセットで意味が変わる。';
   }
   if (categories.has('katakana-gap')) {
-    return 'ヒント: カタカナの印象に注意。';
+    return '知ってるつもり注意。カタカナの印象と英語の意味がズレやすい。';
   }
   if (categories.has('pronunciation-note')) {
-    return 'ヒント: 発音も手がかり。';
+    return '発音注意語。音より先に意味の中心を確認。';
   }
   const { prefix, suffix } = getWordMorphemeParts(word.w);
   if (prefix || suffix) {
-    return 'ヒント: 青や赤のパーツを見よう。';
+    return `語のパーツ: ${[prefix, suffix].filter(Boolean).join(' / ')}`;
   }
   return 'ヒント: 例文で確認しよう。';
+}
+
+function getWrongAnswerHint(word, selectedWord) {
+  const correctMeaning = getShortMeaning(word.m);
+  const focusHint = getFocusHint(word);
+  if (!selectedWord || selectedWord === word) {
+    return `正解は「${correctMeaning}」。${focusHint}`;
+  }
+
+  const selectedMeaning = getShortMeaning(selectedWord.m);
+  const correctPart = formatPartOfSpeechForDisplay(getPartOfSpeech(word));
+  const selectedPart = formatPartOfSpeechForDisplay(getPartOfSpeech(selectedWord));
+  if (correctPart !== selectedPart) {
+    return `品詞に注意。正解は${correctPart}「${correctMeaning}」、選んだ選択肢は${selectedPart}「${selectedMeaning}」。`;
+  }
+
+  return `意味の中心を比べよう。正解は「${correctMeaning}」、選んだ選択肢は「${selectedMeaning}」。${focusHint}`;
+}
+
+function getCorrectAnswerFeedback() {
+  if (testCurrentStreak >= 5) return `正解！ ${testCurrentStreak}連続。いい流れ。`;
+  if (testCurrentStreak >= 2) return `正解！ ${testCurrentStreak}連続。`;
+  return '正解！';
+}
+
+function markPickedAnswer(choiceIndex) {
+  document.querySelectorAll('.test-choice-card, .test-letter-btn').forEach(choiceButton => {
+    choiceButton.classList.remove('picked', 'answer-pop');
+    if (choiceButton.dataset.choiceIndex !== choiceIndex) return;
+    choiceButton.classList.add('picked');
+    void choiceButton.offsetWidth;
+    choiceButton.classList.add('answer-pop');
+  });
+}
+
+function getReplayNudge(misses, isMissReview) {
+  if (testCards.length === 0) return '';
+  if (misses === 0 && testCards.length === TEST_CARD_LIMIT) return 'もう一回やるなら、満点の再現を狙える。';
+  if (misses === 0) return '次は20問でも同じ調子でいける。';
+  if (misses <= 3) return 'あと少し。ミスだけ回収すると満点が近い。';
+  return isMissReview ? '残ったミスをもう一周で軽くできる。' : 'まずはミスだけ復習で弱点を減らせる。';
 }
 
 function answerTestChoice(button, word) {
   if (testAnswered) return;
   testAnswered = true;
   const isCorrect = button.dataset.correct === 'true';
-  if (isCorrect) testCorrect++;
-  if (isCorrect) clearMissedReviewWord(word);
+  const selectedChoiceIndex = button.dataset.choiceIndex;
+  markPickedAnswer(selectedChoiceIndex);
+  if (isCorrect) {
+    testCorrect++;
+    testCurrentStreak++;
+    testBestStreak = Math.max(testBestStreak, testCurrentStreak);
+    clearMissedReviewWord(word);
+    triggerHapticFeedback(18);
+  }
   else {
+    testCurrentStreak = 0;
     addMissedReviewWord(word);
     triggerWrongAnswerCue();
   }
-  const selectedChoiceIndex = button.dataset.choiceIndex;
 
   document.querySelectorAll('.test-choice-card, .test-letter-btn').forEach(choiceButton => {
     choiceButton.disabled = true;
@@ -13176,15 +13316,28 @@ function answerTestChoice(button, word) {
 
   const feedbackEl = document.getElementById('test-feedback');
   if (isCorrect) {
-    feedbackEl.textContent = '';
-    feedbackEl.classList.remove('is-visible');
+    feedbackEl.textContent = getCorrectAnswerFeedback();
+    feedbackEl.classList.remove('wrong-feedback');
+    feedbackEl.classList.add('is-visible', 'correct-feedback');
   } else {
-    feedbackEl.textContent = getWrongAnswerHint(word);
-    feedbackEl.classList.add('is-visible');
+    feedbackEl.textContent = getWrongAnswerHint(word, getWordByCardKey(button.dataset.choiceKey));
+    feedbackEl.classList.remove('correct-feedback');
+    feedbackEl.classList.add('is-visible', 'wrong-feedback');
   }
   setTestCardFlipped(false);
   setTestSwipeHintReady(true);
   updateStats();
+}
+
+function answerTestChoiceByNumber(key) {
+  if (testAnswered || !testCards[testIndex]) return false;
+  const choiceIndex = Number(key) - 1;
+  if (!Number.isInteger(choiceIndex) || choiceIndex < 0 || choiceIndex >= TEST_CHOICE_LABELS.length) return false;
+  const selector = `[data-choice-index="${choiceIndex}"]`;
+  const button = document.querySelector(`.test-letter-btn${selector}`) || document.querySelector(`.test-choice-card${selector}`);
+  if (!button || button.disabled) return false;
+  answerTestChoice(button, testCards[testIndex]);
+  return true;
 }
 
 function showNextTestQuestion() {
@@ -13312,14 +13465,60 @@ function showPreviousCard() {
 }
 
 function getTestScoreLabel() {
-  return testSessionKind === 'missReview'
+  const base = testSessionKind === 'missReview'
     ? `ミス復習: ${testCorrect}問正解`
     : `テスト: ${testCorrect}問正解`;
+  return testCurrentStreak >= 2 ? `${base} / ${testCurrentStreak}連続` : base;
 }
 
 function setText(id, value) {
   const element = document.getElementById(id);
   if (element) element.textContent = String(value);
+}
+
+function getGrowthBadge(meta = getMeta(), missedReviewCount = getMissedReviewWords().length) {
+  const todayCount = getTodayReviewCount(meta);
+  const weeklyCount = getThisWeekReviewCount(meta);
+  if (todayCount >= TEST_CARD_LIMIT) {
+    return {
+      title: '20問ランナー',
+      message: `今日は${todayCount}問。明日も続けると連続日が伸びる。`
+    };
+  }
+  if ((meta.streak || 0) >= 7) {
+    return {
+      title: '継続の達人',
+      message: `連続${meta.streak}日。今日はあと${TEST_CARD_LIMIT - todayCount}問で20問達成。`
+    };
+  }
+  if ((meta.streak || 0) >= 3) {
+    return {
+      title: '継続中',
+      message: `連続${meta.streak}日。短く続けているのが強い。`
+    };
+  }
+  if (missedReviewCount > 0) {
+    return {
+      title: 'ミス回収チャンス',
+      message: `ミス復習に${missedReviewCount}語。ここを減らすと力になる。`
+    };
+  }
+  if (weeklyCount > 0) {
+    return {
+      title: '今日の一歩',
+      message: `今週${weeklyCount}問。あと${TEST_CARD_LIMIT - todayCount}問で今日の20問。`
+    };
+  }
+  return {
+    title: 'ウォームアップ',
+    message: 'まずは今日の20問。ミスした語はあとで回収できる。'
+  };
+}
+
+function updateGrowthBadge(meta, missedReviewCount) {
+  const badge = getGrowthBadge(meta, missedReviewCount);
+  setText('growth-title', badge.title);
+  setText('growth-message', badge.message);
 }
 
 function setPerfectQuoteVisible(isVisible) {
@@ -13360,6 +13559,7 @@ function updateStats() {
     ? getTestScoreLabel()
     : `出題候補: ${due}項目`;
   setText('stat-left', Math.max(0, target - mastered));
+  updateGrowthBadge(meta, missedReviewCount);
 }
 
 function showComplete() {
@@ -13415,16 +13615,19 @@ function showTestComplete() {
   document.getElementById('cs-mastered-label').textContent = '正解';
   document.getElementById('cs-due-label').textContent = 'ミス';
   const restartBtn = document.getElementById('restart-btn');
-  restartBtn.textContent = canContinueMissReview ? 'ミスだけ復習' : 'もう一度テスト';
+  restartBtn.textContent = canContinueMissReview ? 'ミスだけ復習' : 'もう一回テスト';
   restartBtn.classList.toggle('miss-review', canContinueMissReview);
   document.getElementById('cs-reviewed').textContent = testCards.length;
   document.getElementById('cs-mastered').textContent = testCorrect;
   document.getElementById('cs-due').textContent = misses;
-	  document.getElementById('complete-msg').textContent = testCards.length === 0
+	  const baseCompleteMessage = testCards.length === 0
 	    ? '今の条件では出題できる単語がありません。設定で範囲を広げてください。'
 	    : misses === 0
 	      ? `${isMissReview ? '今回のミス復習はクリア！' : '全問正解！満点です。'}\n「${getScopeLabel()}」${testCards.length}項目をすべて答えられました。`
 	      : `「${getScopeLabel()}」${testCards.length}項目中 ${testCorrect}問正解です。\nミスした ${misses} 語だけ、すぐ復習できます。`;
+	  const replayNudge = getReplayNudge(misses, isMissReview);
+	  const streakLine = testCards.length ? `最高連続 ${testBestStreak}問。${replayNudge}` : '';
+	  document.getElementById('complete-msg').textContent = [baseCompleteMessage, streakLine].filter(Boolean).join('\n');
 	  if (isPerfect20) showRandomPerfectQuote();
 	  else setPerfectQuoteVisible(false);
 	}
@@ -13609,6 +13812,10 @@ learnViewEl.addEventListener('touchend', e => {
 // ─── キーボード操作 ────────────────────────────────────────────────────
 document.addEventListener('keydown', e => {
   if (currentMode === 'test') {
+    if (!testAnswered && /^[1-4]$/.test(e.key)) {
+      if (answerTestChoiceByNumber(e.key)) e.preventDefault();
+      return;
+    }
     if (e.key === 'Enter' && testAnswered) {
       e.preventDefault();
       showNextTestQuestion();
