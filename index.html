@@ -36,8 +36,29 @@
       gap: 12px;
     }
     .header-main { min-width: 0; }
+    .header-title-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-width: 0;
+    }
     .header-title { font-weight: 700; font-size: 17px; }
     .header-sub { font-size: 11px; opacity: 0.65; margin-top: 2px; }
+    .test-header-back-btn {
+      display: none;
+      border: 1px solid rgba(255,255,255,0.38);
+      background: rgba(255,255,255,0.14);
+      color: white;
+      border-radius: 999px;
+      padding: 4px 9px;
+      min-height: 28px;
+      font-size: 11px;
+      line-height: 1;
+      font-weight: 900;
+      cursor: pointer;
+      touch-action: manipulation;
+      white-space: nowrap;
+    }
     .header-right { display: flex; align-items: center; gap: 10px; }
     .stats { display: flex; gap: 18px; font-size: 13px; }
     .stat-item { text-align: center; }
@@ -840,9 +861,7 @@
       box-shadow: none;
     }
     .card.flipped .card-front .word-audio-btn,
-    .card.audio-hidden-during-flip .card-front .word-audio-btn,
-    .test-word-card.audio-hidden-during-flip + .word-audio-btn,
-    .test-word-card.is-flipped + .word-audio-btn {
+    .card.audio-hidden-during-flip .card-front .word-audio-btn {
       opacity: 0;
       visibility: hidden;
       pointer-events: none;
@@ -1039,6 +1058,10 @@
       backface-visibility: hidden;
       -webkit-backface-visibility: hidden;
     }
+    .test-card-front-face {
+      flex-direction: column;
+      gap: 8px;
+    }
     .test-card-back-face {
       transform: rotateY(180deg);
       flex-direction: column;
@@ -1055,13 +1078,24 @@
       text-align: center;
       overflow-wrap: anywhere;
     }
-    .test-word-card-wrap .word-audio-btn {
-      top: 10px;
-      right: 10px;
-      z-index: 3;
-      min-width: 44px;
-      min-height: 32px;
+    .test-front-pron {
+      color: #64748b;
+      font-size: 12px;
+      font-weight: 850;
+      line-height: 1.2;
+      text-align: center;
+      min-height: 15px;
+      max-width: 100%;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .test-card-front-face .word-audio-btn {
+      position: static;
+      min-width: 52px;
+      min-height: 34px;
       font-size: 11px;
+      box-shadow: 0 4px 14px rgba(37,99,235,0.13);
     }
     .test-back-pos {
       align-self: flex-start;
@@ -1285,18 +1319,20 @@
 
     body.test-mode {
       overflow: hidden;
-      --test-top-nav-offset: calc(6px + env(safe-area-inset-top));
-      --test-top-nav-height: 48px;
-      --test-header-reserve: calc(var(--test-top-nav-offset) + var(--test-top-nav-height) + 14px);
     }
     body.test-mode header {
       padding: 8px 14px;
-      margin-top: var(--test-header-reserve);
+      margin-top: 0;
       position: relative;
       z-index: 1;
     }
     body.test-mode .header-sub {
       display: none;
+    }
+    body.test-mode .test-header-back-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
     }
     body.test-mode .stats {
       gap: 10px;
@@ -1309,7 +1345,7 @@
       margin-top: 1px;
     }
     body.test-mode #learn-view {
-      height: calc(100svh - 116px - env(safe-area-inset-top));
+      height: calc(100svh - 60px);
       min-height: 0;
       overflow: hidden;
       padding-top: 8px;
@@ -1346,7 +1382,7 @@
       width: min(94%, 420px);
     }
     body.test-mode .test-word-card-wrap {
-      flex: 0 0 clamp(88px, 22svh, 126px);
+      flex: 0 0 clamp(132px, 24svh, 168px);
       min-height: 0;
     }
     body.test-mode .test-word-card {
@@ -1357,8 +1393,11 @@
       padding: 12px 12px;
     }
     body.test-mode .test-word-text {
-      font-size: clamp(29px, 8.4vw, 40px);
+      font-size: clamp(28px, 7.8vw, 38px);
       line-height: 1.05;
+    }
+    body.test-mode .test-front-pron {
+      font-size: 11px;
     }
     body.test-mode .test-card-back-face {
       gap: 3px;
@@ -1416,16 +1455,7 @@
       display: none;
     }
     body.test-mode .learn-bottom-bar {
-      top: var(--test-top-nav-offset);
-      bottom: auto;
-      width: min(94vw, 420px);
-      gap: 6px;
-    }
-    body.test-mode .learn-bottom-bar .settings-open-btn {
-      padding: 9px 8px;
-      font-size: 12px;
-      min-height: var(--test-top-nav-height);
-      box-shadow: 0 8px 20px rgba(15,23,42,0.18);
+      display: none;
     }
     body.test-mode .swipe-msg {
       display: block;
@@ -1438,21 +1468,23 @@
     }
 
     @media (max-height: 700px) {
-      body.test-mode {
-        --test-top-nav-offset: calc(5px + env(safe-area-inset-top));
-        --test-top-nav-height: 44px;
-        --test-header-reserve: calc(var(--test-top-nav-offset) + var(--test-top-nav-height) + 10px);
-      }
       body.test-mode header { padding: 7px 12px; }
       body.test-mode #learn-view {
-        height: calc(100svh - 106px - env(safe-area-inset-top));
+        height: calc(100svh - 54px);
         padding-top: 6px;
         padding-bottom: calc(18px + env(safe-area-inset-bottom));
       }
       body.test-mode .progress-wrap { margin-bottom: 6px; }
-      body.test-mode .test-word-card-wrap { flex-basis: clamp(78px, 19svh, 100px); }
-      body.test-mode .test-word-text { font-size: clamp(27px, 7.8vw, 36px); }
+      body.test-mode .test-word-card-wrap { flex-basis: clamp(116px, 21svh, 138px); }
+      body.test-mode .test-word-text { font-size: clamp(25px, 7.2vw, 34px); }
       body.test-mode .test-card-face { padding: 10px 11px; }
+      body.test-mode .test-card-front-face { gap: 6px; }
+      body.test-mode .test-front-pron { font-size: 10px; }
+      body.test-mode .test-card-front-face .word-audio-btn {
+        min-width: 48px;
+        min-height: 31px;
+        font-size: 10.5px;
+      }
       body.test-mode .test-back-pos { font-size: 9px; padding: 2px 7px; }
       body.test-mode .test-back-meaning { font-size: 13px; }
       body.test-mode .test-back-pron,
@@ -1473,7 +1505,6 @@
       body.test-mode .test-feedback,
       body.test-mode .test-next-btn { display: none; }
       body.test-mode .test-feedback.is-visible { display: -webkit-box; }
-      body.test-mode .learn-bottom-bar .settings-open-btn { padding: 8px 7px; font-size: 11.5px; }
       body.test-mode .swipe-msg { margin-top: 7px; font-size: 11.5px; }
     }
 
@@ -1684,7 +1715,10 @@
 
 <header>
   <div class="header-main">
-    <div class="header-title">サクサク英単語</div>
+    <div class="header-title-row">
+      <div class="header-title">サクサク英単語</div>
+      <button class="test-header-back-btn" type="button" onclick="startSession()" aria-label="学習画面に戻る">戻る</button>
+    </div>
     <div class="header-sub">友人テスト版 / 959語・品詞別966項目 / British English基準</div>
   </div>
   <div class="header-right">
@@ -1791,6 +1825,8 @@
           <div class="test-card-inner">
             <div class="test-card-face test-card-front-face">
               <div class="test-word-text" id="test-word-text">—</div>
+              <div class="test-front-pron" id="test-front-pron">/—/</div>
+              <button class="word-audio-btn" id="test-audio-btn" type="button" onclick="playCurrentTestAudio(event)" aria-label="UK音声で単語を再生">UK</button>
             </div>
             <div class="test-card-face test-card-back-face">
               <div class="test-back-pos" id="test-back-pos">—</div>
@@ -1802,7 +1838,6 @@
             </div>
           </div>
         </div>
-        <button class="word-audio-btn" id="test-audio-btn" type="button" onclick="playCurrentTestAudio(event)" aria-label="UK音声で単語を再生">UK</button>
       </div>
       <div class="test-answer-zone">
         <div class="test-choice-grid" id="test-choice-grid"></div>
@@ -13442,6 +13477,11 @@ function getTestPronunciationText(word) {
   return `/${word.ipa}/  ${word.ph}`;
 }
 
+function getTestFrontPronunciationText(word) {
+  if (isAbbreviationWord(word)) return getAbbreviationReadingText(word);
+  return `/${word.ipa}/`;
+}
+
 function getCategoryFilteredWords() {
   return getLevelFilteredWords().filter(word => hasCategory(word, currentCategory));
 }
@@ -14208,6 +14248,7 @@ function showTestQuestion() {
   testAnswered = false;
   setTestCardFlipped(false);
   document.getElementById('test-word-text').textContent = word.w;
+  document.getElementById('test-front-pron').textContent = getTestFrontPronunciationText(word);
   document.querySelector('.test-word-card')?.classList.remove('wrong-cue');
   updateTestCardBack(word);
   const feedbackEl = document.getElementById('test-feedback');
