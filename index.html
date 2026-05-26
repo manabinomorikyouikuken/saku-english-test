@@ -1842,7 +1842,7 @@
   </div>
 
   <div class="learn-bottom-bar">
-    <button class="settings-open-btn mode-btn active" id="learn-mode-btn" type="button" onclick="startSession()">学習</button>
+    <button class="settings-open-btn mode-btn active" id="learn-mode-btn" type="button" onclick="showLearningTab()">学習</button>
     <button class="settings-open-btn mode-btn test-open-btn" id="test-mode-btn" type="button" onclick="startTestSession()">サクサクテスト</button>
     <button class="settings-open-btn" type="button" onclick="showSettingsView()">設定</button>
   </div>
@@ -12849,6 +12849,14 @@ function showLearnView() {
   document.getElementById('learn-view').hidden = false;
   window.scrollTo({ top: 0, behavior: 'smooth' });
   requestAnimationFrame(fitWordText);
+}
+
+function showLearningTab() {
+  if (currentMode === 'learn') {
+    showLearnView();
+    return;
+  }
+  startSession();
 }
 
 function loadData() {
