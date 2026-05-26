@@ -1285,10 +1285,15 @@
 
     body.test-mode {
       overflow: hidden;
+      --test-top-nav-offset: calc(6px + env(safe-area-inset-top));
+      --test-top-nav-height: 48px;
+      --test-header-reserve: calc(var(--test-top-nav-offset) + var(--test-top-nav-height) + 14px);
     }
     body.test-mode header {
       padding: 8px 14px;
-      margin-top: 46px;
+      margin-top: var(--test-header-reserve);
+      position: relative;
+      z-index: 1;
     }
     body.test-mode .header-sub {
       display: none;
@@ -1304,7 +1309,7 @@
       margin-top: 1px;
     }
     body.test-mode #learn-view {
-      height: calc(100svh - 92px);
+      height: calc(100svh - 116px - env(safe-area-inset-top));
       min-height: 0;
       overflow: hidden;
       padding-top: 8px;
@@ -1411,7 +1416,7 @@
       display: none;
     }
     body.test-mode .learn-bottom-bar {
-      top: calc(8px + env(safe-area-inset-top));
+      top: var(--test-top-nav-offset);
       bottom: auto;
       width: min(94vw, 420px);
       gap: 6px;
@@ -1419,6 +1424,7 @@
     body.test-mode .learn-bottom-bar .settings-open-btn {
       padding: 9px 8px;
       font-size: 12px;
+      min-height: var(--test-top-nav-height);
       box-shadow: 0 8px 20px rgba(15,23,42,0.18);
     }
     body.test-mode .swipe-msg {
@@ -1432,9 +1438,14 @@
     }
 
     @media (max-height: 700px) {
-      body.test-mode header { padding: 7px 12px; margin-top: 42px; }
+      body.test-mode {
+        --test-top-nav-offset: calc(5px + env(safe-area-inset-top));
+        --test-top-nav-height: 44px;
+        --test-header-reserve: calc(var(--test-top-nav-offset) + var(--test-top-nav-height) + 10px);
+      }
+      body.test-mode header { padding: 7px 12px; }
       body.test-mode #learn-view {
-        height: calc(100svh - 86px);
+        height: calc(100svh - 106px - env(safe-area-inset-top));
         padding-top: 6px;
         padding-bottom: calc(18px + env(safe-area-inset-bottom));
       }
@@ -1489,6 +1500,7 @@
     .complete-icon { font-size: 38px; margin-bottom: 8px; }
     .complete-title { font-size: 19px; font-weight: 800; color: #1a2a4a; margin-bottom: 6px; }
 	    .complete-msg { font-size: 12.5px; color: #64748b; line-height: 1.55; margin-bottom: 14px; white-space: pre-line; }
+	    .complete-msg:empty { display: none; }
 	    .complete-focus {
 	      display: none;
 	      margin: -2px 0 12px;
@@ -14328,14 +14340,6 @@ function markPickedAnswer(choiceIndex) {
   });
 }
 
-function getReplayNudge(misses, isMissReview) {
-  if (testCards.length === 0) return '';
-  if (misses === 0 && testCards.length === TEST_CARD_LIMIT) return 'もう一回やるなら、満点の再現を狙える。';
-  if (misses === 0) return '次は20問でも同じ調子でいける。';
-  if (misses <= 3) return 'あと少し。ミスだけ回収すると満点が近い。';
-  return isMissReview ? '残ったミスをもう一周で軽くできる。' : 'まずはミスだけ復習で弱点を減らせる。';
-}
-
 function answerTestChoice(button, word) {
   if (testAnswered) return;
   testAnswered = true;
@@ -14566,10 +14570,10 @@ function getStudyNextStepMessage(due) {
 function getTestNextStepMessage({ testLength, misses, isMissReview, remainingMisses, isPerfect20 }) {
   if (!testLength) return '次の一手: 設定で範囲を広げると再開できます。';
   if (misses > 0) return '次の一手: ミスだけ復習で、今のつまずきをすぐ回収。';
-  if (isMissReview && remainingMisses === 0) return '次の一手: 弱点回収完了。今日の20問へ戻って力試し。';
-  if (isPerfect20) return '次の一手: 今日は勝ち逃げでもOK。もう一回なら別の20問。';
+  if (isMissReview && remainingMisses === 0) return '';
+  if (isPerfect20) return '';
   if (isMissReview) return `次の一手: 残り${remainingMisses}語も、同じ流れで回収。`;
-  return '次の一手: 別の20問で満点の再現を狙う。';
+  return '';
 }
 
 function getWeaknessBucketLabel(word) {
@@ -14590,7 +14594,7 @@ function getWeaknessSummaryLine(isMissReview = false) {
   if (!missedWords.length) {
     return isMissReview
       ? '今日の弱点: なし。ミス復習をきれいに回収。'
-      : '今日の弱点: なし。20問をきれいに通過。';
+      : '';
   }
 
   const counts = new Map();
@@ -14766,12 +14770,10 @@ function showTestComplete() {
   document.getElementById('cs-due').textContent = misses;
 	  const baseCompleteMessage = testCards.length === 0
 	    ? '今の条件では出題できる単語がありません。設定で範囲を広げてください。'
-	    : misses === 0
-	      ? `${isMissReview ? '今回のミス復習はクリア！' : '全問正解！満点です。'}\n「${getScopeLabel()}」${testCards.length}項目をすべて答えられました。`
-	      : `「${getScopeLabel()}」${testCards.length}項目中 ${testCorrect}問正解です。\nミスした ${misses} 語だけ、すぐ復習できます。`;
-	  const replayNudge = getReplayNudge(misses, isMissReview);
-	  const streakLine = testCards.length ? `最高連続 ${testBestStreak}問。${replayNudge}` : '';
-	  document.getElementById('complete-msg').textContent = [baseCompleteMessage, streakLine].filter(Boolean).join('\n');
+	    : misses > 0
+	      ? `ミスした${misses}語は、ミス復習に残しました。`
+	      : '';
+	  document.getElementById('complete-msg').textContent = baseCompleteMessage;
 	  const weaknessLine = isMissReviewCleared
 	    ? (remainingMisses === 0
 	      ? '弱点回収完了。ミス復習リストは空です。'
