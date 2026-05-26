@@ -7,8 +7,14 @@
   <title>サクサク英単語</title>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    html { -webkit-text-size-adjust: 100%; }
-    body { -webkit-tap-highlight-color: transparent; }
+    html {
+      -webkit-text-size-adjust: 100%;
+      scroll-padding-bottom: calc(96px + env(safe-area-inset-bottom));
+    }
+    body {
+      -webkit-tap-highlight-color: transparent;
+      overscroll-behavior-y: contain;
+    }
 
     body {
       font-family: -apple-system, BlinkMacSystemFont, 'Hiragino Sans', 'Yu Gothic', sans-serif;
@@ -55,10 +61,10 @@
     .learn-bottom-bar {
       position: fixed;
       left: 50%;
-      bottom: calc(12px + env(safe-area-inset-bottom));
+      bottom: calc(10px + env(safe-area-inset-bottom));
       transform: translateX(-50%);
       z-index: 10;
-      width: min(92vw, 420px);
+      width: min(calc(100vw - 20px), 420px);
       display: grid;
       grid-template-columns: 0.8fr 1.2fr 0.8fr;
       gap: 8px;
@@ -71,6 +77,10 @@
       box-shadow: 0 10px 28px rgba(15,23,42,0.22);
       padding: 11px 22px;
       font-size: 13px;
+      min-height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
     .learn-bottom-bar .settings-open-btn {
       padding-inline: 8px;
@@ -83,6 +93,10 @@
     .learn-bottom-bar .mode-btn.active {
       outline: 2px solid rgba(255,255,255,0.9);
       outline-offset: -4px;
+    }
+    button:focus-visible {
+      outline: 3px solid rgba(37,99,235,0.36);
+      outline-offset: 2px;
     }
 
     .main {
@@ -428,6 +442,37 @@
       line-height: 1.3;
       margin-top: 4px;
     }
+    .data-quality-panel .utility-panel {
+      border-top: 0;
+    }
+    .data-quality-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-top: 8px;
+    }
+    .data-quality-item {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 9px 6px;
+      text-align: center;
+    }
+    .data-quality-item strong {
+      display: block;
+      color: #1a2a4a;
+      font-size: 17px;
+      font-weight: 900;
+      line-height: 1;
+    }
+    .data-quality-item small {
+      display: block;
+      color: #64748b;
+      font-size: 10px;
+      font-weight: 800;
+      line-height: 1.25;
+      margin-top: 4px;
+    }
     .level-title {
       color: #334155;
       font-size: 12px;
@@ -461,11 +506,15 @@
       gap: 8px;
     }
     .phonetic-assist-buttons,
-    .haptic-feedback-buttons {
+    .haptic-feedback-buttons,
+    .speech-voice-buttons {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
       gap: 8px;
       margin-top: 10px;
+    }
+    .speech-voice-buttons {
+      grid-template-columns: 1fr;
     }
     .front-display-grid {
       display: grid;
@@ -510,7 +559,8 @@
       touch-action: manipulation;
     }
     .phonetic-assist-btn,
-    .haptic-feedback-btn {
+    .haptic-feedback-btn,
+    .speech-voice-btn {
       border: 1px solid #cbd5e1;
       background: white;
       color: #334155;
@@ -520,6 +570,15 @@
       font-weight: 800;
       cursor: pointer;
       touch-action: manipulation;
+      line-height: 1.25;
+      white-space: normal;
+    }
+    .speech-voice-btn span {
+      display: block;
+      color: #94a3b8;
+      font-size: 10px;
+      font-weight: 700;
+      margin-top: 2px;
     }
     .part-btn {
       border: 1px solid #cbd5e1;
@@ -571,11 +630,13 @@
       color: white;
     }
     .phonetic-assist-btn.active,
-    .haptic-feedback-btn.active {
+    .haptic-feedback-btn.active,
+    .speech-voice-btn.active {
       background: #1a2a4a;
       border-color: #1a2a4a;
       color: white;
     }
+    .speech-voice-btn.active span { color: rgba(255,255,255,0.72); }
     .front-meta-btn {
       border: 1px solid #cbd5e1;
       background: white;
@@ -722,11 +783,27 @@
       margin-top: 8px;
       letter-spacing: 0.3px;
     }
+    .ipa-text.abbreviation-reading {
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 900;
+      color: #1d4ed8;
+      letter-spacing: 0.02em;
+      opacity: 0.9;
+    }
     .accent-mark { color: #ef4444; font-weight: 700; }
     .phonetic-text {
       font-size: 13px;
       color: #b0bac8;
       margin-top: 4px;
+    }
+    .phonetic-text.abbreviation-origin {
+      width: min(92%, 320px);
+      color: #64748b;
+      font-size: 11px;
+      font-weight: 800;
+      line-height: 1.35;
+      text-align: center;
     }
     .phonetic-final {
       color: #94a3b8;
@@ -763,6 +840,8 @@
       box-shadow: none;
     }
     .card.flipped .card-front .word-audio-btn,
+    .card.audio-hidden-during-flip .card-front .word-audio-btn,
+    .test-word-card.audio-hidden-during-flip + .word-audio-btn,
     .test-word-card.is-flipped + .word-audio-btn {
       opacity: 0;
       visibility: hidden;
@@ -1427,6 +1506,25 @@
 	      color: #166534;
 	      text-align: center;
 	    }
+	    .complete-next-step {
+	      display: none;
+	      margin: 0 0 12px;
+	      padding: 9px 10px;
+	      border-radius: 12px;
+	      background: #f8fafc;
+	      border: 1px solid #e2e8f0;
+	      color: #334155;
+	      font-size: 12px;
+	      font-weight: 900;
+	      line-height: 1.45;
+	      text-align: left;
+	    }
+	    .complete-next-step.is-visible { display: block; }
+	    .complete-next-step.success {
+	      background: #f0fdf4;
+	      border-color: #bbf7d0;
+	      color: #166534;
+	    }
 	    .perfect-quote-panel {
 	      display: none;
 	      margin: -2px 0 14px;
@@ -1480,6 +1578,7 @@
       font-weight: 700;
       border: none;
       cursor: pointer;
+      min-height: 46px;
       box-shadow: 0 4px 15px rgba(59,130,246,0.4);
       transition: transform 0.12s, filter 0.12s;
     }
@@ -1574,7 +1673,7 @@
 <header>
   <div class="header-main">
     <div class="header-title">サクサク英単語</div>
-    <div class="header-sub">友人テスト版 / 916語・品詞別921項目 / British English基準</div>
+    <div class="header-sub">友人テスト版 / 959語・品詞別966項目 / British English基準</div>
   </div>
   <div class="header-right">
     <div class="stats">
@@ -1720,6 +1819,7 @@
 	      </div>
 	      <div class="complete-msg" id="complete-msg"></div>
 	      <div class="complete-focus" id="complete-focus"></div>
+	      <div class="complete-next-step" id="complete-next-step"></div>
 	      <div class="perfect-quote-panel" id="perfect-quote-panel" aria-label="満点時の英語名言">
 	        <div class="perfect-badge">Perfect 20</div>
 	        <div class="perfect-quote-text" id="perfect-quote-text"></div>
@@ -1743,7 +1843,7 @@
   <div class="settings-page-head">
     <div>
       <div class="settings-page-title">設定</div>
-      <div class="settings-page-lead">レベル、テーマ、テスト、表示、履歴を分けて管理します。学習画面は単語カードだけに集中できます。</div>
+      <div class="settings-page-lead">よく使う設定を先に置き、発音や語形成の細かい設定は必要なときだけ開けます。</div>
     </div>
     <button class="back-to-learn-btn" type="button" onclick="showLearnView()">戻る</button>
   </div>
@@ -1762,7 +1862,7 @@
   <div class="level-panel" aria-label="レベル選択">
     <div class="settings-section-title">レベルを選ぶ</div>
     <div class="level-buttons">
-      <button class="level-btn active" type="button" data-level="all" onclick="setLevel('all')">すべて<span id="level-count-all">921項目</span></button>
+      <button class="level-btn active" type="button" data-level="all" onclick="setLevel('all')">すべて<span id="level-count-all">966項目</span></button>
       <button class="level-btn" type="button" data-level="junior" onclick="setLevel('junior')">中学復習<span id="level-count-junior">176項目</span></button>
       <button class="level-btn" type="button" data-level="highBasic" onclick="setLevel('highBasic')">高校基礎<span id="level-count-highBasic">333項目</span></button>
       <button class="level-btn" type="button" data-level="standard" onclick="setLevel('standard')">句動詞・実用<span id="level-count-standard">144項目</span></button>
@@ -1776,7 +1876,7 @@
   <div class="category-panel" aria-label="カテゴリ選択">
     <div class="settings-section-title">テーマを選ぶ</div>
     <div class="category-buttons">
-      <button class="category-btn active" type="button" data-category="all" onclick="setCategory('all')">すべて<span id="category-count-all">921項目</span></button>
+      <button class="category-btn active" type="button" data-category="all" onclick="setCategory('all')">すべて<span id="category-count-all">966項目</span></button>
       <button class="category-btn" type="button" data-category="katakanaGap" onclick="setCategory('katakanaGap')" aria-label="カタカナ注意 知ってるつもりになりやすい語">カタカナ注意<span id="category-count-katakanaGap">33項目</span></button>
       <button class="category-btn" type="button" data-category="phrasalVerb" onclick="setCategory('phrasalVerb')">句動詞<span id="category-count-phrasalVerb">100項目</span></button>
       <button class="category-btn" type="button" data-category="abbreviation" onclick="setCategory('abbreviation')">略語<span id="category-count-abbreviation">60項目</span></button>
@@ -1784,15 +1884,16 @@
       <button class="category-btn" type="button" data-category="abbreviationBusiness" onclick="setCategory('abbreviationBusiness')">略語 ビジネス<span id="category-count-abbreviationBusiness">13項目</span></button>
       <button class="category-btn" type="button" data-category="abbreviationPublic" onclick="setCategory('abbreviationPublic')">略語 国際・公的<span id="category-count-abbreviationPublic">19項目</span></button>
       <button class="category-btn" type="button" data-category="abbreviationEducation" onclick="setCategory('abbreviationEducation')">略語 教育・言語<span id="category-count-abbreviationEducation">1項目</span></button>
-      <button class="category-btn" type="button" data-category="pronunciationNote" onclick="setCategory('pronunciationNote')">発音注意<span id="category-count-pronunciationNote">9項目</span></button>
+      <button class="category-btn" type="button" data-category="pronunciationNote" onclick="setCategory('pronunciationNote')">発音注意<span id="category-count-pronunciationNote">14項目</span></button>
+      <button class="category-btn" type="button" data-category="rlContrast" onclick="setCategory('rlContrast')">R/L注意<span id="category-count-rlContrast">8項目</span></button>
     </div>
-    <div class="storage-note">テーマ別に確認できます。カタカナ注意は「知ってるつもり」になりやすい意味のズレ、句動詞は会話のまとまり、略語は分野別、発音注意は音と綴りの違いを集中的に学べます。</div>
+    <div class="storage-note">テーマ別に確認できます。カタカナ注意は「知ってるつもり」になりやすい意味のズレ、句動詞は会話のまとまり、略語は分野別、発音注意は音と綴りの違い、R/L注意は語頭の音で意味が変わる組を集中的に学べます。</div>
   </div>
 
   <div class="part-panel" aria-label="品詞選択">
     <div class="settings-section-title">品詞でしぼる</div>
     <div class="part-buttons">
-      <button class="part-btn active" type="button" data-part="random" onclick="setPart('random')">ランダム<span id="part-count-random">921</span></button>
+      <button class="part-btn active" type="button" data-part="random" onclick="setPart('random')">ランダム<span id="part-count-random">966</span></button>
       <button class="part-btn" type="button" data-part="noun" onclick="setPart('noun')">名詞<span id="part-count-noun">426</span></button>
       <button class="part-btn" type="button" data-part="verb" onclick="setPart('verb')">動詞<span id="part-count-verb">332</span></button>
       <button class="part-btn" type="button" data-part="adjective" onclick="setPart('adjective')">形容詞<span id="part-count-adjective">138</span></button>
@@ -1840,23 +1941,6 @@
 
   <div class="settings-panel">
     <div class="utility-panel">
-      <div class="settings-section-title">発音表記メモ</div>
-      <div class="phonetic-assist-buttons" aria-label="発音カナ補助">
-        <button class="phonetic-assist-btn" type="button" data-phonetic-assist="show" onclick="setPhoneticAssist(true)">表示</button>
-        <button class="phonetic-assist-btn active" type="button" data-phonetic-assist="hide" onclick="setPhoneticAssist(false)">非表示</button>
-      </div>
-      <div class="storage-note">初期値は非表示です。発音カナ補助だけを切り替えます。IPAは信頼性の土台として常に表示します。</div>
-      <div class="pronunciation-guide">
-        <strong>R/L表記の約束:</strong> R音は舌を上あごにつけない目印として「らりるれろ」、L音は舌を上あごにつけてよい目印として「ラリルレロ」で表示します。<br>
-        <strong>V表記の約束:</strong> v の音は「ヴァ・ヴィ・ヴ・ヴェ・ヴォ」で表示します。<br>
-        <strong>語末の t / s / d:</strong> カタカナで強く読まず、最後に子音だけを軽く添える目印です。カード裏では小さな補助記号として表示します。発音記号はBritish English基準です。
-      </div>
-      <div class="storage-note">単語の綴りは入試・教材で一般的に使われる表記を含みます。</div>
-    </div>
-  </div>
-
-  <div class="settings-panel">
-    <div class="utility-panel">
       <div class="settings-section-title">操作時のバイブ</div>
       <div class="haptic-feedback-buttons" aria-label="操作時のバイブ">
         <button class="haptic-feedback-btn active" type="button" data-haptic-feedback="on" onclick="setHapticFeedbackEnabled(true)">オン</button>
@@ -1866,16 +1950,42 @@
     </div>
   </div>
 
-  <div class="settings-panel">
+  <details class="settings-panel settings-collapsible" ontoggle="updateSettingsPagerHeight()">
+    <summary>発音・音声のこだわり設定</summary>
     <div class="utility-panel">
-      <div class="settings-section-title">単語の成り立ちメモ</div>
+      <div class="settings-section-title">発音表記メモ</div>
+      <div class="phonetic-assist-buttons" aria-label="発音カナ補助">
+        <button class="phonetic-assist-btn" type="button" data-phonetic-assist="show" onclick="setPhoneticAssist(true)">表示</button>
+        <button class="phonetic-assist-btn active" type="button" data-phonetic-assist="hide" onclick="setPhoneticAssist(false)">非表示</button>
+      </div>
+      <div class="storage-note">初期値は非表示です。表面には発音カナを出さず、読み方や元の言葉は裏面で確認します。</div>
       <div class="pronunciation-guide">
-        <strong>青:</strong> 確認済みの接頭語メモです。例: co-, pro-, un-, in-, out-, en-, re-, ex-, con-, dis-, mis-, ab-, pre-, psycho-<br>
+        <strong>R/L表記の約束:</strong> R音は舌を上あごにつけない目印として「らりるれろ」、L音は舌を上あごにつけてよい目印として「ラリルレロ」で表示します。<br>
+        <strong>V表記の約束:</strong> v の音は「ヴァ・ヴィ・ヴ・ヴェ・ヴォ」で表示します。<br>
+        <strong>語末の t / s / d:</strong> カタカナで強く読まず、最後に子音だけを軽く添える目印です。カード裏では小さな補助記号として表示します。発音記号はBritish English基準です。
+      </div>
+      <div class="storage-note">単語の綴りは入試・教材で一般的に使われる表記を含みます。</div>
+    </div>
+
+    <div class="utility-panel">
+      <div class="settings-section-title">発音音声</div>
+      <div class="speech-voice-buttons" id="speech-voice-buttons" aria-label="発音音声">
+        <button class="speech-voice-btn active" type="button" disabled>女性声を優先</button>
+      </div>
+      <div class="storage-note" id="speech-voice-note">初期値は女性声を優先します。使える声は端末とブラウザにより変わります。</div>
+    </div>
+  </details>
+
+  <details class="settings-panel settings-collapsible" ontoggle="updateSettingsPagerHeight()">
+    <summary>単語の成り立ちメモ</summary>
+    <div class="utility-panel">
+      <div class="pronunciation-guide">
+        <strong>青:</strong> 確認済みの接頭語メモです。例: anti-, auto-, ad-, co-, pro-, un-, in-, out-, en-, re-, ex-, con-, dis-, mis-, ab-, pre-, psycho-<br>
         <strong>赤:</strong> 接尾語の候補です。例: -ation, -ion, -sion, -ance, -ence, -ment, -ness, -less, -ous, -ive, -fy, -al, -ent, -ate, -ly, -er, -ity, -ing
       </div>
       <div class="storage-note">暗記の手がかりとして、確認済みの語だけ表示します。語源の厳密な分解ではなく、覚えやすさを優先した補助表示です。</div>
     </div>
-  </div>
+  </details>
   </div>
 
   <div class="settings-pane" data-settings-page="history">
@@ -1907,9 +2017,30 @@
         <div class="achievement-label">ミス復習</div>
       </div>
       <div class="achievement-item">
-          <span class="achievement-num" id="stat-left">921</span>
+          <span class="achievement-num" id="stat-left">966</span>
         <div class="achievement-label">未習得</div>
       </div>
+    </div>
+  </div>
+
+  <div class="settings-panel data-quality-panel" aria-label="語データ点検">
+    <div class="utility-panel">
+      <div class="settings-section-title">語データ点検</div>
+      <div class="data-quality-grid">
+        <div class="data-quality-item">
+          <strong id="data-quality-total">0</strong>
+          <small>品詞別項目</small>
+        </div>
+        <div class="data-quality-item">
+          <strong id="data-quality-unique">0</strong>
+          <small>ユニーク語</small>
+        </div>
+        <div class="data-quality-item">
+          <strong id="data-quality-issues">0</strong>
+          <small>要確認</small>
+        </div>
+      </div>
+      <div class="storage-note" id="data-quality-note">語データを点検中です。</div>
     </div>
   </div>
 
@@ -5066,7 +5197,7 @@ const WORDS = [
   },
   {
     "w": "responsible",
-    "pos": "名詞",
+    "pos": "形容詞",
     "level": "発展",
     "ipa": "rɪˈspɒnsɪbəl",
     "ph": "リスポンシブル",
@@ -5857,6 +5988,50 @@ const WORDS = [
     "m": "進歩、前進",
     "ex": "Track your progress to stay motivated.",
     "exJa": "モチベーションを保つために自分の進歩を記録しましょう。"
+  },
+  {
+    "id": "progress_verb",
+    "w": "progress",
+    "pos": "動詞",
+    "level": "高校基礎",
+    "ipa": "prəˈɡres",
+    "ph": "プログレs",
+    "m": "進歩する、進展する",
+    "ex": "The project is progressing well.",
+    "exJa": "その計画は順調に進んでいる。"
+  },
+  {
+    "id": "progressive_adjective",
+    "w": "progressive",
+    "pos": "形容詞",
+    "level": "発展",
+    "ipa": "prəˈɡresɪv",
+    "ph": "プログレシヴ",
+    "m": "進歩的な、段階的に進む",
+    "ex": "The school uses progressive teaching methods.",
+    "exJa": "その学校は進歩的な教授法を使っている。"
+  },
+  {
+    "id": "progressively_adverb",
+    "w": "progressively",
+    "pos": "副詞",
+    "level": "発展",
+    "ipa": "prəˈɡresɪvli",
+    "ph": "プログレシヴリ",
+    "m": "徐々に、だんだん",
+    "ex": "The task became progressively easier.",
+    "exJa": "その課題はだんだん簡単になった。"
+  },
+  {
+    "id": "progression_noun",
+    "w": "progression",
+    "pos": "名詞",
+    "level": "発展",
+    "ipa": "prəˈɡreʃn",
+    "ph": "プログレッション",
+    "m": "進行、発展、段階的な進み方",
+    "ex": "Language learning is a gradual progression.",
+    "exJa": "言語学習は段階的に進んでいくものだ。"
   },
   {
     "w": "proof",
@@ -11771,6 +11946,458 @@ const WORDS = [
     "m": "非営利組織",
     "ex": "The NPO runs a local program.",
     "exJa": "そのNPOは地域の事業を運営している。"
+  },
+  {
+    "id": "just_adjective_adverb",
+    "w": "just",
+    "pos": "形容詞・副詞",
+    "level": "中学復習",
+    "ipa": "dʒʌst",
+    "ph": "ジャスt",
+    "m": "形容詞: 公正な / 副詞: ちょうど、ただ",
+    "ex": "I just finished my homework.",
+    "exJa": "ちょうど宿題を終えたところだ。"
+  },
+  {
+    "id": "justification_noun",
+    "w": "justification",
+    "pos": "名詞",
+    "level": "発展",
+    "ipa": "ˌdʒʌstɪfɪˈkeɪʃn",
+    "ph": "ジャスティフィケイション",
+    "m": "正当化、もっともな理由",
+    "ex": "There is no justification for cheating.",
+    "exJa": "不正行為を正当化する理由はない。"
+  },
+  {
+    "id": "injustice_noun",
+    "w": "injustice",
+    "pos": "名詞",
+    "level": "発展",
+    "ipa": "ɪnˈdʒʌstɪs",
+    "ph": "インジャスティs",
+    "m": "不公平、不正",
+    "ex": "They spoke out against injustice.",
+    "exJa": "彼らは不公平に対して声を上げた。"
+  },
+  {
+    "id": "really_adverb",
+    "w": "really",
+    "pos": "副詞",
+    "level": "中学復習",
+    "ipa": "ˈrɪəli",
+    "ph": "リアリ",
+    "m": "本当に、とても",
+    "ex": "This word is really useful.",
+    "exJa": "この単語は本当に役に立つ。"
+  },
+  {
+    "id": "realise_verb",
+    "w": "realise",
+    "pos": "動詞",
+    "level": "高校基礎",
+    "ipa": "ˈrɪəlaɪz",
+    "ph": "リアライズ",
+    "m": "〜に気づく、実現する",
+    "ex": "I realised my mistake after the test.",
+    "exJa": "テストの後で自分の間違いに気づいた。"
+  },
+  {
+    "id": "realisation_noun",
+    "w": "realisation",
+    "pos": "名詞",
+    "level": "発展",
+    "ipa": "ˌrɪəlaɪˈzeɪʃn",
+    "ph": "リアライゼイション",
+    "m": "気づき、実現",
+    "ex": "The realisation changed her plan.",
+    "exJa": "その気づきが彼女の計画を変えた。"
+  },
+  {
+    "id": "equally_adverb",
+    "w": "equally",
+    "pos": "副詞",
+    "level": "高校基礎",
+    "ipa": "ˈiːkwəli",
+    "ph": "イークワリ",
+    "m": "等しく、同じように",
+    "ex": "Treat all students equally.",
+    "exJa": "すべての生徒を平等に扱いなさい。"
+  },
+  {
+    "id": "unequal_adjective",
+    "w": "unequal",
+    "pos": "形容詞",
+    "level": "発展",
+    "ipa": "ʌnˈiːkwəl",
+    "ph": "アンイークワル",
+    "m": "不平等な、等しくない",
+    "ex": "Unequal access to education is a serious issue.",
+    "exJa": "教育への不平等なアクセスは深刻な問題だ。"
+  },
+  {
+    "id": "inequality_noun",
+    "w": "inequality",
+    "pos": "名詞",
+    "level": "発展",
+    "ipa": "ˌɪnɪˈkwɒləti",
+    "ph": "イニクウォリティ",
+    "m": "不平等、格差",
+    "ex": "Education can reduce inequality.",
+    "exJa": "教育は格差を減らすことができる。"
+  },
+  {
+    "id": "response_noun",
+    "w": "response",
+    "pos": "名詞",
+    "level": "高校基礎",
+    "ipa": "rɪˈspɒns",
+    "ph": "リスポンs",
+    "m": "反応、返答",
+    "ex": "Her response was quick and clear.",
+    "exJa": "彼女の返答は早くて明確だった。"
+  },
+  {
+    "id": "responsive_adjective",
+    "w": "responsive",
+    "pos": "形容詞",
+    "level": "発展",
+    "ipa": "rɪˈspɒnsɪv",
+    "ph": "リスポンシヴ",
+    "m": "反応が早い、よく応じる",
+    "ex": "The teacher was responsive to students' questions.",
+    "exJa": "その先生は生徒の質問によく応じた。"
+  },
+  {
+    "id": "responsibly_adverb",
+    "w": "responsibly",
+    "pos": "副詞",
+    "level": "発展",
+    "ipa": "rɪˈspɒnsəbli",
+    "ph": "リスポンサブリ",
+    "m": "責任を持って",
+    "ex": "Use the internet responsibly.",
+    "exJa": "インターネットは責任を持って使いなさい。"
+  },
+  {
+    "id": "activity_noun",
+    "w": "activity",
+    "pos": "名詞",
+    "level": "中学復習",
+    "ipa": "ækˈtɪvəti",
+    "ph": "アクティヴィティ",
+    "m": "活動、活動内容",
+    "ex": "Reading is a useful daily activity.",
+    "exJa": "読書は有益な日々の活動だ。"
+  },
+  {
+    "id": "activate_verb",
+    "w": "activate",
+    "pos": "動詞",
+    "level": "発展",
+    "ipa": "ˈæktɪveɪt",
+    "ph": "アクティヴェイt",
+    "m": "作動させる、有効にする",
+    "ex": "Activate the setting before you start.",
+    "exJa": "始める前にその設定を有効にしよう。"
+  },
+  {
+    "id": "actively_adverb",
+    "w": "actively",
+    "pos": "副詞",
+    "level": "高校基礎",
+    "ipa": "ˈæktɪvli",
+    "ph": "アクティヴリ",
+    "m": "積極的に、活発に",
+    "ex": "She actively joined the discussion.",
+    "exJa": "彼女はその話し合いに積極的に参加した。"
+  },
+  {
+    "id": "inactive_adjective",
+    "w": "inactive",
+    "pos": "形容詞",
+    "level": "発展",
+    "ipa": "ɪnˈæktɪv",
+    "ph": "インアクティヴ",
+    "m": "活動していない、使われていない",
+    "ex": "The account became inactive.",
+    "exJa": "そのアカウントは使われていない状態になった。"
+  },
+  {
+    "id": "exchange_noun",
+    "w": "exchange",
+    "pos": "名詞",
+    "level": "高校基礎",
+    "ipa": "ɪksˈtʃeɪndʒ",
+    "ph": "イクスチェインジ",
+    "m": "交換、交流",
+    "ex": "The exchange of ideas helped the class.",
+    "exJa": "意見の交換がその授業の助けになった。"
+  },
+  {
+    "id": "exchangeable_adjective",
+    "w": "exchangeable",
+    "pos": "形容詞",
+    "level": "発展",
+    "ipa": "ɪksˈtʃeɪndʒəbl",
+    "ph": "イクスチェインジャブル",
+    "m": "交換できる",
+    "ex": "The ticket is not exchangeable.",
+    "exJa": "そのチケットは交換できない。"
+  },
+  {
+    "id": "protective_adjective",
+    "w": "protective",
+    "pos": "形容詞",
+    "level": "高校基礎",
+    "ipa": "prəˈtektɪv",
+    "ph": "プロテクティヴ",
+    "m": "保護する、保護用の",
+    "ex": "Wear protective glasses in the lab.",
+    "exJa": "実験室では保護メガネを着けなさい。"
+  },
+  {
+    "id": "protector_noun",
+    "w": "protector",
+    "pos": "名詞",
+    "level": "発展",
+    "ipa": "prəˈtektə",
+    "ph": "プロテクタ",
+    "m": "保護者、守る人・もの",
+    "ex": "A screen protector keeps the phone safe.",
+    "exJa": "画面保護フィルムはスマホを守る。"
+  },
+  {
+    "id": "evolutionary_adjective",
+    "w": "evolutionary",
+    "pos": "形容詞",
+    "level": "発展",
+    "ipa": "ˌiːvəˈluːʃənəri",
+    "ph": "イーヴァルーショナリ",
+    "m": "進化の、発展に関する",
+    "ex": "Evolutionary change takes a long time.",
+    "exJa": "進化的な変化には長い時間がかかる。"
+  },
+  {
+    "id": "pronoun_noun",
+    "w": "pronoun",
+    "pos": "名詞",
+    "level": "高校基礎",
+    "ipa": "ˈprəʊnaʊn",
+    "ph": "プロウナウン",
+    "m": "代名詞",
+    "ex": "He is a pronoun.",
+    "exJa": "he は代名詞だ。"
+  },
+  {
+    "id": "pronounce_verb",
+    "w": "pronounce",
+    "pos": "動詞",
+    "level": "高校基礎",
+    "ipa": "prəˈnaʊns",
+    "ph": "プロナウンs",
+    "m": "発音する",
+    "ex": "How do you pronounce this word?",
+    "exJa": "この単語はどう発音しますか。"
+  },
+  {
+    "id": "pronunciation_noun",
+    "w": "pronunciation",
+    "pos": "名詞",
+    "level": "高校基礎",
+    "ipa": "prəˌnʌnsiˈeɪʃn",
+    "ph": "プロナンシエイション",
+    "m": "発音",
+    "ex": "Check the pronunciation before you speak.",
+    "exJa": "話す前に発音を確認しよう。"
+  },
+  {
+    "id": "verb_noun",
+    "w": "verb",
+    "pos": "名詞",
+    "level": "高校基礎",
+    "ipa": "vɜːb",
+    "ph": "ヴァーブ",
+    "m": "動詞",
+    "ex": "Run is a verb.",
+    "exJa": "run は動詞だ。"
+  },
+  {
+    "id": "verbal_adjective",
+    "w": "verbal",
+    "pos": "形容詞",
+    "level": "発展",
+    "ipa": "ˈvɜːbəl",
+    "ph": "ヴァーバル",
+    "m": "言葉の、口頭の",
+    "ex": "The teacher gave verbal instructions.",
+    "exJa": "先生は口頭で指示を出した。"
+  },
+  {
+    "id": "adjective_noun",
+    "w": "adjective",
+    "pos": "名詞",
+    "level": "高校基礎",
+    "ipa": "ˈædʒɪktɪv",
+    "ph": "アジェクティヴ",
+    "m": "形容詞",
+    "ex": "Big is an adjective.",
+    "exJa": "big は形容詞だ。"
+  },
+  {
+    "id": "adjectival_adjective",
+    "w": "adjectival",
+    "pos": "形容詞",
+    "level": "発展",
+    "ipa": "ˌædʒekˈtaɪvəl",
+    "ph": "アジェクタイヴァル",
+    "m": "形容詞の、形容詞的な",
+    "ex": "Good is used in an adjectival phrase.",
+    "exJa": "good は形容詞句の中で使われている。"
+  },
+  {
+    "id": "adverb_noun",
+    "w": "adverb",
+    "pos": "名詞",
+    "level": "高校基礎",
+    "ipa": "ˈædvɜːb",
+    "ph": "アドヴァーブ",
+    "m": "副詞",
+    "ex": "Quickly is an adverb.",
+    "exJa": "quickly は副詞だ。"
+  },
+  {
+    "id": "autonomous_adjective",
+    "w": "autonomous",
+    "pos": "形容詞",
+    "level": "発展",
+    "ipa": "ɔːˈtɒnəməs",
+    "ph": "オートノマs",
+    "m": "自律した、自主的な",
+    "ex": "Students can become autonomous learners.",
+    "exJa": "生徒は自律した学習者になることができる。"
+  },
+  {
+    "id": "meticulous_adjective",
+    "w": "meticulous",
+    "pos": "形容詞",
+    "level": "発展",
+    "ipa": "məˈtɪkjələs",
+    "ph": "メティキュラs",
+    "m": "細部まで注意深い、几帳面な",
+    "ex": "She is meticulous in checking her answers.",
+    "exJa": "彼女は答えを確認するとき細部まで注意深い。"
+  },
+  {
+    "id": "parallel_adjective",
+    "w": "parallel",
+    "pos": "形容詞",
+    "level": "高校基礎",
+    "ipa": "ˈpærəlel",
+    "ph": "パラレル",
+    "m": "平行な、同時に進む",
+    "ex": "The two lines are parallel.",
+    "exJa": "その2本の線は平行だ。"
+  },
+  {
+    "id": "debris_noun",
+    "w": "debris",
+    "cat": "pronunciation-note",
+    "pos": "名詞",
+    "level": "発展",
+    "ipa": "ˈdebriː",
+    "ph": "デブリー",
+    "m": "破片、がれき",
+    "ex": "Workers cleared debris after the storm.",
+    "exJa": "作業員たちは嵐の後にがれきを片づけた。"
+  },
+  {
+    "id": "dilemma_noun",
+    "w": "dilemma",
+    "pos": "名詞",
+    "level": "発展",
+    "ipa": "daɪˈlemə",
+    "ph": "ダイレマ",
+    "m": "ジレンマ、板挟み",
+    "ex": "She faced a difficult dilemma.",
+    "exJa": "彼女は難しいジレンマに直面した。"
+  },
+  {
+    "id": "antinomy_noun",
+    "w": "antinomy",
+    "pos": "名詞",
+    "level": "発展",
+    "ipa": "ænˈtɪnəmi",
+    "ph": "アンティノミ",
+    "m": "二律背反、相反する二つの原理",
+    "ex": "The idea creates an antinomy.",
+    "exJa": "その考えは二律背反を生む。"
+  },
+  {
+    "id": "stereotype_noun",
+    "w": "stereotype",
+    "pos": "名詞",
+    "level": "発展",
+    "ipa": "ˈsteriətaɪp",
+    "ph": "ステリアタイプ",
+    "m": "固定観念、ステレオタイプ",
+    "ex": "Avoid judging people by stereotypes.",
+    "exJa": "固定観念で人を判断するのは避けよう。"
+  },
+  {
+    "id": "row_noun_line",
+    "w": "row",
+    "pos": "名詞",
+    "level": "高校基礎",
+    "ipa": "rəʊ",
+    "ph": "ロウ",
+    "m": "列、並び",
+    "ex": "Sit in the front row.",
+    "exJa": "前の列に座りなさい。"
+  },
+  {
+    "id": "right_adjective",
+    "w": "right",
+    "pos": "形容詞",
+    "level": "高校基礎",
+    "ipa": "raɪt",
+    "ph": "ライト",
+    "m": "正しい、右の",
+    "ex": "Choose the right answer.",
+    "exJa": "正しい答えを選びなさい。"
+  },
+  {
+    "id": "light_noun_adjective",
+    "w": "light",
+    "pos": "名詞・形容詞",
+    "level": "高校基礎",
+    "ipa": "laɪt",
+    "ph": "ライト",
+    "m": "光、軽い、明るい",
+    "ex": "The light is bright.",
+    "exJa": "その光は明るい。"
+  },
+  {
+    "id": "rice_noun",
+    "w": "rice",
+    "pos": "名詞",
+    "level": "中学復習",
+    "ipa": "raɪs",
+    "ph": "ライs",
+    "m": "米、ごはん",
+    "ex": "Rice is eaten in many countries.",
+    "exJa": "米は多くの国で食べられている。"
+  },
+  {
+    "id": "lice_noun",
+    "w": "lice",
+    "pos": "名詞",
+    "level": "発展",
+    "ipa": "laɪs",
+    "ph": "ライs",
+    "m": "シラミ（louseの複数形）",
+    "ex": "Lice can spread in crowded places.",
+    "exJa": "シラミは混み合った場所で広がることがある。"
   }
 ];
 
@@ -11785,17 +12412,20 @@ const PHONETIC_ASSIST_STORAGE_KEY = 'vocab_trainer_phonetic_assist_v2';
 const FRONT_LEVEL_STORAGE_KEY = 'vocab_trainer_front_level_v2';
 const FRONT_PART_STORAGE_KEY = 'vocab_trainer_front_part_v2';
 const HAPTIC_FEEDBACK_STORAGE_KEY = 'vocab_trainer_haptic_feedback_v1';
+const SPEECH_VOICE_STORAGE_KEY = 'vocab_trainer_speech_voice_v1';
 const MISSED_REVIEW_STORAGE_KEY = 'vocab_trainer_missed_review_v1';
 const INTRO_SEEN_STORAGE_KEY = 'vocab_trainer_intro_seen_v1';
 const TEST_CHOICE_COUNT_OPTIONS = [2, 3, 4];
 const TEST_CARD_LIMIT = 20;
 const TEST_CHOICE_LABELS = ['A', 'B', 'C', 'D'];
+const DAY_MS = 24 * 60 * 60 * 1000;
 const STREAK_MILESTONE_MESSAGES = {
   10: '10連続！流れができてきた。',
   15: '15連続！かなり集中できている。',
   20: '20連続！満点ペースを走り切った。'
 };
 const SPEECH_LANG = 'en-GB';
+const SPEECH_AUTO_FEMALE = 'auto-female';
 const SPEECH_TEXT_OVERRIDES = {
   AI: 'artificial intelligence',
   API: 'application programming interface',
@@ -11848,6 +12478,7 @@ const SPEECH_TEXT_OVERRIDES = {
   SQL: 'structured query language',
   SSD: 'solid state drive',
   SWAT: 'special weapons and tactics',
+  IoT: 'Internet of Things',
   TPP: 'Trans Pacific Partnership',
   UCLA: 'University of California Los Angeles',
   UI: 'user interface',
@@ -11914,7 +12545,8 @@ const CATEGORY_LABELS = {
   abbreviationBusiness: '略語 ビジネス',
   abbreviationPublic: '略語 国際・公的',
   abbreviationEducation: '略語 教育・言語',
-  pronunciationNote: '発音注意'
+  pronunciationNote: '発音注意',
+  rlContrast: 'R/L注意'
 };
 const CATEGORY_TAGS = {
   katakanaGap: 'katakana-gap',
@@ -11924,7 +12556,8 @@ const CATEGORY_TAGS = {
   abbreviationBusiness: 'abbreviation-business',
   abbreviationPublic: 'abbreviation-public',
   abbreviationEducation: 'abbreviation-education',
-  pronunciationNote: 'pronunciation-note'
+  pronunciationNote: 'pronunciation-note',
+  rlContrast: 'rl-contrast'
 };
 const WEAKNESS_CATEGORY_PRIORITY = [
   ['katakana-gap', 'カタカナ注意'],
@@ -11934,6 +12567,7 @@ const WEAKNESS_CATEGORY_PRIORITY = [
   ['abbreviation-business', '略語'],
   ['abbreviation-public', '略語'],
   ['abbreviation-education', '略語'],
+  ['rl-contrast', 'R/L注意'],
   ['pronunciation-note', '発音注意']
 ];
 const ABBREVIATION_TECH_WORDS = new Set(
@@ -12015,32 +12649,45 @@ const ABBREVIATION_ORIGIN_TYPES = {
   MI6: 'MI + 6'
 };
 const PRONUNCIATION_NOTE_WORDS = new Set(
-  'law raw low maw moe hoe toe cow caw'.split(' ')
+  'law raw low maw moe hoe toe cow caw progress pronounce pronunciation'.split(' ')
 );
+const RL_CONTRAST_PAIRS = {
+  law: { label: 'L law（法律） / R raw（生の）' },
+  raw: { label: 'R raw（生の） / L law（法律）' },
+  low: { label: 'L low（低い） / R row（列）' },
+  row: { label: 'R row（列） / L low（低い）' },
+  light: { label: 'L light（光・軽い） / R right（正しい・右）' },
+  right: { label: 'R right（正しい・右） / L light（光・軽い）' },
+  lice: { label: 'L lice（シラミ） / R rice（米）' },
+  rice: { label: 'R rice（米） / L lice（シラミ）' }
+};
 const JUNIOR_WORDS = new Set(
   'accept achieve active admire admit advice afford aid aim alarm allow announce apply arrange arrival athlete attend avoid background basic beach behave belong birth border borrow brain branch brave bridge bright cancel capital careful carry cause celebrate ceremony chance character choice claim collect college combine comfort compare connect contain continue control conversation customer damage deadline delay delivery demand depend describe design detail develop direction discuss display distance divide doubt earn employee employer enable equipment escape event excellent exchange exist expect explore express extend fail famous field final focus force foreign form fresh friendly future gain garbage general guest guide helpful honest huge inform introduce island journey judge junior lack lead limit local mail manage manager manner material measure medicine memory message museum necessary nervous noisy occur option ordinary passenger patient perfect perform physical planet pleasure polite positive prepare process produce protect prove public quiet reach recent release remove repair replace reply request rescue respect review route safety schedule seek select serious share shift simple sort source speech station stress suggest supply task tend theatre ticket total traffic treat trouble trust truth useful vehicle visitor weather weight welcome youth'.split(' ')
 );
 const MORPHEME_PREFIX_HINTS = {
+  anti: new Set('antinomy'.split(' ')),
+  auto: new Set('autonomous'.split(' ')),
   psycho: new Set('psychological'.split(' ')),
   pre: new Set('prepare predict preserve prevent preview'.split(' ')),
   dis: new Set('disconnect disappear discover distribute distributor'.split(' ')),
   en: new Set('encourage encounter enforce ensure'.split(' ')),
-  un: new Set('unfortunately'.split(' ')),
-  in: new Set('income independent inconvenient inside'.split(' ')),
+  un: new Set('unequal unfortunately'.split(' ')),
+  in: new Set('inactive income independent inequality injustice inconvenient inside'.split(' ')),
   out: new Set('outcome outside'.split(' ')),
   ab: new Set('abnormal'.split(' ')),
   mis: new Set('miscommunicate misunderstand'.split(' ')),
   re: new Set('reaction recall reborn recycle reform rehabilitate rehabilitation reinforce reinforcement represent resale restrictor reuse review recognition'.split(' ')),
-  ex: new Set('external extreme'.split(' ')),
+  ex: new Set('exchange exchangeable external extreme'.split(' ')),
   con: new Set('conduction conductor contribute'.split(' ')),
-  pro: new Set('proportion'.split(' ')),
+  pro: new Set('progress progressive progressively progression pronoun proportion'.split(' ')),
   co: new Set('cooperate cooperation'.split(' ')),
   contro: new Set('controversial'.split(' ')),
+  ad: new Set('adverb'.split(' ')),
   trans: new Set('transfer transform transformation'.split(' '))
 };
 const MORPHEME_SUFFIX_HINTS = {
-  ation: new Set('activation adaptation allocation application calculation celebration communication determination elimination estimation evacuation evaluation generation innovation inspiration modification motivation observation preparation rehabilitation separation transformation'.split(' ')),
-  sion: new Set('decision discussion expression extension'.split(' ')),
+  ation: new Set('activation adaptation allocation application calculation celebration communication determination elimination estimation evacuation evaluation generation innovation inspiration justification modification motivation observation preparation pronunciation realisation rehabilitation separation transformation'.split(' ')),
+  sion: new Set('decision discussion expression extension progression'.split(' ')),
   ion: new Set('addition assumption collection competition concentration condition conduction connection convention conversation correction creation direction education election emotion evolution examination foundation function institution intention organisation population promotion protection reaction recognition reflection relation restriction selection solution suggestion tradition'.split(' ')),
   ance: new Set('affordance appliance assistance compliance circumstance guidance maintenance performance'.split(' ')),
   ence: new Set('absence conference consequence convenience difference evidence existence experience independence influence'.split(' ')),
@@ -12048,24 +12695,24 @@ const MORPHEME_SUFFIX_HINTS = {
   ness: new Set('awareness quickness recklessness'.split(' ')),
   ful: new Set('careful helpful useful'.split(' ')),
   less: new Set('reckless seamless'.split(' ')),
-  ous: new Set('ambitious curious dangerous enormous obvious various'.split(' ')),
-  ive: new Set('adaptive alternative competitive comprehensive creative extensive innovative negative objective perspective positive productive representative sensitive'.split(' ')),
+  ous: new Set('ambitious autonomous curious dangerous enormous meticulous obvious various'.split(' ')),
+  ive: new Set('adaptive adjective alternative competitive comprehensive creative extensive innovative negative objective perspective positive productive progressive protective representative responsive sensitive'.split(' ')),
   fy: new Set('classify identify justify modify simplify specify verify'.split(' ')),
   ial: new Set('artificial'.split(' ')),
-  al: new Set('abnormal approval external local survival traditional professional rational usual'.split(' ')),
+  al: new Set('abnormal adjectival approval external local survival traditional professional rational usual verbal'.split(' ')),
   ent: new Set('convenient inconvenient'.split(' ')),
-  ate: new Set('rehabilitate'.split(' ')),
+  ate: new Set('activate rehabilitate'.split(' ')),
   ibility: new Set('responsibility'.split(' ')),
-  able: new Set('accountable adaptable available capable comfortable considerable reasonable reliable sustainable'.split(' ')),
+  able: new Set('accountable adaptable available capable comfortable considerable exchangeable reasonable reliable sustainable'.split(' ')),
   ic: new Set('athletic economic'.split(' ')),
-  ly: new Set('accidentally carefully finally formally fortunately frequently gradually immediately naturally originally physically rapidly recently unfortunately generally precisely suddenly'.split(' ')),
-  ary: new Set('elementary missionary'.split(' ')),
-  or: new Set('conductor distributor restrictor'.split(' ')),
+  ly: new Set('accidentally actively carefully equally finally formally fortunately frequently generally gradually immediately naturally originally physically precisely progressively rapidly really recently responsibly suddenly unfortunately'.split(' ')),
+  ary: new Set('elementary evolutionary missionary'.split(' ')),
+  or: new Set('conductor distributor protector restrictor'.split(' ')),
   er: new Set('browser explorer foreigner leader'.split(' ')),
   ee: new Set('attendee employee'.split(' ')),
   ant: new Set('attendant'.split(' ')),
-  ise: new Set('apologise categorise emphasise memorise recognise'.split(' ')),
-  ity: new Set('accountability curiosity majority mentality minority morality quantity security similarity'.split(' ')),
+  ise: new Set('apologise categorise emphasise memorise realise recognise'.split(' ')),
+  ity: new Set('accountability activity curiosity equality inequality majority mentality minority morality quantity security similarity'.split(' ')),
   ship: new Set('friendship leadership relationship'.split(' ')),
   ing: new Set('streaming'.split(' ')),
   ure: new Set('exposure'.split(' '))
@@ -12083,6 +12730,7 @@ let showPhoneticAssist = localStorage.getItem(PHONETIC_ASSIST_STORAGE_KEY) === '
 let showFrontLevel = localStorage.getItem(FRONT_LEVEL_STORAGE_KEY) === 'shown';
 let showFrontPart = localStorage.getItem(FRONT_PART_STORAGE_KEY) === 'shown';
 let hapticFeedbackEnabled = localStorage.getItem(HAPTIC_FEEDBACK_STORAGE_KEY) !== 'off';
+let selectedSpeechVoiceKey = localStorage.getItem(SPEECH_VOICE_STORAGE_KEY) || SPEECH_AUTO_FEMALE;
 const SETTINGS_PAGE_ORDER = ['level', 'theme', 'test', 'display', 'history'];
 let currentSettingsPage = 'level';
 
@@ -12130,7 +12778,9 @@ function showSettingsView() {
   updatePhoneticAssistButtons();
   updateFrontMetaButtons();
   updateHapticFeedbackButtons();
+  updateSpeechVoiceButtons();
   updateStats();
+  updateDataQualityPanel();
   document.getElementById('learn-view').hidden = true;
   document.getElementById('settings-view').hidden = false;
   setSettingsPage(currentSettingsPage);
@@ -12415,26 +13065,124 @@ function getSpeechEngine() {
   return window.speechSynthesis;
 }
 
-function getVoiceRank(voice) {
+function getSpeechVoiceKey(voice) {
+  return voice?.voiceURI || `${voice?.name || ''}__${voice?.lang || ''}`;
+}
+
+function isEnglishVoice(voice) {
+  return String(voice?.lang || '').toLowerCase().startsWith('en');
+}
+
+function getVoiceGenderHint(voice) {
+  const name = String(voice?.name || '').toLowerCase();
+  if (/female|serena|samantha|victoria|karen|moira|tessa|kate|martha|susan|zira|ava|allison|sara|google uk english female/.test(name)) {
+    return 'female';
+  }
+  if (/male|daniel|oliver|arthur|fred|tom|ralph|alex|aaron|nicky|google uk english male/.test(name)) {
+    return 'male';
+  }
+  return 'unknown';
+}
+
+function getVoiceLanguageRank(voice) {
   const lang = String(voice.lang || '').toLowerCase();
   const name = String(voice.name || '').toLowerCase();
-  if (lang === 'en-gb' && /daniel|serena|kate|oliver|martha|google uk|english united kingdom|british/.test(name)) return 0;
-  if (lang === 'en-gb') return 1;
-  if (lang.startsWith('en-') && /uk|british|united kingdom|daniel|serena|kate|oliver|martha/.test(name)) return 2;
-  if (lang.startsWith('en-')) return 3;
+  if (lang === 'en-gb') return 0;
+  if (lang.startsWith('en-') && /uk|british|united kingdom|daniel|serena|kate|oliver|martha/.test(name)) return 1;
+  if (lang.startsWith('en-')) return 2;
   return 9;
 }
 
+function getVoiceRank(voice) {
+  const gender = getVoiceGenderHint(voice);
+  const genderRank = selectedSpeechVoiceKey === SPEECH_AUTO_FEMALE
+    ? { female: 0, unknown: 1, male: 2 }[gender]
+    : 1;
+  return getVoiceLanguageRank(voice) * 10 + genderRank;
+}
+
 function selectBritishEnglishVoice(voices) {
-  return [...voices]
-    .filter(voice => String(voice.lang || '').toLowerCase().startsWith('en'))
-    .sort((a, b) => getVoiceRank(a) - getVoiceRank(b))[0] || null;
+  const englishVoices = [...voices].filter(isEnglishVoice);
+  if (selectedSpeechVoiceKey && selectedSpeechVoiceKey !== SPEECH_AUTO_FEMALE) {
+    const selectedVoice = englishVoices.find(voice => getSpeechVoiceKey(voice) === selectedSpeechVoiceKey);
+    if (selectedVoice) return selectedVoice;
+  }
+  return englishVoices.sort((a, b) => getVoiceRank(a) - getVoiceRank(b) || String(a.name).localeCompare(String(b.name)))[0] || null;
+}
+
+function getSpeechVoiceLabel(voice) {
+  const gender = getVoiceGenderHint(voice);
+  const genderLabel = gender === 'female' ? '女性' : gender === 'male' ? '男性' : '音声';
+  return `${genderLabel} / ${voice.name || 'English'} / ${voice.lang || 'en'}`;
+}
+
+function updateSpeechVoiceButtons() {
+  const container = document.getElementById('speech-voice-buttons');
+  const note = document.getElementById('speech-voice-note');
+  if (!container) return;
+  const synth = getSpeechEngine();
+  container.innerHTML = '';
+  if (!synth) {
+    const button = document.createElement('button');
+    button.className = 'speech-voice-btn';
+    button.type = 'button';
+    button.disabled = true;
+    button.textContent = '音声非対応';
+    container.appendChild(button);
+    if (note) note.textContent = 'この端末では音声再生に対応していません。';
+    return;
+  }
+
+  const voices = synth.getVoices().filter(isEnglishVoice);
+  const activeVoice = britishEnglishVoice || selectBritishEnglishVoice(voices);
+  const makeButton = (value, label, meta = '') => {
+    const button = document.createElement('button');
+    button.className = 'speech-voice-btn';
+    button.type = 'button';
+    button.dataset.speechVoice = value;
+    button.classList.toggle('active', selectedSpeechVoiceKey === value);
+    button.setAttribute('aria-pressed', selectedSpeechVoiceKey === value ? 'true' : 'false');
+    button.onclick = () => setSpeechVoicePreference(value);
+    button.textContent = label;
+    if (meta) {
+      const span = document.createElement('span');
+      span.textContent = meta;
+      button.appendChild(span);
+    }
+    return button;
+  };
+
+  container.appendChild(makeButton(SPEECH_AUTO_FEMALE, '女性声を優先', activeVoice ? `現在: ${activeVoice.name || 'English'} / ${activeVoice.lang || 'en'}` : '候補を自動選択'));
+
+  if (!voices.length) {
+    const waiting = document.createElement('button');
+    waiting.className = 'speech-voice-btn';
+    waiting.type = 'button';
+    waiting.disabled = true;
+    waiting.textContent = '音声を取得中';
+    container.appendChild(waiting);
+    if (note) note.textContent = '音声候補を取得中です。少し待ってから設定を開き直してください。';
+    updateSettingsPagerHeight();
+    return;
+  }
+
+  const sortedVoices = [...voices].sort((a, b) => getVoiceRank(a) - getVoiceRank(b) || String(a.name).localeCompare(String(b.name)));
+  sortedVoices.forEach(voice => {
+    const key = getSpeechVoiceKey(voice);
+    container.appendChild(makeButton(key, getSpeechVoiceLabel(voice), voice.localService ? '端末内音声' : 'ブラウザ音声'));
+  });
+
+  if (note) {
+    const current = activeVoice ? getSpeechVoiceLabel(activeVoice) : '自動選択';
+    note.textContent = `現在: ${current}`;
+  }
+  updateSettingsPagerHeight();
 }
 
 function getAudioAriaLabel() {
   if (!speechVoiceReady) return 'この端末では音声再生に対応していません';
   if (britishEnglishVoice && String(britishEnglishVoice.lang || '').toLowerCase() === 'en-gb') {
-    return 'UK音声で単語を再生';
+    return `UK音声で単語を再生（${britishEnglishVoice.name || 'English'}）`;
   }
   return '英語音声で単語を再生。en-GB音声がない場合は端末の英語音声を使います';
 }
@@ -12459,6 +13207,7 @@ function refreshSpeechVoices() {
   const voices = synth.getVoices();
   britishEnglishVoice = selectBritishEnglishVoice(voices);
   updateAudioButtons();
+  updateSpeechVoiceButtons();
 }
 
 function setupSpeechAudio() {
@@ -12469,6 +13218,13 @@ function setupSpeechAudio() {
   }
   refreshSpeechVoices();
   synth.onvoiceschanged = refreshSpeechVoices;
+}
+
+function setSpeechVoicePreference(value) {
+  selectedSpeechVoiceKey = value || SPEECH_AUTO_FEMALE;
+  localStorage.setItem(SPEECH_VOICE_STORAGE_KEY, selectedSpeechVoiceKey);
+  refreshSpeechVoices();
+  triggerHapticFeedback(12);
 }
 
 function getSpeechText(word) {
@@ -12587,6 +13343,9 @@ function getWordCategories(word) {
   if (PRONUNCIATION_NOTE_WORDS.has(String(word.w || '').toLowerCase())) {
     categories.add('pronunciation-note');
   }
+  if (RL_CONTRAST_PAIRS[String(word.w || '').toLowerCase()]) {
+    categories.add('rl-contrast');
+  }
   return categories;
 }
 
@@ -12595,6 +13354,10 @@ function hasCategory(word, category) {
   const tag = CATEGORY_TAGS[category];
   if (!tag) return true;
   return getWordCategories(word).has(tag);
+}
+
+function isAbbreviationWord(word) {
+  return getWordCategories(word).has('abbreviation');
 }
 
 function getAbbreviationOrigin(word) {
@@ -12608,6 +13371,11 @@ function formatAbbreviationOrigin(word, origin) {
   return originType ? `${origin}（${originType}）` : origin;
 }
 
+function getRlContrastNote(word) {
+  const pair = RL_CONTRAST_PAIRS[String(word.w || '').toLowerCase()];
+  return pair ? `R/L注意: ${pair.label}` : '';
+}
+
 function updateOriginText(word) {
   const el = document.getElementById('origin-text');
   if (!el) return;
@@ -12617,8 +13385,50 @@ function updateOriginText(word) {
     el.textContent = formatAbbreviationOrigin(word, origin);
     return;
   }
+  const rlNote = getRlContrastNote(word);
+  if (rlNote) {
+    el.hidden = false;
+    el.textContent = rlNote;
+    return;
+  }
   el.hidden = true;
   el.textContent = '';
+}
+
+function getAbbreviationReadingLabel(word) {
+  return String(word.ph || '').includes(' ') ? '文字読み' : '単語読み';
+}
+
+function getAbbreviationReadingText(word) {
+  return `${getAbbreviationReadingLabel(word)}: ${word.ph || word.w}`;
+}
+
+function updateFrontPronunciation(word) {
+  const ipaEl = document.getElementById('ipa-text');
+  const phoneticEl = document.getElementById('phonetic-text');
+  if (!ipaEl || !phoneticEl) return;
+
+  ipaEl.className = 'ipa-text';
+  phoneticEl.className = 'phonetic-text';
+
+  if (isAbbreviationWord(word)) {
+    ipaEl.textContent = '';
+    ipaEl.hidden = true;
+    ipaEl.removeAttribute('aria-label');
+    phoneticEl.hidden = true;
+    phoneticEl.textContent = '';
+    return;
+  }
+
+  ipaEl.hidden = false;
+  ipaEl.removeAttribute('aria-label');
+  ipaEl.textContent = '/' + word.ipa + '/';
+  renderPhoneticAssist(word);
+}
+
+function getTestPronunciationText(word) {
+  if (isAbbreviationWord(word)) return getAbbreviationReadingText(word);
+  return `/${word.ipa}/  ${word.ph}`;
 }
 
 function getCategoryFilteredWords() {
@@ -12678,6 +13488,49 @@ function updateCategoryButtons() {
     const el = document.getElementById(`category-count-${category}`);
     if (el) el.textContent = `${getCategoryCount(category)}項目`;
   });
+}
+
+function getDataQualitySummary() {
+  const requiredFields = ['w', 'pos', 'ipa', 'ph', 'm', 'ex', 'exJa'];
+  const requiredMissing = WORDS.filter(word =>
+    requiredFields.some(field => !String(word[field] ?? '').trim())
+  ).length;
+  const keyCounts = new Map();
+  WORDS.forEach((word, index) => {
+    const key = getCardKey(word, index);
+    keyCounts.set(key, (keyCounts.get(key) || 0) + 1);
+  });
+  const duplicateKeyGroups = [...keyCounts.values()].filter(count => count > 1).length;
+  const abbreviationCards = WORDS.filter(word => isAbbreviationWord(word));
+  const missingOrigins = abbreviationCards.filter(word => !getAbbreviationOrigin(word)).length;
+  const missingSpeech = abbreviationCards.filter(word => {
+    const wordText = String(word.w || '').trim();
+    return !SPEECH_TEXT_OVERRIDES[wordText];
+  }).length;
+  const issueCount = requiredMissing + duplicateKeyGroups + missingOrigins + missingSpeech;
+  const uniqueWords = new Set(
+    WORDS.map(word => String(word.w || '').trim().toLowerCase()).filter(Boolean)
+  ).size;
+  return {
+    total: WORDS.length,
+    unique: uniqueWords,
+    issueCount,
+    requiredMissing,
+    duplicateKeyGroups,
+    missingOrigins,
+    missingSpeech
+  };
+}
+
+function updateDataQualityPanel() {
+  const summary = getDataQualitySummary();
+  setText('data-quality-total', summary.total);
+  setText('data-quality-unique', summary.unique);
+  setText('data-quality-issues', summary.issueCount);
+  const note = summary.issueCount === 0
+    ? '必須項目、履歴キー重複、略語の元語、略語の音声展開は要確認0件です。'
+    : `要確認: 必須${summary.requiredMissing} / 重複キー${summary.duplicateKeyGroups} / 略語元語${summary.missingOrigins} / 略語音声${summary.missingSpeech}`;
+  setText('data-quality-note', note);
 }
 
 function setLevel(level) {
@@ -12942,6 +13795,7 @@ let currentIndex  = 0;
 let isFlipped     = false;
 let reviewedToday = 0;
 let sessionReviewedKeys = new Set();
+const audioButtonRevealTimers = new WeakMap();
 let currentMode = 'learn';
 let testCards = [];
 let testIndex = 0;
@@ -12952,6 +13806,7 @@ let testAnswered = false;
 let testCardFlipped = false;
 let testMissedKeys = new Set();
 let testSessionKind = 'normal';
+let testPerfectQuote = null;
 let completionAction = 'restart';
 
 function getDueCards() {
@@ -12966,6 +13821,124 @@ function shuffle(arr) {
     [a[i], a[j]] = [a[j], a[i]];
   }
   return a;
+}
+
+function uniqueCards(words) {
+  const seen = new Set();
+  return words.filter((word, index) => {
+    const key = getCardKey(word, index);
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
+}
+
+function getStudyState(word, data) {
+  return data[getCardKey(word)] || { n: 0, ef: 2.5, interval: 1, nextDate: 0 };
+}
+
+function getOverdueWeight(state, now) {
+  if (!state.nextDate) return 1.2;
+  return Math.max(0, Math.min(6, (now - state.nextDate) / DAY_MS));
+}
+
+function isDueForPractice(word, data, now) {
+  const state = getStudyState(word, data);
+  return !state.nextDate || state.nextDate <= now;
+}
+
+function getFocusWeight(word) {
+  const categories = getWordCategories(word);
+  let weight = 0;
+  if (categories.has('rl-contrast')) weight += 5;
+  if (categories.has('pronunciation-note')) weight += 4;
+  if (categories.has('katakana-gap')) weight += 4;
+  if (categories.has('abbreviation')) weight += 3;
+  const morpheme = getWordMorphemeParts(word.w);
+  if (morpheme.prefix || morpheme.suffix) weight += 2;
+  return weight;
+}
+
+function rankAdaptiveWords(words, scorer) {
+  return shuffle(words).sort((a, b) => scorer(b) - scorer(a));
+}
+
+function createAdaptiveTestDeck(activeWords, limit = TEST_CARD_LIMIT) {
+  const pool = uniqueCards(activeWords);
+  const targetCount = Math.min(limit, pool.length);
+  if (targetCount <= 0) return [];
+
+  const data = loadData();
+  const now = Date.now();
+  const missedKeys = new Set(loadMissedReviewKeys());
+  const selectedKeys = new Set();
+  const sections = { warm: [], due: [], missed: [], focus: [], close: [], fill: [] };
+  const remainingSlots = () => targetCount - Object.values(sections).reduce((total, section) => total + section.length, 0);
+  const isSelected = word => selectedKeys.has(getCardKey(word));
+
+  const addSection = (sectionName, words, count, scorer) => {
+    const ranked = rankAdaptiveWords(words.filter(word => !isSelected(word)), scorer);
+    const chosen = ranked.slice(0, Math.max(0, Math.min(count, remainingSlots())));
+    chosen.forEach(word => {
+      selectedKeys.add(getCardKey(word));
+      sections[sectionName].push(word);
+    });
+  };
+
+  const knownEasy = pool.filter(word => {
+    const state = getStudyState(word, data);
+    return state.n > 0 && !missedKeys.has(getCardKey(word)) && getFocusWeight(word) === 0;
+  });
+  const dueWords = pool.filter(word => {
+    const key = getCardKey(word);
+    return isDueForPractice(word, data, now) && !missedKeys.has(key) && getFocusWeight(word) === 0;
+  });
+  const missedWords = pool.filter(word => missedKeys.has(getCardKey(word)));
+  const focusWords = pool.filter(word => getFocusWeight(word) > 0);
+
+  const warmTarget = targetCount >= 8 ? 3 : Math.min(2, targetCount);
+  const closeTarget = targetCount >= 8 ? 2 : 0;
+  const missedTarget = Math.min(5, Math.max(1, Math.floor(targetCount * 0.25)));
+  const focusTarget = Math.min(4, Math.max(1, Math.floor(targetCount * 0.2)));
+  const dueTarget = Math.max(0, targetCount - warmTarget - closeTarget - missedTarget - focusTarget);
+
+  addSection('warm', knownEasy, warmTarget, word => {
+    const state = getStudyState(word, data);
+    return (state.n || 0) + Math.min(4, state.interval || 1);
+  });
+  addSection('due', dueWords, dueTarget, word => {
+    const state = getStudyState(word, data);
+    return getOverdueWeight(state, now) + (state.n === 0 ? 0.8 : 0) + (getFocusWeight(word) * 0.15);
+  });
+  addSection('missed', missedWords, missedTarget, word => 10 + getFocusWeight(word));
+  addSection('focus', focusWords, focusTarget, word => getFocusWeight(word));
+  addSection('close', knownEasy, closeTarget, word => {
+    const state = getStudyState(word, data);
+    return (state.n || 0) + Math.min(5, state.interval || 1);
+  });
+
+  if (remainingSlots() > 0) {
+    addSection('fill', pool, remainingSlots(), word => {
+      const state = getStudyState(word, data);
+      return getOverdueWeight(state, now) + getFocusWeight(word) * 0.2 - Math.min(2, state.n || 0) * 0.2;
+    });
+  }
+
+  const middle = [];
+  const missedMiddle = [...sections.missed];
+  const focusMiddle = [...sections.focus];
+  while (missedMiddle.length || focusMiddle.length) {
+    if (missedMiddle.length) middle.push(missedMiddle.shift());
+    if (focusMiddle.length) middle.push(focusMiddle.shift());
+  }
+
+  return [
+    ...sections.warm,
+    ...sections.due,
+    ...middle,
+    ...sections.fill,
+    ...sections.close
+  ].slice(0, targetCount);
 }
 
 function startSession() {
@@ -13009,8 +13982,7 @@ function showCard() {
 
   wordText.className = `word-text ${partClass}`;
   wordText.innerHTML = renderWordWithMorphemes(w.w);
-  document.getElementById('ipa-text').textContent     = '/' + w.ipa + '/';
-  renderPhoneticAssist(w);
+  updateFrontPronunciation(w);
   document.getElementById('level-tag').textContent     = LEVEL_LABELS[getWordLevel(w, WORDS.indexOf(w))];
   posTag.className = `pos-tag ${partClass}`;
   posTag.textContent = formatPartOfSpeechForDisplay(partOfSpeech);
@@ -13049,9 +14021,24 @@ function resetCardToFrontInstantly() {
   return true;
 }
 
+function hideAudioButtonDuringFlipBack(card) {
+  if (!card) return;
+  const existingTimer = audioButtonRevealTimers.get(card);
+  if (existingTimer) clearTimeout(existingTimer);
+  card.classList.add('audio-hidden-during-flip');
+  const timer = setTimeout(() => {
+    card.classList.remove('audio-hidden-during-flip');
+    audioButtonRevealTimers.delete(card);
+  }, 640);
+  audioButtonRevealTimers.set(card, timer);
+}
+
 function flipCard() {
-  isFlipped = !isFlipped;
-  document.getElementById('card').classList.toggle('flipped', isFlipped);
+  const card = document.getElementById('card');
+  const nextFlipped = !isFlipped;
+  if (isFlipped && !nextFlipped) hideAudioButtonDuringFlipBack(card);
+  isFlipped = nextFlipped;
+  card.classList.toggle('flipped', isFlipped);
   triggerHapticFeedback(12);
   updateSwipeMessage();
 }
@@ -13077,6 +14064,7 @@ function beginTestSession(cards, kind = 'normal') {
   testBestStreak = 0;
   testAnswered = false;
   testMissedKeys = new Set();
+  testPerfectQuote = null;
   completionAction = 'restart';
   reviewedToday = 0;
   sessionReviewedKeys = new Set();
@@ -13095,7 +14083,7 @@ function beginTestSession(cards, kind = 'normal') {
 function startTestSession() {
   markIntroSeen();
   const activeWords = getActiveWords();
-  beginTestSession(shuffle(activeWords).slice(0, TEST_CARD_LIMIT), 'normal');
+  beginTestSession(createAdaptiveTestDeck(activeWords), 'normal');
 }
 
 function startMissReviewSession() {
@@ -13142,11 +14130,13 @@ function buildTestChoices(correctWord) {
   ]);
 }
 
-function setTestCardFlipped(isFlipped) {
-  testCardFlipped = Boolean(isFlipped);
+function setTestCardFlipped(nextFlipped) {
+  const wasFlipped = testCardFlipped;
+  testCardFlipped = Boolean(nextFlipped);
   const card = document.getElementById('test-word-card');
   if (!card) return;
   const canFlip = currentMode === 'test' && testAnswered && Boolean(testCards[testIndex]);
+  if (wasFlipped && !testCardFlipped) hideAudioButtonDuringFlipBack(card);
   card.classList.toggle('is-flipped', testCardFlipped);
   card.classList.toggle('can-flip', canFlip);
   card.setAttribute('aria-pressed', testCardFlipped ? 'true' : 'false');
@@ -13169,6 +14159,10 @@ function handleTestCardKey(event) {
   if (event.key !== 'Enter' && event.key !== ' ') return;
   event.preventDefault();
   event.stopPropagation();
+  if (event.key === 'Enter' && testAnswered) {
+    showNextTestQuestion();
+    return;
+  }
   toggleTestCardFlip();
 }
 
@@ -13176,13 +14170,17 @@ function updateTestCardBack(word) {
   const partOfSpeech = getPartOfSpeech(word);
   document.getElementById('test-back-pos').textContent = formatPartOfSpeechForDisplay(partOfSpeech);
   document.getElementById('test-back-meaning').textContent = word.m;
-  document.getElementById('test-back-pron').textContent = `/${word.ipa}/  ${word.ph}`;
+  document.getElementById('test-back-pron').textContent = getTestPronunciationText(word);
 
   const originEl = document.getElementById('test-back-origin');
   const origin = getAbbreviationOrigin(word);
+  const rlNote = getRlContrastNote(word);
   if (origin && getWordCategories(word).has('abbreviation')) {
     originEl.hidden = false;
     originEl.textContent = formatAbbreviationOrigin(word, origin);
+  } else if (rlNote) {
+    originEl.hidden = false;
+    originEl.textContent = rlNote;
   } else {
     originEl.hidden = true;
     originEl.textContent = '';
@@ -13278,6 +14276,9 @@ function getFocusHint(word) {
   }
   if (categories.has('katakana-gap')) {
     return '知ってるつもり注意。カタカナの印象と英語の意味がズレやすい。';
+  }
+  if (categories.has('rl-contrast')) {
+    return 'R/L注意。語頭の r / l で意味が変わる。';
   }
   if (categories.has('pronunciation-note')) {
     return '発音注意語。音より先に意味の中心を確認。';
@@ -13403,6 +14404,7 @@ function answerTestChoiceByNumber(key) {
 
 function showNextTestQuestion() {
   if (!testAnswered) return;
+  if (testIndex >= testCards.length) return;
   testIndex++;
   showTestQuestion();
   updateStats();
@@ -13422,6 +14424,7 @@ function exportData() {
     selectedFrontLevelVisible: showFrontLevel,
     selectedFrontPartVisible: showFrontPart,
     selectedHapticFeedbackEnabled: hapticFeedbackEnabled,
+    selectedSpeechVoiceKey,
     missedReviewKeys: loadMissedReviewKeys(),
     data: loadData()
   };
@@ -13476,6 +14479,11 @@ async function importData(event) {
     if (typeof payload.selectedHapticFeedbackEnabled === 'boolean') {
       hapticFeedbackEnabled = payload.selectedHapticFeedbackEnabled;
       localStorage.setItem(HAPTIC_FEEDBACK_STORAGE_KEY, hapticFeedbackEnabled ? 'on' : 'off');
+    }
+    if (typeof payload.selectedSpeechVoiceKey === 'string') {
+      selectedSpeechVoiceKey = payload.selectedSpeechVoiceKey || SPEECH_AUTO_FEMALE;
+      localStorage.setItem(SPEECH_VOICE_STORAGE_KEY, selectedSpeechVoiceKey);
+      refreshSpeechVoices();
     }
     if (Array.isArray(payload.missedReviewKeys)) {
       saveMissedReviewKeys(payload.missedReviewKeys);
@@ -13542,6 +14550,27 @@ function setCompleteFocus(message, tone = 'normal') {
   if (!element) return;
   element.textContent = message || '';
   element.className = `complete-focus${message ? ' is-visible' : ''}${tone === 'cleared' ? ' cleared' : ''}`;
+}
+
+function setCompleteNextStep(message, tone = 'normal') {
+  const element = document.getElementById('complete-next-step');
+  if (!element) return;
+  element.textContent = message || '';
+  element.className = `complete-next-step${message ? ' is-visible' : ''}${tone === 'success' ? ' success' : ''}`;
+}
+
+function getStudyNextStepMessage(due) {
+  if (due <= 0) return '次の一手: 今日はここで区切ってOK。明日、また少しだけ続ける。';
+  return '次の一手: 出題候補をもう一周。短く回すほど記憶に残りやすい。';
+}
+
+function getTestNextStepMessage({ testLength, misses, isMissReview, remainingMisses, isPerfect20 }) {
+  if (!testLength) return '次の一手: 設定で範囲を広げると再開できます。';
+  if (misses > 0) return '次の一手: ミスだけ復習で、今のつまずきをすぐ回収。';
+  if (isMissReview && remainingMisses === 0) return '次の一手: 弱点回収完了。今日の20問へ戻って力試し。';
+  if (isPerfect20) return '次の一手: 今日は勝ち逃げでもOK。もう一回なら別の20問。';
+  if (isMissReview) return `次の一手: 残り${remainingMisses}語も、同じ流れで回収。`;
+  return '次の一手: 別の20問で満点の再現を狙う。';
 }
 
 function getWeaknessBucketLabel(word) {
@@ -13629,7 +14658,10 @@ function setPerfectQuoteVisible(isVisible) {
 }
 
 function showRandomPerfectQuote() {
-  const quote = PERFECT_QUOTE_POOL[Math.floor(Math.random() * PERFECT_QUOTE_POOL.length)];
+  if (!testPerfectQuote) {
+    testPerfectQuote = PERFECT_QUOTE_POOL[Math.floor(Math.random() * PERFECT_QUOTE_POOL.length)];
+  }
+  const quote = testPerfectQuote;
   setText('perfect-quote-text', `"${quote.quote}"`);
   setText('perfect-quote-source', quote.source);
   setText('perfect-quote-ja', quote.ja);
@@ -13675,6 +14707,7 @@ function showComplete() {
 	  document.getElementById('progress-text').textContent = `${sessionCards.length} / ${sessionCards.length}`;
 	  setPerfectQuoteVisible(false);
   setCompleteFocus('');
+  setCompleteNextStep('');
 
 	  const data = loadData();
   const activeWords = getActiveWords();
@@ -13695,6 +14728,7 @@ function showComplete() {
   document.getElementById('cs-due').textContent      = due;
   document.getElementById('complete-msg').textContent =
     `「${getScopeLabel()}」${activeWords.length}項目中 ${mastered}項目を習得しました。\n次回の出題候補は ${due}項目です。`;
+  setCompleteNextStep(getStudyNextStepMessage(due), due <= 0 ? 'success' : 'normal');
 }
 
 function showTestComplete() {
@@ -13745,9 +14779,22 @@ function showTestComplete() {
 	      : `今回の弱点回収完了。残り${remainingMisses}語もこの調子。`)
 	    : getWeaknessSummaryLine(isMissReview);
 	  setCompleteFocus(weaknessLine, isMissReviewCleared ? 'cleared' : 'normal');
-	  if (isPerfect20) showRandomPerfectQuote();
-	  else setPerfectQuoteVisible(false);
-	}
+	  setCompleteNextStep(
+	    getTestNextStepMessage({
+	      testLength: testCards.length,
+	      misses,
+	      isMissReview,
+	      remainingMisses,
+	      isPerfect20
+	    }),
+	    (isMissReviewCleared && remainingMisses === 0) || isPerfect20 ? 'success' : 'normal'
+	  );
+		  if (isPerfect20) showRandomPerfectQuote();
+		  else {
+		    testPerfectQuote = null;
+		    setPerfectQuoteVisible(false);
+		  }
+		}
 
 // ─── スワイプ操作 ─────────────────────────────────────────────────────
 let touchStartX = 0, touchStartY = 0;
