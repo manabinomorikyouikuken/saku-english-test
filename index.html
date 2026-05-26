@@ -775,8 +775,15 @@
     .card-front {
       background: white;
       box-shadow: 0 6px 30px rgba(0,0,0,0.1);
+      gap: 8px;
+    }
+    .card-front .word-audio-btn {
+      position: static;
+      order: 3;
+      margin-top: 0;
     }
     .word-text {
+      order: 1;
       font-size: clamp(36px, 10vw, 44px);
       font-weight: 800;
       color: #1a2a4a;
@@ -799,10 +806,10 @@
     }
     .word-text .morpheme-root { color: currentColor; }
     .ipa-text {
+      order: 2;
       font-size: 17px;
       font-family: 'Segoe UI', Georgia, 'DejaVu Sans', serif;
       color: #3b82f6;
-      margin-top: 8px;
       letter-spacing: 0.3px;
     }
     .ipa-text.abbreviation-reading {
@@ -815,6 +822,7 @@
     }
     .accent-mark { color: #ef4444; font-weight: 700; }
     .phonetic-text {
+      order: 4;
       font-size: 13px;
       color: #b0bac8;
       margin-top: 4px;
@@ -876,6 +884,7 @@
       border-radius: 20px;
     }
     .word-meta {
+      order: 5;
       display: flex;
       justify-content: center;
       flex-wrap: wrap;
