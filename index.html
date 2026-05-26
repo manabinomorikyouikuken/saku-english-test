@@ -60,6 +60,7 @@
       white-space: nowrap;
     }
     .header-right { display: flex; align-items: center; gap: 10px; }
+    body:not(.test-mode) .header-right { display: none; }
     .stats { display: flex; gap: 18px; font-size: 13px; }
     .stat-item { text-align: center; }
     .stat-num { font-size: 20px; font-weight: 700; display: block; line-height: 1; }
@@ -411,9 +412,9 @@
       flex: 1;
       display: flex;
       flex-direction: column;
-      justify-content: flex-end;
+      justify-content: center;
       min-height: 0;
-      padding-top: clamp(20px, 8vh, 72px);
+      padding-top: clamp(8px, 4vh, 36px);
     }
     .card-prompt {
       width: min(92%, 420px);
@@ -740,7 +741,7 @@
     .card-container {
       perspective: 1200px;
       width: min(92%, 420px);
-      height: 292px;
+      height: clamp(292px, 48svh, 340px);
       margin: 0 auto 10px;
       cursor: pointer;
       touch-action: pan-y;
@@ -1362,9 +1363,9 @@
     body.test-mode .progress-bar {
       height: 6px;
     }
-    body.test-mode .quick-start-panel,
-    body.test-mode .intro-panel,
-    body.test-mode .learning-summary-panel {
+    body.test-mode #learn-view .quick-start-panel,
+    body.test-mode #learn-view .intro-panel,
+    body.test-mode #learn-view .learning-summary-panel {
       display: none;
     }
     body.test-mode #card-area {
@@ -1678,7 +1679,7 @@
       .learning-summary-panel { margin-bottom: 8px; }
       .learning-summary-item { padding: 7px 5px; }
       .card-prompt { margin-bottom: 6px; }
-      .card-container { height: 258px; margin-bottom: 8px; }
+      .card-container { height: clamp(278px, 46svh, 318px); margin-bottom: 8px; }
       .test-word-card-wrap,
       .test-word-card { min-height: 130px; }
       .test-choice-card { min-height: 48px; font-size: 13px; padding: 10px 12px; }
@@ -1745,54 +1746,6 @@
       <div class="progress-fill" id="progress-fill" style="width:0%"></div>
     </div>
   </div>
-
-  <section class="intro-panel" id="intro-panel" aria-label="はじめての案内" hidden>
-    <div class="intro-title">はじめてならここから</div>
-    <div class="intro-text">
-      まずは20問。ミスした語は「ミス復習」に残ります。答えたあとは下の案内を右スワイプで次へ進めます。
-    </div>
-    <div class="intro-actions">
-      <button class="intro-btn primary" type="button" onclick="startIntroQuickTest()">今日の20問へ</button>
-      <button class="intro-btn" type="button" onclick="dismissIntroPanel()">閉じる</button>
-    </div>
-  </section>
-
-  <section class="quick-start-panel" id="quick-start-panel" aria-label="今日の入口">
-    <div class="quick-start-head">
-      <div class="quick-start-title">今日の入口</div>
-      <div class="quick-start-note">迷ったらここから</div>
-    </div>
-    <div class="quick-start-actions">
-      <button class="quick-start-btn primary" type="button" onclick="startQuickTest('all')">今日の20問</button>
-      <button class="quick-start-btn" type="button" onclick="startMissReviewSession()">ミス復習</button>
-      <button class="quick-start-btn" type="button" onclick="startQuickStudy('katakanaGap')">カタカナ注意<span>知ってるつもり</span></button>
-      <button class="quick-start-btn" type="button" onclick="startQuickStudy('phrasalVerb')">句動詞</button>
-    </div>
-  </section>
-
-  <section class="learning-summary-panel" aria-label="学習成果">
-    <div class="learning-summary-grid">
-      <div class="learning-summary-item">
-        <span class="learning-summary-num" id="stat-weekly-main">0</span>
-        <div class="learning-summary-label">今週</div>
-      </div>
-      <div class="learning-summary-item">
-        <span class="learning-summary-num" id="stat-streak-main">0</span>
-        <div class="learning-summary-label">連続日</div>
-      </div>
-      <div class="learning-summary-item">
-        <span class="learning-summary-num" id="stat-miss-cleared-main">0</span>
-        <div class="learning-summary-label">ミス克服</div>
-      </div>
-    </div>
-    <div class="growth-badge" aria-label="今日の称号">
-      <div class="growth-badge-head">
-        <span class="growth-badge-label">今日の称号</span>
-        <span class="growth-badge-title" id="growth-title">ウォームアップ</span>
-      </div>
-      <div class="growth-badge-message" id="growth-message">まずは今日の20問に入ろう。</div>
-    </div>
-  </section>
 
   <div id="card-area">
     <div class="card-prompt" id="study-prompt">タップすると答えが出るよ</div>
@@ -1951,6 +1904,30 @@
   </div>
 
   <div class="settings-pane" data-settings-page="test">
+  <section class="intro-panel" id="intro-panel" aria-label="はじめての案内" hidden>
+    <div class="intro-title">はじめてならここから</div>
+    <div class="intro-text">
+      まずは20問。ミスした語は「ミス復習」に残ります。答えたあとは下の案内を右スワイプで次へ進めます。
+    </div>
+    <div class="intro-actions">
+      <button class="intro-btn primary" type="button" onclick="startIntroQuickTest()">今日の20問へ</button>
+      <button class="intro-btn" type="button" onclick="dismissIntroPanel()">閉じる</button>
+    </div>
+  </section>
+
+  <section class="quick-start-panel" id="quick-start-panel" aria-label="今日の入口">
+    <div class="quick-start-head">
+      <div class="quick-start-title">今日の入口</div>
+      <div class="quick-start-note">迷ったらここから</div>
+    </div>
+    <div class="quick-start-actions">
+      <button class="quick-start-btn primary" type="button" onclick="startQuickTest('all')">今日の20問</button>
+      <button class="quick-start-btn" type="button" onclick="startMissReviewSession()">ミス復習</button>
+      <button class="quick-start-btn" type="button" onclick="startQuickStudy('katakanaGap')">カタカナ注意<span>知ってるつもり</span></button>
+      <button class="quick-start-btn" type="button" onclick="startQuickStudy('phrasalVerb')">句動詞</button>
+    </div>
+  </section>
+
   <div class="session-panel" aria-label="サクサクテスト設定">
     <div class="settings-section-title">サクサクテスト</div>
     <div class="test-choice-count-buttons">
@@ -2036,6 +2013,30 @@
   </div>
 
   <div class="settings-pane" data-settings-page="history">
+  <section class="learning-summary-panel" aria-label="学習成果">
+    <div class="learning-summary-grid">
+      <div class="learning-summary-item">
+        <span class="learning-summary-num" id="stat-weekly-main">0</span>
+        <div class="learning-summary-label">今週</div>
+      </div>
+      <div class="learning-summary-item">
+        <span class="learning-summary-num" id="stat-streak-main">0</span>
+        <div class="learning-summary-label">連続日</div>
+      </div>
+      <div class="learning-summary-item">
+        <span class="learning-summary-num" id="stat-miss-cleared-main">0</span>
+        <div class="learning-summary-label">ミス克服</div>
+      </div>
+    </div>
+    <div class="growth-badge" aria-label="今日の称号">
+      <div class="growth-badge-head">
+        <span class="growth-badge-label">今日の称号</span>
+        <span class="growth-badge-title" id="growth-title">ウォームアップ</span>
+      </div>
+      <div class="growth-badge-message" id="growth-message">まずは今日の20問に入ろう。</div>
+    </div>
+  </section>
+
   <div class="achievement-panel" aria-label="学習状況">
     <div class="settings-section-title">履歴の概要</div>
     <div class="achievement-grid">
@@ -13683,7 +13684,6 @@ function updateModeButtons() {
   const isTest = currentMode === 'test';
   document.getElementById('learn-mode-btn')?.classList.toggle('active', !isTest);
   document.getElementById('test-mode-btn')?.classList.toggle('active', isTest);
-  document.getElementById('quick-start-panel')?.toggleAttribute('hidden', isTest);
   updateIntroPanelVisibility();
 }
 
