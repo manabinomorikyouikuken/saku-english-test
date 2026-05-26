@@ -1176,6 +1176,17 @@
       color: #166534;
       text-align: center;
     }
+    .test-feedback.correct-feedback.streak-milestone {
+      border-color: #bfdbfe;
+      background: #eff6ff;
+      color: #1d4ed8;
+      animation: milestonePop 0.36s ease-out;
+    }
+    @keyframes milestonePop {
+      0% { transform: scale(0.98); opacity: 0.82; }
+      48% { transform: scale(1.025); opacity: 1; }
+      100% { transform: scale(1); opacity: 1; }
+    }
     .test-feedback.wrong-feedback {
       border-color: #fde68a;
       background: #fffbeb;
@@ -1387,9 +1398,35 @@
       border-radius: 18px;
       box-shadow: 0 6px 30px rgba(0,0,0,0.1);
     }
+    .session-complete.weakness-cleared {
+      animation: completeClearPop 0.48s ease-out;
+      box-shadow: 0 10px 32px rgba(21,128,61,0.18);
+    }
+    @keyframes completeClearPop {
+      0% { transform: scale(0.985); }
+      54% { transform: scale(1.012); }
+      100% { transform: scale(1); }
+    }
     .complete-icon { font-size: 38px; margin-bottom: 8px; }
     .complete-title { font-size: 19px; font-weight: 800; color: #1a2a4a; margin-bottom: 6px; }
 	    .complete-msg { font-size: 12.5px; color: #64748b; line-height: 1.55; margin-bottom: 14px; white-space: pre-line; }
+	    .complete-focus {
+	      display: none;
+	      margin: -2px 0 12px;
+	      padding: 8px 0;
+	      border-top: 1px solid #e2e8f0;
+	      border-bottom: 1px solid #e2e8f0;
+	      color: #334155;
+	      font-size: 12px;
+	      font-weight: 900;
+	      line-height: 1.45;
+	      text-align: left;
+	    }
+	    .complete-focus.is-visible { display: block; }
+	    .complete-focus.cleared {
+	      color: #166534;
+	      text-align: center;
+	    }
 	    .perfect-quote-panel {
 	      display: none;
 	      margin: -2px 0 14px;
@@ -1682,6 +1719,7 @@
 	        </div>
 	      </div>
 	      <div class="complete-msg" id="complete-msg"></div>
+	      <div class="complete-focus" id="complete-focus"></div>
 	      <div class="perfect-quote-panel" id="perfect-quote-panel" aria-label="満点時の英語名言">
 	        <div class="perfect-badge">Perfect 20</div>
 	        <div class="perfect-quote-text" id="perfect-quote-text"></div>
@@ -11752,6 +11790,11 @@ const INTRO_SEEN_STORAGE_KEY = 'vocab_trainer_intro_seen_v1';
 const TEST_CHOICE_COUNT_OPTIONS = [2, 3, 4];
 const TEST_CARD_LIMIT = 20;
 const TEST_CHOICE_LABELS = ['A', 'B', 'C', 'D'];
+const STREAK_MILESTONE_MESSAGES = {
+  10: '10連続！流れができてきた。',
+  15: '15連続！かなり集中できている。',
+  20: '20連続！満点ペースを走り切った。'
+};
 const SPEECH_LANG = 'en-GB';
 const SPEECH_TEXT_OVERRIDES = {
   AI: 'artificial intelligence',
@@ -11883,6 +11926,16 @@ const CATEGORY_TAGS = {
   abbreviationEducation: 'abbreviation-education',
   pronunciationNote: 'pronunciation-note'
 };
+const WEAKNESS_CATEGORY_PRIORITY = [
+  ['katakana-gap', 'カタカナ注意'],
+  ['phrasal-verb', '句動詞'],
+  ['abbreviation', '略語'],
+  ['abbreviation-tech', '略語'],
+  ['abbreviation-business', '略語'],
+  ['abbreviation-public', '略語'],
+  ['abbreviation-education', '略語'],
+  ['pronunciation-note', '発音注意']
+];
 const ABBREVIATION_TECH_WORDS = new Set(
   'LLM CLI UI UX API SDK IDE OS CPU GPU RAM ROM SSD USB URL HTTP HTML CSS JS JSON SQL AI IoT GPS ICT DOHC'.split(' ')
 );
@@ -13150,7 +13203,7 @@ function showTestQuestion() {
   updateTestCardBack(word);
   const feedbackEl = document.getElementById('test-feedback');
   feedbackEl.textContent = '';
-  feedbackEl.classList.remove('is-visible', 'correct-feedback', 'wrong-feedback');
+  feedbackEl.classList.remove('is-visible', 'correct-feedback', 'wrong-feedback', 'streak-milestone');
   document.getElementById('test-next-btn').classList.remove('is-visible');
   setTestSwipeHintReady(false);
 
@@ -13253,7 +13306,13 @@ function getWrongAnswerHint(word, selectedWord) {
   return `意味の中心を比べよう。正解は「${correctMeaning}」、選んだ選択肢は「${selectedMeaning}」。${focusHint}`;
 }
 
+function getStreakMilestoneFeedback() {
+  return STREAK_MILESTONE_MESSAGES[testCurrentStreak] || '';
+}
+
 function getCorrectAnswerFeedback() {
+  const milestoneFeedback = getStreakMilestoneFeedback();
+  if (milestoneFeedback) return milestoneFeedback;
   if (testCurrentStreak >= 5) return `正解！ ${testCurrentStreak}連続。いい流れ。`;
   if (testCurrentStreak >= 2) return `正解！ ${testCurrentStreak}連続。`;
   return '正解！';
@@ -13288,7 +13347,7 @@ function answerTestChoice(button, word) {
     testCurrentStreak++;
     testBestStreak = Math.max(testBestStreak, testCurrentStreak);
     clearMissedReviewWord(word);
-    triggerHapticFeedback(18);
+    triggerHapticFeedback(getStreakMilestoneFeedback() ? [22, 26, 42] : 18);
   }
   else {
     testCurrentStreak = 0;
@@ -13316,12 +13375,14 @@ function answerTestChoice(button, word) {
 
   const feedbackEl = document.getElementById('test-feedback');
   if (isCorrect) {
+    const milestoneFeedback = getStreakMilestoneFeedback();
     feedbackEl.textContent = getCorrectAnswerFeedback();
     feedbackEl.classList.remove('wrong-feedback');
     feedbackEl.classList.add('is-visible', 'correct-feedback');
+    feedbackEl.classList.toggle('streak-milestone', Boolean(milestoneFeedback));
   } else {
     feedbackEl.textContent = getWrongAnswerHint(word, getWordByCardKey(button.dataset.choiceKey));
-    feedbackEl.classList.remove('correct-feedback');
+    feedbackEl.classList.remove('correct-feedback', 'streak-milestone');
     feedbackEl.classList.add('is-visible', 'wrong-feedback');
   }
   setTestCardFlipped(false);
@@ -13476,6 +13537,46 @@ function setText(id, value) {
   if (element) element.textContent = String(value);
 }
 
+function setCompleteFocus(message, tone = 'normal') {
+  const element = document.getElementById('complete-focus');
+  if (!element) return;
+  element.textContent = message || '';
+  element.className = `complete-focus${message ? ' is-visible' : ''}${tone === 'cleared' ? ' cleared' : ''}`;
+}
+
+function getWeaknessBucketLabel(word) {
+  const categories = getWordCategories(word);
+  for (const [category, label] of WEAKNESS_CATEGORY_PRIORITY) {
+    if (categories.has(category)) return label;
+  }
+  return '意味確認';
+}
+
+function getTestMissedWords() {
+  return [...testMissedKeys].map(key => getWordByCardKey(key)).filter(Boolean);
+}
+
+function getWeaknessSummaryLine(isMissReview = false) {
+  const missedWords = getTestMissedWords();
+  if (!testCards.length) return '';
+  if (!missedWords.length) {
+    return isMissReview
+      ? '今日の弱点: なし。ミス復習をきれいに回収。'
+      : '今日の弱点: なし。20問をきれいに通過。';
+  }
+
+  const counts = new Map();
+  missedWords.forEach(word => {
+    const label = getWeaknessBucketLabel(word);
+    counts.set(label, (counts.get(label) || 0) + 1);
+  });
+  const summary = [...counts.entries()]
+    .sort((a, b) => b[1] - a[1])
+    .map(([label, count]) => `${label} ${count}語`)
+    .join(' / ');
+  return `今日の弱点: ${summary}`;
+}
+
 function getGrowthBadge(meta = getMeta(), missedReviewCount = getMissedReviewWords().length) {
   const todayCount = getTodayReviewCount(meta);
   const weeklyCount = getThisWeekReviewCount(meta);
@@ -13567,10 +13668,13 @@ function showComplete() {
   document.getElementById('card-container').style.display = 'none';
   document.getElementById('test-panel').style.display = 'none';
   document.getElementById('swipe-msg').style.display = 'none';
-  document.getElementById('session-complete').style.display = 'block';
+  const completeEl = document.getElementById('session-complete');
+  completeEl.classList.remove('weakness-cleared');
+  completeEl.style.display = 'block';
 	  document.getElementById('progress-fill').style.width = '100%';
 	  document.getElementById('progress-text').textContent = `${sessionCards.length} / ${sessionCards.length}`;
 	  setPerfectQuoteVisible(false);
+  setCompleteFocus('');
 
 	  const data = loadData();
   const activeWords = getActiveWords();
@@ -13598,7 +13702,8 @@ function showTestComplete() {
   document.getElementById('card-container').style.display = 'none';
   document.getElementById('test-panel').style.display = 'none';
   document.getElementById('swipe-msg').style.display = 'none';
-  document.getElementById('session-complete').style.display = 'block';
+  const completeEl = document.getElementById('session-complete');
+  completeEl.style.display = 'block';
   document.getElementById('progress-fill').style.width = '100%';
   document.getElementById('progress-text').textContent = `${testCards.length} / ${testCards.length}`;
   document.getElementById('due-text').textContent = getTestScoreLabel();
@@ -13608,14 +13713,20 @@ function showTestComplete() {
 	  const isPerfect20 = testCards.length === TEST_CARD_LIMIT && testCorrect === TEST_CARD_LIMIT && misses === 0;
 	  const remainingMisses = getMissedReviewWords().length;
 	  const canContinueMissReview = misses > 0 || (isMissReview && remainingMisses > 0);
+	  const isMissReviewCleared = isMissReview && testCards.length > 0 && misses === 0;
+	  completeEl.classList.toggle('weakness-cleared', isMissReviewCleared);
   completionAction = canContinueMissReview ? 'missReview' : 'restart';
   document.getElementById('complete-icon').textContent = testCards.length && misses === 0 ? '◎' : '✓';
-  document.getElementById('complete-title').textContent = isMissReview ? 'ミスだけ復習完了！' : 'サクサクテスト完了！';
+  document.getElementById('complete-title').textContent = isMissReviewCleared
+    ? (remainingMisses === 0 ? '弱点回収完了！' : '今回のミス復習クリア！')
+    : isMissReview ? 'ミスだけ復習完了！' : 'サクサクテスト完了！';
   document.getElementById('cs-reviewed-label').textContent = '出題数';
   document.getElementById('cs-mastered-label').textContent = '正解';
   document.getElementById('cs-due-label').textContent = 'ミス';
   const restartBtn = document.getElementById('restart-btn');
-  restartBtn.textContent = canContinueMissReview ? 'ミスだけ復習' : 'もう一回テスト';
+  restartBtn.textContent = canContinueMissReview
+    ? 'ミスだけ復習'
+    : isMissReviewCleared ? '今日の20問へ' : 'もう一回テスト';
   restartBtn.classList.toggle('miss-review', canContinueMissReview);
   document.getElementById('cs-reviewed').textContent = testCards.length;
   document.getElementById('cs-mastered').textContent = testCorrect;
@@ -13628,6 +13739,12 @@ function showTestComplete() {
 	  const replayNudge = getReplayNudge(misses, isMissReview);
 	  const streakLine = testCards.length ? `最高連続 ${testBestStreak}問。${replayNudge}` : '';
 	  document.getElementById('complete-msg').textContent = [baseCompleteMessage, streakLine].filter(Boolean).join('\n');
+	  const weaknessLine = isMissReviewCleared
+	    ? (remainingMisses === 0
+	      ? '弱点回収完了。ミス復習リストは空です。'
+	      : `今回の弱点回収完了。残り${remainingMisses}語もこの調子。`)
+	    : getWeaknessSummaryLine(isMissReview);
+	  setCompleteFocus(weaknessLine, isMissReviewCleared ? 'cleared' : 'normal');
 	  if (isPerfect20) showRandomPerfectQuote();
 	  else setPerfectQuoteVisible(false);
 	}
