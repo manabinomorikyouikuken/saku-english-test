@@ -527,6 +527,7 @@
       grid-template-columns: repeat(3, 1fr);
       gap: 8px;
     }
+    .ui-language-buttons,
     .phonetic-assist-buttons,
     .haptic-feedback-buttons,
     .speech-voice-buttons {
@@ -580,6 +581,7 @@
       cursor: pointer;
       touch-action: manipulation;
     }
+    .ui-language-btn,
     .phonetic-assist-btn,
     .haptic-feedback-btn,
     .speech-voice-btn {
@@ -651,6 +653,7 @@
       border-color: #15803d;
       color: white;
     }
+    .ui-language-btn.active,
     .phonetic-assist-btn.active,
     .haptic-feedback-btn.active,
     .speech-voice-btn.active {
@@ -1538,7 +1541,35 @@
       54% { transform: scale(1.012); }
       100% { transform: scale(1); }
     }
-    .complete-icon { font-size: 38px; margin-bottom: 8px; }
+    .complete-icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 42px;
+      min-height: 42px;
+      margin-bottom: 8px;
+      color: #1a2a4a;
+      font-size: 34px;
+      line-height: 1;
+      font-weight: 900;
+    }
+    .complete-icon.perfect-score-icon {
+      min-width: 86px;
+      min-height: 42px;
+      border-radius: 999px;
+      background: #f0fdf4;
+      border: 1px solid #bbf7d0;
+      color: #15803d;
+      font-size: 18px;
+      box-shadow: 0 8px 24px rgba(21,128,61,0.16);
+    }
+    .complete-icon.success-icon {
+      border-radius: 999px;
+      background: #eff6ff;
+      border: 1px solid #bfdbfe;
+      color: #2563eb;
+      font-size: 25px;
+    }
     .complete-title { font-size: 19px; font-weight: 800; color: #1a2a4a; margin-bottom: 6px; }
 	    .complete-msg { font-size: 12.5px; color: #64748b; line-height: 1.55; margin-bottom: 14px; white-space: pre-line; }
 	    .complete-msg:empty { display: none; }
@@ -1589,9 +1620,13 @@
 	    .perfect-quote-panel.is-visible { display: block; }
 	    .perfect-badge {
 	      display: inline-block;
-	      margin-bottom: 7px;
+	      margin-bottom: 9px;
+	      padding: 4px 9px;
+	      border-radius: 999px;
+	      background: #f0fdf4;
+	      border: 1px solid #bbf7d0;
 	      color: #15803d;
-	      font-size: 11px;
+	      font-size: 10.5px;
 	      font-weight: 900;
 	      letter-spacing: 0;
 	    }
@@ -1622,7 +1657,14 @@
     .complete-stat { text-align: center; }
     .complete-stat-num { font-size: 24px; font-weight: 800; color: #3b82f6; display: block; line-height: 1; }
     .complete-stat-label { font-size: 10px; color: #94a3b8; margin-top: 3px; }
-    .restart-btn {
+    .complete-actions {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .restart-btn,
+    .complete-back-btn {
       background: linear-gradient(135deg, #3b82f6, #60a5fa);
       color: white;
       padding: 12px 24px;
@@ -1632,10 +1674,18 @@
       border: none;
       cursor: pointer;
       min-height: 46px;
+      min-width: 124px;
       box-shadow: 0 4px 15px rgba(59,130,246,0.4);
       transition: transform 0.12s, filter 0.12s;
     }
-    .restart-btn:active { transform: scale(0.97); filter: brightness(0.9); }
+    .complete-back-btn {
+      background: white;
+      color: #1a2a4a;
+      border: 1px solid #cbd5e1;
+      box-shadow: 0 4px 14px rgba(15,23,42,0.08);
+    }
+    .restart-btn:active,
+    .complete-back-btn:active { transform: scale(0.97); filter: brightness(0.9); }
     .restart-btn.miss-review {
       background: linear-gradient(135deg, #15803d, #22c55e);
       box-shadow: 0 4px 15px rgba(21,128,61,0.32);
@@ -1706,7 +1756,11 @@
 	      .perfect-quote-panel { margin-bottom: 12px; padding-top: 10px; }
 	      .perfect-quote-text { font-size: 14px; }
 	      .complete-stat-num { font-size: 22px; }
-      .restart-btn { padding: 10px 22px; }
+      .restart-btn,
+      .complete-back-btn {
+        padding: 10px 18px;
+        min-width: 112px;
+      }
     }
     @media (max-width: 390px) {
       header { padding: 12px 14px; }
@@ -1727,7 +1781,7 @@
   <div class="header-main">
     <div class="header-title-row">
       <div class="header-title">サクサク英単語</div>
-      <button class="test-header-back-btn" type="button" onclick="startSession()" aria-label="学習画面に戻る">戻る</button>
+      <button class="test-header-back-btn" id="header-back-btn" type="button" onclick="startSession()" aria-label="学習画面に戻る" data-ui-key="back">戻る</button>
     </div>
     <div class="header-sub">友人テスト版 / 959語・品詞別966項目 / British English基準</div>
   </div>
@@ -1735,11 +1789,11 @@
     <div class="stats">
       <div class="stat-item">
         <span class="stat-num" id="stat-today">0</span>
-        <div class="stat-label">今回</div>
+        <div class="stat-label" data-ui-key="statCurrent">今回</div>
       </div>
       <div class="stat-item">
         <span class="stat-num" id="stat-mastered">0</span>
-        <div class="stat-label">習得</div>
+        <div class="stat-label" data-ui-key="statMastered">習得</div>
       </div>
     </div>
   </div>
@@ -1757,7 +1811,7 @@
   </div>
 
   <div id="card-area">
-    <div class="card-prompt" id="study-prompt">タップすると答えが出るよ</div>
+    <div class="card-prompt" id="study-prompt" data-ui-key="studyPrompt">タップすると答えが出るよ</div>
     <div class="card-container" id="card-container" role="button" tabindex="0" aria-label="単語カードを反転">
       <div class="card" id="card">
         <div class="card-face card-front">
@@ -1805,7 +1859,7 @@
         <div class="test-choice-grid" id="test-choice-grid"></div>
         <div class="test-letter-row" id="test-letter-row" aria-label="ABCD解答ボタン"></div>
         <div class="test-feedback" id="test-feedback"></div>
-        <button class="test-next-btn" id="test-next-btn" type="button" onclick="showNextTestQuestion()">次へ</button>
+        <button class="test-next-btn" id="test-next-btn" type="button" onclick="showNextTestQuestion()" data-ui-key="next">次へ</button>
       </div>
     </div>
 
@@ -1830,168 +1884,182 @@
 	      <div class="complete-focus" id="complete-focus"></div>
 	      <div class="complete-next-step" id="complete-next-step"></div>
 	      <div class="perfect-quote-panel" id="perfect-quote-panel" aria-label="満点時の英語名言">
-	        <div class="perfect-badge">Perfect 20</div>
+	        <div class="perfect-badge" id="perfect-badge" data-ui-key="perfectBadge">Perfect 20</div>
 	        <div class="perfect-quote-text" id="perfect-quote-text"></div>
 	        <div class="perfect-quote-source" id="perfect-quote-source"></div>
 	        <div class="perfect-quote-ja" id="perfect-quote-ja"></div>
 	      </div>
-	      <button class="restart-btn" id="restart-btn" onclick="restartCurrentMode()">もう一周する</button>
+	      <div class="complete-actions">
+	        <button class="complete-back-btn" id="complete-back-btn" type="button" onclick="startSession()" data-ui-key="back" hidden>戻る</button>
+	        <button class="restart-btn" id="restart-btn" type="button" onclick="restartCurrentMode()">もう一周する</button>
+	      </div>
 	    </div>
 
     <div class="swipe-msg" id="swipe-msg"></div>
   </div>
 
   <div class="learn-bottom-bar">
-    <button class="settings-open-btn mode-btn active" id="learn-mode-btn" type="button" onclick="showLearningTab()">学習</button>
-    <button class="settings-open-btn mode-btn test-open-btn" id="test-mode-btn" type="button" onclick="startTestSession()">サクサクテスト</button>
-    <button class="settings-open-btn" type="button" onclick="showSettingsView()">設定</button>
+    <button class="settings-open-btn mode-btn active" id="learn-mode-btn" type="button" onclick="showLearningTab()" data-ui-key="navPractice">学習</button>
+    <button class="settings-open-btn mode-btn test-open-btn" id="test-mode-btn" type="button" onclick="startTestSession()" data-ui-key="navTest">テスト</button>
+    <button class="settings-open-btn" id="settings-mode-btn" type="button" onclick="showSettingsView()" data-ui-key="navSettings">設定</button>
   </div>
 </main>
 
 <section id="settings-view" class="main settings-view" hidden>
   <div class="settings-page-head">
     <div>
-      <div class="settings-page-title">設定</div>
-      <div class="settings-page-lead">よく使う設定を先に置き、発音や語形成の細かい設定は必要なときだけ開けます。</div>
+      <div class="settings-page-title" data-ui-key="settingsTitle">設定</div>
+      <div class="settings-page-lead" data-ui-key="settingsLead">よく使う設定を先に置き、発音や語形成の細かい設定は必要なときだけ開けます。</div>
     </div>
-    <button class="back-to-learn-btn" type="button" onclick="showLearnView()">戻る</button>
+    <button class="back-to-learn-btn" type="button" onclick="showLearnView()" data-ui-key="back">戻る</button>
   </div>
 
   <div class="settings-tabs" aria-label="設定ページ切り替え">
-    <button class="settings-tab active" type="button" data-settings-page="level" onclick="setSettingsPage('level')">レベル</button>
-    <button class="settings-tab" type="button" data-settings-page="theme" onclick="setSettingsPage('theme')">テーマ</button>
-    <button class="settings-tab" type="button" data-settings-page="test" onclick="setSettingsPage('test')">テスト</button>
-    <button class="settings-tab" type="button" data-settings-page="display" onclick="setSettingsPage('display')">表示</button>
-    <button class="settings-tab" type="button" data-settings-page="history" onclick="setSettingsPage('history')">履歴</button>
+    <button class="settings-tab active" type="button" data-settings-page="level" onclick="setSettingsPage('level')" data-ui-key="tabLevel">レベル</button>
+    <button class="settings-tab" type="button" data-settings-page="theme" onclick="setSettingsPage('theme')" data-ui-key="tabTheme">テーマ</button>
+    <button class="settings-tab" type="button" data-settings-page="test" onclick="setSettingsPage('test')" data-ui-key="tabTest">テスト</button>
+    <button class="settings-tab" type="button" data-settings-page="display" onclick="setSettingsPage('display')" data-ui-key="tabDisplay">表示</button>
+    <button class="settings-tab" type="button" data-settings-page="history" onclick="setSettingsPage('history')" data-ui-key="tabHistory">履歴</button>
   </div>
 
   <div class="settings-pager" id="settings-pager">
   <div class="settings-track" id="settings-track">
   <div class="settings-pane active" data-settings-page="level">
   <div class="level-panel" aria-label="レベル選択">
-    <div class="settings-section-title">レベルを選ぶ</div>
+    <div class="settings-section-title" data-ui-key="chooseLevel">レベルを選ぶ</div>
     <div class="level-buttons">
-      <button class="level-btn active" type="button" data-level="all" onclick="setLevel('all')">すべて<span id="level-count-all">966項目</span></button>
-      <button class="level-btn" type="button" data-level="junior" onclick="setLevel('junior')">中学復習<span id="level-count-junior">176項目</span></button>
-      <button class="level-btn" type="button" data-level="highBasic" onclick="setLevel('highBasic')">高校基礎<span id="level-count-highBasic">333項目</span></button>
-      <button class="level-btn" type="button" data-level="standard" onclick="setLevel('standard')">句動詞・実用<span id="level-count-standard">144項目</span></button>
-      <button class="level-btn" type="button" data-level="advanced" onclick="setLevel('advanced')">発展<span id="level-count-advanced">268項目</span></button>
+      <button class="level-btn active" type="button" data-level="all" data-ui-label-key="levelAll" onclick="setLevel('all')">すべて<span id="level-count-all">966項目</span></button>
+      <button class="level-btn" type="button" data-level="junior" data-ui-label-key="levelJunior" onclick="setLevel('junior')">中学復習<span id="level-count-junior">176項目</span></button>
+      <button class="level-btn" type="button" data-level="highBasic" data-ui-label-key="levelHighBasic" onclick="setLevel('highBasic')">高校基礎<span id="level-count-highBasic">333項目</span></button>
+      <button class="level-btn" type="button" data-level="standard" data-ui-label-key="levelStandard" onclick="setLevel('standard')">句動詞・実用<span id="level-count-standard">144項目</span></button>
+      <button class="level-btn" type="button" data-level="advanced" data-ui-label-key="levelAdvanced" onclick="setLevel('advanced')">発展<span id="level-count-advanced">268項目</span></button>
     </div>
-    <div class="storage-note">レベル名は学習の目安です。句動詞・実用は、get up などの句動詞や日常で使うまとまり表現を中心にしています。</div>
+    <div class="storage-note" data-ui-key="levelNote">レベル名は学習の目安です。句動詞・実用は、get up などの句動詞や日常で使うまとまり表現を中心にしています。</div>
   </div>
   </div>
 
   <div class="settings-pane" data-settings-page="theme">
   <div class="category-panel" aria-label="カテゴリ選択">
-    <div class="settings-section-title">テーマを選ぶ</div>
+    <div class="settings-section-title" data-ui-key="chooseTheme">テーマを選ぶ</div>
     <div class="category-buttons">
-      <button class="category-btn active" type="button" data-category="all" onclick="setCategory('all')">すべて<span id="category-count-all">966項目</span></button>
-      <button class="category-btn" type="button" data-category="katakanaGap" onclick="setCategory('katakanaGap')" aria-label="カタカナ注意 知ってるつもりになりやすい語">カタカナ注意<span id="category-count-katakanaGap">33項目</span></button>
-      <button class="category-btn" type="button" data-category="phrasalVerb" onclick="setCategory('phrasalVerb')">句動詞<span id="category-count-phrasalVerb">100項目</span></button>
-      <button class="category-btn" type="button" data-category="abbreviation" onclick="setCategory('abbreviation')">略語<span id="category-count-abbreviation">60項目</span></button>
-      <button class="category-btn" type="button" data-category="abbreviationTech" onclick="setCategory('abbreviationTech')">略語 ICT・AI<span id="category-count-abbreviationTech">26項目</span></button>
-      <button class="category-btn" type="button" data-category="abbreviationBusiness" onclick="setCategory('abbreviationBusiness')">略語 ビジネス<span id="category-count-abbreviationBusiness">13項目</span></button>
-      <button class="category-btn" type="button" data-category="abbreviationPublic" onclick="setCategory('abbreviationPublic')">略語 国際・公的<span id="category-count-abbreviationPublic">19項目</span></button>
-      <button class="category-btn" type="button" data-category="abbreviationEducation" onclick="setCategory('abbreviationEducation')">略語 教育・言語<span id="category-count-abbreviationEducation">1項目</span></button>
-      <button class="category-btn" type="button" data-category="pronunciationNote" onclick="setCategory('pronunciationNote')">発音注意<span id="category-count-pronunciationNote">14項目</span></button>
-      <button class="category-btn" type="button" data-category="rlContrast" onclick="setCategory('rlContrast')">R/L注意<span id="category-count-rlContrast">8項目</span></button>
+      <button class="category-btn active" type="button" data-category="all" data-ui-label-key="categoryAll" onclick="setCategory('all')">すべて<span id="category-count-all">966項目</span></button>
+      <button class="category-btn" type="button" data-category="katakanaGap" data-ui-label-key="categoryKatakanaGap" onclick="setCategory('katakanaGap')" aria-label="カタカナ注意 知ってるつもりになりやすい語">カタカナ注意<span id="category-count-katakanaGap">33項目</span></button>
+      <button class="category-btn" type="button" data-category="phrasalVerb" data-ui-label-key="categoryPhrasalVerb" onclick="setCategory('phrasalVerb')">句動詞<span id="category-count-phrasalVerb">100項目</span></button>
+      <button class="category-btn" type="button" data-category="abbreviation" data-ui-label-key="categoryAbbreviation" onclick="setCategory('abbreviation')">略語<span id="category-count-abbreviation">60項目</span></button>
+      <button class="category-btn" type="button" data-category="abbreviationTech" data-ui-label-key="categoryAbbreviationTech" onclick="setCategory('abbreviationTech')">略語 ICT・AI<span id="category-count-abbreviationTech">26項目</span></button>
+      <button class="category-btn" type="button" data-category="abbreviationBusiness" data-ui-label-key="categoryAbbreviationBusiness" onclick="setCategory('abbreviationBusiness')">略語 ビジネス<span id="category-count-abbreviationBusiness">13項目</span></button>
+      <button class="category-btn" type="button" data-category="abbreviationPublic" data-ui-label-key="categoryAbbreviationPublic" onclick="setCategory('abbreviationPublic')">略語 国際・公的<span id="category-count-abbreviationPublic">19項目</span></button>
+      <button class="category-btn" type="button" data-category="abbreviationEducation" data-ui-label-key="categoryAbbreviationEducation" onclick="setCategory('abbreviationEducation')">略語 教育・言語<span id="category-count-abbreviationEducation">1項目</span></button>
+      <button class="category-btn" type="button" data-category="pronunciationNote" data-ui-label-key="categoryPronunciationNote" onclick="setCategory('pronunciationNote')">発音注意<span id="category-count-pronunciationNote">14項目</span></button>
+      <button class="category-btn" type="button" data-category="rlContrast" data-ui-label-key="categoryRlContrast" onclick="setCategory('rlContrast')">R/L注意<span id="category-count-rlContrast">8項目</span></button>
     </div>
-    <div class="storage-note">テーマ別に確認できます。カタカナ注意は「知ってるつもり」になりやすい意味のズレ、句動詞は会話のまとまり、略語は分野別、発音注意は音と綴りの違い、R/L注意は語頭の音で意味が変わる組を集中的に学べます。</div>
+    <div class="storage-note" data-ui-key="themeNote">テーマ別に確認できます。カタカナ注意は「知ってるつもり」になりやすい意味のズレ、句動詞は会話のまとまり、略語は分野別、発音注意は音と綴りの違い、R/L注意は語頭の音で意味が変わる組を集中的に学べます。</div>
   </div>
 
   <div class="part-panel" aria-label="品詞選択">
-    <div class="settings-section-title">品詞でしぼる</div>
+    <div class="settings-section-title" data-ui-key="choosePart">品詞でしぼる</div>
     <div class="part-buttons">
-      <button class="part-btn active" type="button" data-part="random" onclick="setPart('random')">ランダム<span id="part-count-random">966</span></button>
-      <button class="part-btn" type="button" data-part="noun" onclick="setPart('noun')">名詞<span id="part-count-noun">426</span></button>
-      <button class="part-btn" type="button" data-part="verb" onclick="setPart('verb')">動詞<span id="part-count-verb">332</span></button>
-      <button class="part-btn" type="button" data-part="adjective" onclick="setPart('adjective')">形容詞<span id="part-count-adjective">138</span></button>
-      <button class="part-btn" type="button" data-part="adverb" onclick="setPart('adverb')">副詞<span id="part-count-adverb">42</span></button>
+      <button class="part-btn active" type="button" data-part="random" data-ui-label-key="partRandom" onclick="setPart('random')">ランダム<span id="part-count-random">966</span></button>
+      <button class="part-btn" type="button" data-part="noun" data-ui-label-key="partNoun" onclick="setPart('noun')">名詞<span id="part-count-noun">426</span></button>
+      <button class="part-btn" type="button" data-part="verb" data-ui-label-key="partVerb" onclick="setPart('verb')">動詞<span id="part-count-verb">332</span></button>
+      <button class="part-btn" type="button" data-part="adjective" data-ui-label-key="partAdjective" onclick="setPart('adjective')">形容詞<span id="part-count-adjective">138</span></button>
+      <button class="part-btn" type="button" data-part="adverb" data-ui-label-key="partAdverb" onclick="setPart('adverb')">副詞<span id="part-count-adverb">42</span></button>
     </div>
-    <div class="storage-note">テーマを選んだあと、必要に応じて品詞でさらに範囲をしぼれます。</div>
+    <div class="storage-note" data-ui-key="partNote">テーマを選んだあと、必要に応じて品詞でさらに範囲をしぼれます。</div>
   </div>
   </div>
 
   <div class="settings-pane" data-settings-page="test">
   <section class="intro-panel" id="intro-panel" aria-label="はじめての案内" hidden>
-    <div class="intro-title">はじめてならここから</div>
-    <div class="intro-text">
+    <div class="intro-title" data-ui-key="introTitle">はじめてならここから</div>
+    <div class="intro-text" data-ui-key="introText">
       まずは20問。ミスした語は「ミス復習」に残ります。答えたあとは下の案内を右スワイプで次へ進めます。
     </div>
     <div class="intro-actions">
-      <button class="intro-btn primary" type="button" onclick="startIntroQuickTest()">今日の20問へ</button>
-      <button class="intro-btn" type="button" onclick="dismissIntroPanel()">閉じる</button>
+      <button class="intro-btn primary" type="button" onclick="startIntroQuickTest()" data-ui-key="today20">今日の20問へ</button>
+      <button class="intro-btn" type="button" onclick="dismissIntroPanel()" data-ui-key="close">閉じる</button>
     </div>
   </section>
 
   <section class="quick-start-panel" id="quick-start-panel" aria-label="今日の入口">
     <div class="quick-start-head">
-      <div class="quick-start-title">今日の入口</div>
-      <div class="quick-start-note">迷ったらここから</div>
+      <div class="quick-start-title" data-ui-key="quickStartTitle">今日の入口</div>
+      <div class="quick-start-note" data-ui-key="quickStartNote">迷ったらここから</div>
     </div>
     <div class="quick-start-actions">
-      <button class="quick-start-btn primary" type="button" onclick="startQuickTest('all')">今日の20問</button>
-      <button class="quick-start-btn" type="button" onclick="startMissReviewSession()">ミス復習</button>
-      <button class="quick-start-btn" type="button" onclick="startQuickStudy('katakanaGap')">カタカナ注意<span>知ってるつもり</span></button>
-      <button class="quick-start-btn" type="button" onclick="startQuickStudy('phrasalVerb')">句動詞</button>
+      <button class="quick-start-btn primary" type="button" onclick="startQuickTest('all')" data-ui-key="today20Short">今日の20問</button>
+      <button class="quick-start-btn" type="button" onclick="startMissReviewSession()" data-ui-key="missReview">ミス復習</button>
+      <button class="quick-start-btn" type="button" onclick="startQuickStudy('katakanaGap')" data-ui-label-key="categoryKatakanaGap">カタカナ注意<span data-ui-key="katakanaSub">知ってるつもり</span></button>
+      <button class="quick-start-btn" type="button" onclick="startQuickStudy('phrasalVerb')" data-ui-key="categoryPhrasalVerb">句動詞</button>
     </div>
   </section>
 
-  <div class="session-panel" aria-label="サクサクテスト設定">
-    <div class="settings-section-title">サクサクテスト</div>
+  <div class="session-panel" aria-label="テスト設定">
+    <div class="settings-section-title" data-ui-key="testSettingsTitle">テスト</div>
     <div class="test-choice-count-buttons">
-      <button class="test-choice-count-btn" type="button" data-test-choices="2" onclick="setTestChoiceCount(2)">2択</button>
-      <button class="test-choice-count-btn" type="button" data-test-choices="3" onclick="setTestChoiceCount(3)">3択</button>
-      <button class="test-choice-count-btn active" type="button" data-test-choices="4" onclick="setTestChoiceCount(4)">4択</button>
+      <button class="test-choice-count-btn" type="button" data-test-choices="2" onclick="setTestChoiceCount(2)" data-ui-key="choice2">2択</button>
+      <button class="test-choice-count-btn" type="button" data-test-choices="3" onclick="setTestChoiceCount(3)" data-ui-key="choice3">3択</button>
+      <button class="test-choice-count-btn active" type="button" data-test-choices="4" onclick="setTestChoiceCount(4)" data-ui-key="choice4">4択</button>
     </div>
-    <div class="storage-note">英単語だけを見て、日本語カードを選びます。テストは20問で区切ります。解答後は出題カードをタップすると裏面を確認できます。</div>
+    <div class="storage-note" data-ui-key="testSettingsNote">英単語だけを見て、日本語カードを選びます。テストは20問で区切ります。解答後は出題カードをタップすると裏面を確認できます。</div>
   </div>
   </div>
 
   <div class="settings-pane" data-settings-page="display">
   <div class="settings-panel">
     <div class="utility-panel">
-      <div class="settings-section-title">カード表面の補助表示</div>
-      <div class="front-display-grid">
-        <div>
-          <div class="front-display-label">レベル（中学復習など）</div>
-          <div class="phonetic-assist-buttons" aria-label="レベル表示">
-            <button class="front-meta-btn" type="button" data-front-meta="level-show" onclick="setFrontLevelVisible(true)">表示</button>
-            <button class="front-meta-btn active" type="button" data-front-meta="level-hide" onclick="setFrontLevelVisible(false)">非表示</button>
-          </div>
-        </div>
-        <div>
-          <div class="front-display-label">品詞（名詞など）</div>
-          <div class="phonetic-assist-buttons" aria-label="品詞表示">
-            <button class="front-meta-btn" type="button" data-front-meta="part-show" onclick="setFrontPartVisible(true)">表示</button>
-            <button class="front-meta-btn active" type="button" data-front-meta="part-hide" onclick="setFrontPartVisible(false)">非表示</button>
-          </div>
-        </div>
+      <div class="settings-section-title" data-ui-key="displayLanguageTitle">表示言語</div>
+      <div class="ui-language-buttons" aria-label="表示言語">
+        <button class="ui-language-btn active" type="button" data-ui-language="ja" onclick="setUiLanguage('ja')" data-ui-key="languageJa">日本語表示</button>
+        <button class="ui-language-btn" type="button" data-ui-language="en" onclick="setUiLanguage('en')" data-ui-key="languageEn">English UI</button>
       </div>
-      <div class="storage-note">表面の初期値は非表示です。品詞は答え合わせとして裏面に小さく表示します。</div>
+      <div class="storage-note" data-ui-key="displayLanguageNote">画面のボタンや設定名だけを切り替えます。単語の意味・例文訳は日本語のままです。</div>
     </div>
   </div>
 
   <div class="settings-panel">
     <div class="utility-panel">
-      <div class="settings-section-title">操作時のバイブ</div>
-      <div class="haptic-feedback-buttons" aria-label="操作時のバイブ">
-        <button class="haptic-feedback-btn active" type="button" data-haptic-feedback="on" onclick="setHapticFeedbackEnabled(true)">オン</button>
-        <button class="haptic-feedback-btn" type="button" data-haptic-feedback="off" onclick="setHapticFeedbackEnabled(false)">オフ</button>
+      <div class="settings-section-title" data-ui-key="frontAssistTitle">カード表面の補助表示</div>
+      <div class="front-display-grid">
+        <div>
+          <div class="front-display-label" data-ui-key="frontLevelLabel">レベル（中学復習など）</div>
+          <div class="phonetic-assist-buttons" aria-label="レベル表示">
+            <button class="front-meta-btn" type="button" data-front-meta="level-show" onclick="setFrontLevelVisible(true)" data-ui-key="show">表示</button>
+            <button class="front-meta-btn active" type="button" data-front-meta="level-hide" onclick="setFrontLevelVisible(false)" data-ui-key="hide">非表示</button>
+          </div>
+        </div>
+        <div>
+          <div class="front-display-label" data-ui-key="frontPartLabel">品詞（名詞など）</div>
+          <div class="phonetic-assist-buttons" aria-label="品詞表示">
+            <button class="front-meta-btn" type="button" data-front-meta="part-show" onclick="setFrontPartVisible(true)" data-ui-key="show">表示</button>
+            <button class="front-meta-btn active" type="button" data-front-meta="part-hide" onclick="setFrontPartVisible(false)" data-ui-key="hide">非表示</button>
+          </div>
+        </div>
       </div>
-      <div class="storage-note">初期値はオンです。対応端末では、カードめくり、スワイプ、誤答時などの振動だけを切り替えます。</div>
+      <div class="storage-note" data-ui-key="frontAssistNote">表面の初期値は非表示です。品詞は答え合わせとして裏面に小さく表示します。</div>
+    </div>
+  </div>
+
+  <div class="settings-panel">
+    <div class="utility-panel">
+      <div class="settings-section-title" data-ui-key="hapticTitle">操作時のバイブ</div>
+      <div class="haptic-feedback-buttons" aria-label="操作時のバイブ">
+        <button class="haptic-feedback-btn active" type="button" data-haptic-feedback="on" onclick="setHapticFeedbackEnabled(true)" data-ui-key="on">オン</button>
+        <button class="haptic-feedback-btn" type="button" data-haptic-feedback="off" onclick="setHapticFeedbackEnabled(false)" data-ui-key="off">オフ</button>
+      </div>
+      <div class="storage-note" data-ui-key="hapticNote">初期値はオンです。対応端末では、カードめくり、スワイプ、誤答時などの振動だけを切り替えます。</div>
     </div>
   </div>
 
   <details class="settings-panel settings-collapsible" ontoggle="updateSettingsPagerHeight()">
-    <summary>発音・音声のこだわり設定</summary>
+    <summary data-ui-key="pronunciationDetails">発音・音声のこだわり設定</summary>
     <div class="utility-panel">
-      <div class="settings-section-title">発音表記メモ</div>
+      <div class="settings-section-title" data-ui-key="phoneticAssistTitle">発音表記メモ</div>
       <div class="phonetic-assist-buttons" aria-label="発音カナ補助">
-        <button class="phonetic-assist-btn" type="button" data-phonetic-assist="show" onclick="setPhoneticAssist(true)">表示</button>
-        <button class="phonetic-assist-btn active" type="button" data-phonetic-assist="hide" onclick="setPhoneticAssist(false)">非表示</button>
+        <button class="phonetic-assist-btn" type="button" data-phonetic-assist="show" onclick="setPhoneticAssist(true)" data-ui-key="show">表示</button>
+        <button class="phonetic-assist-btn active" type="button" data-phonetic-assist="hide" onclick="setPhoneticAssist(false)" data-ui-key="hide">非表示</button>
       </div>
-      <div class="storage-note">初期値は非表示です。表面には発音カナを出さず、読み方や元の言葉は裏面で確認します。</div>
+      <div class="storage-note" data-ui-key="phoneticAssistNote">初期値は非表示です。表面には発音カナを出さず、読み方や元の言葉は裏面で確認します。</div>
       <div class="pronunciation-guide">
         <strong>R/L表記の約束:</strong> R音は舌を上あごにつけない目印として「らりるれろ」、L音は舌を上あごにつけてよい目印として「ラリルレロ」で表示します。<br>
         <strong>V表記の約束:</strong> v の音は「ヴァ・ヴィ・ヴ・ヴェ・ヴォ」で表示します。<br>
@@ -2001,22 +2069,22 @@
     </div>
 
     <div class="utility-panel">
-      <div class="settings-section-title">発音音声</div>
+      <div class="settings-section-title" data-ui-key="speechVoiceTitle">発音音声</div>
       <div class="speech-voice-buttons" id="speech-voice-buttons" aria-label="発音音声">
-        <button class="speech-voice-btn active" type="button" disabled>女性声を優先</button>
+        <button class="speech-voice-btn active" type="button" disabled data-ui-key="femaleVoicePriority">女性声を優先</button>
       </div>
-      <div class="storage-note" id="speech-voice-note">初期値は女性声を優先します。使える声は端末とブラウザにより変わります。</div>
+      <div class="storage-note" id="speech-voice-note" data-ui-key="speechVoiceNote">初期値は女性声を優先します。使える声は端末とブラウザにより変わります。</div>
     </div>
   </details>
 
   <details class="settings-panel settings-collapsible" ontoggle="updateSettingsPagerHeight()">
-    <summary>単語の成り立ちメモ</summary>
+    <summary data-ui-key="wordPartsDetails">単語の成り立ちメモ</summary>
     <div class="utility-panel">
       <div class="pronunciation-guide">
         <strong>青:</strong> 確認済みの接頭語メモです。例: anti-, auto-, ad-, co-, pro-, un-, in-, out-, en-, re-, ex-, con-, dis-, mis-, ab-, pre-, psycho-<br>
         <strong>赤:</strong> 接尾語の候補です。例: -ation, -ion, -sion, -ance, -ence, -ment, -ness, -less, -ous, -ive, -fy, -al, -ent, -ate, -ly, -er, -ity, -ing
       </div>
-      <div class="storage-note">暗記の手がかりとして、確認済みの語だけ表示します。語源の厳密な分解ではなく、覚えやすさを優先した補助表示です。</div>
+      <div class="storage-note" data-ui-key="wordPartsNote">暗記の手がかりとして、確認済みの語だけ表示します。語源の厳密な分解ではなく、覚えやすさを優先した補助表示です。</div>
     </div>
   </details>
   </div>
@@ -2026,20 +2094,20 @@
     <div class="learning-summary-grid">
       <div class="learning-summary-item">
         <span class="learning-summary-num" id="stat-weekly-main">0</span>
-        <div class="learning-summary-label">今週</div>
+        <div class="learning-summary-label" data-ui-key="thisWeek">今週</div>
       </div>
       <div class="learning-summary-item">
         <span class="learning-summary-num" id="stat-streak-main">0</span>
-        <div class="learning-summary-label">連続日</div>
+        <div class="learning-summary-label" data-ui-key="streakDays">連続日</div>
       </div>
       <div class="learning-summary-item">
         <span class="learning-summary-num" id="stat-miss-cleared-main">0</span>
-        <div class="learning-summary-label">ミス克服</div>
+        <div class="learning-summary-label" data-ui-key="missCleared">ミス克服</div>
       </div>
     </div>
     <div class="growth-badge" aria-label="今日の称号">
       <div class="growth-badge-head">
-        <span class="growth-badge-label">今日の称号</span>
+        <span class="growth-badge-label" data-ui-key="todayBadge">今日の称号</span>
         <span class="growth-badge-title" id="growth-title">ウォームアップ</span>
       </div>
       <div class="growth-badge-message" id="growth-message">まずは今日の20問に入ろう。</div>
@@ -2047,54 +2115,54 @@
   </section>
 
   <div class="achievement-panel" aria-label="学習状況">
-    <div class="settings-section-title">履歴の概要</div>
+    <div class="settings-section-title" data-ui-key="historyOverview">履歴の概要</div>
     <div class="achievement-grid">
       <div class="achievement-item">
         <span class="achievement-num" id="stat-today-panel">0</span>
-        <div class="achievement-label">今回</div>
+        <div class="achievement-label" data-ui-key="statCurrent">今回</div>
       </div>
       <div class="achievement-item">
         <span class="achievement-num" id="stat-weekly-panel">0</span>
-        <div class="achievement-label">今週</div>
+        <div class="achievement-label" data-ui-key="thisWeek">今週</div>
       </div>
       <div class="achievement-item">
         <span class="achievement-num" id="stat-streak-panel">0</span>
-        <div class="achievement-label">連続日</div>
+        <div class="achievement-label" data-ui-key="streakDays">連続日</div>
       </div>
       <div class="achievement-item">
         <span class="achievement-num" id="stat-miss-cleared-panel">0</span>
-        <div class="achievement-label">ミス克服</div>
+        <div class="achievement-label" data-ui-key="missCleared">ミス克服</div>
       </div>
       <div class="achievement-item">
         <span class="achievement-num" id="stat-due">0</span>
-        <div class="achievement-label">出題候補</div>
+        <div class="achievement-label" data-ui-key="dueCandidates">出題候補</div>
       </div>
       <div class="achievement-item">
         <span class="achievement-num" id="stat-miss-review-panel">0</span>
-        <div class="achievement-label">ミス復習</div>
+        <div class="achievement-label" data-ui-key="missReview">ミス復習</div>
       </div>
       <div class="achievement-item">
           <span class="achievement-num" id="stat-left">966</span>
-        <div class="achievement-label">未習得</div>
+        <div class="achievement-label" data-ui-key="notMastered">未習得</div>
       </div>
     </div>
   </div>
 
   <div class="settings-panel data-quality-panel" aria-label="語データ点検">
     <div class="utility-panel">
-      <div class="settings-section-title">語データ点検</div>
+      <div class="settings-section-title" data-ui-key="dataQualityTitle">語データ点検</div>
       <div class="data-quality-grid">
         <div class="data-quality-item">
           <strong id="data-quality-total">0</strong>
-          <small>品詞別項目</small>
+          <small data-ui-key="dataQualityTotal">品詞別項目</small>
         </div>
         <div class="data-quality-item">
           <strong id="data-quality-unique">0</strong>
-          <small>ユニーク語</small>
+          <small data-ui-key="dataQualityUnique">ユニーク語</small>
         </div>
         <div class="data-quality-item">
           <strong id="data-quality-issues">0</strong>
-          <small>要確認</small>
+          <small data-ui-key="dataQualityIssues">要確認</small>
         </div>
       </div>
       <div class="storage-note" id="data-quality-note">語データを点検中です。</div>
@@ -2103,14 +2171,14 @@
 
   <div class="settings-panel">
     <div class="utility-panel" aria-label="学習データ管理">
-      <div class="settings-section-title">履歴管理</div>
+      <div class="settings-section-title" data-ui-key="historyManage">履歴管理</div>
       <div class="utility-buttons">
-        <button class="small-btn" type="button" onclick="exportData()">履歴を保存</button>
-        <button class="small-btn" type="button" onclick="document.getElementById('import-file').click()">履歴を読込</button>
-        <button class="small-btn danger" type="button" onclick="resetData()">履歴リセット</button>
+        <button class="small-btn" type="button" onclick="exportData()" data-ui-key="saveHistory">履歴を保存</button>
+        <button class="small-btn" type="button" onclick="document.getElementById('import-file').click()" data-ui-key="loadHistory">履歴を読込</button>
+        <button class="small-btn danger" type="button" onclick="resetData()" data-ui-key="resetHistory">履歴リセット</button>
       </div>
       <input id="import-file" type="file" accept="application/json" style="display:none" onchange="importData(event)">
-      <div class="storage-note">学習履歴はこの端末内に保存されます。履歴管理は必要なときだけ使えば十分です。</div>
+      <div class="storage-note" data-ui-key="historyStorageNote">学習履歴はこの端末内に保存されます。履歴管理は必要なときだけ使えば十分です。</div>
     </div>
   </div>
   </div>
@@ -2118,7 +2186,7 @@
   </div>
 
   <div class="settings-bottom">
-    <button class="back-to-learn-btn" type="button" onclick="showLearnView()">戻る</button>
+    <button class="back-to-learn-btn" type="button" onclick="showLearnView()" data-ui-key="back">戻る</button>
   </div>
 </section>
 
@@ -12472,6 +12540,7 @@ const HAPTIC_FEEDBACK_STORAGE_KEY = 'vocab_trainer_haptic_feedback_v1';
 const SPEECH_VOICE_STORAGE_KEY = 'vocab_trainer_speech_voice_v1';
 const MISSED_REVIEW_STORAGE_KEY = 'vocab_trainer_missed_review_v1';
 const INTRO_SEEN_STORAGE_KEY = 'vocab_trainer_intro_seen_v1';
+const UI_LANGUAGE_STORAGE_KEY = 'vocab_trainer_ui_language_v1';
 const TEST_CHOICE_COUNT_OPTIONS = [2, 3, 4];
 const TEST_CARD_LIMIT = 20;
 const TEST_CHOICE_LABELS = ['A', 'B', 'C', 'D'];
@@ -12604,6 +12673,332 @@ const CATEGORY_LABELS = {
   abbreviationEducation: '略語 教育・言語',
   pronunciationNote: '発音注意',
   rlContrast: 'R/L注意'
+};
+const LEVEL_UI_KEYS = {
+  all: 'levelAll',
+  junior: 'levelJunior',
+  highBasic: 'levelHighBasic',
+  standard: 'levelStandard',
+  advanced: 'levelAdvanced'
+};
+const PART_UI_KEYS = {
+  random: 'partRandom',
+  noun: 'partNoun',
+  verb: 'partVerb',
+  adjective: 'partAdjective',
+  adverb: 'partAdverb'
+};
+const CATEGORY_UI_KEYS = {
+  all: 'categoryAll',
+  katakanaGap: 'categoryKatakanaGap',
+  phrasalVerb: 'categoryPhrasalVerb',
+  abbreviation: 'categoryAbbreviation',
+  abbreviationTech: 'categoryAbbreviationTech',
+  abbreviationBusiness: 'categoryAbbreviationBusiness',
+  abbreviationPublic: 'categoryAbbreviationPublic',
+  abbreviationEducation: 'categoryAbbreviationEducation',
+  pronunciationNote: 'categoryPronunciationNote',
+  rlContrast: 'categoryRlContrast'
+};
+const PART_DISPLAY_TRANSLATIONS = {
+  '名詞': 'noun',
+  '動詞': 'verb',
+  '形容詞': 'adjective',
+  '副詞': 'adverb'
+};
+const UI_TEXT = {
+  ja: {
+    back: '戻る',
+    statCurrent: '今回',
+    statMastered: '習得',
+    studyPrompt: 'タップすると答えが出るよ',
+    next: '次へ',
+    navPractice: '学習',
+    navTest: 'テスト',
+    navSettings: '設定',
+    settingsTitle: '設定',
+    settingsLead: 'よく使う設定を先に置き、発音や語形成の細かい設定は必要なときだけ開けます。',
+    tabLevel: 'レベル',
+    tabTheme: 'テーマ',
+    tabTest: 'テスト',
+    tabDisplay: '表示',
+    tabHistory: '履歴',
+    chooseLevel: 'レベルを選ぶ',
+    levelAll: 'すべて',
+    levelJunior: '中学復習',
+    levelHighBasic: '高校基礎',
+    levelStandard: '句動詞・実用',
+    levelAdvanced: '発展',
+    levelNote: 'レベル名は学習の目安です。句動詞・実用は、get up などの句動詞や日常で使うまとまり表現を中心にしています。',
+    chooseTheme: 'テーマを選ぶ',
+    categoryAll: 'すべて',
+    categoryKatakanaGap: 'カタカナ注意',
+    categoryPhrasalVerb: '句動詞',
+    categoryAbbreviation: '略語',
+    categoryAbbreviationTech: '略語 ICT・AI',
+    categoryAbbreviationBusiness: '略語 ビジネス',
+    categoryAbbreviationPublic: '略語 国際・公的',
+    categoryAbbreviationEducation: '略語 教育・言語',
+    categoryPronunciationNote: '発音注意',
+    categoryRlContrast: 'R/L注意',
+    katakanaSub: '知ってるつもり',
+    themeNote: 'テーマ別に確認できます。カタカナ注意は「知ってるつもり」になりやすい意味のズレ、句動詞は会話のまとまり、略語は分野別、発音注意は音と綴りの違い、R/L注意は語頭の音で意味が変わる組を集中的に学べます。',
+    choosePart: '品詞でしぼる',
+    partRandom: 'ランダム',
+    partNoun: '名詞',
+    partVerb: '動詞',
+    partAdjective: '形容詞',
+    partAdverb: '副詞',
+    partNote: 'テーマを選んだあと、必要に応じて品詞でさらに範囲をしぼれます。',
+    introTitle: 'はじめてならここから',
+    introText: 'まずは20問。ミスした語は「ミス復習」に残ります。答えたあとは下の案内を右スワイプで次へ進めます。',
+    today20: '今日の20問へ',
+    today20Short: '今日の20問',
+    close: '閉じる',
+    quickStartTitle: '今日の入口',
+    quickStartNote: '迷ったらここから',
+    missReview: 'ミス復習',
+    testSettingsTitle: 'テスト',
+    choice2: '2択',
+    choice3: '3択',
+    choice4: '4択',
+    testSettingsNote: '英単語だけを見て、日本語カードを選びます。テストは20問で区切ります。解答後は出題カードをタップすると裏面を確認できます。',
+    displayLanguageTitle: '表示言語',
+    languageJa: '日本語表示',
+    languageEn: 'English UI',
+    displayLanguageNote: '画面のボタンや設定名だけを切り替えます。単語の意味・例文訳は日本語のままです。',
+    frontAssistTitle: 'カード表面の補助表示',
+    frontLevelLabel: 'レベル（中学復習など）',
+    frontPartLabel: '品詞（名詞など）',
+    show: '表示',
+    hide: '非表示',
+    frontAssistNote: '表面の初期値は非表示です。品詞は答え合わせとして裏面に小さく表示します。',
+    hapticTitle: '操作時のバイブ',
+    on: 'オン',
+    off: 'オフ',
+    hapticNote: '初期値はオンです。対応端末では、カードめくり、スワイプ、誤答時などの振動だけを切り替えます。',
+    pronunciationDetails: '発音・音声のこだわり設定',
+    phoneticAssistTitle: '発音表記メモ',
+    phoneticAssistNote: '初期値は非表示です。表面には発音カナを出さず、読み方や元の言葉は裏面で確認します。',
+    speechVoiceTitle: '発音音声',
+    femaleVoicePriority: '女性声を優先',
+    speechVoiceNote: '初期値は女性声を優先します。使える声は端末とブラウザにより変わります。',
+    wordPartsDetails: '単語の成り立ちメモ',
+    wordPartsNote: '暗記の手がかりとして、確認済みの語だけ表示します。語源の厳密な分解ではなく、覚えやすさを優先した補助表示です。',
+    thisWeek: '今週',
+    streakDays: '連続日',
+    missCleared: 'ミス克服',
+    todayBadge: '今日の称号',
+    historyOverview: '履歴の概要',
+    dueCandidates: '出題候補',
+    notMastered: '未習得',
+    dataQualityTitle: '語データ点検',
+    dataQualityTotal: '品詞別項目',
+    dataQualityUnique: 'ユニーク語',
+    dataQualityIssues: '要確認',
+    historyManage: '履歴管理',
+    saveHistory: '履歴を保存',
+    loadHistory: '履歴を読込',
+    resetHistory: '履歴リセット',
+    historyStorageNote: '学習履歴はこの端末内に保存されます。履歴管理は必要なときだけ使えば十分です。',
+    settingsTabsAria: '設定ページ切り替え',
+    backToPracticeAria: '学習画面に戻る',
+    cardFlipAria: '単語カードを反転',
+    audioUnsupported: '音声非対応',
+    audioUnsupportedNote: 'この端末では音声再生に対応していません。',
+    voiceLoading: '音声を取得中',
+    voiceLoadingNote: '音声候補を取得中です。少し待ってから設定を開き直してください。',
+    voiceCurrent: '現在',
+    voiceAuto: '自動選択',
+    voiceAutoCandidate: '候補を自動選択',
+    voiceDevice: '端末内音声',
+    voiceBrowser: 'ブラウザ音声',
+    audioAriaUnsupported: 'この端末では音声再生に対応していません',
+    audioAriaUk: 'UK音声で単語を再生',
+    audioAriaEnglishFallback: '英語音声で単語を再生。en-GB音声がない場合は端末の英語音声を使います',
+    swipeLearn: '←前へ　　スワイプ　　次へ→',
+    swipeTestReady: '右スワイプで次へ　→',
+    swipeTestWaiting: '答えを選ぶと右スワイプで次へ　→',
+    swipeReadyAria: '右にスワイプすると次の問題に進みます',
+    swipeWaitingAria: '答えを選ぶと右スワイプで次へ進めます',
+    testCardLockedAria: '解答後に単語カードを反転して裏面情報を表示できます',
+    testCardBackAria: '単語カードを表面に戻す',
+    testCardFrontAria: '単語カードを反転して裏面情報を表示',
+    items: '項目',
+    dueCandidatesCount: '出題候補',
+    testScore: 'テスト',
+    missReviewScore: 'ミス復習',
+    correctQuestions: '問正解',
+    streak: '連続',
+    inARow: '連続',
+    importSuccess: '学習履歴を読み込みました。',
+    importFailure: '学習履歴を読み込めませんでした。JSONファイルを確認してください。',
+    resetConfirm: 'この端末の学習履歴をリセットします。よろしいですか？',
+    noMissReviewAlert: '今はミスだけ復習に入れる単語がありません。まず今日の20問に挑戦してみましょう。',
+    completeStudyTitle: '今回の学習完了！',
+    completeTestTitle: 'テスト完了！',
+    perfectTestTitle: '満点クリア！',
+    missReviewCompleteTitle: 'ミスだけ復習完了！',
+    missReviewClearTitle: '今回のミス復習クリア！',
+    weaknessClearedTitle: '弱点回収完了！',
+    reviewedLabel: '今回の学習',
+    masteredLabel: '習得済み',
+    nextDueLabel: '次回候補',
+    questionCountLabel: '出題数',
+    correctLabel: '正解',
+    missLabel: 'ミス',
+    restartStudy: 'もう一周する',
+    testAgain: 'もう一回テスト',
+    noCardsMessage: '今の条件では出題できる単語がありません。設定で範囲を広げてください。',
+    dataQualityOk: '必須項目、履歴キー重複、略語の元語、略語の音声展開は要確認0件です。',
+    perfectBadge: 'Perfect 20'
+  },
+  en: {
+    back: 'Back',
+    statCurrent: 'Now',
+    statMastered: 'Mastered',
+    studyPrompt: 'Tap to see the answer',
+    next: 'Next',
+    navPractice: 'Practice',
+    navTest: 'Test',
+    navSettings: 'Settings',
+    settingsTitle: 'Settings',
+    settingsLead: 'Frequent controls are first. Detailed pronunciation and word-part options stay tucked away.',
+    tabLevel: 'Level',
+    tabTheme: 'Theme',
+    tabTest: 'Test',
+    tabDisplay: 'Display',
+    tabHistory: 'History',
+    chooseLevel: 'Choose level',
+    levelAll: 'All',
+    levelJunior: 'Junior review',
+    levelHighBasic: 'High school basics',
+    levelStandard: 'Phrases & practical',
+    levelAdvanced: 'Advanced',
+    levelNote: 'Level names are study guides. Phrases & practical focuses on phrasal verbs such as get up and useful everyday chunks.',
+    chooseTheme: 'Choose theme',
+    categoryAll: 'All',
+    categoryKatakanaGap: 'Katakana caution',
+    categoryPhrasalVerb: 'Phrasal verbs',
+    categoryAbbreviation: 'Abbreviations',
+    categoryAbbreviationTech: 'ICT & AI abbreviations',
+    categoryAbbreviationBusiness: 'Business abbreviations',
+    categoryAbbreviationPublic: 'Public / international',
+    categoryAbbreviationEducation: 'Education / language',
+    categoryPronunciationNote: 'Pronunciation caution',
+    categoryRlContrast: 'R/L caution',
+    katakanaSub: 'False friends',
+    themeNote: 'Use themes for focused practice: katakana meaning gaps, phrasal verbs, abbreviations by field, pronunciation traps, and R/L contrast pairs.',
+    choosePart: 'Filter by part of speech',
+    partRandom: 'Random',
+    partNoun: 'Nouns',
+    partVerb: 'Verbs',
+    partAdjective: 'Adjectives',
+    partAdverb: 'Adverbs',
+    partNote: 'After choosing a theme, narrow the range by part of speech if needed.',
+    introTitle: 'Start here',
+    introText: 'Try 20 questions first. Missed words stay in Miss Review. After answering, swipe right on the guide below to move on.',
+    today20: 'Start today’s 20',
+    today20Short: 'Today’s 20',
+    close: 'Close',
+    quickStartTitle: 'Today’s start',
+    quickStartNote: 'Start here when unsure',
+    missReview: 'Miss Review',
+    testSettingsTitle: 'Test',
+    choice2: '2 choices',
+    choice3: '3 choices',
+    choice4: '4 choices',
+    testSettingsNote: 'Look at the English word and choose the Japanese meaning card. Tests stop at 20 questions. After answering, tap the word card to check the back.',
+    displayLanguageTitle: 'Display language',
+    languageJa: '日本語表示',
+    languageEn: 'English UI',
+    displayLanguageNote: 'This changes buttons and setting labels only. Word meanings and example translations stay in Japanese.',
+    frontAssistTitle: 'Front-card helper labels',
+    frontLevelLabel: 'Level',
+    frontPartLabel: 'Part of speech',
+    show: 'Show',
+    hide: 'Hide',
+    frontAssistNote: 'The default is hidden. The part of speech appears on the back as a small answer check.',
+    hapticTitle: 'Vibration',
+    on: 'On',
+    off: 'Off',
+    hapticNote: 'On supported devices, this only switches vibration for card flips, swipes, and wrong answers.',
+    pronunciationDetails: 'Pronunciation and voice options',
+    phoneticAssistTitle: 'Pronunciation note',
+    phoneticAssistNote: 'The default is hidden. Kana pronunciation and source-word notes can be checked on the back.',
+    speechVoiceTitle: 'Voice',
+    femaleVoicePriority: 'Prefer female voice',
+    speechVoiceNote: 'The default prefers a female voice. Available voices depend on the device and browser.',
+    wordPartsDetails: 'Word-part notes',
+    wordPartsNote: 'Only confirmed helper notes are shown. This is a memory aid, not a strict etymology breakdown.',
+    thisWeek: 'This week',
+    streakDays: 'Streak',
+    missCleared: 'Misses cleared',
+    todayBadge: 'Today’s badge',
+    historyOverview: 'History overview',
+    dueCandidates: 'Due cards',
+    notMastered: 'Not mastered',
+    dataQualityTitle: 'Word-data check',
+    dataQualityTotal: 'Items',
+    dataQualityUnique: 'Unique words',
+    dataQualityIssues: 'To check',
+    historyManage: 'History management',
+    saveHistory: 'Save history',
+    loadHistory: 'Load history',
+    resetHistory: 'Reset history',
+    historyStorageNote: 'Study history is saved on this device. Use history management only when needed.',
+    settingsTabsAria: 'Settings page tabs',
+    backToPracticeAria: 'Back to practice screen',
+    cardFlipAria: 'Flip the word card',
+    audioUnsupported: 'Audio unsupported',
+    audioUnsupportedNote: 'This device does not support audio playback.',
+    voiceLoading: 'Loading voices',
+    voiceLoadingNote: 'Voice candidates are loading. Please wait and reopen settings.',
+    voiceCurrent: 'Current',
+    voiceAuto: 'Auto select',
+    voiceAutoCandidate: 'Auto select candidate',
+    voiceDevice: 'Device voice',
+    voiceBrowser: 'Browser voice',
+    audioAriaUnsupported: 'This device does not support audio playback',
+    audioAriaUk: 'Play word with UK voice',
+    audioAriaEnglishFallback: 'Play word with an English voice. If en-GB is unavailable, this device’s English voice is used',
+    swipeLearn: '← Previous　　Swipe　　Next →',
+    swipeTestReady: 'Swipe right for next →',
+    swipeTestWaiting: 'Choose an answer, then swipe right →',
+    swipeReadyAria: 'Swipe right to move to the next question',
+    swipeWaitingAria: 'Choose an answer, then swipe right to move on',
+    testCardLockedAria: 'After answering, you can flip the word card to check the back',
+    testCardBackAria: 'Return the word card to the front',
+    testCardFrontAria: 'Flip the word card to show the back',
+    items: 'items',
+    dueCandidatesCount: 'Due',
+    testScore: 'Test',
+    missReviewScore: 'Miss Review',
+    correctQuestions: 'correct',
+    streak: 'streak',
+    inARow: 'in a row',
+    importSuccess: 'Study history was loaded.',
+    importFailure: 'Could not load study history. Please check the JSON file.',
+    resetConfirm: 'Reset study history on this device?',
+    noMissReviewAlert: 'There are no words for Miss Review right now. Try today’s 20 first.',
+    completeStudyTitle: 'Practice complete!',
+    completeTestTitle: 'Test complete!',
+    perfectTestTitle: 'Perfect 20!',
+    missReviewCompleteTitle: 'Miss Review complete!',
+    missReviewClearTitle: 'Miss Review cleared!',
+    weaknessClearedTitle: 'Weaknesses cleared!',
+    reviewedLabel: 'Practiced',
+    masteredLabel: 'Mastered',
+    nextDueLabel: 'Next due',
+    questionCountLabel: 'Questions',
+    correctLabel: 'Correct',
+    missLabel: 'Misses',
+    restartStudy: 'Practice again',
+    testAgain: 'Test again',
+    noCardsMessage: 'There are no cards available with the current settings. Widen the range in Settings.',
+    dataQualityOk: 'Required fields, duplicate history keys, abbreviation origins, and abbreviation speech checks have 0 items to check.',
+    perfectBadge: 'Perfect score'
+  }
 };
 const CATEGORY_TAGS = {
   katakanaGap: 'katakana-gap',
@@ -12773,6 +13168,7 @@ const MORPHEME_SUFFIX_HINTS = {
   ing: new Set('streaming'.split(' ')),
   ure: new Set('exposure'.split(' '))
 };
+let currentUiLanguage = localStorage.getItem(UI_LANGUAGE_STORAGE_KEY) === 'en' ? 'en' : 'ja';
 let currentLevel = localStorage.getItem(LEVEL_STORAGE_KEY) || 'all';
 if (LEGACY_LEVEL_MAP[currentLevel]) currentLevel = LEGACY_LEVEL_MAP[currentLevel];
 if (!LEVEL_LABELS[currentLevel]) currentLevel = 'all';
@@ -12789,6 +13185,83 @@ let hapticFeedbackEnabled = localStorage.getItem(HAPTIC_FEEDBACK_STORAGE_KEY) !=
 let selectedSpeechVoiceKey = localStorage.getItem(SPEECH_VOICE_STORAGE_KEY) || SPEECH_AUTO_FEMALE;
 const SETTINGS_PAGE_ORDER = ['level', 'theme', 'test', 'display', 'history'];
 let currentSettingsPage = 'level';
+
+function uiText(key) {
+  return UI_TEXT[currentUiLanguage]?.[key] ?? UI_TEXT.ja[key] ?? key;
+}
+
+function formatItemCount(count) {
+  return currentUiLanguage === 'en' ? `${count} ${uiText('items')}` : `${count}${uiText('items')}`;
+}
+
+function getUiLevelLabel(level) {
+  return uiText(LEVEL_UI_KEYS[level]) || LEVEL_LABELS[level] || level;
+}
+
+function getUiPartLabel(part) {
+  return uiText(PART_UI_KEYS[part]) || PART_LABELS[part] || part;
+}
+
+function getUiCategoryLabel(category) {
+  return uiText(CATEGORY_UI_KEYS[category]) || CATEGORY_LABELS[category] || category;
+}
+
+function setElementLeadingText(element, value) {
+  if (!element) return;
+  const textNode = [...element.childNodes].find(node =>
+    node.nodeType === Node.TEXT_NODE && node.textContent.trim()
+  );
+  if (textNode) {
+    textNode.textContent = value;
+    return;
+  }
+  element.insertBefore(document.createTextNode(value), element.firstChild);
+}
+
+function updateUiLanguageButtons() {
+  document.querySelectorAll('.ui-language-btn').forEach(btn => {
+    const isActive = btn.dataset.uiLanguage === currentUiLanguage;
+    btn.classList.toggle('active', isActive);
+    btn.setAttribute('aria-pressed', isActive ? 'true' : 'false');
+  });
+}
+
+function applyUiLanguage() {
+  document.querySelectorAll('[data-ui-key]').forEach(element => {
+    element.textContent = uiText(element.dataset.uiKey);
+  });
+  document.querySelectorAll('[data-ui-label-key]').forEach(element => {
+    setElementLeadingText(element, uiText(element.dataset.uiLabelKey));
+  });
+  document.querySelector('.settings-tabs')?.setAttribute('aria-label', uiText('settingsTabsAria'));
+  document.getElementById('header-back-btn')?.setAttribute('aria-label', uiText('backToPracticeAria'));
+  document.getElementById('card-container')?.setAttribute('aria-label', uiText('cardFlipAria'));
+  updateUiLanguageButtons();
+  updateAudioButtons();
+  updateSwipeMessage();
+  updateLevelButtons();
+  updateCategoryButtons();
+  updatePartButtons();
+  updateTestChoiceButtons();
+  updatePhoneticAssistButtons();
+  updateFrontMetaButtons();
+  updateHapticFeedbackButtons();
+  updateSpeechVoiceButtons();
+  updateStats();
+  if (currentMode === 'test') setTestCardFlipped(testCardFlipped);
+  updateSettingsPagerHeight();
+}
+
+function setUiLanguage(language) {
+  currentUiLanguage = language === 'en' ? 'en' : 'ja';
+  localStorage.setItem(UI_LANGUAGE_STORAGE_KEY, currentUiLanguage);
+  applyUiLanguage();
+  if (currentMode === 'learn' && sessionCards[currentIndex]) showCard();
+  if (currentMode === 'test' && testCards[testIndex]) {
+    updateTestCardBack(testCards[testIndex]);
+    document.getElementById('due-text').textContent = getTestScoreLabel();
+  }
+}
 
 function updateSettingsPagerHeight() {
   const pager = document.getElementById('settings-pager');
@@ -13041,7 +13514,9 @@ function getPartClass(partOfSpeech) {
 }
 
 function formatPartOfSpeechForDisplay(partOfSpeech) {
-  return String(partOfSpeech || '').replaceAll('・', ' / ');
+  const parts = String(partOfSpeech || '').split('・').map(part => part.trim()).filter(Boolean);
+  if (currentUiLanguage !== 'en') return parts.join(' / ');
+  return parts.map(part => PART_DISPLAY_TRANSLATIONS[part] || part).join(' / ');
 }
 
 function getPartKey(word) {
@@ -13176,7 +13651,9 @@ function selectBritishEnglishVoice(voices) {
 
 function getSpeechVoiceLabel(voice) {
   const gender = getVoiceGenderHint(voice);
-  const genderLabel = gender === 'female' ? '女性' : gender === 'male' ? '男性' : '音声';
+  const genderLabel = currentUiLanguage === 'en'
+    ? (gender === 'female' ? 'Female' : gender === 'male' ? 'Male' : 'Voice')
+    : (gender === 'female' ? '女性' : gender === 'male' ? '男性' : '音声');
   return `${genderLabel} / ${voice.name || 'English'} / ${voice.lang || 'en'}`;
 }
 
@@ -13191,9 +13668,9 @@ function updateSpeechVoiceButtons() {
     button.className = 'speech-voice-btn';
     button.type = 'button';
     button.disabled = true;
-    button.textContent = '音声非対応';
+    button.textContent = uiText('audioUnsupported');
     container.appendChild(button);
-    if (note) note.textContent = 'この端末では音声再生に対応していません。';
+    if (note) note.textContent = uiText('audioUnsupportedNote');
     return;
   }
 
@@ -13216,16 +13693,22 @@ function updateSpeechVoiceButtons() {
     return button;
   };
 
-  container.appendChild(makeButton(SPEECH_AUTO_FEMALE, '女性声を優先', activeVoice ? `現在: ${activeVoice.name || 'English'} / ${activeVoice.lang || 'en'}` : '候補を自動選択'));
+  container.appendChild(makeButton(
+    SPEECH_AUTO_FEMALE,
+    uiText('femaleVoicePriority'),
+    activeVoice
+      ? `${uiText('voiceCurrent')}: ${activeVoice.name || 'English'} / ${activeVoice.lang || 'en'}`
+      : uiText('voiceAutoCandidate')
+  ));
 
   if (!voices.length) {
     const waiting = document.createElement('button');
     waiting.className = 'speech-voice-btn';
     waiting.type = 'button';
     waiting.disabled = true;
-    waiting.textContent = '音声を取得中';
+    waiting.textContent = uiText('voiceLoading');
     container.appendChild(waiting);
-    if (note) note.textContent = '音声候補を取得中です。少し待ってから設定を開き直してください。';
+    if (note) note.textContent = uiText('voiceLoadingNote');
     updateSettingsPagerHeight();
     return;
   }
@@ -13233,22 +13716,22 @@ function updateSpeechVoiceButtons() {
   const sortedVoices = [...voices].sort((a, b) => getVoiceRank(a) - getVoiceRank(b) || String(a.name).localeCompare(String(b.name)));
   sortedVoices.forEach(voice => {
     const key = getSpeechVoiceKey(voice);
-    container.appendChild(makeButton(key, getSpeechVoiceLabel(voice), voice.localService ? '端末内音声' : 'ブラウザ音声'));
+    container.appendChild(makeButton(key, getSpeechVoiceLabel(voice), voice.localService ? uiText('voiceDevice') : uiText('voiceBrowser')));
   });
 
   if (note) {
-    const current = activeVoice ? getSpeechVoiceLabel(activeVoice) : '自動選択';
-    note.textContent = `現在: ${current}`;
+    const current = activeVoice ? getSpeechVoiceLabel(activeVoice) : uiText('voiceAuto');
+    note.textContent = `${uiText('voiceCurrent')}: ${current}`;
   }
   updateSettingsPagerHeight();
 }
 
 function getAudioAriaLabel() {
-  if (!speechVoiceReady) return 'この端末では音声再生に対応していません';
+  if (!speechVoiceReady) return uiText('audioAriaUnsupported');
   if (britishEnglishVoice && String(britishEnglishVoice.lang || '').toLowerCase() === 'en-gb') {
-    return `UK音声で単語を再生（${britishEnglishVoice.name || 'English'}）`;
+    return `${uiText('audioAriaUk')}（${britishEnglishVoice.name || 'English'}）`;
   }
-  return '英語音声で単語を再生。en-GB音声がない場合は端末の英語音声を使います';
+  return uiText('audioAriaEnglishFallback');
 }
 
 function updateAudioButtons() {
@@ -13306,7 +13789,7 @@ function speakEnglishWord(word, event) {
   if (!text) return;
   const synth = getSpeechEngine();
   if (!synth) {
-    alert('この端末では音声再生に対応していません。');
+    alert(uiText('audioUnsupportedNote'));
     return;
   }
   refreshSpeechVoices();
@@ -13437,7 +13920,7 @@ function formatAbbreviationOrigin(word, origin) {
 
 function getRlContrastNote(word) {
   const pair = RL_CONTRAST_PAIRS[String(word.w || '').toLowerCase()];
-  return pair ? `R/L注意: ${pair.label}` : '';
+  return pair ? `${currentUiLanguage === 'en' ? 'R/L caution' : 'R/L注意'}: ${pair.label}` : '';
 }
 
 function updateOriginText(word) {
@@ -13460,6 +13943,7 @@ function updateOriginText(word) {
 }
 
 function getAbbreviationReadingLabel(word) {
+  if (currentUiLanguage === 'en') return String(word.ph || '').includes(' ') ? 'letter reading' : 'word reading';
   return String(word.ph || '').includes(' ') ? '文字読み' : '単語読み';
 }
 
@@ -13522,22 +14006,24 @@ function getPartCount(part) {
 }
 
 function getScopeLabel() {
-  return `${LEVEL_LABELS[currentLevel]} / ${CATEGORY_LABELS[currentCategory]} / ${PART_LABELS[currentPart]}`;
+  return `${getUiLevelLabel(currentLevel)} / ${getUiCategoryLabel(currentCategory)} / ${getUiPartLabel(currentPart)}`;
 }
 
 function updateLevelButtons() {
   document.querySelectorAll('.level-btn').forEach(btn => {
     btn.classList.toggle('active', btn.dataset.level === currentLevel);
+    if (btn.dataset.uiLabelKey) setElementLeadingText(btn, uiText(btn.dataset.uiLabelKey));
   });
   ['all', 'junior', 'highBasic', 'standard', 'advanced'].forEach(level => {
     const el = document.getElementById(`level-count-${level}`);
-    if (el) el.textContent = `${getLevelCount(level)}項目`;
+    if (el) el.textContent = formatItemCount(getLevelCount(level));
   });
 }
 
 function updatePartButtons() {
   document.querySelectorAll('.part-btn').forEach(btn => {
     btn.classList.toggle('active', btn.dataset.part === currentPart);
+    if (btn.dataset.uiLabelKey) setElementLeadingText(btn, uiText(btn.dataset.uiLabelKey));
   });
   ['random', 'noun', 'verb', 'adjective', 'adverb'].forEach(part => {
     const el = document.getElementById(`part-count-${part}`);
@@ -13552,10 +14038,11 @@ function getCategoryCount(category) {
 function updateCategoryButtons() {
   document.querySelectorAll('.category-btn').forEach(btn => {
     btn.classList.toggle('active', btn.dataset.category === currentCategory);
+    if (btn.dataset.uiLabelKey) setElementLeadingText(btn, uiText(btn.dataset.uiLabelKey));
   });
   Object.keys(CATEGORY_LABELS).forEach(category => {
     const el = document.getElementById(`category-count-${category}`);
-    if (el) el.textContent = `${getCategoryCount(category)}項目`;
+    if (el) el.textContent = formatItemCount(getCategoryCount(category));
   });
 }
 
@@ -13597,8 +14084,10 @@ function updateDataQualityPanel() {
   setText('data-quality-unique', summary.unique);
   setText('data-quality-issues', summary.issueCount);
   const note = summary.issueCount === 0
-    ? '必須項目、履歴キー重複、略語の元語、略語の音声展開は要確認0件です。'
-    : `要確認: 必須${summary.requiredMissing} / 重複キー${summary.duplicateKeyGroups} / 略語元語${summary.missingOrigins} / 略語音声${summary.missingSpeech}`;
+    ? uiText('dataQualityOk')
+    : currentUiLanguage === 'en'
+      ? `To check: required ${summary.requiredMissing} / duplicate keys ${summary.duplicateKeyGroups} / abbreviation origins ${summary.missingOrigins} / abbreviation speech ${summary.missingSpeech}`
+      : `要確認: 必須${summary.requiredMissing} / 重複キー${summary.duplicateKeyGroups} / 略語元語${summary.missingOrigins} / 略語音声${summary.missingSpeech}`;
   setText('data-quality-note', note);
 }
 
@@ -14051,7 +14540,7 @@ function showCard() {
   wordText.className = `word-text ${partClass}`;
   wordText.innerHTML = renderWordWithMorphemes(w.w);
   updateFrontPronunciation(w);
-  document.getElementById('level-tag').textContent     = LEVEL_LABELS[getWordLevel(w, WORDS.indexOf(w))];
+  document.getElementById('level-tag').textContent     = getUiLevelLabel(getWordLevel(w, WORDS.indexOf(w)));
   posTag.className = `pos-tag ${partClass}`;
   posTag.textContent = formatPartOfSpeechForDisplay(partOfSpeech);
   backPosTag.className = `back-pos-tag ${partClass}`;
@@ -14112,7 +14601,7 @@ function flipCard() {
 }
 
 function updateSwipeMessage() {
-  document.getElementById('swipe-msg').textContent = '←前へ　　スワイプ　　次へ→';
+  document.getElementById('swipe-msg').textContent = uiText('swipeLearn');
 }
 
 function beginTestSession(cards, kind = 'normal') {
@@ -14158,7 +14647,7 @@ function startMissReviewSession() {
   markIntroSeen();
   const missedWords = getMissedReviewWords();
   if (!missedWords.length) {
-    alert('今はミスだけ復習に入れる単語がありません。まず今日の20問に挑戦してみましょう。');
+    alert(uiText('noMissReviewAlert'));
     return;
   }
   showLearnView();
@@ -14212,8 +14701,8 @@ function setTestCardFlipped(nextFlipped) {
   card.setAttribute(
     'aria-label',
     !canFlip
-      ? '解答後に単語カードを反転して裏面情報を表示できます'
-      : testCardFlipped ? '単語カードを表面に戻す' : '単語カードを反転して裏面情報を表示'
+      ? uiText('testCardLockedAria')
+      : testCardFlipped ? uiText('testCardBackAria') : uiText('testCardFrontAria')
   );
 }
 
@@ -14290,8 +14779,13 @@ function showTestQuestion() {
     meaningSpan.className = 'test-choice-meaning';
     meaningSpan.textContent = choice.word.m;
     button.append(labelSpan, meaningSpan);
-    button.setAttribute('aria-label', `${index + 1}キーで${label} ${choice.word.m}を選ぶ`);
-    button.title = `${index + 1}キーで選択`;
+    button.setAttribute(
+      'aria-label',
+      currentUiLanguage === 'en'
+        ? `Press ${index + 1} to choose ${label}: ${choice.word.m}`
+        : `${index + 1}キーで${label} ${choice.word.m}を選ぶ`
+    );
+    button.title = currentUiLanguage === 'en' ? `Press ${index + 1}` : `${index + 1}キーで選択`;
     button.dataset.correct = choice.correct ? 'true' : 'false';
     button.dataset.choiceIndex = String(index);
     button.dataset.choiceKey = getCardKey(choice.word);
@@ -14302,8 +14796,13 @@ function showTestQuestion() {
     letterButton.type = 'button';
     letterButton.className = 'test-letter-btn';
     letterButton.textContent = label;
-    letterButton.setAttribute('aria-label', `${index + 1}キーで${label}を選ぶ`);
-    letterButton.title = `${index + 1}キーで選択`;
+    letterButton.setAttribute(
+      'aria-label',
+      currentUiLanguage === 'en'
+        ? `Press ${index + 1} to choose ${label}`
+        : `${index + 1}キーで${label}を選ぶ`
+    );
+    letterButton.title = currentUiLanguage === 'en' ? `Press ${index + 1}` : `${index + 1}キーで選択`;
     letterButton.dataset.correct = choice.correct ? 'true' : 'false';
     letterButton.dataset.choiceIndex = String(index);
     letterButton.dataset.choiceKey = getCardKey(choice.word);
@@ -14338,7 +14837,26 @@ function getFocusHint(word) {
   const categories = getWordCategories(word);
   const origin = getAbbreviationOrigin(word);
   if (origin && categories.has('abbreviation')) {
-    return `元の言葉: ${origin}`;
+    return `${currentUiLanguage === 'en' ? 'Source words' : '元の言葉'}: ${origin}`;
+  }
+  if (currentUiLanguage === 'en') {
+    if (categories.has('phrasal-verb')) {
+      return 'Phrasal verbs change meaning through the verb + small word set.';
+    }
+    if (categories.has('katakana-gap')) {
+      return 'Katakana caution: the familiar Japanese sound and English meaning can differ.';
+    }
+    if (categories.has('rl-contrast')) {
+      return 'R/L caution: the first r/l sound changes the meaning.';
+    }
+    if (categories.has('pronunciation-note')) {
+      return 'Pronunciation caution: check the core meaning before the sound.';
+    }
+    const { prefix, suffix } = getWordMorphemeParts(word.w);
+    if (prefix || suffix) {
+      return `Word parts: ${[prefix, suffix].filter(Boolean).join(' / ')}`;
+    }
+    return 'Hint: check the example sentence.';
   }
   if (categories.has('phrasal-verb')) {
     return '句動詞は、動詞と小さい語のセットで意味が変わる。';
@@ -14363,26 +14881,43 @@ function getWrongAnswerHint(word, selectedWord) {
   const correctMeaning = getShortMeaning(word.m);
   const focusHint = getFocusHint(word);
   if (!selectedWord || selectedWord === word) {
-    return `正解は「${correctMeaning}」。${focusHint}`;
+    return currentUiLanguage === 'en'
+      ? `Correct answer: "${correctMeaning}". ${focusHint}`
+      : `正解は「${correctMeaning}」。${focusHint}`;
   }
 
   const selectedMeaning = getShortMeaning(selectedWord.m);
   const correctPart = formatPartOfSpeechForDisplay(getPartOfSpeech(word));
   const selectedPart = formatPartOfSpeechForDisplay(getPartOfSpeech(selectedWord));
   if (correctPart !== selectedPart) {
-    return `品詞に注意。正解は${correctPart}「${correctMeaning}」、選んだ選択肢は${selectedPart}「${selectedMeaning}」。`;
+    return currentUiLanguage === 'en'
+      ? `Check the part of speech. Correct: ${correctPart} "${correctMeaning}". Picked: ${selectedPart} "${selectedMeaning}".`
+      : `品詞に注意。正解は${correctPart}「${correctMeaning}」、選んだ選択肢は${selectedPart}「${selectedMeaning}」。`;
   }
 
-  return `意味の中心を比べよう。正解は「${correctMeaning}」、選んだ選択肢は「${selectedMeaning}」。${focusHint}`;
+  return currentUiLanguage === 'en'
+    ? `Compare the core meanings. Correct: "${correctMeaning}". Picked: "${selectedMeaning}". ${focusHint}`
+    : `意味の中心を比べよう。正解は「${correctMeaning}」、選んだ選択肢は「${selectedMeaning}」。${focusHint}`;
 }
 
 function getStreakMilestoneFeedback() {
+  if (currentUiLanguage === 'en') {
+    if (testCurrentStreak === 10) return '10 in a row. You have momentum.';
+    if (testCurrentStreak === 15) return '15 in a row. Strong focus.';
+    if (testCurrentStreak === 20) return '20 in a row. Perfect pace.';
+    return '';
+  }
   return STREAK_MILESTONE_MESSAGES[testCurrentStreak] || '';
 }
 
 function getCorrectAnswerFeedback() {
   const milestoneFeedback = getStreakMilestoneFeedback();
   if (milestoneFeedback) return milestoneFeedback;
+  if (currentUiLanguage === 'en') {
+    if (testCurrentStreak >= 5) return `Correct. ${testCurrentStreak} in a row. Good rhythm.`;
+    if (testCurrentStreak >= 2) return `Correct. ${testCurrentStreak} in a row.`;
+    return 'Correct.';
+  }
   if (testCurrentStreak >= 5) return `正解！ ${testCurrentStreak}連続。いい流れ。`;
   if (testCurrentStreak >= 2) return `正解！ ${testCurrentStreak}連続。`;
   return '正解！';
@@ -14486,6 +15021,7 @@ function exportData() {
     selectedFrontPartVisible: showFrontPart,
     selectedHapticFeedbackEnabled: hapticFeedbackEnabled,
     selectedSpeechVoiceKey,
+    selectedUiLanguage: currentUiLanguage,
     missedReviewKeys: loadMissedReviewKeys(),
     data: loadData()
   };
@@ -14546,21 +15082,26 @@ async function importData(event) {
       localStorage.setItem(SPEECH_VOICE_STORAGE_KEY, selectedSpeechVoiceKey);
       refreshSpeechVoices();
     }
+    if (payload.selectedUiLanguage === 'ja' || payload.selectedUiLanguage === 'en') {
+      currentUiLanguage = payload.selectedUiLanguage;
+      localStorage.setItem(UI_LANGUAGE_STORAGE_KEY, currentUiLanguage);
+      applyUiLanguage();
+    }
     if (Array.isArray(payload.missedReviewKeys)) {
       saveMissedReviewKeys(payload.missedReviewKeys);
     }
     reviewedToday = 0;
     restartCurrentMode();
-    alert('学習履歴を読み込みました。');
+    alert(uiText('importSuccess'));
   } catch (err) {
-    alert('学習履歴を読み込めませんでした。JSONファイルを確認してください。');
+    alert(uiText('importFailure'));
   } finally {
     event.target.value = '';
   }
 }
 
 function resetData() {
-  if (!confirm('この端末の学習履歴をリセットします。よろしいですか？')) return;
+  if (!confirm(uiText('resetConfirm'))) return;
   localStorage.removeItem(STORAGE_KEY);
   localStorage.removeItem(MISSED_REVIEW_STORAGE_KEY);
   localStorage.removeItem(INTRO_SEEN_STORAGE_KEY);
@@ -14596,9 +15137,12 @@ function showPreviousCard() {
 
 function getTestScoreLabel() {
   const base = testSessionKind === 'missReview'
-    ? `ミス復習: ${testCorrect}問正解`
-    : `テスト: ${testCorrect}問正解`;
-  return testCurrentStreak >= 2 ? `${base} / ${testCurrentStreak}連続` : base;
+    ? `${uiText('missReviewScore')}: ${testCorrect}${currentUiLanguage === 'en' ? ' ' : ''}${uiText('correctQuestions')}`
+    : `${uiText('testScore')}: ${testCorrect}${currentUiLanguage === 'en' ? ' ' : ''}${uiText('correctQuestions')}`;
+  if (testCurrentStreak < 2) return base;
+  return currentUiLanguage === 'en'
+    ? `${base} / ${testCurrentStreak} ${uiText('inARow')}`
+    : `${base} / ${testCurrentStreak}${uiText('inARow')}`;
 }
 
 function setText(id, value) {
@@ -14621,25 +15165,42 @@ function setCompleteNextStep(message, tone = 'normal') {
 }
 
 function getStudyNextStepMessage(due) {
+  if (currentUiLanguage === 'en') {
+    if (due <= 0) return 'Next: stop here for today. Continue with a small round tomorrow.';
+    return 'Next: run the due cards again. Short rounds help memory stick.';
+  }
   if (due <= 0) return '次の一手: 今日はここで区切ってOK。明日、また少しだけ続ける。';
   return '次の一手: 出題候補をもう一周。短く回すほど記憶に残りやすい。';
 }
 
 function getTestNextStepMessage({ testLength, misses, isMissReview, remainingMisses, isPerfect20 }) {
-  if (!testLength) return '次の一手: 設定で範囲を広げると再開できます。';
-  if (misses > 0) return '次の一手: ミスだけ復習で、今のつまずきをすぐ回収。';
+  if (!testLength) return currentUiLanguage === 'en'
+    ? 'Next: widen the range in Settings to restart.'
+    : '次の一手: 設定で範囲を広げると再開できます。';
+  if (misses > 0) return currentUiLanguage === 'en'
+    ? 'Next: use Miss Review to recover today’s misses.'
+    : '次の一手: ミスだけ復習で、今のつまずきをすぐ回収。';
   if (isMissReview && remainingMisses === 0) return '';
   if (isPerfect20) return '';
-  if (isMissReview) return `次の一手: 残り${remainingMisses}語も、同じ流れで回収。`;
+  if (isMissReview) return currentUiLanguage === 'en'
+    ? `Next: clear the remaining ${remainingMisses} ${remainingMisses === 1 ? 'word' : 'words'} the same way.`
+    : `次の一手: 残り${remainingMisses}語も、同じ流れで回収。`;
   return '';
 }
 
 function getWeaknessBucketLabel(word) {
   const categories = getWordCategories(word);
   for (const [category, label] of WEAKNESS_CATEGORY_PRIORITY) {
-    if (categories.has(category)) return label;
+    if (!categories.has(category)) continue;
+    if (currentUiLanguage !== 'en') return label;
+    if (category === 'katakana-gap') return uiText('categoryKatakanaGap');
+    if (category === 'phrasal-verb') return uiText('categoryPhrasalVerb');
+    if (category.startsWith('abbreviation')) return uiText('categoryAbbreviation');
+    if (category === 'rl-contrast') return uiText('categoryRlContrast');
+    if (category === 'pronunciation-note') return uiText('categoryPronunciationNote');
+    return label;
   }
-  return '意味確認';
+  return currentUiLanguage === 'en' ? 'Meaning check' : '意味確認';
 }
 
 function getTestMissedWords() {
@@ -14651,7 +15212,9 @@ function getWeaknessSummaryLine(isMissReview = false) {
   if (!testCards.length) return '';
   if (!missedWords.length) {
     return isMissReview
-      ? '今日の弱点: なし。ミス復習をきれいに回収。'
+      ? currentUiLanguage === 'en'
+        ? 'Today’s weak points: none. Miss Review is cleared.'
+        : '今日の弱点: なし。ミス復習をきれいに回収。'
       : '';
   }
 
@@ -14662,14 +15225,53 @@ function getWeaknessSummaryLine(isMissReview = false) {
   });
   const summary = [...counts.entries()]
     .sort((a, b) => b[1] - a[1])
-    .map(([label, count]) => `${label} ${count}語`)
+    .map(([label, count]) => currentUiLanguage === 'en'
+      ? `${label}: ${count}`
+      : `${label} ${count}語`)
     .join(' / ');
-  return `今日の弱点: ${summary}`;
+  return currentUiLanguage === 'en' ? `Today’s weak points: ${summary}` : `今日の弱点: ${summary}`;
 }
 
 function getGrowthBadge(meta = getMeta(), missedReviewCount = getMissedReviewWords().length) {
   const todayCount = getTodayReviewCount(meta);
   const weeklyCount = getThisWeekReviewCount(meta);
+  const remainingToday = Math.max(0, TEST_CARD_LIMIT - todayCount);
+  if (currentUiLanguage === 'en') {
+    if (todayCount >= TEST_CARD_LIMIT) {
+      return {
+        title: '20-question runner',
+        message: `${todayCount} questions today. Continue tomorrow to grow your streak.`
+      };
+    }
+    if ((meta.streak || 0) >= 7) {
+      return {
+        title: 'Streak builder',
+        message: `${meta.streak} days in a row. ${remainingToday} more to reach today’s 20.`
+      };
+    }
+    if ((meta.streak || 0) >= 3) {
+      return {
+        title: 'On a streak',
+        message: `${meta.streak} days in a row. Short daily practice is working.`
+      };
+    }
+    if (missedReviewCount > 0) {
+      return {
+        title: 'Miss Review chance',
+        message: `${missedReviewCount} ${missedReviewCount === 1 ? 'word is' : 'words are'} in Miss Review. Clearing them builds strength.`
+      };
+    }
+    if (weeklyCount > 0) {
+      return {
+        title: 'Today’s step',
+        message: `${weeklyCount} questions this week. ${remainingToday} more for today’s 20.`
+      };
+    }
+    return {
+      title: 'Warm-up',
+      message: 'Start with today’s 20. Missed words can be recovered later.'
+    };
+  }
   if (todayCount >= TEST_CARD_LIMIT) {
     return {
       title: '20問ランナー',
@@ -14679,7 +15281,7 @@ function getGrowthBadge(meta = getMeta(), missedReviewCount = getMissedReviewWor
   if ((meta.streak || 0) >= 7) {
     return {
       title: '継続の達人',
-      message: `連続${meta.streak}日。今日はあと${TEST_CARD_LIMIT - todayCount}問で20問達成。`
+      message: `連続${meta.streak}日。今日はあと${remainingToday}問で20問達成。`
     };
   }
   if ((meta.streak || 0) >= 3) {
@@ -14697,7 +15299,7 @@ function getGrowthBadge(meta = getMeta(), missedReviewCount = getMissedReviewWor
   if (weeklyCount > 0) {
     return {
       title: '今日の一歩',
-      message: `今週${weeklyCount}問。あと${TEST_CARD_LIMIT - todayCount}問で今日の20問。`
+      message: `今週${weeklyCount}問。あと${remainingToday}問で今日の20問。`
     };
   }
   return {
@@ -14751,7 +15353,7 @@ function updateStats() {
   setText('stat-due', due);
   document.getElementById('due-text').textContent = currentMode === 'test'
     ? getTestScoreLabel()
-    : `出題候補: ${due}項目`;
+    : `${uiText('dueCandidatesCount')}: ${formatItemCount(due)}`;
   setText('stat-left', Math.max(0, target - mastered));
   updateGrowthBadge(meta, missedReviewCount);
 }
@@ -14774,21 +15376,26 @@ function showComplete() {
   const activeWords = getActiveWords();
   const mastered = activeWords.filter((w, index) => data[getCardKey(w, index)] && data[getCardKey(w, index)].mastered).length;
   const due = getDueCards().length;
+  const completeBackBtn = document.getElementById('complete-back-btn');
+  if (completeBackBtn) completeBackBtn.hidden = true;
 
-  document.getElementById('complete-icon').textContent = '🎉';
-  document.getElementById('complete-title').textContent = '今回の学習完了！';
-  document.getElementById('cs-reviewed-label').textContent = '今回の学習';
-  document.getElementById('cs-mastered-label').textContent = '習得済み';
-  document.getElementById('cs-due-label').textContent = '次回候補';
+  const completeIcon = document.getElementById('complete-icon');
+  completeIcon.className = 'complete-icon';
+  completeIcon.textContent = '🎉';
+  document.getElementById('complete-title').textContent = uiText('completeStudyTitle');
+  document.getElementById('cs-reviewed-label').textContent = uiText('reviewedLabel');
+  document.getElementById('cs-mastered-label').textContent = uiText('masteredLabel');
+  document.getElementById('cs-due-label').textContent = uiText('nextDueLabel');
   const restartBtn = document.getElementById('restart-btn');
-  restartBtn.textContent = 'もう一周する';
+  restartBtn.textContent = uiText('restartStudy');
   restartBtn.classList.remove('miss-review');
   completionAction = 'restart';
   document.getElementById('cs-reviewed').textContent = reviewedToday;
   document.getElementById('cs-mastered').textContent = mastered;
   document.getElementById('cs-due').textContent      = due;
-  document.getElementById('complete-msg').textContent =
-    `「${getScopeLabel()}」${activeWords.length}項目中 ${mastered}項目を習得しました。\n次回の出題候補は ${due}項目です。`;
+  document.getElementById('complete-msg').textContent = currentUiLanguage === 'en'
+    ? `${getScopeLabel()}: mastered ${mastered} of ${activeWords.length} items.\nNext due: ${due} items.`
+    : `「${getScopeLabel()}」${activeWords.length}項目中 ${mastered}項目を習得しました。\n次回の出題候補は ${due}項目です。`;
   setCompleteNextStep(getStudyNextStepMessage(due), due <= 0 ? 'success' : 'normal');
 }
 
@@ -14802,6 +15409,8 @@ function showTestComplete() {
   document.getElementById('progress-fill').style.width = '100%';
   document.getElementById('progress-text').textContent = `${testCards.length} / ${testCards.length}`;
   document.getElementById('due-text').textContent = getTestScoreLabel();
+  const completeBackBtn = document.getElementById('complete-back-btn');
+  if (completeBackBtn) completeBackBtn.hidden = false;
 
 	  const isMissReview = testSessionKind === 'missReview';
 	  const misses = testMissedKeys.size;
@@ -14811,32 +15420,41 @@ function showTestComplete() {
 	  const isMissReviewCleared = isMissReview && testCards.length > 0 && misses === 0;
 	  completeEl.classList.toggle('weakness-cleared', isMissReviewCleared);
   completionAction = canContinueMissReview ? 'missReview' : 'restart';
-  document.getElementById('complete-icon').textContent = testCards.length && misses === 0 ? '◎' : '✓';
+  const completeIcon = document.getElementById('complete-icon');
+  completeIcon.className = `complete-icon${isPerfect20 ? ' perfect-score-icon' : ' success-icon'}`;
+  completeIcon.textContent = isPerfect20 ? '20/20' : '✓';
   document.getElementById('complete-title').textContent = isMissReviewCleared
-    ? (remainingMisses === 0 ? '弱点回収完了！' : '今回のミス復習クリア！')
-    : isMissReview ? 'ミスだけ復習完了！' : 'サクサクテスト完了！';
-  document.getElementById('cs-reviewed-label').textContent = '出題数';
-  document.getElementById('cs-mastered-label').textContent = '正解';
-  document.getElementById('cs-due-label').textContent = 'ミス';
+    ? (remainingMisses === 0 ? uiText('weaknessClearedTitle') : uiText('missReviewClearTitle'))
+    : isPerfect20 ? uiText('perfectTestTitle')
+      : isMissReview ? uiText('missReviewCompleteTitle') : uiText('completeTestTitle');
+  document.getElementById('cs-reviewed-label').textContent = uiText('questionCountLabel');
+  document.getElementById('cs-mastered-label').textContent = uiText('correctLabel');
+  document.getElementById('cs-due-label').textContent = uiText('missLabel');
   const restartBtn = document.getElementById('restart-btn');
   restartBtn.textContent = canContinueMissReview
-    ? 'ミスだけ復習'
-    : isMissReviewCleared ? '今日の20問へ' : 'もう一回テスト';
+    ? uiText('missReview')
+    : isMissReviewCleared ? uiText('today20') : uiText('testAgain');
   restartBtn.classList.toggle('miss-review', canContinueMissReview);
   document.getElementById('cs-reviewed').textContent = testCards.length;
   document.getElementById('cs-mastered').textContent = testCorrect;
   document.getElementById('cs-due').textContent = misses;
-	  const baseCompleteMessage = testCards.length === 0
-	    ? '今の条件では出題できる単語がありません。設定で範囲を広げてください。'
-	    : misses > 0
-	      ? `ミスした${misses}語は、ミス復習に残しました。`
-	      : '';
+  const baseCompleteMessage = testCards.length === 0
+    ? uiText('noCardsMessage')
+    : misses > 0
+      ? currentUiLanguage === 'en'
+        ? `${misses} missed ${misses === 1 ? 'word was' : 'words were'} saved to Miss Review.`
+        : `ミスした${misses}語は、ミス復習に残しました。`
+      : '';
 	  document.getElementById('complete-msg').textContent = baseCompleteMessage;
-	  const weaknessLine = isMissReviewCleared
-	    ? (remainingMisses === 0
-	      ? '弱点回収完了。ミス復習リストは空です。'
-	      : `今回の弱点回収完了。残り${remainingMisses}語もこの調子。`)
-	    : getWeaknessSummaryLine(isMissReview);
+  const weaknessLine = isMissReviewCleared
+    ? (remainingMisses === 0
+      ? currentUiLanguage === 'en'
+        ? 'Weaknesses cleared. Miss Review is empty.'
+        : '弱点回収完了。ミス復習リストは空です。'
+      : currentUiLanguage === 'en'
+        ? `Weaknesses cleared for this round. ${remainingMisses} ${remainingMisses === 1 ? 'word remains' : 'words remain'}.`
+        : `今回の弱点回収完了。残り${remainingMisses}語もこの調子。`)
+    : getWeaknessSummaryLine(isMissReview);
 	  setCompleteFocus(weaknessLine, isMissReviewCleared ? 'cleared' : 'normal');
 	  setCompleteNextStep(
 	    getTestNextStepMessage({
@@ -14874,12 +15492,12 @@ function setTestSwipeHintReady(isReady) {
   const swipeMsg = document.getElementById('swipe-msg');
   if (!swipeMsg) return;
   swipeMsg.textContent = isReady
-    ? '右スワイプで次へ　→'
-    : '答えを選ぶと右スワイプで次へ　→';
+    ? uiText('swipeTestReady')
+    : uiText('swipeTestWaiting');
   swipeMsg.classList.toggle('is-swipe-ready', Boolean(isReady));
   swipeMsg.setAttribute(
     'aria-label',
-    isReady ? '右にスワイプすると次の問題に進みます' : '答えを選ぶと右スワイプで次へ進めます'
+    isReady ? uiText('swipeReadyAria') : uiText('swipeWaitingAria')
   );
 }
 
@@ -15061,6 +15679,7 @@ window.addEventListener('resize', () => {
 
 // ─── 初期化 ────────────────────────────────────────────────────────────
 setupSpeechAudio();
+applyUiLanguage();
 startSession();
 </script>
 </body>
