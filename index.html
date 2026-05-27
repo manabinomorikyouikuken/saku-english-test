@@ -1476,7 +1476,10 @@
     }
     body.test-mode .test-feedback {
       display: -webkit-box;
-      height: 64px;
+      width: 100%;
+      height: 56px;
+      margin: 0 0 8px;
+      box-sizing: border-box;
       visibility: hidden;
       opacity: 0;
       pointer-events: none;
@@ -1545,10 +1548,12 @@
       }
       body.test-mode .test-feedback {
         display: -webkit-box;
-        height: 56px;
-        margin-top: 6px;
+        width: 100%;
+        height: 48px;
+        margin: 0 0 6px;
         padding: 6px 9px;
         font-size: 10.5px;
+        box-sizing: border-box;
         visibility: hidden;
         opacity: 0;
         pointer-events: none;
@@ -1899,6 +1904,7 @@
     </div>
 
     <div class="test-panel" id="test-panel" aria-live="polite">
+      <div class="test-feedback" id="test-feedback"></div>
       <div class="test-word-card-wrap">
         <div class="test-word-card" id="test-word-card" role="button" tabindex="0" aria-pressed="false" aria-disabled="true" aria-label="解答後に単語カードを反転して裏面情報を表示できます" data-flip-label="タップで裏面" onclick="toggleTestCardFlip()" onkeydown="handleTestCardKey(event)">
           <div class="test-card-inner">
@@ -1921,7 +1927,6 @@
       <div class="test-answer-zone">
         <div class="test-choice-grid" id="test-choice-grid"></div>
         <div class="test-letter-row" id="test-letter-row" aria-label="ABCD解答ボタン"></div>
-        <div class="test-feedback" id="test-feedback"></div>
         <button class="test-next-btn" id="test-next-btn" type="button" onclick="showNextTestQuestion()" data-ui-key="next">次へ</button>
       </div>
     </div>
