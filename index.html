@@ -1475,16 +1475,31 @@
       font-size: clamp(20px, 5.8vw, 26px);
     }
     body.test-mode .test-feedback {
-      display: none;
+      display: -webkit-box;
+      height: 64px;
+      visibility: hidden;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.12s ease;
     }
     body.test-mode .test-feedback.is-visible {
       display: -webkit-box;
+      visibility: visible;
+      opacity: 1;
+      pointer-events: auto;
     }
     body.test-mode .test-next-btn {
-      display: none;
+      display: inline-flex;
+      visibility: hidden;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.12s ease, transform 0.12s ease;
     }
     body.test-mode .test-next-btn.is-visible {
       display: inline-flex;
+      visibility: visible;
+      opacity: 1;
+      pointer-events: auto;
     }
     body.test-mode .learn-bottom-bar {
       display: none;
@@ -1528,9 +1543,33 @@
         border-radius: 13px;
         font-size: 20px;
       }
-      body.test-mode .test-feedback,
-      body.test-mode .test-next-btn { display: none; }
-      body.test-mode .test-feedback.is-visible { display: -webkit-box; }
+      body.test-mode .test-feedback {
+        display: -webkit-box;
+        height: 56px;
+        margin-top: 6px;
+        padding: 6px 9px;
+        font-size: 10.5px;
+        visibility: hidden;
+        opacity: 0;
+        pointer-events: none;
+      }
+      body.test-mode .test-feedback.is-visible {
+        display: -webkit-box;
+        visibility: visible;
+        opacity: 1;
+        pointer-events: auto;
+      }
+      body.test-mode .test-next-btn {
+        display: inline-flex;
+        width: 48px;
+        height: 48px;
+        margin-top: 6px;
+        border-radius: 14px;
+        font-size: 12px;
+        visibility: hidden;
+        opacity: 0;
+        pointer-events: none;
+      }
       body.test-mode .test-next-btn.is-visible {
         display: inline-flex;
         width: 48px;
@@ -1538,6 +1577,9 @@
         margin-top: 6px;
         border-radius: 14px;
         font-size: 12px;
+        visibility: visible;
+        opacity: 1;
+        pointer-events: auto;
       }
       body.test-mode .swipe-msg { display: none; }
     }
@@ -1804,7 +1846,7 @@
       <div class="header-title">サクサク英単語</div>
       <button class="test-header-back-btn" id="header-back-btn" type="button" onclick="startSession()" aria-label="学習画面に戻る" data-ui-key="back">戻る</button>
     </div>
-    <div class="header-sub">友人テスト版 / 959語・品詞別966項目 / British English基準</div>
+    <div class="header-sub">友人テスト版 / 963語・品詞別970項目 / British English基準</div>
   </div>
   <div class="header-right">
     <div class="stats">
@@ -1949,8 +1991,8 @@
   <div class="level-panel" aria-label="レベル選択">
     <div class="settings-section-title" data-ui-key="chooseLevel">レベルを選ぶ</div>
     <div class="level-buttons">
-      <button class="level-btn active" type="button" data-level="all" data-ui-label-key="levelAll" onclick="setLevel('all')">すべて<span id="level-count-all">966項目</span></button>
-      <button class="level-btn" type="button" data-level="junior" data-ui-label-key="levelJunior" onclick="setLevel('junior')">中学復習<span id="level-count-junior">176項目</span></button>
+      <button class="level-btn active" type="button" data-level="all" data-ui-label-key="levelAll" onclick="setLevel('all')">すべて<span id="level-count-all">970項目</span></button>
+      <button class="level-btn" type="button" data-level="junior" data-ui-label-key="levelJunior" onclick="setLevel('junior')">中学復習<span id="level-count-junior">180項目</span></button>
       <button class="level-btn" type="button" data-level="highBasic" data-ui-label-key="levelHighBasic" onclick="setLevel('highBasic')">高校基礎<span id="level-count-highBasic">333項目</span></button>
       <button class="level-btn" type="button" data-level="standard" data-ui-label-key="levelStandard" onclick="setLevel('standard')">句動詞・実用<span id="level-count-standard">144項目</span></button>
       <button class="level-btn" type="button" data-level="advanced" data-ui-label-key="levelAdvanced" onclick="setLevel('advanced')">発展<span id="level-count-advanced">268項目</span></button>
@@ -1963,9 +2005,10 @@
   <div class="category-panel" aria-label="カテゴリ選択">
     <div class="settings-section-title" data-ui-key="chooseTheme">テーマを選ぶ</div>
     <div class="category-buttons">
-      <button class="category-btn active" type="button" data-category="all" data-ui-label-key="categoryAll" onclick="setCategory('all')">すべて<span id="category-count-all">966項目</span></button>
+      <button class="category-btn active" type="button" data-category="all" data-ui-label-key="categoryAll" onclick="setCategory('all')">すべて<span id="category-count-all">970項目</span></button>
       <button class="category-btn" type="button" data-category="katakanaGap" data-ui-label-key="categoryKatakanaGap" onclick="setCategory('katakanaGap')" aria-label="カタカナ注意 知ってるつもりになりやすい語">カタカナ注意<span id="category-count-katakanaGap">33項目</span></button>
       <button class="category-btn" type="button" data-category="phrasalVerb" data-ui-label-key="categoryPhrasalVerb" onclick="setCategory('phrasalVerb')">句動詞<span id="category-count-phrasalVerb">100項目</span></button>
+      <button class="category-btn" type="button" data-category="uncountableNoun" data-ui-label-key="categoryUncountableNoun" onclick="setCategory('uncountableNoun')">不可算名詞<span id="category-count-uncountableNoun">7項目</span></button>
       <button class="category-btn" type="button" data-category="abbreviation" data-ui-label-key="categoryAbbreviation" onclick="setCategory('abbreviation')">略語<span id="category-count-abbreviation">60項目</span></button>
       <button class="category-btn" type="button" data-category="abbreviationTech" data-ui-label-key="categoryAbbreviationTech" onclick="setCategory('abbreviationTech')">略語 ICT・AI<span id="category-count-abbreviationTech">26項目</span></button>
       <button class="category-btn" type="button" data-category="abbreviationBusiness" data-ui-label-key="categoryAbbreviationBusiness" onclick="setCategory('abbreviationBusiness')">略語 ビジネス<span id="category-count-abbreviationBusiness">13項目</span></button>
@@ -1974,14 +2017,14 @@
       <button class="category-btn" type="button" data-category="pronunciationNote" data-ui-label-key="categoryPronunciationNote" onclick="setCategory('pronunciationNote')">発音注意<span id="category-count-pronunciationNote">14項目</span></button>
       <button class="category-btn" type="button" data-category="rlContrast" data-ui-label-key="categoryRlContrast" onclick="setCategory('rlContrast')">R/L注意<span id="category-count-rlContrast">8項目</span></button>
     </div>
-    <div class="storage-note" data-ui-key="themeNote">テーマ別に確認できます。カタカナ注意は「知ってるつもり」になりやすい意味のズレ、句動詞は会話のまとまり、略語は分野別、発音注意は音と綴りの違い、R/L注意は語頭の音で意味が変わる組を集中的に学べます。</div>
+    <div class="storage-note" data-ui-key="themeNote">テーマ別に確認できます。カタカナ注意は「知ってるつもり」になりやすい意味のズレ、句動詞は会話のまとまり、不可算名詞は数え方の引っ掛け、略語は分野別、発音注意は音と綴りの違い、R/L注意は語頭の音で意味が変わる組を集中的に学べます。</div>
   </div>
 
   <div class="part-panel" aria-label="品詞選択">
     <div class="settings-section-title" data-ui-key="choosePart">品詞でしぼる</div>
     <div class="part-buttons">
-      <button class="part-btn active" type="button" data-part="random" data-ui-label-key="partRandom" onclick="setPart('random')">ランダム<span id="part-count-random">966</span></button>
-      <button class="part-btn" type="button" data-part="noun" data-ui-label-key="partNoun" onclick="setPart('noun')">名詞<span id="part-count-noun">426</span></button>
+      <button class="part-btn active" type="button" data-part="random" data-ui-label-key="partRandom" onclick="setPart('random')">ランダム<span id="part-count-random">970</span></button>
+      <button class="part-btn" type="button" data-part="noun" data-ui-label-key="partNoun" onclick="setPart('noun')">名詞<span id="part-count-noun">430</span></button>
       <button class="part-btn" type="button" data-part="verb" data-ui-label-key="partVerb" onclick="setPart('verb')">動詞<span id="part-count-verb">332</span></button>
       <button class="part-btn" type="button" data-part="adjective" data-ui-label-key="partAdjective" onclick="setPart('adjective')">形容詞<span id="part-count-adjective">138</span></button>
       <button class="part-btn" type="button" data-part="adverb" data-ui-label-key="partAdverb" onclick="setPart('adverb')">副詞<span id="part-count-adverb">42</span></button>
@@ -2163,7 +2206,7 @@
         <div class="achievement-label" data-ui-key="missReview">ミス復習</div>
       </div>
       <div class="achievement-item">
-          <span class="achievement-num" id="stat-left">966</span>
+          <span class="achievement-num" id="stat-left">970</span>
         <div class="achievement-label" data-ui-key="notMastered">未習得</div>
       </div>
     </div>
@@ -6753,6 +6796,7 @@ const WORDS = [
   },
   {
     "w": "advice",
+    "cat": "uncountable-noun",
     "pos": "名詞",
     "level": "中学復習",
     "ipa": "ədˈvaɪs",
@@ -7233,6 +7277,7 @@ const WORDS = [
   },
   {
     "w": "equipment",
+    "cat": "uncountable-noun",
     "pos": "名詞",
     "level": "中学復習",
     "ipa": "ɪˈkwɪpmənt",
@@ -12448,7 +12493,7 @@ const WORDS = [
   {
     "id": "debris_noun",
     "w": "debris",
-    "cat": "pronunciation-note",
+    "cats": ["pronunciation-note", "uncountable-noun"],
     "pos": "名詞",
     "level": "発展",
     "ipa": "ˈdebriː",
@@ -12522,6 +12567,54 @@ const WORDS = [
     "m": "光、軽い、明るい",
     "ex": "The light is bright.",
     "exJa": "その光は明るい。"
+  },
+  {
+    "id": "information_noun_uncountable",
+    "w": "information",
+    "cat": "uncountable-noun",
+    "pos": "名詞",
+    "level": "中学復習",
+    "ipa": "ˌɪnfəˈmeɪʃən",
+    "ph": "インフォメイション",
+    "m": "情報",
+    "ex": "This website provides useful information.",
+    "exJa": "このウェブサイトは役に立つ情報を提供している。"
+  },
+  {
+    "id": "furniture_noun_uncountable",
+    "w": "furniture",
+    "cat": "uncountable-noun",
+    "pos": "名詞",
+    "level": "中学復習",
+    "ipa": "ˈfɜːnɪtʃə",
+    "ph": "ファーニチャ",
+    "m": "家具",
+    "ex": "The room has very little furniture.",
+    "exJa": "その部屋には家具がほとんどない。"
+  },
+  {
+    "id": "luggage_noun_uncountable",
+    "w": "luggage",
+    "cat": "uncountable-noun",
+    "pos": "名詞",
+    "level": "中学復習",
+    "ipa": "ˈlʌɡɪdʒ",
+    "ph": "ラギッジ",
+    "m": "荷物、旅行かばん",
+    "ex": "Her luggage was heavier than expected.",
+    "exJa": "彼女の荷物は予想より重かった。"
+  },
+  {
+    "id": "news_noun_uncountable",
+    "w": "news",
+    "cat": "uncountable-noun",
+    "pos": "名詞",
+    "level": "中学復習",
+    "ipa": "njuːz",
+    "ph": "ニューズ",
+    "m": "ニュース、知らせ",
+    "ex": "The news is surprising.",
+    "exJa": "そのニュースは驚くべきものだ。"
   },
   {
     "id": "rice_noun",
@@ -12687,6 +12780,7 @@ const CATEGORY_LABELS = {
   all: 'すべて',
   katakanaGap: 'カタカナ注意',
   phrasalVerb: '句動詞',
+  uncountableNoun: '不可算名詞',
   abbreviation: '略語',
   abbreviationTech: '略語 ICT・AI',
   abbreviationBusiness: '略語 ビジネス',
@@ -12713,6 +12807,7 @@ const CATEGORY_UI_KEYS = {
   all: 'categoryAll',
   katakanaGap: 'categoryKatakanaGap',
   phrasalVerb: 'categoryPhrasalVerb',
+  uncountableNoun: 'categoryUncountableNoun',
   abbreviation: 'categoryAbbreviation',
   abbreviationTech: 'categoryAbbreviationTech',
   abbreviationBusiness: 'categoryAbbreviationBusiness',
@@ -12755,6 +12850,7 @@ const UI_TEXT = {
     categoryAll: 'すべて',
     categoryKatakanaGap: 'カタカナ注意',
     categoryPhrasalVerb: '句動詞',
+    categoryUncountableNoun: '不可算名詞',
     categoryAbbreviation: '略語',
     categoryAbbreviationTech: '略語 ICT・AI',
     categoryAbbreviationBusiness: '略語 ビジネス',
@@ -12763,7 +12859,7 @@ const UI_TEXT = {
     categoryPronunciationNote: '発音注意',
     categoryRlContrast: 'R/L注意',
     katakanaSub: '知ってるつもり',
-    themeNote: 'テーマ別に確認できます。カタカナ注意は「知ってるつもり」になりやすい意味のズレ、句動詞は会話のまとまり、略語は分野別、発音注意は音と綴りの違い、R/L注意は語頭の音で意味が変わる組を集中的に学べます。',
+    themeNote: 'テーマ別に確認できます。カタカナ注意は「知ってるつもり」になりやすい意味のズレ、句動詞は会話のまとまり、不可算名詞は数え方の引っ掛け、略語は分野別、発音注意は音と綴りの違い、R/L注意は語頭の音で意味が変わる組を集中的に学べます。',
     choosePart: '品詞でしぼる',
     partRandom: 'ランダム',
     partNoun: '名詞',
@@ -12902,6 +12998,7 @@ const UI_TEXT = {
     categoryAll: 'All',
     categoryKatakanaGap: 'Katakana caution',
     categoryPhrasalVerb: 'Phrasal verbs',
+    categoryUncountableNoun: 'Uncountable nouns',
     categoryAbbreviation: 'Abbreviations',
     categoryAbbreviationTech: 'ICT & AI abbreviations',
     categoryAbbreviationBusiness: 'Business abbreviations',
@@ -12910,7 +13007,7 @@ const UI_TEXT = {
     categoryPronunciationNote: 'Pronunciation caution',
     categoryRlContrast: 'R/L caution',
     katakanaSub: 'False friends',
-    themeNote: 'Use themes for focused practice: katakana meaning gaps, phrasal verbs, abbreviations by field, pronunciation traps, and R/L contrast pairs.',
+    themeNote: 'Use themes for focused practice: katakana meaning gaps, phrasal verbs, uncountable noun traps, abbreviations by field, pronunciation traps, and R/L contrast pairs.',
     choosePart: 'Filter by part of speech',
     partRandom: 'Random',
     partNoun: 'Nouns',
@@ -13026,6 +13123,7 @@ const UI_TEXT = {
 const CATEGORY_TAGS = {
   katakanaGap: 'katakana-gap',
   phrasalVerb: 'phrasal-verb',
+  uncountableNoun: 'uncountable-noun',
   abbreviation: 'abbreviation',
   abbreviationTech: 'abbreviation-tech',
   abbreviationBusiness: 'abbreviation-business',
@@ -13037,6 +13135,7 @@ const CATEGORY_TAGS = {
 const WEAKNESS_CATEGORY_PRIORITY = [
   ['katakana-gap', 'カタカナ注意'],
   ['phrasal-verb', '句動詞'],
+  ['uncountable-noun', '不可算名詞'],
   ['abbreviation', '略語'],
   ['abbreviation-tech', '略語'],
   ['abbreviation-business', '略語'],
@@ -14434,6 +14533,7 @@ function getFocusWeight(word) {
   if (categories.has('rl-contrast')) weight += 5;
   if (categories.has('pronunciation-note')) weight += 4;
   if (categories.has('katakana-gap')) weight += 4;
+  if (categories.has('uncountable-noun')) weight += 4;
   if (categories.has('abbreviation')) weight += 3;
   const morpheme = getWordMorphemeParts(word.w);
   if (morpheme.prefix || morpheme.suffix) weight += 2;
@@ -14870,6 +14970,9 @@ function getFocusHint(word) {
     if (categories.has('katakana-gap')) {
       return 'Katakana caution: the familiar Japanese sound and English meaning can differ.';
     }
+    if (categories.has('uncountable-noun')) {
+      return 'Uncountable noun: do not add -s for the normal meaning. Use a piece of ... when counting.';
+    }
     if (categories.has('rl-contrast')) {
       return 'R/L caution: the first r/l sound changes the meaning.';
     }
@@ -14887,6 +14990,9 @@ function getFocusHint(word) {
   }
   if (categories.has('katakana-gap')) {
     return '知ってるつもり注意。カタカナの印象と英語の意味がズレやすい。';
+  }
+  if (categories.has('uncountable-noun')) {
+    return '不可算名詞。ふつうは s を付けず、数えるときは a piece of ... の形で考える。';
   }
   if (categories.has('rl-contrast')) {
     return 'R/L注意。語頭の r / l で意味が変わる。';
@@ -15220,6 +15326,7 @@ function getWeaknessBucketLabel(word) {
     if (currentUiLanguage !== 'en') return label;
     if (category === 'katakana-gap') return uiText('categoryKatakanaGap');
     if (category === 'phrasal-verb') return uiText('categoryPhrasalVerb');
+    if (category === 'uncountable-noun') return uiText('categoryUncountableNoun');
     if (category.startsWith('abbreviation')) return uiText('categoryAbbreviation');
     if (category === 'rl-contrast') return uiText('categoryRlContrast');
     if (category === 'pronunciation-note') return uiText('categoryPronunciationNote');
