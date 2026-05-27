@@ -1027,7 +1027,7 @@
       cursor: pointer;
     }
     .test-word-card.can-flip::after {
-      content: 'タップで裏面';
+      content: attr(data-flip-label);
       position: absolute;
       right: 10px;
       bottom: 8px;
@@ -1321,9 +1321,26 @@
     }
     .test-next-btn {
       display: none;
+      align-items: center;
+      justify-content: center;
+      width: fit-content;
+      min-width: 54px;
+      min-height: 34px;
+      margin: 8px auto 0;
+      padding: 0 14px;
+      border: 1px solid #bfdbfe;
+      border-radius: 999px;
+      background: #eff6ff;
+      color: #1d4ed8;
+      font-size: 12px;
+      font-weight: 900;
+      letter-spacing: 0;
+      cursor: pointer;
+      touch-action: manipulation;
+      box-shadow: 0 3px 12px rgba(37,99,235,0.12);
     }
     .test-next-btn.is-visible {
-      display: none;
+      display: inline-flex;
     }
     .test-next-btn:active {
       transform: scale(0.98);
@@ -1467,6 +1484,9 @@
     body.test-mode .test-next-btn {
       display: none;
     }
+    body.test-mode .test-next-btn.is-visible {
+      display: inline-flex;
+    }
     body.test-mode .learn-bottom-bar {
       display: none;
     }
@@ -1518,6 +1538,7 @@
       body.test-mode .test-feedback,
       body.test-mode .test-next-btn { display: none; }
       body.test-mode .test-feedback.is-visible { display: -webkit-box; }
+      body.test-mode .test-next-btn.is-visible { display: inline-flex; }
       body.test-mode .swipe-msg { margin-top: 7px; font-size: 11.5px; }
     }
 
@@ -1837,7 +1858,7 @@
 
     <div class="test-panel" id="test-panel" aria-live="polite">
       <div class="test-word-card-wrap">
-        <div class="test-word-card" id="test-word-card" role="button" tabindex="0" aria-pressed="false" aria-disabled="true" aria-label="解答後に単語カードを反転して裏面情報を表示できます" onclick="toggleTestCardFlip()" onkeydown="handleTestCardKey(event)">
+        <div class="test-word-card" id="test-word-card" role="button" tabindex="0" aria-pressed="false" aria-disabled="true" aria-label="解答後に単語カードを反転して裏面情報を表示できます" data-flip-label="タップで裏面" onclick="toggleTestCardFlip()" onkeydown="handleTestCardKey(event)">
           <div class="test-card-inner">
             <div class="test-card-face test-card-front-face">
               <div class="test-word-text" id="test-word-text">—</div>
@@ -12817,13 +12838,14 @@ const UI_TEXT = {
     audioAriaUk: 'UK音声で単語を再生',
     audioAriaEnglishFallback: '英語音声で単語を再生。en-GB音声がない場合は端末の英語音声を使います',
     swipeLearn: '←前へ　　スワイプ　　次へ→',
-    swipeTestReady: '右スワイプで次へ　→',
-    swipeTestWaiting: '答えを選ぶと右スワイプで次へ　→',
-    swipeReadyAria: '右にスワイプすると次の問題に進みます',
-    swipeWaitingAria: '答えを選ぶと右スワイプで次へ進めます',
+    swipeTestReady: '次へをタップ / 右スワイプ　→',
+    swipeTestWaiting: '答えを選ぶと次へ進めます',
+    swipeReadyAria: '次へボタンをタップするか右にスワイプすると次の問題に進みます',
+    swipeWaitingAria: '答えを選ぶと次へ進めます',
     testCardLockedAria: '解答後に単語カードを反転して裏面情報を表示できます',
     testCardBackAria: '単語カードを表面に戻す',
     testCardFrontAria: '単語カードを反転して裏面情報を表示',
+    testFlipChip: 'タップで裏面',
     items: '項目',
     dueCandidatesCount: '出題候補',
     testScore: 'テスト',
@@ -12963,13 +12985,14 @@ const UI_TEXT = {
     audioAriaUk: 'Play word with UK voice',
     audioAriaEnglishFallback: 'Play word with an English voice. If en-GB is unavailable, this device’s English voice is used',
     swipeLearn: '← Previous　　Swipe　　Next →',
-    swipeTestReady: 'Swipe right for next →',
-    swipeTestWaiting: 'Choose an answer, then swipe right →',
-    swipeReadyAria: 'Swipe right to move to the next question',
-    swipeWaitingAria: 'Choose an answer, then swipe right to move on',
+    swipeTestReady: 'Tap Next or swipe right →',
+    swipeTestWaiting: 'Choose an answer to continue',
+    swipeReadyAria: 'Tap the Next button or swipe right to move to the next question',
+    swipeWaitingAria: 'Choose an answer to continue',
     testCardLockedAria: 'After answering, you can flip the word card to check the back',
     testCardBackAria: 'Return the word card to the front',
     testCardFrontAria: 'Flip the word card to show the back',
+    testFlipChip: 'Tap for back',
     items: 'items',
     dueCandidatesCount: 'Due',
     testScore: 'Test',
@@ -13236,6 +13259,7 @@ function applyUiLanguage() {
   document.querySelector('.settings-tabs')?.setAttribute('aria-label', uiText('settingsTabsAria'));
   document.getElementById('header-back-btn')?.setAttribute('aria-label', uiText('backToPracticeAria'));
   document.getElementById('card-container')?.setAttribute('aria-label', uiText('cardFlipAria'));
+  document.getElementById('test-word-card')?.setAttribute('data-flip-label', uiText('testFlipChip'));
   updateUiLanguageButtons();
   updateAudioButtons();
   updateSwipeMessage();
@@ -14982,6 +15006,7 @@ function answerTestChoice(button, word) {
     feedbackEl.classList.remove('correct-feedback', 'streak-milestone');
     feedbackEl.classList.add('is-visible', 'wrong-feedback');
   }
+  document.getElementById('test-next-btn').classList.add('is-visible');
   setTestCardFlipped(false);
   setTestSwipeHintReady(true);
   updateStats();
