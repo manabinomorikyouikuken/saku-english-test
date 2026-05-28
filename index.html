@@ -1385,15 +1385,16 @@
       display: none;
       align-items: center;
       justify-content: center;
-      width: 56px;
-      height: 56px;
+      width: min(100%, 340px);
+      height: 52px;
       margin: 10px auto 0;
-      padding: 0;
+      padding: 0 18px;
+      box-sizing: border-box;
       border: 1px solid #bfdbfe;
-      border-radius: 16px;
+      border-radius: 999px;
       background: #eff6ff;
       color: #1d4ed8;
-      font-size: 12.5px;
+      font-size: 14px;
       font-weight: 900;
       letter-spacing: 0;
       cursor: pointer;
@@ -1563,6 +1564,10 @@
     }
     body.test-mode .test-next-btn {
       display: inline-flex;
+      width: min(100%, 340px);
+      height: 52px;
+      border-radius: 999px;
+      font-size: 14px;
       visibility: hidden;
       opacity: 0;
       pointer-events: none;
@@ -1641,22 +1646,22 @@
       }
       body.test-mode .test-next-btn {
         display: inline-flex;
-        width: 48px;
-        height: 48px;
+        width: min(100%, 320px);
+        height: 46px;
         margin-top: 6px;
-        border-radius: 14px;
-        font-size: 12px;
+        border-radius: 999px;
+        font-size: 13px;
         visibility: hidden;
         opacity: 0;
         pointer-events: none;
       }
       body.test-mode .test-next-btn.is-visible {
         display: inline-flex;
-        width: 48px;
-        height: 48px;
+        width: min(100%, 320px);
+        height: 46px;
         margin-top: 6px;
-        border-radius: 14px;
-        font-size: 12px;
+        border-radius: 999px;
+        font-size: 13px;
         visibility: visible;
         opacity: 1;
         pointer-events: auto;
