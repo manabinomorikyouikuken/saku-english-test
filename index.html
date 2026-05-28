@@ -880,6 +880,58 @@
       visibility: hidden;
       pointer-events: none;
     }
+    .rating-controls {
+      width: min(92%, 420px);
+      margin: 0 auto 8px;
+      display: none;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 8px;
+      min-height: 46px;
+      visibility: hidden;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.14s ease;
+    }
+    .rating-controls.is-reserved {
+      display: grid;
+    }
+    .rating-controls.is-visible {
+      visibility: visible;
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .rating-btn {
+      min-height: 46px;
+      border: 1px solid #cbd5e1;
+      border-radius: 14px;
+      background: #ffffff;
+      color: #334155;
+      font-size: 12px;
+      font-weight: 900;
+      line-height: 1.15;
+      cursor: pointer;
+      touch-action: manipulation;
+      box-shadow: 0 3px 10px rgba(15,23,42,0.05);
+    }
+    .rating-btn.hard {
+      border-color: #fecaca;
+      background: #fff7f7;
+      color: #991b1b;
+    }
+    .rating-btn.okay {
+      border-color: #fde68a;
+      background: #fffbeb;
+      color: #92400e;
+    }
+    .rating-btn.great {
+      border-color: #bbf7d0;
+      background: #f0fdf4;
+      color: #166534;
+    }
+    .rating-btn:active {
+      transform: scale(0.97);
+      filter: brightness(0.96);
+    }
     .level-tag {
       background: #eff6ff;
       color: #2563eb;
@@ -1420,6 +1472,9 @@
       justify-content: flex-end;
       width: min(94%, 420px);
     }
+    body.test-mode .rating-controls {
+      display: none;
+    }
     body.test-mode .test-word-card-wrap {
       flex: 0 0 clamp(132px, 24svh, 168px);
       min-height: 0;
@@ -1871,7 +1926,7 @@
       <div class="header-title">サクサク英単語</div>
       <button class="test-header-back-btn" id="header-back-btn" type="button" onclick="startSession()" aria-label="学習画面に戻る" data-ui-key="back">戻る</button>
     </div>
-    <div class="header-sub">友人テスト版 / 963語・品詞別970項目 / British English基準</div>
+    <div class="header-sub">友人テスト版 / 966語・品詞別973項目 / British English基準</div>
   </div>
   <div class="header-right">
     <div class="stats">
@@ -1921,6 +1976,12 @@
           <div class="example-ja-text" id="example-ja-text">—</div>
         </div>
       </div>
+    </div>
+
+    <div class="rating-controls" id="rating-controls" aria-label="理解度を選ぶ">
+      <button class="rating-btn hard" type="button" onclick="rate(0)" data-ui-key="rateHard">難しかった</button>
+      <button class="rating-btn okay" type="button" onclick="rate(3)" data-ui-key="rateOkay">まあまあ</button>
+      <button class="rating-btn great" type="button" onclick="rate(5)" data-ui-key="rateGreat">バッチリ</button>
     </div>
 
     <div class="test-panel" id="test-panel" aria-live="polite">
@@ -2016,11 +2077,11 @@
   <div class="level-panel" aria-label="レベル選択">
     <div class="settings-section-title" data-ui-key="chooseLevel">レベルを選ぶ</div>
     <div class="level-buttons">
-      <button class="level-btn active" type="button" data-level="all" data-ui-label-key="levelAll" onclick="setLevel('all')">すべて<span id="level-count-all">970項目</span></button>
-      <button class="level-btn" type="button" data-level="junior" data-ui-label-key="levelJunior" onclick="setLevel('junior')">中学復習<span id="level-count-junior">180項目</span></button>
-      <button class="level-btn" type="button" data-level="highBasic" data-ui-label-key="levelHighBasic" onclick="setLevel('highBasic')">高校基礎<span id="level-count-highBasic">333項目</span></button>
+      <button class="level-btn active" type="button" data-level="all" data-ui-label-key="levelAll" onclick="setLevel('all')">すべて<span id="level-count-all">973項目</span></button>
+      <button class="level-btn" type="button" data-level="junior" data-ui-label-key="levelJunior" onclick="setLevel('junior')">中学復習<span id="level-count-junior">185項目</span></button>
+      <button class="level-btn" type="button" data-level="highBasic" data-ui-label-key="levelHighBasic" onclick="setLevel('highBasic')">高校基礎<span id="level-count-highBasic">350項目</span></button>
       <button class="level-btn" type="button" data-level="standard" data-ui-label-key="levelStandard" onclick="setLevel('standard')">句動詞・実用<span id="level-count-standard">144項目</span></button>
-      <button class="level-btn" type="button" data-level="advanced" data-ui-label-key="levelAdvanced" onclick="setLevel('advanced')">発展<span id="level-count-advanced">268項目</span></button>
+      <button class="level-btn" type="button" data-level="advanced" data-ui-label-key="levelAdvanced" onclick="setLevel('advanced')">発展<span id="level-count-advanced">294項目</span></button>
     </div>
     <div class="storage-note" data-ui-key="levelNote">レベル名は学習の目安です。句動詞・実用は、get up などの句動詞や日常で使うまとまり表現を中心にしています。</div>
   </div>
@@ -2030,7 +2091,8 @@
   <div class="category-panel" aria-label="カテゴリ選択">
     <div class="settings-section-title" data-ui-key="chooseTheme">テーマを選ぶ</div>
     <div class="category-buttons">
-      <button class="category-btn active" type="button" data-category="all" data-ui-label-key="categoryAll" onclick="setCategory('all')">すべて<span id="category-count-all">970項目</span></button>
+      <button class="category-btn active" type="button" data-category="all" data-ui-label-key="categoryAll" onclick="setCategory('all')">すべて<span id="category-count-all">973項目</span></button>
+      <button class="category-btn" type="button" data-category="weakWords" data-ui-label-key="categoryWeakWords" onclick="setCategory('weakWords')">苦手<span id="category-count-weakWords">0項目</span></button>
       <button class="category-btn" type="button" data-category="katakanaGap" data-ui-label-key="categoryKatakanaGap" onclick="setCategory('katakanaGap')" aria-label="カタカナ注意 知ってるつもりになりやすい語">カタカナ注意<span id="category-count-katakanaGap">33項目</span></button>
       <button class="category-btn" type="button" data-category="phrasalVerb" data-ui-label-key="categoryPhrasalVerb" onclick="setCategory('phrasalVerb')">句動詞<span id="category-count-phrasalVerb">100項目</span></button>
       <button class="category-btn" type="button" data-category="uncountableNoun" data-ui-label-key="categoryUncountableNoun" onclick="setCategory('uncountableNoun')">不可算名詞<span id="category-count-uncountableNoun">7項目</span></button>
@@ -2042,17 +2104,17 @@
       <button class="category-btn" type="button" data-category="pronunciationNote" data-ui-label-key="categoryPronunciationNote" onclick="setCategory('pronunciationNote')">発音注意<span id="category-count-pronunciationNote">14項目</span></button>
       <button class="category-btn" type="button" data-category="rlContrast" data-ui-label-key="categoryRlContrast" onclick="setCategory('rlContrast')">R/L注意<span id="category-count-rlContrast">8項目</span></button>
     </div>
-    <div class="storage-note" data-ui-key="themeNote">テーマ別に確認できます。カタカナ注意は「知ってるつもり」になりやすい意味のズレ、句動詞は会話のまとまり、不可算名詞は数え方の引っ掛け、略語は分野別、発音注意は音と綴りの違い、R/L注意は語頭の音で意味が変わる組を集中的に学べます。</div>
+    <div class="storage-note" data-ui-key="themeNote">テーマ別に確認できます。苦手は間違えた語や定着しにくい語、カタカナ注意は「知ってるつもり」になりやすい意味のズレ、句動詞は会話のまとまり、不可算名詞は数え方の引っ掛け、略語は分野別、発音注意は音と綴りの違い、R/L注意は語頭の音で意味が変わる組を集中的に学べます。</div>
   </div>
 
   <div class="part-panel" aria-label="品詞選択">
     <div class="settings-section-title" data-ui-key="choosePart">品詞でしぼる</div>
     <div class="part-buttons">
-      <button class="part-btn active" type="button" data-part="random" data-ui-label-key="partRandom" onclick="setPart('random')">ランダム<span id="part-count-random">970</span></button>
-      <button class="part-btn" type="button" data-part="noun" data-ui-label-key="partNoun" onclick="setPart('noun')">名詞<span id="part-count-noun">430</span></button>
-      <button class="part-btn" type="button" data-part="verb" data-ui-label-key="partVerb" onclick="setPart('verb')">動詞<span id="part-count-verb">332</span></button>
-      <button class="part-btn" type="button" data-part="adjective" data-ui-label-key="partAdjective" onclick="setPart('adjective')">形容詞<span id="part-count-adjective">138</span></button>
-      <button class="part-btn" type="button" data-part="adverb" data-ui-label-key="partAdverb" onclick="setPart('adverb')">副詞<span id="part-count-adverb">42</span></button>
+      <button class="part-btn active" type="button" data-part="random" data-ui-label-key="partRandom" onclick="setPart('random')">ランダム<span id="part-count-random">973</span></button>
+      <button class="part-btn" type="button" data-part="noun" data-ui-label-key="partNoun" onclick="setPart('noun')">名詞<span id="part-count-noun">436</span></button>
+      <button class="part-btn" type="button" data-part="verb" data-ui-label-key="partVerb" onclick="setPart('verb')">動詞<span id="part-count-verb">323</span></button>
+      <button class="part-btn" type="button" data-part="adjective" data-ui-label-key="partAdjective" onclick="setPart('adjective')">形容詞<span id="part-count-adjective">150</span></button>
+      <button class="part-btn" type="button" data-part="adverb" data-ui-label-key="partAdverb" onclick="setPart('adverb')">副詞<span id="part-count-adverb">45</span></button>
     </div>
     <div class="storage-note" data-ui-key="partNote">テーマを選んだあと、必要に応じて品詞でさらに範囲をしぼれます。</div>
   </div>
@@ -2078,6 +2140,7 @@
     <div class="quick-start-actions">
       <button class="quick-start-btn primary" type="button" onclick="startQuickTest('all')" data-ui-key="today20Short">今日の20問</button>
       <button class="quick-start-btn" type="button" onclick="startMissReviewSession()" data-ui-key="missReview">ミス復習</button>
+      <button class="quick-start-btn" type="button" onclick="startWeakWordsSession()" data-ui-label-key="weakWords">苦手<span data-ui-key="weakWordsSub">つまずき語</span></button>
       <button class="quick-start-btn" type="button" onclick="startQuickStudy('katakanaGap')" data-ui-label-key="categoryKatakanaGap">カタカナ注意<span data-ui-key="katakanaSub">知ってるつもり</span></button>
       <button class="quick-start-btn" type="button" onclick="startQuickStudy('phrasalVerb')" data-ui-key="categoryPhrasalVerb">句動詞</button>
     </div>
@@ -2231,7 +2294,7 @@
         <div class="achievement-label" data-ui-key="missReview">ミス復習</div>
       </div>
       <div class="achievement-item">
-          <span class="achievement-num" id="stat-left">970</span>
+          <span class="achievement-num" id="stat-left">973</span>
         <div class="achievement-label" data-ui-key="notMastered">未習得</div>
       </div>
     </div>
@@ -5208,6 +5271,36 @@ const WORDS = [
     "m": "全体的な",
     "ex": "The overall quality of the project was excellent.",
     "exJa": "プロジェクトの全体的な品質は優秀だった。"
+  },
+  {
+    "w": "person",
+    "pos": "名詞",
+    "level": "中学復習",
+    "ipa": "ˈpɜːsən",
+    "ph": "パーソン",
+    "m": "人、人物",
+    "ex": "One person can make a difference.",
+    "exJa": "一人の人が変化を生み出すこともある。"
+  },
+  {
+    "w": "persona",
+    "pos": "名詞",
+    "level": "発展",
+    "ipa": "pəˈsəʊnə",
+    "ph": "パソウナ",
+    "m": "表向きの人物像、ペルソナ",
+    "ex": "His public persona is different from his private self.",
+    "exJa": "彼の表向きの人物像は、私生活での彼とは違う。"
+  },
+  {
+    "w": "personnel",
+    "pos": "名詞",
+    "level": "発展",
+    "ipa": "ˌpɜːsəˈnel",
+    "ph": "パーソネル",
+    "m": "職員、人員",
+    "ex": "The company trained new personnel.",
+    "exJa": "その会社は新しい職員を研修した。"
   },
   {
     "w": "personal",
@@ -12684,6 +12777,7 @@ const TEST_CHOICE_COUNT_OPTIONS = [2, 3, 4];
 const TEST_CARD_LIMIT = 20;
 const TEST_CHOICE_LABELS = ['A', 'B', 'C', 'D'];
 const DAY_MS = 24 * 60 * 60 * 1000;
+const WEAK_EF_THRESHOLD = 1.8;
 const STREAK_MILESTONE_MESSAGES = {
   10: '10連続！流れができてきた。',
   15: '15連続！かなり集中できている。',
@@ -12803,6 +12897,7 @@ const PART_LABELS = {
 };
 const CATEGORY_LABELS = {
   all: 'すべて',
+  weakWords: '苦手',
   katakanaGap: 'カタカナ注意',
   phrasalVerb: '句動詞',
   uncountableNoun: '不可算名詞',
@@ -12830,6 +12925,7 @@ const PART_UI_KEYS = {
 };
 const CATEGORY_UI_KEYS = {
   all: 'categoryAll',
+  weakWords: 'categoryWeakWords',
   katakanaGap: 'categoryKatakanaGap',
   phrasalVerb: 'categoryPhrasalVerb',
   uncountableNoun: 'categoryUncountableNoun',
@@ -12873,6 +12969,7 @@ const UI_TEXT = {
     levelNote: 'レベル名は学習の目安です。句動詞・実用は、get up などの句動詞や日常で使うまとまり表現を中心にしています。',
     chooseTheme: 'テーマを選ぶ',
     categoryAll: 'すべて',
+    categoryWeakWords: '苦手',
     categoryKatakanaGap: 'カタカナ注意',
     categoryPhrasalVerb: '句動詞',
     categoryUncountableNoun: '不可算名詞',
@@ -12884,7 +12981,7 @@ const UI_TEXT = {
     categoryPronunciationNote: '発音注意',
     categoryRlContrast: 'R/L注意',
     katakanaSub: '知ってるつもり',
-    themeNote: 'テーマ別に確認できます。カタカナ注意は「知ってるつもり」になりやすい意味のズレ、句動詞は会話のまとまり、不可算名詞は数え方の引っ掛け、略語は分野別、発音注意は音と綴りの違い、R/L注意は語頭の音で意味が変わる組を集中的に学べます。',
+    themeNote: 'テーマ別に確認できます。苦手は間違えた語や定着しにくい語、カタカナ注意は「知ってるつもり」になりやすい意味のズレ、句動詞は会話のまとまり、不可算名詞は数え方の引っ掛け、略語は分野別、発音注意は音と綴りの違い、R/L注意は語頭の音で意味が変わる組を集中的に学べます。',
     choosePart: '品詞でしぼる',
     partRandom: 'ランダム',
     partNoun: '名詞',
@@ -12900,6 +12997,8 @@ const UI_TEXT = {
     quickStartTitle: '今日の入口',
     quickStartNote: '迷ったらここから',
     missReview: 'ミス復習',
+    weakWords: '苦手',
+    weakWordsSub: 'つまずき語',
     testSettingsTitle: 'テスト',
     choice2: '2択',
     choice3: '3択',
@@ -12959,6 +13058,7 @@ const UI_TEXT = {
     audioAriaUk: 'UK音声で単語を再生',
     audioAriaEnglishFallback: '英語音声で単語を再生。en-GB音声がない場合は端末の英語音声を使います',
     swipeLearn: '←前へ　　スワイプ　　次へ→',
+    swipeLearnRate: '評価して次へ　右=バッチリ',
     swipeTestReady: '次へをタップ / 右スワイプ　→',
     swipeTestWaiting: '答えを選ぶと次へ進めます',
     swipeReadyAria: '次へボタンをタップするか右にスワイプすると次の問題に進みます',
@@ -12978,6 +13078,11 @@ const UI_TEXT = {
     importFailure: '学習履歴を読み込めませんでした。JSONファイルを確認してください。',
     resetConfirm: 'この端末の学習履歴をリセットします。よろしいですか？',
     noMissReviewAlert: '今はミスだけ復習に入れる単語がありません。まず今日の20問に挑戦してみましょう。',
+    noWeakWordsAlert: '今は苦手に入る単語がありません。まず今日の20問に挑戦してみましょう。',
+    rateHard: '難しかった',
+    rateOkay: 'まあまあ',
+    rateGreat: 'バッチリ',
+    rateControlsAria: '理解度を選ぶ',
     completeStudyTitle: '今回の学習完了！',
     completeTestTitle: 'テスト完了！',
     perfectTestTitle: '満点クリア！',
@@ -13021,6 +13126,7 @@ const UI_TEXT = {
     levelNote: 'Level names are study guides. Phrases & practical focuses on phrasal verbs such as get up and useful everyday chunks.',
     chooseTheme: 'Choose theme',
     categoryAll: 'All',
+    categoryWeakWords: 'Weak',
     categoryKatakanaGap: 'Katakana caution',
     categoryPhrasalVerb: 'Phrasal verbs',
     categoryUncountableNoun: 'Uncountable nouns',
@@ -13032,7 +13138,7 @@ const UI_TEXT = {
     categoryPronunciationNote: 'Pronunciation caution',
     categoryRlContrast: 'R/L caution',
     katakanaSub: 'False friends',
-    themeNote: 'Use themes for focused practice: katakana meaning gaps, phrasal verbs, uncountable noun traps, abbreviations by field, pronunciation traps, and R/L contrast pairs.',
+    themeNote: 'Use themes for focused practice: weak words, katakana meaning gaps, phrasal verbs, uncountable noun traps, abbreviations by field, pronunciation traps, and R/L contrast pairs.',
     choosePart: 'Filter by part of speech',
     partRandom: 'Random',
     partNoun: 'Nouns',
@@ -13048,6 +13154,8 @@ const UI_TEXT = {
     quickStartTitle: 'Today’s start',
     quickStartNote: 'Start here when unsure',
     missReview: 'Miss Review',
+    weakWords: 'Weak',
+    weakWordsSub: 'Needs work',
     testSettingsTitle: 'Test',
     choice2: '2 choices',
     choice3: '3 choices',
@@ -13107,6 +13215,7 @@ const UI_TEXT = {
     audioAriaUk: 'Play word with UK voice',
     audioAriaEnglishFallback: 'Play word with an English voice. If en-GB is unavailable, this device’s English voice is used',
     swipeLearn: '← Previous　　Swipe　　Next →',
+    swipeLearnRate: 'Rate it. Right swipe = Great',
     swipeTestReady: 'Tap Next or swipe right →',
     swipeTestWaiting: 'Choose an answer to continue',
     swipeReadyAria: 'Tap the Next button or swipe right to move to the next question',
@@ -13126,6 +13235,11 @@ const UI_TEXT = {
     importFailure: 'Could not load study history. Please check the JSON file.',
     resetConfirm: 'Reset study history on this device?',
     noMissReviewAlert: 'There are no words for Miss Review right now. Try today’s 20 first.',
+    noWeakWordsAlert: 'There are no weak words right now. Try today’s 20 first.',
+    rateHard: 'Hard',
+    rateOkay: 'OK',
+    rateGreat: 'Great',
+    rateControlsAria: 'Choose how well you remembered it',
     completeStudyTitle: 'Practice complete!',
     completeTestTitle: 'Test complete!',
     perfectTestTitle: 'Perfect 20!',
@@ -13383,6 +13497,7 @@ function applyUiLanguage() {
   document.querySelector('.settings-tabs')?.setAttribute('aria-label', uiText('settingsTabsAria'));
   document.getElementById('header-back-btn')?.setAttribute('aria-label', uiText('backToPracticeAria'));
   document.getElementById('card-container')?.setAttribute('aria-label', uiText('cardFlipAria'));
+  document.getElementById('rating-controls')?.setAttribute('aria-label', uiText('rateControlsAria'));
   document.getElementById('test-word-card')?.setAttribute('data-flip-label', uiText('testFlipChip'));
   updateUiLanguageButtons();
   updateAudioButtons();
@@ -14044,8 +14159,20 @@ function getWordCategories(word) {
   return categories;
 }
 
-function hasCategory(word, category) {
+function isWeakStudyState(state) {
+  if (!state || typeof state !== 'object') return false;
+  const ef = Number(state.ef);
+  return Number.isFinite(ef) && ef < WEAK_EF_THRESHOLD;
+}
+
+function isWeakWord(word, data = loadData(), missedKeys = new Set(loadMissedReviewKeys())) {
+  const key = getCardKey(word);
+  return missedKeys.has(key) || isWeakStudyState(data[key]);
+}
+
+function hasCategory(word, category, data = loadData(), missedKeys = new Set(loadMissedReviewKeys())) {
   if (category === 'all') return true;
+  if (category === 'weakWords') return isWeakWord(word, data, missedKeys);
   const tag = CATEGORY_TAGS[category];
   if (!tag) return true;
   return getWordCategories(word).has(tag);
@@ -14133,7 +14260,9 @@ function getTestFrontPronunciationText(word) {
 }
 
 function getCategoryFilteredWords() {
-  return getLevelFilteredWords().filter(word => hasCategory(word, currentCategory));
+  const data = loadData();
+  const missedKeys = new Set(loadMissedReviewKeys());
+  return getLevelFilteredWords().filter(word => hasCategory(word, currentCategory, data, missedKeys));
 }
 
 function getActiveWords() {
@@ -14180,7 +14309,9 @@ function updatePartButtons() {
 }
 
 function getCategoryCount(category) {
-  return getLevelFilteredWords().filter(word => hasCategory(word, category)).length;
+  const data = loadData();
+  const missedKeys = new Set(loadMissedReviewKeys());
+  return getLevelFilteredWords().filter(word => hasCategory(word, category, data, missedKeys)).length;
 }
 
 function updateCategoryButtons() {
@@ -14470,20 +14601,37 @@ function clearMissedReviewWord(word) {
   recordMissCleared();
 }
 
+function normalizeReviewQuality(q) {
+  const quality = Number(q);
+  if (!Number.isFinite(quality)) return 0;
+  if (quality >= 5) return 5;
+  if (quality >= 3) return 3;
+  return 0;
+}
+
 function updateCard(word, q) {
   const data = loadData();
   const key = getCardKey(word);
-  let c = data[key] || { n: 0, ef: 2.5, interval: 1, nextDate: 0 };
+  const quality = normalizeReviewQuality(q);
+  let c = { n: 0, ef: 2.5, interval: 1, nextDate: 0, ...(data[key] || {}) };
+  const previousEf = Number.isFinite(Number(c.ef)) ? Number(c.ef) : 2.5;
+  const previousInterval = Number.isFinite(Number(c.interval)) ? Number(c.interval) : 1;
+  const previousN = Number.isFinite(Number(c.n)) ? Number(c.n) : 0;
 
-  if (q >= 3) {
-    if (c.n === 0)      c.interval = 1;
-    else if (c.n === 1) c.interval = 6;
-    else                c.interval = Math.round(c.interval * c.ef);
-    c.n  += 1;
-    c.ef  = Math.max(1.3, c.ef + 0.1 - (5 - q) * (0.08 + (5 - q) * 0.02));
+  if (quality >= 3) {
+    if (previousN === 0)      c.interval = 1;
+    else if (previousN === 1) c.interval = 6;
+    else                     c.interval = Math.max(1, Math.round(previousInterval * previousEf));
+    c.n = previousN + 1;
   } else {
-    c.n = 0; c.interval = 1;
+    c.n = 0;
+    c.interval = 1;
+    c.lapses = (Number(c.lapses) || 0) + 1;
   }
+  c.ef = Math.max(1.3, previousEf + 0.1 - (5 - quality) * (0.08 + (5 - quality) * 0.02));
+  c.lastQuality = quality;
+  c.reviewedAt = Date.now();
+  c.reviews = (Number(c.reviews) || 0) + 1;
 
   const next = new Date();
   next.setDate(next.getDate() + c.interval);
@@ -14707,6 +14855,7 @@ function showCard() {
   const pct = (currentIndex / sessionCards.length) * 100;
   document.getElementById('progress-fill').style.width = pct + '%';
   document.getElementById('progress-text').textContent  = `${currentIndex} / ${sessionCards.length}`;
+  updateRatingControls();
 }
 
 function resetCardToFrontInstantly() {
@@ -14714,11 +14863,13 @@ function resetCardToFrontInstantly() {
   const needsReset = isFlipped || card.classList.contains('flipped');
   if (!needsReset) {
     isFlipped = false;
+    updateRatingControls();
     return false;
   }
   card.classList.add('no-transition');
   card.classList.remove('flipped');
   isFlipped = false;
+  updateRatingControls();
   updateSwipeMessage();
   void card.offsetWidth;
   requestAnimationFrame(() => {
@@ -14739,6 +14890,20 @@ function hideAudioButtonDuringFlipBack(card) {
   audioButtonRevealTimers.set(card, timer);
 }
 
+function updateRatingControls() {
+  const controls = document.getElementById('rating-controls');
+  if (!controls) return;
+  const cardContainer = document.getElementById('card-container');
+  const reserved = currentMode === 'learn'
+    && currentIndex < sessionCards.length
+    && cardContainer
+    && cardContainer.style.display !== 'none';
+  const visible = reserved && isFlipped;
+  controls.classList.toggle('is-reserved', Boolean(reserved));
+  controls.classList.toggle('is-visible', visible);
+  controls.setAttribute('aria-hidden', visible ? 'false' : 'true');
+}
+
 function flipCard() {
   const card = document.getElementById('card');
   const nextFlipped = !isFlipped;
@@ -14746,11 +14911,12 @@ function flipCard() {
   isFlipped = nextFlipped;
   card.classList.toggle('flipped', isFlipped);
   triggerHapticFeedback(12);
+  updateRatingControls();
   updateSwipeMessage();
 }
 
 function updateSwipeMessage() {
-  document.getElementById('swipe-msg').textContent = uiText('swipeLearn');
+  document.getElementById('swipe-msg').textContent = isFlipped ? uiText('swipeLearnRate') : uiText('swipeLearn');
 }
 
 function beginTestSession(cards, kind = 'normal') {
@@ -14778,6 +14944,7 @@ function beginTestSession(cards, kind = 'normal') {
   document.getElementById('session-complete').style.display = 'none';
   document.getElementById('study-prompt').style.display = 'none';
   document.getElementById('card-container').style.display = 'none';
+  updateRatingControls();
   const swipeMsg = document.getElementById('swipe-msg');
   swipeMsg.style.display = 'none';
   setTestSwipeHintReady(false);
@@ -14801,6 +14968,28 @@ function startMissReviewSession() {
   }
   showLearnView();
   beginTestSession(shuffle(missedWords).slice(0, TEST_CARD_LIMIT), 'missReview');
+}
+
+function startWeakWordsSession() {
+  markIntroSeen();
+  const previousScope = { level: currentLevel, part: currentPart, category: currentCategory };
+  applyQuickScope('weakWords');
+  const weakWords = getActiveWords();
+  if (!weakWords.length) {
+    currentLevel = previousScope.level;
+    currentPart = previousScope.part;
+    currentCategory = previousScope.category;
+    localStorage.setItem(LEVEL_STORAGE_KEY, currentLevel);
+    localStorage.setItem(PART_STORAGE_KEY, currentPart);
+    localStorage.setItem(CATEGORY_STORAGE_KEY, currentCategory);
+    updateLevelButtons();
+    updatePartButtons();
+    updateCategoryButtons();
+    alert(uiText('noWeakWordsAlert'));
+    return;
+  }
+  showLearnView();
+  beginTestSession(createAdaptiveTestDeck(weakWords), 'weakReview');
 }
 
 function getDistractorPool(correctWord, neededDistractors = currentTestChoiceCount - 1) {
@@ -15276,6 +15465,7 @@ function rate(q) {
     sessionReviewedKeys.add(key);
   }
   resetCardToFrontInstantly();
+  updateRatingControls();
   currentIndex++;
   setTimeout(() => { showCard(); updateStats(); }, 280);
 }
@@ -15513,12 +15703,14 @@ function updateStats() {
     : `${uiText('dueCandidatesCount')}: ${formatItemCount(due)}`;
   setText('stat-left', Math.max(0, target - mastered));
   updateGrowthBadge(meta, missedReviewCount);
+  updateCategoryButtons();
 }
 
 function showComplete() {
   document.getElementById('study-prompt').style.display = 'none';
   document.getElementById('card-container').style.display = 'none';
   document.getElementById('test-panel').style.display = 'none';
+  updateRatingControls();
   document.getElementById('swipe-msg').style.display = 'none';
   const completeEl = document.getElementById('session-complete');
   completeEl.classList.remove('weakness-cleared');
