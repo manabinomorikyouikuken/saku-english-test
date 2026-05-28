@@ -6,6 +6,16 @@
   <meta name="robots" content="noindex,nofollow">
   <title>サクサク英単語</title>
   <style>
+    :root {
+      --app-bg: #fff1f5;
+      --surface: #ffffff;
+      --ink: #1a2a4a;
+      --warm-primary: #ea580c;
+      --warm-primary-strong: #c2410c;
+      --warm-primary-soft: #fff7ed;
+      --warm-border: #fed7aa;
+      --warm-focus: rgba(249,115,22,0.34);
+    }
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     html {
       -webkit-text-size-adjust: 100%;
@@ -18,7 +28,7 @@
 
     body {
       font-family: -apple-system, BlinkMacSystemFont, 'Hiragino Sans', 'Yu Gothic', sans-serif;
-      background: #eef2f7;
+      background: var(--app-bg);
       min-height: 100vh;
       display: flex;
       flex-direction: column;
@@ -27,7 +37,7 @@
 
     header {
       width: 100%;
-      background: linear-gradient(135deg, #1a2a4a 0%, #2d4a7a 100%);
+      background: linear-gradient(135deg, #f97316 0%, #fb923c 100%);
       color: white;
       padding: 14px 20px;
       display: flex;
@@ -94,9 +104,9 @@
     }
     .learn-bottom-bar .settings-open-btn {
       pointer-events: auto;
-      background: #1a2a4a;
-      border-color: #1a2a4a;
-      box-shadow: 0 10px 28px rgba(15,23,42,0.22);
+      background: var(--warm-primary-strong);
+      border-color: var(--warm-primary-strong);
+      box-shadow: 0 10px 28px rgba(194,65,12,0.24);
       padding: 11px 22px;
       font-size: 13px;
       min-height: 48px;
@@ -108,16 +118,16 @@
       padding-inline: 8px;
     }
     .learn-bottom-bar .test-open-btn {
-      background: #15803d;
-      border-color: #15803d;
-      box-shadow: 0 10px 28px rgba(21,128,61,0.2);
+      background: var(--warm-primary);
+      border-color: var(--warm-primary);
+      box-shadow: 0 10px 28px rgba(234,88,12,0.24);
     }
     .learn-bottom-bar .mode-btn.active {
       outline: 2px solid rgba(255,255,255,0.9);
       outline-offset: -4px;
     }
     button:focus-visible {
-      outline: 3px solid rgba(37,99,235,0.36);
+      outline: 3px solid var(--warm-focus);
       outline-offset: 2px;
     }
 
@@ -147,7 +157,7 @@
       margin-bottom: 14px;
     }
     .settings-page-title {
-      color: #1a2a4a;
+      color: var(--ink);
       font-size: 20px;
       font-weight: 900;
       line-height: 1.25;
@@ -167,7 +177,7 @@
       top: 0;
       z-index: 4;
       padding: 6px 0;
-      background: #eef2f7;
+      background: var(--app-bg);
     }
     .settings-tab {
       border: 1px solid #cbd5e1;
@@ -182,8 +192,8 @@
       touch-action: pan-y;
     }
     .settings-tab.active {
-      background: #1a2a4a;
-      border-color: #1a2a4a;
+      background: var(--warm-primary-strong);
+      border-color: var(--warm-primary-strong);
       color: white;
     }
     .settings-pager {
@@ -223,8 +233,8 @@
       }
     }
     .settings-page-head .back-to-learn-btn {
-      background: #1a2a4a;
-      border-color: #1a2a4a;
+      background: var(--warm-primary-strong);
+      border-color: var(--warm-primary-strong);
       color: white;
       flex: 0 0 auto;
     }
@@ -238,13 +248,13 @@
     /* Progress */
     .progress-wrap { margin-bottom: 18px; }
     .progress-label { font-size: 12px; color: #666; margin-bottom: 6px; display: flex; justify-content: space-between; }
-    .progress-bar { background: #d0d8e4; border-radius: 6px; height: 7px; overflow: hidden; }
-    .progress-fill { background: linear-gradient(90deg, #3b82f6, #60a5fa); height: 100%; border-radius: 6px; transition: width 0.4s ease; }
+    .progress-bar { background: #ffe4e6; border-radius: 6px; height: 7px; overflow: hidden; }
+    .progress-fill { background: linear-gradient(90deg, #fb923c, #f97316); height: 100%; border-radius: 6px; transition: width 0.4s ease; }
     .quick-start-panel {
       width: min(92%, 420px);
       margin: 0 auto 10px;
       background: #ffffff;
-      border: 1px solid #d8e1ee;
+      border: 1px solid #fecdd3;
       border-radius: 14px;
       padding: 12px;
       box-shadow: 0 4px 18px rgba(15,23,42,0.06);
@@ -257,7 +267,7 @@
       margin-bottom: 10px;
     }
     .quick-start-title {
-      color: #1a2a4a;
+      color: var(--ink);
       font-size: 13px;
       font-weight: 900;
       line-height: 1.25;
@@ -274,8 +284,8 @@
       gap: 8px;
     }
     .quick-start-btn {
-      border: 1px solid #cbd5e1;
-      background: #f8fafc;
+      border: 1px solid var(--warm-border);
+      background: var(--warm-primary-soft);
       color: #334155;
       border-radius: 12px;
       min-height: 44px;
@@ -295,23 +305,23 @@
       line-height: 1.15;
     }
     .quick-start-btn.primary {
-      background: #15803d;
-      border-color: #15803d;
+      background: var(--warm-primary);
+      border-color: var(--warm-primary);
       color: white;
     }
     .quick-start-btn:active { transform: scale(0.97); filter: brightness(0.96); }
     .intro-panel {
       width: min(92%, 420px);
       margin: 0 auto 10px;
-      background: #f8fafc;
-      border: 1px solid #cbd5e1;
+      background: #fff7ed;
+      border: 1px solid var(--warm-border);
       border-radius: 14px;
       padding: 12px;
       box-shadow: 0 4px 18px rgba(15,23,42,0.05);
     }
     .intro-panel[hidden] { display: none; }
     .intro-title {
-      color: #1a2a4a;
+      color: var(--ink);
       font-size: 13px;
       font-weight: 900;
       margin-bottom: 6px;
@@ -340,8 +350,8 @@
       touch-action: manipulation;
     }
     .intro-btn.primary {
-      background: #2563eb;
-      border-color: #2563eb;
+      background: var(--warm-primary);
+      border-color: var(--warm-primary);
       color: white;
     }
     .intro-btn:active { transform: scale(0.98); filter: brightness(0.96); }
@@ -356,7 +366,7 @@
     }
     .growth-badge {
       margin-top: 7px;
-      border: 1px solid #d8e1ee;
+      border: 1px solid #fecdd3;
       border-radius: 12px;
       background: rgba(255,255,255,0.84);
       padding: 9px 10px;
@@ -388,7 +398,7 @@
     }
     .learning-summary-item {
       background: rgba(255,255,255,0.82);
-      border: 1px solid #d8e1ee;
+      border: 1px solid #fecdd3;
       border-radius: 12px;
       padding: 8px 6px;
       text-align: center;
@@ -396,7 +406,7 @@
     }
     .learning-summary-num {
       display: block;
-      color: #1a2a4a;
+      color: var(--ink);
       font-size: 17px;
       font-weight: 900;
       line-height: 1;
@@ -433,7 +443,7 @@
     .session-panel,
     .settings-panel {
       background: rgba(255,255,255,0.75);
-      border: 1px solid #d8e1ee;
+      border: 1px solid #fecdd3;
       border-radius: 16px;
       padding: 12px;
       margin-bottom: 18px;
@@ -446,14 +456,14 @@
     }
     .achievement-item {
       background: white;
-      border: 1px solid #e2e8f0;
+      border: 1px solid #fed7aa;
       border-radius: 12px;
       padding: 9px 6px;
       text-align: center;
     }
     .achievement-num {
       display: block;
-      color: #1a2a4a;
+      color: var(--ink);
       font-size: 18px;
       font-weight: 800;
       line-height: 1;
@@ -474,15 +484,15 @@
       margin-top: 8px;
     }
     .data-quality-item {
-      background: #f8fafc;
-      border: 1px solid #e2e8f0;
+      background: #fff7ed;
+      border: 1px solid #fed7aa;
       border-radius: 12px;
       padding: 9px 6px;
       text-align: center;
     }
     .data-quality-item strong {
       display: block;
-      color: #1a2a4a;
+      color: var(--ink);
       font-size: 17px;
       font-weight: 900;
       line-height: 1;
@@ -549,7 +559,7 @@
       font-weight: 800;
     }
     .level-btn {
-      border: 1px solid #cbd5e1;
+      border: 1px solid #fed7aa;
       background: white;
       color: #334155;
       border-radius: 12px;
@@ -560,7 +570,7 @@
       touch-action: manipulation;
     }
     .category-btn {
-      border: 1px solid #cbd5e1;
+      border: 1px solid #fed7aa;
       background: white;
       color: #334155;
       border-radius: 12px;
@@ -571,7 +581,7 @@
       touch-action: manipulation;
     }
     .test-choice-count-btn {
-      border: 1px solid #cbd5e1;
+      border: 1px solid #fed7aa;
       background: white;
       color: #334155;
       border-radius: 12px;
@@ -583,9 +593,10 @@
     }
     .ui-language-btn,
     .phonetic-assist-btn,
+    .word-color-btn,
     .haptic-feedback-btn,
     .speech-voice-btn {
-      border: 1px solid #cbd5e1;
+      border: 1px solid #fed7aa;
       background: white;
       color: #334155;
       border-radius: 12px;
@@ -605,7 +616,7 @@
       margin-top: 2px;
     }
     .part-btn {
-      border: 1px solid #cbd5e1;
+      border: 1px solid #fed7aa;
       background: white;
       color: #334155;
       border-radius: 12px;
@@ -637,33 +648,34 @@
       margin-top: 2px;
     }
     .level-btn.active {
-      background: #1a2a4a;
-      border-color: #1a2a4a;
+      background: var(--warm-primary-strong);
+      border-color: var(--warm-primary-strong);
       color: white;
     }
     .level-btn.active span { color: rgba(255,255,255,0.72); }
     .category-btn.active {
-      background: #1a2a4a;
-      border-color: #1a2a4a;
+      background: var(--warm-primary-strong);
+      border-color: var(--warm-primary-strong);
       color: white;
     }
     .category-btn.active span { color: rgba(255,255,255,0.72); }
     .test-choice-count-btn.active {
-      background: #15803d;
-      border-color: #15803d;
+      background: var(--warm-primary);
+      border-color: var(--warm-primary);
       color: white;
     }
     .ui-language-btn.active,
     .phonetic-assist-btn.active,
+    .word-color-btn.active,
     .haptic-feedback-btn.active,
     .speech-voice-btn.active {
-      background: #1a2a4a;
-      border-color: #1a2a4a;
+      background: var(--warm-primary-strong);
+      border-color: var(--warm-primary-strong);
       color: white;
     }
     .speech-voice-btn.active span { color: rgba(255,255,255,0.72); }
     .front-meta-btn {
-      border: 1px solid #cbd5e1;
+      border: 1px solid #fed7aa;
       background: white;
       color: #334155;
       border-radius: 12px;
@@ -674,13 +686,13 @@
       touch-action: manipulation;
     }
     .front-meta-btn.active {
-      background: #1a2a4a;
-      border-color: #1a2a4a;
+      background: var(--warm-primary-strong);
+      border-color: var(--warm-primary-strong);
       color: white;
     }
     .part-btn.active {
-      background: #1a2a4a;
-      border-color: #1a2a4a;
+      background: var(--warm-primary-strong);
+      border-color: var(--warm-primary-strong);
       color: white;
     }
     .part-btn.active span { color: rgba(255,255,255,0.72); }
@@ -702,13 +714,13 @@
     }
     .settings-panel[open] summary::after { content: "−"; }
     .utility-panel {
-      border-top: 1px solid #e2e8f0;
+      border-top: 1px solid #fed7aa;
       padding: 12px;
     }
     .utility-buttons { display: flex; gap: 8px; }
     .small-btn {
       flex: 1;
-      border: 1px solid #cbd5e1;
+      border: 1px solid #fed7aa;
       background: white;
       color: #334155;
       border-radius: 11px;
@@ -723,8 +735,8 @@
     .storage-note { margin-top: 8px; font-size: 11px; color: #64748b; line-height: 1.5; text-align: center; }
     .settings-bottom { margin-top: 14px; display: flex; justify-content: center; }
     .settings-bottom .back-to-learn-btn {
-      background: #1a2a4a;
-      border-color: #1a2a4a;
+      background: var(--warm-primary-strong);
+      border-color: var(--warm-primary-strong);
       color: white;
       min-width: 160px;
     }
@@ -780,11 +792,6 @@
       box-shadow: 0 6px 30px rgba(0,0,0,0.1);
       gap: 8px;
     }
-    .card-front .word-audio-btn {
-      position: static;
-      order: 3;
-      margin-top: 0;
-    }
     .word-text {
       order: 1;
       font-size: clamp(36px, 10vw, 44px);
@@ -801,6 +808,9 @@
     .word-text.pos-adjective { color: #1e3a8a; }
     .word-text.pos-adverb { color: #7e22ce; }
     .word-text.pos-other { color: #1a2a4a; }
+    body.word-color-mono .word-text {
+      color: #1a2a4a;
+    }
     .word-text .morpheme-prefix {
       color: #2563eb;
     }
@@ -846,24 +856,38 @@
       vertical-align: super;
     }
     .word-audio-btn {
-      position: absolute;
-      top: 14px;
-      right: 14px;
-      min-width: 46px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 78px;
       min-height: 34px;
-      border: 1px solid #bfdbfe;
+      padding: 0 14px;
+      border: 1px solid var(--warm-border);
       border-radius: 999px;
-      background: #eff6ff;
-      color: #1d4ed8;
+      background: var(--warm-primary-soft);
+      color: var(--warm-primary-strong);
       font-size: 12px;
       font-weight: 900;
       letter-spacing: 0;
       cursor: pointer;
       touch-action: manipulation;
-      box-shadow: 0 3px 12px rgba(37,99,235,0.12);
+      box-shadow: 0 3px 12px rgba(249,115,22,0.14);
       z-index: 3;
       backface-visibility: hidden;
       -webkit-backface-visibility: hidden;
+    }
+    .card-audio-row {
+      width: min(92%, 420px);
+      min-height: 38px;
+      margin: -2px auto 10px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .card-audio-btn {
+      min-width: 92px;
+      min-height: 36px;
+      font-size: 12.5px;
     }
     .word-audio-btn:active {
       transform: scale(0.96);
@@ -873,12 +897,6 @@
       opacity: 0.45;
       cursor: not-allowed;
       box-shadow: none;
-    }
-    .card.flipped .card-front .word-audio-btn,
-    .card.audio-hidden-during-flip .card-front .word-audio-btn {
-      opacity: 0;
-      visibility: hidden;
-      pointer-events: none;
     }
     .rating-controls {
       width: min(92%, 420px);
@@ -933,8 +951,8 @@
       filter: brightness(0.96);
     }
     .level-tag {
-      background: #eff6ff;
-      color: #2563eb;
+      background: var(--warm-primary-soft);
+      color: var(--warm-primary-strong);
       font-size: 11px;
       font-weight: 700;
       padding: 4px 10px;
@@ -962,8 +980,8 @@
     .pos-tag.pos-adverb { background: #faf5ff; color: #7e22ce; }
     .pos-tag.pos-other { background: #f8fafc; color: #334155; }
     .part-badge {
-      background: #eff6ff;
-      color: #3b82f6;
+      background: var(--warm-primary-soft);
+      color: var(--warm-primary-strong);
       font-size: 11px;
       font-weight: 600;
       padding: 3px 10px;
@@ -1095,6 +1113,9 @@
       line-height: 1;
       pointer-events: none;
     }
+    .test-word-card.feedback-visible:not(.is-flipped)::after {
+      display: none;
+    }
     .test-word-card.wrong-cue {
       animation: wrongCue 0.34s ease-in-out;
     }
@@ -1132,10 +1153,17 @@
     .test-card-back-face {
       transform: rotateY(180deg);
       flex-direction: column;
-      align-items: stretch;
+      align-items: center;
       justify-content: center;
-      gap: 5px;
       color: #334155;
+    }
+    .test-card-back-content {
+      width: min(100%, 320px);
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 5px;
+      text-align: left;
     }
     .test-word-text {
       color: #1a2a4a;
@@ -1160,24 +1188,11 @@
     .test-front-pron:empty {
       display: none;
     }
-    .test-card-front-face .word-audio-btn {
-      position: static;
-      min-width: 52px;
-      min-height: 34px;
-      font-size: 11px;
-      box-shadow: 0 4px 14px rgba(37,99,235,0.13);
-    }
-    .test-word-card.is-flipped .test-card-front-face .word-audio-btn,
-    .test-word-card.audio-hidden-during-flip .test-card-front-face .word-audio-btn {
-      opacity: 0;
-      visibility: hidden;
-      pointer-events: none;
-    }
     .test-back-pos {
       align-self: flex-start;
       border-radius: 999px;
-      background: #e0ecff;
-      color: #1d4ed8;
+      background: var(--warm-primary-soft);
+      color: var(--warm-primary-strong);
       padding: 3px 8px;
       font-size: 10px;
       font-weight: 900;
@@ -1240,7 +1255,7 @@
       flex-direction: column;
     }
     .test-choice-card {
-      border: 1px solid #d8e1ee;
+      border: 1px solid #f1d8ca;
       background: white;
       color: #334155;
       border-radius: 14px;
@@ -1261,8 +1276,8 @@
       height: 24px;
       margin-right: 8px;
       border-radius: 999px;
-      background: #e0ecff;
-      color: #1d4ed8;
+      background: var(--warm-primary-soft);
+      color: var(--warm-primary-strong);
       font-size: 12px;
       font-weight: 900;
       vertical-align: middle;
@@ -1276,9 +1291,9 @@
     }
     .test-choice-card.picked,
     .test-letter-btn.picked {
-      outline: 2px solid rgba(37,99,235,0.34);
+      outline: 2px solid var(--warm-focus);
       outline-offset: 2px;
-      box-shadow: 0 6px 18px rgba(37,99,235,0.18);
+      box-shadow: 0 6px 18px rgba(249,115,22,0.18);
     }
     .test-choice-card.correct {
       border-color: #16a34a;
@@ -1320,8 +1335,8 @@
       align-items: center;
       justify-content: center;
       aspect-ratio: 1 / 1;
-      border: 1px solid #cbd5e1;
-      background: #f8fafc;
+      border: 1px solid #f1d8ca;
+      background: #fffaf7;
       color: #1a2a4a;
       border-radius: 16px;
       min-width: 0;
@@ -1337,21 +1352,28 @@
       opacity: 0.86;
     }
     .test-feedback {
+      position: absolute;
+      left: 10px;
+      right: 10px;
+      bottom: 8px;
+      z-index: 4;
       display: none;
-      margin-top: 8px;
+      max-height: 48px;
+      margin: 0;
       border: 1px solid #fde68a;
       background: #fffbeb;
       color: #92400e;
-      border-radius: 12px;
-      padding: 8px 10px;
-      font-size: 11.5px;
+      border-radius: 14px;
+      padding: 7px 10px;
+      font-size: 10.8px;
       font-weight: 800;
       line-height: 1.35;
       text-align: left;
       overflow: hidden;
-      display: -webkit-box;
-      -webkit-line-clamp: 3;
+      pointer-events: none;
+      -webkit-line-clamp: 2;
       -webkit-box-orient: vertical;
+      box-shadow: 0 3px 12px rgba(146,64,14,0.08);
     }
     .test-feedback:not(.is-visible) {
       display: none;
@@ -1360,18 +1382,10 @@
       display: -webkit-box;
     }
     .test-feedback.correct-feedback {
-      border-color: #bbf7d0;
-      background: #ecfdf5;
-      color: #166534;
-      text-align: center;
-      align-items: center;
-      justify-content: center;
+      display: none;
     }
     .test-feedback.correct-feedback.streak-milestone {
-      border-color: #bfdbfe;
-      background: #eff6ff;
-      color: #1d4ed8;
-      animation: milestonePop 0.36s ease-out;
+      display: none;
     }
     @keyframes milestonePop {
       0% { transform: scale(0.98); opacity: 0.82; }
@@ -1384,6 +1398,10 @@
       color: #92400e;
       text-align: left;
     }
+    .test-word-card.is-flipped .test-feedback {
+      opacity: 0;
+      visibility: hidden;
+    }
     .test-next-btn {
       display: none;
       align-items: center;
@@ -1393,16 +1411,16 @@
       margin: 10px auto 0;
       padding: 0 18px;
       box-sizing: border-box;
-      border: 1px solid #bfdbfe;
+      border: 1px solid var(--warm-border);
       border-radius: 999px;
-      background: #eff6ff;
-      color: #1d4ed8;
+      background: var(--warm-primary-soft);
+      color: var(--warm-primary-strong);
       font-size: 14px;
       font-weight: 900;
       letter-spacing: 0;
       cursor: pointer;
       touch-action: manipulation;
-      box-shadow: 0 3px 12px rgba(37,99,235,0.12);
+      box-shadow: 0 3px 12px rgba(249,115,22,0.14);
     }
     .test-next-btn.is-visible {
       display: inline-flex;
@@ -1497,7 +1515,7 @@
     body.test-mode .test-front-pron {
       font-size: 11px;
     }
-    body.test-mode .test-card-back-face {
+    body.test-mode .test-card-back-content {
       gap: 3px;
     }
     body.test-mode .test-back-meaning {
@@ -1544,26 +1562,15 @@
       font-size: clamp(20px, 5.8vw, 26px);
     }
     body.test-mode .test-feedback {
-      display: -webkit-box;
-      width: 100%;
-      height: 56px;
-      margin: 0 0 8px;
-      box-sizing: border-box;
-      visibility: hidden;
-      opacity: 0;
-      pointer-events: none;
+      display: none;
+      left: 8px;
+      right: 8px;
+      bottom: 7px;
       transition: opacity 0.12s ease;
     }
     body.test-mode .test-feedback.is-visible {
       display: -webkit-box;
-      visibility: visible;
       opacity: 1;
-      pointer-events: auto;
-    }
-    body.test-mode .test-feedback.correct-feedback.is-visible {
-      display: flex;
-      align-items: center;
-      justify-content: center;
     }
     body.test-mode .test-next-btn {
       display: inline-flex;
@@ -1585,6 +1592,9 @@
     body.test-mode .learn-bottom-bar {
       display: none;
     }
+    body.test-mode .card-audio-row {
+      display: none !important;
+    }
     body.test-mode .swipe-msg {
       display: none;
     }
@@ -1602,11 +1612,6 @@
       body.test-mode .test-card-face { padding: 10px 11px; }
       body.test-mode .test-card-front-face { gap: 6px; }
       body.test-mode .test-front-pron { font-size: 10px; }
-      body.test-mode .test-card-front-face .word-audio-btn {
-        min-width: 48px;
-        min-height: 31px;
-        font-size: 10.5px;
-      }
       body.test-mode .test-back-pos { font-size: 9px; padding: 2px 7px; }
       body.test-mode .test-back-meaning { font-size: 13px; }
       body.test-mode .test-back-pron,
@@ -1625,27 +1630,17 @@
         font-size: 20px;
       }
       body.test-mode .test-feedback {
-        display: -webkit-box;
-        width: 100%;
-        height: 48px;
-        margin: 0 0 6px;
+        display: none;
+        left: 7px;
+        right: 7px;
+        bottom: 6px;
         padding: 6px 9px;
-        font-size: 10.5px;
+        font-size: 10px;
         box-sizing: border-box;
-        visibility: hidden;
-        opacity: 0;
-        pointer-events: none;
       }
       body.test-mode .test-feedback.is-visible {
         display: -webkit-box;
-        visibility: visible;
         opacity: 1;
-        pointer-events: auto;
-      }
-      body.test-mode .test-feedback.correct-feedback.is-visible {
-        display: flex;
-        align-items: center;
-        justify-content: center;
       }
       body.test-mode .test-next-btn {
         display: inline-flex;
@@ -1725,9 +1720,9 @@
     }
     .complete-icon.success-icon {
       border-radius: 999px;
-      background: #eff6ff;
-      border: 1px solid #bfdbfe;
-      color: #2563eb;
+      background: var(--warm-primary-soft);
+      border: 1px solid var(--warm-border);
+      color: var(--warm-primary-strong);
       font-size: 25px;
     }
     .complete-title { font-size: 19px; font-weight: 800; color: #1a2a4a; margin-bottom: 6px; }
@@ -1815,7 +1810,7 @@
       margin-bottom: 16px;
     }
     .complete-stat { text-align: center; }
-    .complete-stat-num { font-size: 24px; font-weight: 800; color: #3b82f6; display: block; line-height: 1; }
+    .complete-stat-num { font-size: 24px; font-weight: 800; color: var(--warm-primary-strong); display: block; line-height: 1; }
     .complete-stat-label { font-size: 10px; color: #94a3b8; margin-top: 3px; }
     .complete-actions {
       display: flex;
@@ -1827,7 +1822,7 @@
     .restart-btn,
     .complete-back-btn {
       flex: 1 1 0;
-      background: linear-gradient(135deg, #3b82f6, #60a5fa);
+      background: linear-gradient(135deg, var(--warm-primary-strong), var(--warm-primary));
       color: white;
       padding: 12px 24px;
       border-radius: 12px;
@@ -1837,14 +1832,14 @@
       cursor: pointer;
       min-height: 46px;
       min-width: 0;
-      box-shadow: 0 4px 15px rgba(59,130,246,0.4);
+      box-shadow: 0 4px 15px rgba(234,88,12,0.32);
       transition: transform 0.12s, filter 0.12s;
     }
     .complete-back-btn {
       background: white;
       color: #1a2a4a;
-      border: 1px solid #cbd5e1;
-      box-shadow: 0 4px 14px rgba(15,23,42,0.08);
+      border: 1px solid var(--warm-border);
+      box-shadow: 0 4px 14px rgba(249,115,22,0.1);
     }
     .restart-btn:active,
     .complete-back-btn:active { transform: scale(0.97); filter: brightness(0.9); }
@@ -1869,8 +1864,8 @@
       transition: color 0.12s, background-color 0.12s, transform 0.12s;
     }
     .swipe-msg.is-swipe-ready {
-      color: #2563eb;
-      background: rgba(37, 99, 235, 0.08);
+      color: var(--warm-primary-strong);
+      background: rgba(249,115,22,0.09);
     }
     .swipe-msg.is-swipe-ready:active {
       transform: translateX(2px);
@@ -1901,6 +1896,8 @@
       .learning-summary-item { padding: 7px 5px; }
       .card-prompt { margin-bottom: 6px; }
       .card-container { height: clamp(278px, 46svh, 318px); margin-bottom: 8px; }
+      .card-audio-row { min-height: 36px; margin-bottom: 8px; }
+      .card-audio-btn { min-height: 34px; font-size: 11.5px; }
       .test-word-card-wrap,
       .test-word-card { min-height: 130px; }
       .test-choice-card { min-height: 48px; font-size: 13px; padding: 10px 12px; }
@@ -1978,7 +1975,6 @@
     <div class="card-container" id="card-container" role="button" tabindex="0" aria-label="単語カードを反転">
       <div class="card" id="card">
         <div class="card-face card-front">
-          <button class="word-audio-btn" id="card-audio-btn" type="button" onclick="playCurrentLearningAudio(event)" aria-label="UK音声で単語を再生">UK</button>
           <div class="word-text" id="word-text">—</div>
           <div class="ipa-text" id="ipa-text">/—/</div>
           <div class="phonetic-text" id="phonetic-text">—</div>
@@ -1997,6 +1993,9 @@
         </div>
       </div>
     </div>
+    <div class="card-audio-row" id="card-audio-row">
+      <button class="word-audio-btn card-audio-btn" id="card-audio-btn" type="button" onclick="playCurrentLearningAudio(event)" aria-label="UK音声で単語を再生" data-ui-key="audioButton">UK 発音</button>
+    </div>
 
     <div class="rating-controls" id="rating-controls" aria-label="理解度を選ぶ">
       <button class="rating-btn hard" type="button" onclick="rate(0)" data-ui-key="rateHard">難しかった</button>
@@ -2005,24 +2004,25 @@
     </div>
 
     <div class="test-panel" id="test-panel" aria-live="polite">
-      <div class="test-feedback" id="test-feedback"></div>
       <div class="test-word-card-wrap">
         <div class="test-word-card" id="test-word-card" role="button" tabindex="0" aria-pressed="false" aria-disabled="true" aria-label="解答後に単語カードを反転して裏面情報を表示できます" data-flip-label="タップで裏面" onclick="toggleTestCardFlip()" onkeydown="handleTestCardKey(event)">
           <div class="test-card-inner">
             <div class="test-card-face test-card-front-face">
               <div class="test-word-text" id="test-word-text">—</div>
               <div class="test-front-pron" id="test-front-pron">/—/</div>
-              <button class="word-audio-btn" id="test-audio-btn" type="button" onclick="playCurrentTestAudio(event)" aria-label="UK音声で単語を再生">UK</button>
             </div>
             <div class="test-card-face test-card-back-face">
-              <div class="test-back-pos" id="test-back-pos">—</div>
-              <div class="test-back-meaning" id="test-back-meaning">—</div>
-              <div class="test-back-pron" id="test-back-pron">—</div>
-              <div class="test-back-origin" id="test-back-origin" hidden></div>
-              <div class="test-back-example" id="test-back-example">—</div>
-              <div class="test-back-example-ja" id="test-back-example-ja">—</div>
+              <div class="test-card-back-content">
+                <div class="test-back-pos" id="test-back-pos">—</div>
+                <div class="test-back-meaning" id="test-back-meaning">—</div>
+                <div class="test-back-pron" id="test-back-pron">—</div>
+                <div class="test-back-origin" id="test-back-origin" hidden></div>
+                <div class="test-back-example" id="test-back-example">—</div>
+                <div class="test-back-example-ja" id="test-back-example-ja">—</div>
+              </div>
             </div>
           </div>
+          <div class="test-feedback" id="test-feedback"></div>
         </div>
       </div>
       <div class="test-answer-zone">
@@ -2211,6 +2211,17 @@
         </div>
       </div>
       <div class="storage-note" data-ui-key="frontAssistNote">表面の初期値は非表示です。品詞は答え合わせとして裏面に小さく表示します。</div>
+    </div>
+  </div>
+
+  <div class="settings-panel">
+    <div class="utility-panel">
+      <div class="settings-section-title" data-ui-key="wordColorTitle">単語の色</div>
+      <div class="phonetic-assist-buttons" aria-label="単語の色">
+        <button class="word-color-btn active" type="button" data-word-color-mode="part" onclick="setWordColorMode('part')" data-ui-key="wordColorPart">品詞で色分け</button>
+        <button class="word-color-btn" type="button" data-word-color-mode="mono" onclick="setWordColorMode('mono')" data-ui-key="wordColorMono">単色</button>
+      </div>
+      <div class="storage-note" data-ui-key="wordColorNote">初期値は品詞で色分けです。単色にしても、語形成メモの接頭語・接尾語の色は残します。</div>
     </div>
   </div>
 
@@ -13632,6 +13643,7 @@ const DEFAULT_TEST_CHOICE_COUNT = 4;
 const PHONETIC_ASSIST_STORAGE_KEY = 'vocab_trainer_phonetic_assist_v2';
 const FRONT_LEVEL_STORAGE_KEY = 'vocab_trainer_front_level_v2';
 const FRONT_PART_STORAGE_KEY = 'vocab_trainer_front_part_v2';
+const WORD_COLOR_MODE_STORAGE_KEY = 'vocab_trainer_word_color_mode_v1';
 const HAPTIC_FEEDBACK_STORAGE_KEY = 'vocab_trainer_haptic_feedback_v1';
 const SPEECH_VOICE_STORAGE_KEY = 'vocab_trainer_speech_voice_v1';
 const MISSED_REVIEW_STORAGE_KEY = 'vocab_trainer_missed_review_v1';
@@ -13891,6 +13903,10 @@ const UI_TEXT = {
     show: '表示',
     hide: '非表示',
     frontAssistNote: '表面の初期値は非表示です。品詞は答え合わせとして裏面に小さく表示します。',
+    wordColorTitle: '単語の色',
+    wordColorPart: '品詞で色分け',
+    wordColorMono: '単色',
+    wordColorNote: '初期値は品詞で色分けです。単色にしても、語形成メモの接頭語・接尾語の色は残します。',
     hapticTitle: '操作時のバイブ',
     on: 'オン',
     off: 'オフ',
@@ -13924,6 +13940,7 @@ const UI_TEXT = {
     backToPracticeAria: '学習画面に戻る',
     cardFlipAria: '単語カードを反転',
     audioUnsupported: '音声非対応',
+    audioButton: 'UK 発音',
     audioUnsupportedNote: 'この端末では音声再生に対応していません。',
     voiceLoading: '音声を取得中',
     voiceLoadingNote: '音声候補を取得中です。少し待ってから設定を開き直してください。',
@@ -14050,6 +14067,10 @@ const UI_TEXT = {
     show: 'Show',
     hide: 'Hide',
     frontAssistNote: 'The default is hidden. The part of speech appears on the back as a small answer check.',
+    wordColorTitle: 'Word color',
+    wordColorPart: 'Color by part of speech',
+    wordColorMono: 'Single color',
+    wordColorNote: 'The default uses part-of-speech colors. Prefix and suffix colors in word-part notes remain visible.',
     hapticTitle: 'Vibration',
     on: 'On',
     off: 'Off',
@@ -14083,6 +14104,7 @@ const UI_TEXT = {
     backToPracticeAria: 'Back to practice screen',
     cardFlipAria: 'Flip the word card',
     audioUnsupported: 'Audio unsupported',
+    audioButton: 'UK audio',
     audioUnsupportedNote: 'This device does not support audio playback.',
     voiceLoading: 'Loading voices',
     voiceLoadingNote: 'Voice candidates are loading. Please wait and reopen settings.',
@@ -14441,6 +14463,7 @@ if (!TEST_CHOICE_COUNT_OPTIONS.includes(currentTestChoiceCount)) currentTestChoi
 let showPhoneticAssist = localStorage.getItem(PHONETIC_ASSIST_STORAGE_KEY) === 'shown';
 let showFrontLevel = localStorage.getItem(FRONT_LEVEL_STORAGE_KEY) === 'shown';
 let showFrontPart = localStorage.getItem(FRONT_PART_STORAGE_KEY) === 'shown';
+let wordColorMode = localStorage.getItem(WORD_COLOR_MODE_STORAGE_KEY) === 'mono' ? 'mono' : 'part';
 let hapticFeedbackEnabled = localStorage.getItem(HAPTIC_FEEDBACK_STORAGE_KEY) !== 'off';
 let selectedSpeechVoiceKey = localStorage.getItem(SPEECH_VOICE_STORAGE_KEY) || SPEECH_AUTO_FEMALE;
 const SETTINGS_PAGE_ORDER = ['level', 'theme', 'test', 'display', 'history'];
@@ -14516,6 +14539,7 @@ function applyUiLanguage() {
   updateTestChoiceButtons();
   updatePhoneticAssistButtons();
   updateFrontMetaButtons();
+  updateWordColorModeButtons();
   updateHapticFeedbackButtons();
   updateSpeechVoiceButtons();
   updateStats();
@@ -14577,6 +14601,7 @@ function showSettingsView() {
   updateTestChoiceButtons();
   updatePhoneticAssistButtons();
   updateFrontMetaButtons();
+  updateWordColorModeButtons();
   updateHapticFeedbackButtons();
   updateSpeechVoiceButtons();
   updateStats();
@@ -15084,9 +15109,9 @@ function playCurrentLearningAudio(event) {
   speakEnglishWord(sessionCards[currentIndex], event);
 }
 
-function playCurrentTestAudio(event) {
-  if (currentMode !== 'test') return;
-  speakEnglishWord(testCards[testIndex], event);
+function setLearningAudioButtonVisible(visible) {
+  const row = document.getElementById('card-audio-row');
+  if (row) row.style.display = visible ? 'flex' : 'none';
 }
 
 function getVisiblePronunciationNote(word) {
@@ -15470,6 +15495,19 @@ function updateFrontMetaButtons() {
   });
 }
 
+function applyWordColorMode() {
+  document.body.classList.toggle('word-color-mono', wordColorMode === 'mono');
+}
+
+function updateWordColorModeButtons() {
+  applyWordColorMode();
+  document.querySelectorAll('.word-color-btn').forEach(btn => {
+    const isActive = btn.dataset.wordColorMode === wordColorMode;
+    btn.classList.toggle('active', isActive);
+    btn.setAttribute('aria-pressed', isActive ? 'true' : 'false');
+  });
+}
+
 function updateHapticFeedbackButtons() {
   document.querySelectorAll('.haptic-feedback-btn').forEach(btn => {
     const isOnButton = btn.dataset.hapticFeedback === 'on';
@@ -15556,6 +15594,13 @@ function setFrontPartVisible(visible) {
   localStorage.setItem(FRONT_PART_STORAGE_KEY, showFrontPart ? 'shown' : 'hidden');
   updateFrontMetaButtons();
   applyFrontMetaVisibility();
+}
+
+function setWordColorMode(mode) {
+  wordColorMode = mode === 'mono' ? 'mono' : 'part';
+  localStorage.setItem(WORD_COLOR_MODE_STORAGE_KEY, wordColorMode);
+  updateWordColorModeButtons();
+  requestAnimationFrame(fitWordText);
 }
 
 function setHapticFeedbackEnabled(enabled) {
@@ -15676,7 +15721,6 @@ let currentIndex  = 0;
 let isFlipped     = false;
 let reviewedToday = 0;
 let sessionReviewedKeys = new Set();
-const audioButtonRevealTimers = new WeakMap();
 let currentMode = 'learn';
 let testCards = [];
 let testIndex = 0;
@@ -15843,6 +15887,7 @@ function startSession() {
   document.getElementById('session-complete').style.display = 'none';
   document.getElementById('study-prompt').style.display = 'block';
   document.getElementById('card-container').style.display = 'block';
+  setLearningAudioButtonVisible(true);
   document.getElementById('test-panel').style.display = 'none';
   document.getElementById('swipe-msg').style.display = 'block';
   showCard();
@@ -15906,18 +15951,6 @@ function resetCardToFrontInstantly() {
   return true;
 }
 
-function hideAudioButtonDuringFlipBack(card) {
-  if (!card) return;
-  const existingTimer = audioButtonRevealTimers.get(card);
-  if (existingTimer) clearTimeout(existingTimer);
-  card.classList.add('audio-hidden-during-flip');
-  const timer = setTimeout(() => {
-    card.classList.remove('audio-hidden-during-flip');
-    audioButtonRevealTimers.delete(card);
-  }, 640);
-  audioButtonRevealTimers.set(card, timer);
-}
-
 function updateRatingControls() {
   const controls = document.getElementById('rating-controls');
   if (!controls) return;
@@ -15935,7 +15968,6 @@ function updateRatingControls() {
 function flipCard() {
   const card = document.getElementById('card');
   const nextFlipped = !isFlipped;
-  if (isFlipped && !nextFlipped) hideAudioButtonDuringFlipBack(card);
   isFlipped = nextFlipped;
   card.classList.toggle('flipped', isFlipped);
   triggerHapticFeedback(12);
@@ -15972,6 +16004,7 @@ function beginTestSession(cards, kind = 'normal') {
   document.getElementById('session-complete').style.display = 'none';
   document.getElementById('study-prompt').style.display = 'none';
   document.getElementById('card-container').style.display = 'none';
+  setLearningAudioButtonVisible(false);
   updateRatingControls();
   const swipeMsg = document.getElementById('swipe-msg');
   swipeMsg.style.display = 'none';
@@ -16054,12 +16087,10 @@ function buildTestChoices(correctWord) {
 }
 
 function setTestCardFlipped(nextFlipped) {
-  const wasFlipped = testCardFlipped;
   testCardFlipped = Boolean(nextFlipped);
   const card = document.getElementById('test-word-card');
   if (!card) return;
   const canFlip = currentMode === 'test' && testAnswered && Boolean(testCards[testIndex]);
-  if (wasFlipped && !testCardFlipped) hideAudioButtonDuringFlipBack(card);
   card.classList.toggle('is-flipped', testCardFlipped);
   card.classList.toggle('can-flip', canFlip);
   card.setAttribute('aria-pressed', testCardFlipped ? 'true' : 'false');
@@ -16118,6 +16149,7 @@ function showTestQuestion() {
   document.getElementById('test-word-text').textContent = word.w;
   document.getElementById('test-front-pron').textContent = getTestFrontPronunciationText(word);
   document.querySelector('.test-word-card')?.classList.remove('wrong-cue');
+  document.querySelector('.test-word-card')?.classList.remove('feedback-visible');
   updateTestCardBack(word);
   const feedbackEl = document.getElementById('test-feedback');
   feedbackEl.textContent = '';
@@ -16341,16 +16373,16 @@ function answerTestChoice(button, word) {
   }
 
   const feedbackEl = document.getElementById('test-feedback');
+  const cardEl = document.getElementById('test-word-card');
   if (isCorrect) {
-    const milestoneFeedback = getStreakMilestoneFeedback();
-    feedbackEl.textContent = getCorrectAnswerFeedback();
-    feedbackEl.classList.remove('wrong-feedback');
-    feedbackEl.classList.add('is-visible', 'correct-feedback');
-    feedbackEl.classList.toggle('streak-milestone', Boolean(milestoneFeedback));
+    feedbackEl.textContent = '';
+    feedbackEl.classList.remove('is-visible', 'correct-feedback', 'wrong-feedback', 'streak-milestone');
+    cardEl?.classList.remove('feedback-visible');
   } else {
     feedbackEl.textContent = getWrongAnswerHint(word, getWordByCardKey(button.dataset.choiceKey));
     feedbackEl.classList.remove('correct-feedback', 'streak-milestone');
     feedbackEl.classList.add('is-visible', 'wrong-feedback');
+    cardEl?.classList.add('feedback-visible');
   }
   document.getElementById('test-next-btn').classList.add('is-visible');
   setTestCardFlipped(false);
@@ -16390,6 +16422,7 @@ function exportData() {
     selectedPhoneticAssist: showPhoneticAssist,
     selectedFrontLevelVisible: showFrontLevel,
     selectedFrontPartVisible: showFrontPart,
+    selectedWordColorMode: wordColorMode,
     selectedHapticFeedbackEnabled: hapticFeedbackEnabled,
     selectedSpeechVoiceKey,
     selectedUiLanguage: currentUiLanguage,
@@ -16443,6 +16476,11 @@ async function importData(event) {
     if (typeof payload.selectedFrontPartVisible === 'boolean') {
       showFrontPart = payload.selectedFrontPartVisible;
       localStorage.setItem(FRONT_PART_STORAGE_KEY, showFrontPart ? 'shown' : 'hidden');
+    }
+    if (payload.selectedWordColorMode === 'mono' || payload.selectedWordColorMode === 'part') {
+      wordColorMode = payload.selectedWordColorMode;
+      localStorage.setItem(WORD_COLOR_MODE_STORAGE_KEY, wordColorMode);
+      updateWordColorModeButtons();
     }
     if (typeof payload.selectedHapticFeedbackEnabled === 'boolean') {
       hapticFeedbackEnabled = payload.selectedHapticFeedbackEnabled;
@@ -16740,6 +16778,7 @@ function showComplete() {
   document.getElementById('study-prompt').style.display = 'none';
   document.getElementById('card-container').style.display = 'none';
   document.getElementById('test-panel').style.display = 'none';
+  setLearningAudioButtonVisible(false);
   updateRatingControls();
   document.getElementById('swipe-msg').style.display = 'none';
   const completeEl = document.getElementById('session-complete');
@@ -16782,6 +16821,7 @@ function showTestComplete() {
   document.getElementById('study-prompt').style.display = 'none';
   document.getElementById('card-container').style.display = 'none';
   document.getElementById('test-panel').style.display = 'none';
+  setLearningAudioButtonVisible(false);
   document.getElementById('swipe-msg').style.display = 'none';
   const completeEl = document.getElementById('session-complete');
   completeEl.style.display = 'block';
