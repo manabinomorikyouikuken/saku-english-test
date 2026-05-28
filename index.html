@@ -1675,12 +1675,21 @@
       text-align: center;
       width: min(92%, 420px);
       margin: 0 auto;
+      padding: 0;
+      background: transparent;
+      border-radius: 0;
+      box-shadow: none;
+    }
+    body.test-mode .session-complete {
+      margin-top: clamp(120px, 21svh, 176px);
+    }
+    .complete-card {
       padding: 24px 18px;
       background: white;
       border-radius: 18px;
       box-shadow: 0 6px 30px rgba(0,0,0,0.1);
     }
-    .session-complete.weakness-cleared {
+    .session-complete.weakness-cleared .complete-card {
       animation: completeClearPop 0.48s ease-out;
       box-shadow: 0 10px 32px rgba(21,128,61,0.18);
     }
@@ -1808,11 +1817,13 @@
     .complete-actions {
       display: flex;
       justify-content: center;
+      width: 100%;
+      margin-top: 12px;
       gap: 10px;
-      flex-wrap: wrap;
     }
     .restart-btn,
     .complete-back-btn {
+      flex: 1 1 0;
       background: linear-gradient(135deg, #3b82f6, #60a5fa);
       color: white;
       padding: 12px 24px;
@@ -1822,7 +1833,7 @@
       border: none;
       cursor: pointer;
       min-height: 46px;
-      min-width: 124px;
+      min-width: 0;
       box-shadow: 0 4px 15px rgba(59,130,246,0.4);
       transition: transform 0.12s, filter 0.12s;
     }
@@ -1897,7 +1908,8 @@
       .divider { margin-bottom: 10px; }
       .example-text { line-height: 1.55; }
       .example-ja-text { line-height: 1.45; margin-top: 6px; }
-      .session-complete { padding: 18px 14px; }
+      body.test-mode .session-complete { margin-top: clamp(88px, 16svh, 112px); }
+      .complete-card { padding: 18px 14px; }
 	      .complete-icon { font-size: 32px; margin-bottom: 6px; }
 	      .complete-title { font-size: 18px; }
 	      .complete-msg { font-size: 12px; line-height: 1.45; margin-bottom: 12px; }
@@ -1907,7 +1919,7 @@
       .restart-btn,
       .complete-back-btn {
         padding: 10px 18px;
-        min-width: 112px;
+        min-width: 0;
       }
     }
     @media (max-width: 390px) {
@@ -2018,36 +2030,38 @@
     </div>
 
     <div id="session-complete" class="session-complete">
-      <div class="complete-icon" id="complete-icon">🎉</div>
-	      <div class="complete-title" id="complete-title">今回の学習完了！</div>
-	      <div class="complete-stats">
-	        <div class="complete-stat">
-	          <span class="complete-stat-num" id="cs-reviewed">0</span>
-          <div class="complete-stat-label" id="cs-reviewed-label">今回の学習</div>
+      <div class="complete-card">
+        <div class="complete-icon" id="complete-icon">🎉</div>
+        <div class="complete-title" id="complete-title">今回の学習完了！</div>
+        <div class="complete-stats">
+          <div class="complete-stat">
+            <span class="complete-stat-num" id="cs-reviewed">0</span>
+            <div class="complete-stat-label" id="cs-reviewed-label">今回の学習</div>
+          </div>
+          <div class="complete-stat">
+            <span class="complete-stat-num" id="cs-mastered">0</span>
+            <div class="complete-stat-label" id="cs-mastered-label">習得済み</div>
+          </div>
+          <div class="complete-stat">
+            <span class="complete-stat-num" id="cs-due">0</span>
+            <div class="complete-stat-label" id="cs-due-label">次回候補</div>
+          </div>
         </div>
-        <div class="complete-stat">
-          <span class="complete-stat-num" id="cs-mastered">0</span>
-          <div class="complete-stat-label" id="cs-mastered-label">習得済み</div>
+        <div class="complete-msg" id="complete-msg"></div>
+        <div class="complete-focus" id="complete-focus"></div>
+        <div class="complete-next-step" id="complete-next-step"></div>
+        <div class="perfect-quote-panel" id="perfect-quote-panel" aria-label="満点時の英語名言">
+          <div class="perfect-badge" id="perfect-badge" data-ui-key="perfectBadge">Perfect 20</div>
+          <div class="perfect-quote-text" id="perfect-quote-text"></div>
+          <div class="perfect-quote-source" id="perfect-quote-source"></div>
+          <div class="perfect-quote-ja" id="perfect-quote-ja"></div>
         </div>
-        <div class="complete-stat">
-          <span class="complete-stat-num" id="cs-due">0</span>
-	          <div class="complete-stat-label" id="cs-due-label">次回候補</div>
-	        </div>
-	      </div>
-	      <div class="complete-msg" id="complete-msg"></div>
-	      <div class="complete-focus" id="complete-focus"></div>
-	      <div class="complete-next-step" id="complete-next-step"></div>
-	      <div class="perfect-quote-panel" id="perfect-quote-panel" aria-label="満点時の英語名言">
-	        <div class="perfect-badge" id="perfect-badge" data-ui-key="perfectBadge">Perfect 20</div>
-	        <div class="perfect-quote-text" id="perfect-quote-text"></div>
-	        <div class="perfect-quote-source" id="perfect-quote-source"></div>
-	        <div class="perfect-quote-ja" id="perfect-quote-ja"></div>
-	      </div>
-	      <div class="complete-actions">
-	        <button class="complete-back-btn" id="complete-back-btn" type="button" onclick="startSession()" data-ui-key="back" hidden>戻る</button>
-	        <button class="restart-btn" id="restart-btn" type="button" onclick="restartCurrentMode()">もう一周する</button>
-	      </div>
-	    </div>
+      </div>
+      <div class="complete-actions">
+        <button class="complete-back-btn" id="complete-back-btn" type="button" onclick="startSession()" data-ui-key="back" hidden>戻る</button>
+        <button class="restart-btn" id="restart-btn" type="button" onclick="restartCurrentMode()">もう一周する</button>
+      </div>
+    </div>
 
     <div class="swipe-msg" id="swipe-msg"></div>
   </div>
@@ -12932,6 +12946,18 @@ const WORDS = [
     "exJa": "そのNGOは教育事業を支援している。"
   },
   {
+    "id": "oda_noun",
+    "w": "ODA",
+    "cat": "abbreviation",
+    "pos": "名詞",
+    "level": "発展",
+    "ipa": "ˌəʊ diː ˈeɪ",
+    "ph": "オウ ディー エイ",
+    "m": "政府開発援助",
+    "ex": "ODA supports development projects in other countries.",
+    "exJa": "ODAは他国の開発事業を支援している。"
+  },
+  {
     "id": "npo_noun",
     "w": "NPO",
     "cat": "abbreviation",
@@ -12942,6 +12968,150 @@ const WORDS = [
     "m": "非営利組織",
     "ex": "The NPO runs a local program.",
     "exJa": "そのNPOは地域の事業を運営している。"
+  },
+  {
+    "id": "atm_noun",
+    "w": "ATM",
+    "cat": "abbreviation",
+    "pos": "名詞",
+    "level": "標準",
+    "ipa": "ˌeɪ tiː ˈem",
+    "ph": "エイ ティー エム",
+    "m": "現金自動預け払い機",
+    "ex": "I used an ATM near the station.",
+    "exJa": "駅の近くのATMを使った。"
+  },
+  {
+    "id": "etc_noun",
+    "w": "ETC",
+    "cat": "abbreviation",
+    "pos": "名詞",
+    "level": "標準",
+    "ipa": "ˌiː tiː ˈsiː",
+    "ph": "イー ティー シー",
+    "m": "高速道路などの自動料金収受システム",
+    "ex": "ETC makes highway toll payment faster.",
+    "exJa": "ETCは高速道路の料金支払いを速くする。"
+  },
+  {
+    "id": "sns_noun",
+    "w": "SNS",
+    "cat": "abbreviation",
+    "pos": "名詞",
+    "level": "標準",
+    "ipa": "ˌes en ˈes",
+    "ph": "エス エン エス",
+    "m": "SNS、交流サービス",
+    "ex": "Many students use SNS every day.",
+    "exJa": "多くの生徒が毎日SNSを使っている。"
+  },
+  {
+    "id": "pdf_noun",
+    "w": "PDF",
+    "cat": "abbreviation",
+    "pos": "名詞",
+    "level": "標準",
+    "ipa": "ˌpiː diː ˈef",
+    "ph": "ピー ディー エフ",
+    "m": "PDF形式の文書ファイル",
+    "ex": "Please send the document as a PDF.",
+    "exJa": "その文書をPDFで送ってください。"
+  },
+  {
+    "id": "led_noun",
+    "w": "LED",
+    "cat": "abbreviation",
+    "pos": "名詞",
+    "level": "標準",
+    "ipa": "ˌel iː ˈdiː",
+    "ph": "エル イー ディー",
+    "m": "発光ダイオード",
+    "ex": "LED lights use less energy.",
+    "exJa": "LED照明はより少ない電力で使える。"
+  },
+  {
+    "id": "aed_noun",
+    "w": "AED",
+    "cat": "abbreviation",
+    "pos": "名詞",
+    "level": "標準",
+    "ipa": "ˌeɪ iː ˈdiː",
+    "ph": "エイ イー ディー",
+    "m": "自動体外式除細動器",
+    "ex": "An AED can help in a medical emergency.",
+    "exJa": "AEDは医療上の緊急時に役立つことがある。"
+  },
+  {
+    "id": "pcr_noun",
+    "w": "PCR",
+    "cat": "abbreviation",
+    "pos": "名詞",
+    "level": "発展",
+    "ipa": "ˌpiː siː ˈɑː",
+    "ph": "ピー シー アー",
+    "m": "ポリメラーゼ連鎖反応、PCR検査のPCR",
+    "ex": "PCR is used to detect tiny amounts of DNA.",
+    "exJa": "PCRは少量のDNAを検出するために使われる。"
+  },
+  {
+    "id": "dna_noun",
+    "w": "DNA",
+    "cat": "abbreviation",
+    "pos": "名詞",
+    "level": "標準",
+    "ipa": "ˌdiː en ˈeɪ",
+    "ph": "ディー エン エイ",
+    "m": "DNA、遺伝情報を担う物質",
+    "ex": "DNA carries genetic information.",
+    "exJa": "DNAは遺伝情報を運ぶ。"
+  },
+  {
+    "id": "mri_noun",
+    "w": "MRI",
+    "cat": "abbreviation",
+    "pos": "名詞",
+    "level": "発展",
+    "ipa": "ˌem ɑː ˈaɪ",
+    "ph": "エム アー アイ",
+    "m": "MRI、磁気共鳴画像法",
+    "ex": "The doctor ordered an MRI scan.",
+    "exJa": "医師はMRI検査を指示した。"
+  },
+  {
+    "id": "sim_noun",
+    "w": "SIM",
+    "cat": "abbreviation",
+    "pos": "名詞",
+    "level": "標準",
+    "ipa": "sɪm",
+    "ph": "シム",
+    "m": "SIMカードのSIM、加入者識別モジュール",
+    "ex": "This phone needs a SIM card.",
+    "exJa": "この電話にはSIMカードが必要だ。"
+  },
+  {
+    "id": "vpn_noun",
+    "w": "VPN",
+    "cat": "abbreviation",
+    "pos": "名詞",
+    "level": "発展",
+    "ipa": "ˌviː piː ˈen",
+    "ph": "ヴィー ピー エン",
+    "m": "仮想専用ネットワーク",
+    "ex": "A VPN can protect a network connection.",
+    "exJa": "VPNはネットワーク接続を保護できる。"
+  },
+  {
+    "id": "pin_noun",
+    "w": "PIN",
+    "cat": "abbreviation",
+    "pos": "名詞",
+    "level": "標準",
+    "ipa": "pɪn",
+    "ph": "ピン",
+    "m": "暗証番号、個人識別番号",
+    "ex": "Do not share your PIN with anyone.",
+    "exJa": "暗証番号を誰にも教えてはいけない。"
   },
   {
     "id": "just_adjective_adverb",
@@ -13473,8 +13643,10 @@ const STREAK_MILESTONE_MESSAGES = {
 const SPEECH_LANG = 'en-GB';
 const SPEECH_AUTO_FEMALE = 'auto-female';
 const SPEECH_TEXT_OVERRIDES = {
+  AED: 'automated external defibrillator',
   AI: 'artificial intelligence',
   API: 'application programming interface',
+  ATM: 'automated teller machine',
   BBC: 'British Broadcasting Corporation',
   CDC: 'Centers for Disease Control and Prevention',
   CEO: 'chief executive officer',
@@ -13489,8 +13661,10 @@ const SPEECH_TEXT_OVERRIDES = {
   CSS: 'cascading style sheets',
   CTO: 'chief technology officer',
   'D.C.': 'District of Columbia',
+  DNA: 'deoxyribonucleic acid',
   DOHC: 'double overhead camshaft',
   EEZ: 'exclusive economic zone',
+  ETC: 'electronic toll collection',
   EU: 'European Union',
   FBI: 'Federal Bureau of Investigation',
   GDP: 'gross domestic product',
@@ -13508,20 +13682,28 @@ const SPEECH_TEXT_OVERRIDES = {
   JSON: 'JavaScript Object Notation',
   KPI: 'key performance indicator',
   LCC: 'low cost carrier',
+  LED: 'light emitting diode',
   LLM: 'large language model',
   MI6: 'M I six',
   MIT: 'Massachusetts Institute of Technology',
+  MRI: 'magnetic resonance imaging',
   NGO: 'non-governmental organization',
   NHK: 'Japan Broadcasting Corporation',
   NPO: 'non-profit organization',
+  ODA: 'official development assistance',
   OKR: 'objectives and key results',
   OS: 'operating system',
+  PCR: 'polymerase chain reaction',
+  PDF: 'portable document format',
+  PIN: 'personal identification number',
   PR: 'public relations',
   RAM: 'random access memory',
   ROI: 'return on investment',
   ROM: 'read only memory',
   SDK: 'software development kit',
+  SIM: 'subscriber identity module',
   SQL: 'structured query language',
+  SNS: 'social networking service',
   SSD: 'solid state drive',
   SWAT: 'special weapons and tactics',
   IoT: 'Internet of Things',
@@ -13532,6 +13714,7 @@ const SPEECH_TEXT_OVERRIDES = {
   URL: 'uniform resource locator',
   USB: 'universal serial bus',
   UX: 'user experience',
+  VPN: 'virtual private network',
   WHO: 'World Health Organization'
 };
 const PERFECT_QUOTE_POOL = [
@@ -14073,19 +14256,21 @@ const WEAKNESS_CATEGORY_PRIORITY = [
   ['pronunciation-note', '発音注意']
 ];
 const ABBREVIATION_TECH_WORDS = new Set(
-  'LLM CLI UI UX API SDK IDE OS CPU GPU RAM ROM SSD USB URL HTTP HTML CSS JS JSON SQL AI IoT GPS ICT DOHC'.split(' ')
+  'LLM CLI UI UX API SDK IDE OS CPU GPU RAM ROM SSD USB URL HTTP HTML CSS JS JSON SQL AI IoT GPS ICT DOHC PDF LED SIM VPN PIN SNS'.split(' ')
 );
 const ABBREVIATION_BUSINESS_WORDS = new Set(
   'LCC CEO COO CFO CTO CIO CMO HR PR KPI OKR ROI GDP'.split(' ')
 );
 const ABBREVIATION_PUBLIC_WORDS = new Set(
-  'MIT UCLA CIA FBI MI6 SWAT JICA TPP EEZ CDC WHO UN EU NGO NPO BBC NHK CNN D.C.'.split(' ')
+  'MIT UCLA CIA FBI MI6 SWAT JICA TPP EEZ CDC WHO UN EU NGO NPO ODA AED PCR DNA MRI BBC NHK CNN D.C.'.split(' ')
 );
 const ABBREVIATION_EDUCATION_WORDS = new Set(
   'IPA'.split(' ')
 );
 const ABBREVIATION_ORIGINS = {
+  AED: 'Automated External Defibrillator',
   LLM: 'Large Language Model',
+  ATM: 'Automated Teller Machine',
   CLI: 'Command-Line Interface',
   UI: 'User Interface',
   UX: 'User Experience',
@@ -14107,10 +14292,20 @@ const ABBREVIATION_ORIGINS = {
   JSON: 'JavaScript Object Notation',
   SQL: 'Structured Query Language',
   AI: 'Artificial Intelligence',
+  ETC: 'Electronic Toll Collection',
   IoT: 'Internet of Things',
   GPS: 'Global Positioning System',
   ICT: 'Information and Communication Technology',
   DOHC: 'Double Overhead Camshaft',
+  SNS: 'Social Networking Service',
+  PDF: 'Portable Document Format',
+  LED: 'Light-Emitting Diode',
+  PCR: 'Polymerase Chain Reaction',
+  DNA: 'Deoxyribonucleic Acid',
+  MRI: 'Magnetic Resonance Imaging',
+  SIM: 'Subscriber Identity Module',
+  VPN: 'Virtual Private Network',
+  PIN: 'Personal Identification Number',
   LCC: 'Low-Cost Carrier',
   CEO: 'Chief Executive Officer',
   COO: 'Chief Operating Officer',
@@ -14142,6 +14337,7 @@ const ABBREVIATION_ORIGINS = {
   EU: 'European Union',
   NGO: 'Non-Governmental Organization',
   NPO: 'Non-Profit Organization',
+  ODA: 'Official Development Assistance',
   'D.C.': 'District of Columbia',
   ICU: 'Intensive Care Unit',
   IPA: 'International Phonetic Alphabet'
