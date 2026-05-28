@@ -469,7 +469,7 @@
     }
     .data-quality-grid {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
+      grid-template-columns: repeat(2, minmax(0, 1fr));
       gap: 8px;
       margin-top: 8px;
     }
@@ -1156,6 +1156,9 @@
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
+    }
+    .test-front-pron:empty {
+      display: none;
     }
     .test-card-front-face .word-audio-btn {
       position: static;
@@ -1943,7 +1946,7 @@
       <div class="header-title">サクサク英単語</div>
       <button class="test-header-back-btn" id="header-back-btn" type="button" onclick="startSession()" aria-label="学習画面に戻る" data-ui-key="back">戻る</button>
     </div>
-    <div class="header-sub">友人テスト版 / 966語・品詞別973項目 / British English基準</div>
+    <div class="header-sub" id="header-sub">友人テスト版 / British English基準</div>
   </div>
   <div class="header-right">
     <div class="stats">
@@ -2334,6 +2337,10 @@
         <div class="data-quality-item">
           <strong id="data-quality-issues">0</strong>
           <small data-ui-key="dataQualityIssues">要確認</small>
+        </div>
+        <div class="data-quality-item">
+          <strong id="data-quality-proofing">0</strong>
+          <small data-ui-key="dataQualityProofing">校正優先</small>
         </div>
       </div>
       <div class="storage-note" id="data-quality-note">語データを点検中です。</div>
@@ -5193,7 +5200,7 @@ const WORDS = [
   },
   {
     "w": "mutual",
-    "pos": "名詞",
+    "pos": "形容詞",
     "level": "発展",
     "ipa": "ˈmjuːtʃʊəl",
     "ph": "ミューチュアル",
@@ -13688,7 +13695,7 @@ const SPEECH_TEXT_OVERRIDES = {
   MIT: 'Massachusetts Institute of Technology',
   MRI: 'magnetic resonance imaging',
   NGO: 'non-governmental organization',
-  NHK: 'Japan Broadcasting Corporation',
+  NHK: 'N H K',
   NPO: 'non-profit organization',
   ODA: 'official development assistance',
   OKR: 'objectives and key results',
@@ -13907,6 +13914,7 @@ const UI_TEXT = {
     dataQualityTotal: '品詞別項目',
     dataQualityUnique: 'ユニーク語',
     dataQualityIssues: '要確認',
+    dataQualityProofing: '校正優先',
     historyManage: '履歴管理',
     saveHistory: '履歴を保存',
     loadHistory: '履歴を読込',
@@ -13969,6 +13977,7 @@ const UI_TEXT = {
     testAgain: 'もう一回テスト',
     noCardsMessage: '今の条件では出題できる単語がありません。設定で範囲を広げてください。',
     dataQualityOk: '必須項目、履歴キー重複、略語の元語、略語の音声展開は要確認0件です。',
+    dataQualityProofingNote: '校正優先: 発音注意・R/L・カタカナ注意・略語・句動詞を台帳で先に見る。',
     perfectBadge: 'Perfect 20'
   },
   en: {
@@ -14064,6 +14073,7 @@ const UI_TEXT = {
     dataQualityTotal: 'Items',
     dataQualityUnique: 'Unique words',
     dataQualityIssues: 'To check',
+    dataQualityProofing: 'Proofing',
     historyManage: 'History management',
     saveHistory: 'Save history',
     loadHistory: 'Load history',
@@ -14126,6 +14136,7 @@ const UI_TEXT = {
     testAgain: 'Test again',
     noCardsMessage: 'There are no cards available with the current settings. Widen the range in Settings.',
     dataQualityOk: 'Required fields, duplicate history keys, abbreviation origins, and abbreviation speech checks have 0 items to check.',
+    dataQualityProofingNote: 'Proofing priority: pronunciation cautions, R/L, katakana gaps, abbreviations, and phrasal verbs first.',
     perfectBadge: 'Perfect score'
   }
 };
@@ -14141,6 +14152,9 @@ const CATEGORY_TAGS = {
   pronunciationNote: 'pronunciation-note',
   rlContrast: 'rl-contrast'
 };
+const PROOFING_PRIORITY_TAGS = new Set(
+  'pronunciation-note rl-contrast katakana-gap abbreviation phrasal-verb'.split(' ')
+);
 const PHRASAL_BRIDGE_WORDS = {
   'get up': 'rise',
   'wake up': 'awaken',
@@ -14322,7 +14336,7 @@ const ABBREVIATION_ORIGINS = {
   MIT: 'Massachusetts Institute of Technology',
   UCLA: 'University of California, Los Angeles',
   BBC: 'British Broadcasting Corporation',
-  NHK: 'Nippon Hoso Kyokai（日本放送協会）',
+  NHK: 'Nippon Hoso Kyokai（日本放送協会） / English name: Japan Broadcasting Corporation',
   CNN: 'Cable News Network',
   CIA: 'Central Intelligence Agency',
   FBI: 'Federal Bureau of Investigation',
@@ -14440,6 +14454,14 @@ function formatItemCount(count) {
   return currentUiLanguage === 'en' ? `${count} ${uiText('items')}` : `${count}${uiText('items')}`;
 }
 
+function updateHeaderSub() {
+  const summary = getDataQualitySummary();
+  const text = currentUiLanguage === 'en'
+    ? `Friend test / ${summary.unique} unique words / ${summary.total} items / British English`
+    : `友人テスト版 / ${summary.unique}語・品詞別${summary.total}項目 / British English基準`;
+  setText('header-sub', text);
+}
+
 function getUiLevelLabel(level) {
   return uiText(LEVEL_UI_KEYS[level]) || LEVEL_LABELS[level] || level;
 }
@@ -14484,6 +14506,7 @@ function applyUiLanguage() {
   document.getElementById('card-container')?.setAttribute('aria-label', uiText('cardFlipAria'));
   document.getElementById('rating-controls')?.setAttribute('aria-label', uiText('rateControlsAria'));
   document.getElementById('test-word-card')?.setAttribute('data-flip-label', uiText('testFlipChip'));
+  updateHeaderSub();
   updateUiLanguageButtons();
   updateAudioButtons();
   updateSwipeMessage();
@@ -15252,7 +15275,7 @@ function getTestPronunciationText(word) {
 }
 
 function getTestFrontPronunciationText(word) {
-  if (isAbbreviationWord(word)) return getAbbreviationReadingText(word);
+  if (isAbbreviationWord(word)) return '';
   return `/${word.ipa}/`;
 }
 
@@ -15311,6 +15334,11 @@ function getCategoryCount(category) {
   return getLevelFilteredWords().filter(word => hasCategory(word, category, data, missedKeys)).length;
 }
 
+function isProofingPriorityWord(word) {
+  const categories = getWordCategories(word);
+  return [...PROOFING_PRIORITY_TAGS].some(tag => categories.has(tag));
+}
+
 function updateCategoryButtons() {
   document.querySelectorAll('.category-btn').forEach(btn => {
     btn.classList.toggle('active', btn.dataset.category === currentCategory);
@@ -15339,6 +15367,7 @@ function getDataQualitySummary() {
     const wordText = String(word.w || '').trim();
     return !SPEECH_TEXT_OVERRIDES[wordText];
   }).length;
+  const proofingPriority = WORDS.filter(isProofingPriorityWord).length;
   const issueCount = requiredMissing + duplicateKeyGroups + missingOrigins + missingSpeech;
   const uniqueWords = new Set(
     WORDS.map(word => String(word.w || '').trim().toLowerCase()).filter(Boolean)
@@ -15350,7 +15379,8 @@ function getDataQualitySummary() {
     requiredMissing,
     duplicateKeyGroups,
     missingOrigins,
-    missingSpeech
+    missingSpeech,
+    proofingPriority
   };
 }
 
@@ -15359,11 +15389,12 @@ function updateDataQualityPanel() {
   setText('data-quality-total', summary.total);
   setText('data-quality-unique', summary.unique);
   setText('data-quality-issues', summary.issueCount);
+  setText('data-quality-proofing', summary.proofingPriority);
   const note = summary.issueCount === 0
-    ? uiText('dataQualityOk')
+    ? `${uiText('dataQualityOk')} ${uiText('dataQualityProofingNote')}`
     : currentUiLanguage === 'en'
-      ? `To check: required ${summary.requiredMissing} / duplicate keys ${summary.duplicateKeyGroups} / abbreviation origins ${summary.missingOrigins} / abbreviation speech ${summary.missingSpeech}`
-      : `要確認: 必須${summary.requiredMissing} / 重複キー${summary.duplicateKeyGroups} / 略語元語${summary.missingOrigins} / 略語音声${summary.missingSpeech}`;
+      ? `To check: required ${summary.requiredMissing} / duplicate keys ${summary.duplicateKeyGroups} / abbreviation origins ${summary.missingOrigins} / abbreviation speech ${summary.missingSpeech}. ${uiText('dataQualityProofingNote')}`
+      : `要確認: 必須${summary.requiredMissing} / 重複キー${summary.duplicateKeyGroups} / 略語元語${summary.missingOrigins} / 略語音声${summary.missingSpeech}。${uiText('dataQualityProofingNote')}`;
   setText('data-quality-note', note);
 }
 
@@ -16522,11 +16553,15 @@ function getTestNextStepMessage({ testLength, misses, isMissReview, remainingMis
     ? 'Next: use Miss Review to recover today’s misses.'
     : '次の一手: ミスだけ復習で、今のつまずきをすぐ回収。';
   if (isMissReview && remainingMisses === 0) return '';
-  if (isPerfect20) return '';
+  if (isPerfect20) return currentUiLanguage === 'en'
+    ? 'Next: stop here with a clean win, or try a wider range tomorrow.'
+    : '次の一手: 満点はここで一区切り。明日は範囲を少し広げてもいい。';
   if (isMissReview) return currentUiLanguage === 'en'
     ? `Next: clear the remaining ${remainingMisses} ${remainingMisses === 1 ? 'word' : 'words'} the same way.`
     : `次の一手: 残り${remainingMisses}語も、同じ流れで回収。`;
-  return '';
+  return currentUiLanguage === 'en'
+    ? 'Next: test again while the words are still fresh.'
+    : '次の一手: まだ覚えているうちに、もう一回だけテスト。';
 }
 
 function getWeaknessBucketLabel(word) {
