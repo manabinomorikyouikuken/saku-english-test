@@ -862,6 +862,8 @@
       touch-action: manipulation;
       box-shadow: 0 3px 12px rgba(37,99,235,0.12);
       z-index: 3;
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
     }
     .word-audio-btn:active {
       transform: scale(0.96);
@@ -1110,6 +1112,12 @@
       font-size: 11px;
       box-shadow: 0 4px 14px rgba(37,99,235,0.13);
     }
+    .test-word-card.is-flipped .test-card-front-face .word-audio-btn,
+    .test-word-card.audio-hidden-during-flip .test-card-front-face .word-audio-btn {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
     .test-back-pos {
       align-self: flex-start;
       border-radius: 999px;
@@ -1301,6 +1309,8 @@
       background: #ecfdf5;
       color: #166534;
       text-align: center;
+      align-items: center;
+      justify-content: center;
     }
     .test-feedback.correct-feedback.streak-milestone {
       border-color: #bfdbfe;
@@ -1491,6 +1501,11 @@
       opacity: 1;
       pointer-events: auto;
     }
+    body.test-mode .test-feedback.correct-feedback.is-visible {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
     body.test-mode .test-next-btn {
       display: inline-flex;
       visibility: hidden;
@@ -1563,6 +1578,11 @@
         visibility: visible;
         opacity: 1;
         pointer-events: auto;
+      }
+      body.test-mode .test-feedback.correct-feedback.is-visible {
+        display: flex;
+        align-items: center;
+        justify-content: center;
       }
       body.test-mode .test-next-btn {
         display: inline-flex;
