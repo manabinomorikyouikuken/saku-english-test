@@ -14611,6 +14611,32 @@ const US_IPA_OVERRIDES = {
   row_noun_line: 'roʊ',
   negotiation_noun_news: 'nɪˌɡoʊʃiˈeɪʃən',
   death_toll_noun_news: 'ˈdeθ toʊl',
+  english_0140: 'koʊˈɑːpəreɪt',
+  english_0292: 'ˌoʊvɚˈɔːl',
+  english_0294: 'pɚˈsoʊnə',
+  english_0350: 'koʊˌɑːpəˈreɪʃən',
+  almost_adverb: 'ˈɔːlmoʊst',
+  bridge_postpone_verb: 'poʊˈspoʊn',
+  phrasal_hold_on: 'hoʊld ɑːn',
+  phrasal_go_on: 'ɡoʊ ɑːn',
+  autopilot_noun: 'ˈɑːtoʊpaɪlət',
+  console_noun: 'ˈkɑːnsoʊl',
+  workflow_noun: 'ˈwɝːkfloʊ',
+  spokesperson_noun_news: 'ˈspoʊkspɝːsən',
+  dohc_noun: 'ˌdiː oʊ eɪtʃ ˈsiː',
+  ceo_noun: 'ˌsiː iː ˈoʊ',
+  coo_noun: 'ˌsiː oʊ ˈoʊ',
+  cfo_noun: 'ˌsiː ef ˈoʊ',
+  cto_noun: 'ˌsiː tiː ˈoʊ',
+  cio_noun: 'ˌsiː aɪ ˈoʊ',
+  cmo_noun: 'ˌsiː em ˈoʊ',
+  roi_noun: 'ˌɑːr oʊ ˈaɪ',
+  os_noun: 'ˌoʊ ˈes',
+  iot_noun: 'ˌaɪ oʊ ˈtiː',
+  who_noun: 'ˌdʌbəljuː eɪtʃ ˈoʊ',
+  ngo_noun: 'ˌen dʒiː ˈoʊ',
+  oda_noun: 'ˌoʊ diː ˈeɪ',
+  npo_noun: 'ˌen piː ˈoʊ',
   ceasefire_noun_news: 'ˈsiːsfaɪr',
   clearly_adverb: 'ˈklɪrli',
   nearly_adverb: 'ˈnɪrli',
@@ -16216,9 +16242,22 @@ function updateFrontPronunciation(word) {
   phoneticEl.className = 'phonetic-text';
 
   if (isAbbreviationWord(word)) {
-    ipaEl.textContent = '';
-    ipaEl.hidden = true;
-    ipaEl.removeAttribute('aria-label');
+    const usIpa = getUsIpaOverride(word);
+    const showAbbreviationIpa = Boolean(usIpa && (speechComparisonEnabled || currentSpeechAccent === 'us'));
+    ipaEl.className = 'ipa-text abbreviation-reading';
+    if (showAbbreviationIpa) {
+      ipaEl.hidden = false;
+      ipaEl.innerHTML = speechComparisonEnabled
+        ? getCompareIpaDisplayHtml(word)
+        : getIpaDisplayHtml(word, currentSpeechAccent);
+      ipaEl.setAttribute('aria-label', speechComparisonEnabled
+        ? `UK ${getIpaDisplayText(word, 'uk')} US ${getIpaDisplayText(word, 'us')}`
+        : getIpaDisplayText(word, currentSpeechAccent));
+    } else {
+      ipaEl.textContent = '';
+      ipaEl.hidden = true;
+      ipaEl.removeAttribute('aria-label');
+    }
     phoneticEl.hidden = true;
     phoneticEl.textContent = '';
     return;
