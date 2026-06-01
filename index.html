@@ -1969,7 +1969,7 @@
       <div class="header-title">サクサク英単語</div>
       <button class="test-header-back-btn" id="header-back-btn" type="button" onclick="startSession()" aria-label="学習画面に戻る" data-ui-key="back">戻る</button>
     </div>
-    <div class="header-sub" id="header-sub">友人テスト版 / IPA英国基準・音声UK/US</div>
+    <div class="header-sub" id="header-sub">友人テスト版 / IPA英国基準・音声en_GB/en_US</div>
   </div>
   <div class="header-right">
     <div class="stats">
@@ -2020,10 +2020,10 @@
       </div>
     </div>
     <div class="card-audio-row" id="card-audio-row">
-      <button class="word-audio-btn card-audio-btn" id="card-audio-btn" type="button" data-audio-accent="current" onclick="playCurrentLearningAudio(event)" aria-label="UK音声で単語を再生">UK 発音</button>
-      <div class="accent-compare-row" id="accent-compare-row" aria-label="UKとUSの発音比較">
-        <button class="word-audio-btn card-audio-btn" id="card-audio-uk-btn" type="button" data-audio-accent="uk" onclick="playCurrentLearningAudio(event, 'uk')" aria-label="UK音声で単語を再生">UK</button>
-        <button class="word-audio-btn card-audio-btn" id="card-audio-us-btn" type="button" data-audio-accent="us" onclick="playCurrentLearningAudio(event, 'us')" aria-label="US音声で単語を再生">US</button>
+      <button class="word-audio-btn card-audio-btn" id="card-audio-btn" type="button" data-audio-accent="current" onclick="playCurrentLearningAudio(event)" aria-label="en_GB音声で単語を再生">en_GB</button>
+      <div class="accent-compare-row" id="accent-compare-row" aria-label="en_GB/en_US音声ボタン">
+        <button class="word-audio-btn card-audio-btn" id="card-audio-uk-btn" type="button" data-audio-accent="uk" onclick="playCurrentLearningAudio(event, 'uk')" aria-label="en_GB音声で単語を再生">en_GB</button>
+        <button class="word-audio-btn card-audio-btn" id="card-audio-us-btn" type="button" data-audio-accent="us" onclick="playCurrentLearningAudio(event, 'us')" aria-label="en_US音声で単語を再生">en_US</button>
       </div>
     </div>
 
@@ -2287,18 +2287,18 @@
 
     <div class="utility-panel">
       <div class="settings-section-title" data-ui-key="speechVoiceTitle">発音音声</div>
-      <div class="settings-section-title" data-ui-key="speechAccentTitle">基本アクセント</div>
-      <div class="speech-accent-buttons" aria-label="基本アクセント">
-        <button class="speech-accent-btn active" type="button" data-speech-accent="uk" onclick="setSpeechAccent('uk')" data-ui-key="accentUk">UK</button>
-        <button class="speech-accent-btn" type="button" data-speech-accent="us" onclick="setSpeechAccent('us')" data-ui-key="accentUs">US</button>
+      <div class="settings-section-title" data-ui-key="speechAccentTitle">音声タグ</div>
+      <div class="speech-accent-buttons" aria-label="音声タグ">
+        <button class="speech-accent-btn active" type="button" data-speech-accent="uk" onclick="setSpeechAccent('uk')" data-ui-key="accentUk">en_GB</button>
+        <button class="speech-accent-btn" type="button" data-speech-accent="us" onclick="setSpeechAccent('us')" data-ui-key="accentUs">en_US</button>
       </div>
-      <div class="storage-note" data-ui-key="speechAccentNote">カード下の発音ボタンで使う基本アクセントを選びます。カード上の発音記号は通常表示をすっきり保ち、比較モードで確認済み語だけUK/USを並べます。</div>
-      <div class="settings-section-title" data-ui-key="speechCompareTitle">UK/US比較</div>
-      <div class="speech-compare-buttons" aria-label="UK/US比較ボタン">
+      <div class="storage-note" data-ui-key="speechAccentNote">カード下の音声ボタンで使う音声タグを選びます。カード上の発音記号はBritish基準で固定します。</div>
+      <div class="settings-section-title" data-ui-key="speechCompareTitle">en_GB/en_US音声</div>
+      <div class="speech-compare-buttons" aria-label="en_GB/en_US音声ボタン">
         <button class="speech-compare-btn" type="button" data-speech-compare="on" onclick="setSpeechComparisonEnabled(true)" data-ui-key="on">オン</button>
         <button class="speech-compare-btn active" type="button" data-speech-compare="off" onclick="setSpeechComparisonEnabled(false)" data-ui-key="off">オフ</button>
       </div>
-      <div class="storage-note" data-ui-key="speechCompareNote">オンにすると学習カード下にUK/USの2ボタンを表示します。テスト画面には表示しません。</div>
+      <div class="storage-note" data-ui-key="speechCompareNote">オンにすると学習カード下にen_GB/en_USの2ボタンを表示します。発音記号はBritish基準のままです。</div>
       <div class="speech-voice-buttons" id="speech-voice-buttons" aria-label="発音音声">
         <button class="speech-voice-btn active" type="button" disabled data-ui-key="femaleVoicePriority">女性声を優先</button>
       </div>
@@ -14765,12 +14765,12 @@ const UI_TEXT = {
     phoneticAssistTitle: '発音表記メモ',
     phoneticAssistNote: '初期値は非表示です。表面には発音カナを出さず、読み方や元の言葉は裏面で確認します。',
     speechVoiceTitle: '発音音声',
-    speechAccentTitle: '基本アクセント',
-    accentUk: 'UK',
-    accentUs: 'US',
-    speechAccentNote: 'カード下の発音ボタンで使う基本アクセントを選びます。カード上の発音記号は通常表示をすっきり保ち、比較モードで確認済み語だけUK/USを並べます。',
-    speechCompareTitle: 'UK/US比較',
-    speechCompareNote: 'オンにすると学習カード下にUK/USの2ボタンを表示します。テスト画面には表示しません。',
+    speechAccentTitle: '音声タグ',
+    accentUk: 'en_GB',
+    accentUs: 'en_US',
+    speechAccentNote: 'カード下の音声ボタンで使う音声タグを選びます。カード上の発音記号はBritish基準で固定します。',
+    speechCompareTitle: 'en_GB/en_US音声',
+    speechCompareNote: 'オンにすると学習カード下にen_GB/en_USの2ボタンを表示します。発音記号はBritish基準のままです。',
     femaleVoicePriority: '女性声を優先',
     speechVoiceNote: '初期値は女性声を優先します。使える声は端末とブラウザにより変わります。',
     wordPartsDetails: '単語の成り立ちメモ',
@@ -14796,8 +14796,8 @@ const UI_TEXT = {
     backToPracticeAria: '学習画面に戻る',
     cardFlipAria: '単語カードを反転',
     audioUnsupported: '音声非対応',
-    audioButtonUk: 'UK 発音',
-    audioButtonUs: 'US 発音',
+    audioButtonUk: 'en_GB',
+    audioButtonUs: 'en_US',
     audioUnsupportedNote: 'この端末では音声再生に対応していません。',
     voiceLoading: '音声を取得中',
     voiceLoadingNote: '音声候補を取得中です。少し待ってから設定を開き直してください。',
@@ -14807,9 +14807,9 @@ const UI_TEXT = {
     voiceDevice: '端末内音声',
     voiceBrowser: 'ブラウザ音声',
     audioAriaUnsupported: 'この端末では音声再生に対応していません',
-    audioAriaUk: 'UK音声で単語を再生',
-    audioAriaUs: 'US音声で単語を再生',
-    audioAriaEnglishFallback: '英語音声で単語を再生。指定アクセントの音声がない場合は端末の英語音声を使います',
+    audioAriaUk: 'en_GB音声で単語を再生',
+    audioAriaUs: 'en_US音声で単語を再生',
+    audioAriaEnglishFallback: '英語音声で単語を再生。指定した音声タグがない場合は端末の英語音声を使います',
     swipeLearn: '←前へ　　スワイプ　　次へ→',
     swipeLearnRate: '評価して次へ　右=バッチリ',
     swipeTestReady: '次へをタップ / 右スワイプ　→',
@@ -14939,12 +14939,12 @@ const UI_TEXT = {
     phoneticAssistTitle: 'Pronunciation note',
     phoneticAssistNote: 'The default is hidden. Kana pronunciation and source-word notes can be checked on the back.',
     speechVoiceTitle: 'Voice',
-    speechAccentTitle: 'Default accent',
-    accentUk: 'UK',
-    accentUs: 'US',
-    speechAccentNote: 'Choose the accent used by the normal audio button. The card stays clean in normal mode; comparison mode shows UK/US only for confirmed words.',
-    speechCompareTitle: 'UK/US comparison',
-    speechCompareNote: 'When on, the learning card shows separate UK and US audio buttons. The test screen stays clean.',
+    speechAccentTitle: 'Voice tag',
+    accentUk: 'en_GB',
+    accentUs: 'en_US',
+    speechAccentNote: 'Choose the voice tag used by the normal audio button. IPA on the card stays fixed to British IPA.',
+    speechCompareTitle: 'en_GB/en_US audio',
+    speechCompareNote: 'When on, the learning card shows separate en_GB/en_US audio buttons. IPA remains British.',
     femaleVoicePriority: 'Prefer female voice',
     speechVoiceNote: 'The default prefers a female voice. Available voices depend on the device and browser.',
     wordPartsDetails: 'Word-part notes',
@@ -14970,8 +14970,8 @@ const UI_TEXT = {
     backToPracticeAria: 'Back to practice screen',
     cardFlipAria: 'Flip the word card',
     audioUnsupported: 'Audio unsupported',
-    audioButtonUk: 'UK audio',
-    audioButtonUs: 'US audio',
+    audioButtonUk: 'en_GB',
+    audioButtonUs: 'en_US',
     audioUnsupportedNote: 'This device does not support audio playback.',
     voiceLoading: 'Loading voices',
     voiceLoadingNote: 'Voice candidates are loading. Please wait and reopen settings.',
@@ -14981,9 +14981,9 @@ const UI_TEXT = {
     voiceDevice: 'Device voice',
     voiceBrowser: 'Browser voice',
     audioAriaUnsupported: 'This device does not support audio playback',
-    audioAriaUk: 'Play word with UK voice',
-    audioAriaUs: 'Play word with US voice',
-    audioAriaEnglishFallback: 'Play word with an English voice. If the selected accent is unavailable, this device’s English voice is used',
+    audioAriaUk: 'Play word with en_GB voice',
+    audioAriaUs: 'Play word with en_US voice',
+    audioAriaEnglishFallback: 'Play word with an English voice. If the selected voice tag is unavailable, this device’s English voice is used',
     swipeLearn: '← Previous　　Swipe　　Next →',
     swipeLearnRate: 'Rate it. Right swipe = Great',
     swipeTestReady: 'Tap Next or swipe right →',
@@ -15354,8 +15354,8 @@ function formatItemCount(count) {
 function updateHeaderSub() {
   const summary = getDataQualitySummary();
   const text = currentUiLanguage === 'en'
-    ? `Friend test / ${summary.unique} unique words / ${summary.total} items / UK IPA + UK/US audio`
-    : `友人テスト版 / ${summary.unique}語・品詞別${summary.total}項目 / IPA英国基準・音声UK/US`;
+    ? `Friend test / ${summary.unique} unique words / ${summary.total} items / British IPA + en_GB/en_US audio`
+    : `友人テスト版 / ${summary.unique}語・品詞別${summary.total}項目 / IPA英国基準・音声en_GB/en_US`;
   setText('header-sub', text);
 }
 
@@ -15908,7 +15908,7 @@ function updateSpeechVoiceButtons() {
 }
 
 function getAudioAccentLabel(accent = currentSpeechAccent) {
-  return accent === 'us' ? 'US' : 'UK';
+  return accent === 'us' ? 'en_US' : 'en_GB';
 }
 
 function getAudioButtonLabel(accent = currentSpeechAccent) {
@@ -16254,18 +16254,16 @@ function getIpaAccentLabel(accent) {
   return accent === 'us' ? 'US' : 'UK';
 }
 
-function getIpaDisplayText(word, accent = currentSpeechAccent) {
+function getIpaDisplayText(word, accent = 'uk') {
   return `/${getIpaForAccent(word, accent)}/`;
 }
 
-function getIpaDisplayHtml(word, accent = currentSpeechAccent) {
+function getIpaDisplayHtml(word, accent = 'uk') {
   return `/${escapeHtml(getIpaForAccent(word, accent))}/`;
 }
 
 function getCompareIpaDisplayHtml(word) {
-  const usIpa = getUsIpaOverride(word);
-  if (!speechComparisonEnabled || !usIpa) return getIpaDisplayHtml(word, currentSpeechAccent);
-  return `<span class="ipa-accent-label">UK</span>/${escapeHtml(word.ipa)}/　<span class="ipa-accent-label">US</span>/${escapeHtml(usIpa)}/`;
+  return getIpaDisplayHtml(word, 'uk');
 }
 
 function updateFrontPronunciation(word) {
@@ -16284,10 +16282,10 @@ function updateFrontPronunciation(word) {
       ipaEl.hidden = false;
       ipaEl.innerHTML = speechComparisonEnabled
         ? getCompareIpaDisplayHtml(word)
-        : getIpaDisplayHtml(word, currentSpeechAccent);
+        : getIpaDisplayHtml(word, 'uk');
       ipaEl.setAttribute('aria-label', speechComparisonEnabled
-        ? `UK ${getIpaDisplayText(word, 'uk')} US ${getIpaDisplayText(word, 'us')}`
-        : getIpaDisplayText(word, currentSpeechAccent));
+        ? getIpaDisplayText(word, 'uk')
+        : getIpaDisplayText(word, 'uk'));
     } else {
       ipaEl.textContent = '';
       ipaEl.hidden = true;
@@ -16301,19 +16299,19 @@ function updateFrontPronunciation(word) {
   ipaEl.hidden = false;
   ipaEl.removeAttribute('aria-label');
   ipaEl.innerHTML = getCompareIpaDisplayHtml(word);
-  ipaEl.setAttribute('aria-label', getIpaDisplayText(word, currentSpeechAccent));
+  ipaEl.setAttribute('aria-label', getIpaDisplayText(word, 'uk'));
   renderPhoneticAssist(word);
 }
 
 function getTestPronunciationText(word) {
   if (isAbbreviationWord(word)) return getAbbreviationReadingText(word);
-  const ipaText = getIpaDisplayText(word, currentSpeechAccent);
+  const ipaText = getIpaDisplayText(word, 'uk');
   return `${ipaText}  ${word.ph}`;
 }
 
 function getTestFrontPronunciationText(word) {
   if (isAbbreviationWord(word)) return '';
-  return getIpaDisplayText(word, currentSpeechAccent);
+  return getIpaDisplayText(word, 'uk');
 }
 
 function getCategoryFilteredWords() {
