@@ -14809,7 +14809,6 @@ const UI_TEXT = {
     audioAriaUnsupported: 'この端末では音声再生に対応していません',
     audioAriaUk: 'en_GB音声で単語を再生',
     audioAriaUs: 'en_US音声で単語を再生',
-    audioAriaEnglishFallback: '英語音声で単語を再生。指定した音声タグがない場合は端末の英語音声を使います',
     swipeLearn: '←前へ　　スワイプ　　次へ→',
     swipeLearnRate: '評価して次へ　右=バッチリ',
     swipeTestReady: '次へをタップ / 右スワイプ　→',
@@ -14983,7 +14982,6 @@ const UI_TEXT = {
     audioAriaUnsupported: 'This device does not support audio playback',
     audioAriaUk: 'Play word with en_GB voice',
     audioAriaUs: 'Play word with en_US voice',
-    audioAriaEnglishFallback: 'Play word with an English voice. If the selected voice tag is unavailable, this device’s English voice is used',
     swipeLearn: '← Previous　　Swipe　　Next →',
     swipeLearnRate: 'Rate it. Right swipe = Great',
     swipeTestReady: 'Tap Next or swipe right →',
@@ -15821,13 +15819,15 @@ function getVoiceRank(voice, accent = currentSpeechAccent) {
   return getVoiceLanguageRank(voice, accent) * 10 + genderRank;
 }
 
-function selectEnglishVoice(voices, accent = currentSpeechAccent) {
+function selectTaggedEnglishVoice(voices, accent = currentSpeechAccent) {
   const englishVoices = [...voices].filter(isEnglishVoice);
   if (selectedSpeechVoiceKey && selectedSpeechVoiceKey !== SPEECH_AUTO_FEMALE) {
     const selectedVoice = englishVoices.find(voice => getSpeechVoiceKey(voice) === selectedSpeechVoiceKey);
     if (selectedVoice && getVoiceLanguageRank(selectedVoice, accent) <= 1) return selectedVoice;
   }
-  return englishVoices.sort((a, b) => getVoiceRank(a, accent) - getVoiceRank(b, accent) || String(a.name).localeCompare(String(b.name)))[0] || null;
+  return englishVoices
+    .filter(voice => getVoiceLanguageRank(voice, accent) <= 1)
+    .sort((a, b) => getVoiceRank(a, accent) - getVoiceRank(b, accent) || String(a.name).localeCompare(String(b.name)))[0] || null;
 }
 
 function getSpeechVoiceLabel(voice) {
@@ -15856,7 +15856,7 @@ function updateSpeechVoiceButtons() {
   }
 
   const voices = synth.getVoices().filter(isEnglishVoice);
-  const activeVoice = activeEnglishVoice || selectEnglishVoice(voices);
+  const activeVoice = activeEnglishVoice || selectTaggedEnglishVoice(voices);
   const makeButton = (value, label, meta = '') => {
     const button = document.createElement('button');
     button.className = 'speech-voice-btn';
@@ -15915,19 +15915,29 @@ function getAudioButtonLabel(accent = currentSpeechAccent) {
   return accent === 'us' ? uiText('audioButtonUs') : uiText('audioButtonUk');
 }
 
+function getAudioVoiceUnavailableText(accent = currentSpeechAccent) {
+  const label = getAudioAccentLabel(accent);
+  return currentUiLanguage === 'en'
+    ? `${label} voice is not available on this device.`
+    : `${label}音声がこの端末で見つかりません。`;
+}
+
 function getAudioAriaLabel(accent = currentSpeechAccent) {
   if (!speechVoiceReady) return uiText('audioAriaUnsupported');
-  const targetLang = getSpeechLang(accent).toLowerCase();
-  const voice = selectEnglishVoice(getSpeechEngine()?.getVoices() || [], accent);
+  const voices = getSpeechEngine()?.getVoices() || [];
+  const voice = selectTaggedEnglishVoice(voices, accent);
   const accentAria = accent === 'us' ? uiText('audioAriaUs') : uiText('audioAriaUk');
-  if (voice && String(voice.lang || '').toLowerCase() === targetLang) {
-    return `${accentAria}（${voice.name || 'English'}）`;
+  if (voice) {
+    return `${accentAria}（${voice.name || 'English'} / ${voice.lang || getSpeechLang(accent)}）`;
   }
-  return uiText('audioAriaEnglishFallback');
+  if (!voices.some(isEnglishVoice)) return uiText('voiceLoadingNote');
+  return getAudioVoiceUnavailableText(accent);
 }
 
 function updateAudioButtons() {
-  const isSupported = Boolean(getSpeechEngine());
+  const synth = getSpeechEngine();
+  const isSupported = Boolean(synth);
+  const voices = synth?.getVoices() || [];
   speechVoiceReady = isSupported;
   document.querySelectorAll('.word-audio-btn').forEach(button => {
     const accent = button.dataset.audioAccent === 'us'
@@ -15935,7 +15945,8 @@ function updateAudioButtons() {
       : button.dataset.audioAccent === 'uk'
         ? 'uk'
         : currentSpeechAccent;
-    button.disabled = !isSupported;
+    const voice = isSupported ? selectTaggedEnglishVoice(voices, accent) : null;
+    button.disabled = !isSupported || !voice;
     button.textContent = button.dataset.audioAccent === 'current'
       ? getAudioButtonLabel(currentSpeechAccent)
       : getAudioAccentLabel(accent);
@@ -15959,7 +15970,7 @@ function refreshSpeechVoices() {
     return;
   }
   const voices = synth.getVoices();
-  activeEnglishVoice = selectEnglishVoice(voices);
+  activeEnglishVoice = selectTaggedEnglishVoice(voices);
   updateAudioButtons();
   updateSpeechVoiceButtons();
 }
@@ -16048,13 +16059,16 @@ function speakEnglishWord(word, event, accent = currentSpeechAccent) {
     return;
   }
   refreshSpeechVoices();
-  const utterance = new SpeechSynthesisUtterance(text);
-  utterance.lang = getSpeechLang(accent);
-  const voice = selectEnglishVoice(synth.getVoices(), accent);
-  if (voice) {
-    utterance.voice = voice;
-    utterance.lang = voice.lang || getSpeechLang(accent);
+  const voices = synth.getVoices();
+  const voice = selectTaggedEnglishVoice(voices, accent);
+  if (!voice) {
+    alert(voices.some(isEnglishVoice) ? getAudioVoiceUnavailableText(accent) : uiText('voiceLoadingNote'));
+    updateAudioButtons();
+    return;
   }
+  const utterance = new SpeechSynthesisUtterance(text);
+  utterance.voice = voice;
+  utterance.lang = voice.lang || getSpeechLang(accent);
   utterance.rate = 0.84;
   utterance.pitch = 1;
   utterance.volume = 1;
