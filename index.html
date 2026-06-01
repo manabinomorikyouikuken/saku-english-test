@@ -2129,11 +2129,11 @@
   <div class="level-panel" aria-label="レベル選択">
     <div class="settings-section-title" data-ui-key="chooseLevel">レベルを選ぶ</div>
     <div class="level-buttons">
-      <button class="level-btn active" type="button" data-level="all" data-ui-label-key="levelAll" onclick="setLevel('all')">すべて<span id="level-count-all">1083項目</span></button>
+      <button class="level-btn active" type="button" data-level="all" data-ui-label-key="levelAll" onclick="setLevel('all')">すべて<span id="level-count-all">1130項目</span></button>
       <button class="level-btn" type="button" data-level="junior" data-ui-label-key="levelJunior" onclick="setLevel('junior')">中学復習<span id="level-count-junior">204項目</span></button>
-      <button class="level-btn" type="button" data-level="highBasic" data-ui-label-key="levelHighBasic" onclick="setLevel('highBasic')">高校基礎<span id="level-count-highBasic">380項目</span></button>
+      <button class="level-btn" type="button" data-level="highBasic" data-ui-label-key="levelHighBasic" onclick="setLevel('highBasic')">高校基礎<span id="level-count-highBasic">424項目</span></button>
       <button class="level-btn" type="button" data-level="standard" data-ui-label-key="levelStandard" onclick="setLevel('standard')">句動詞・実用<span id="level-count-standard">157項目</span></button>
-      <button class="level-btn" type="button" data-level="advanced" data-ui-label-key="levelAdvanced" onclick="setLevel('advanced')">発展<span id="level-count-advanced">342項目</span></button>
+      <button class="level-btn" type="button" data-level="advanced" data-ui-label-key="levelAdvanced" onclick="setLevel('advanced')">発展<span id="level-count-advanced">345項目</span></button>
     </div>
     <div class="storage-note" data-ui-key="levelNote">レベル名は学習の目安です。句動詞・実用は、get up などの句動詞や日常で使うまとまり表現を中心にしています。</div>
   </div>
@@ -2143,7 +2143,7 @@
   <div class="category-panel" aria-label="カテゴリ選択">
     <div class="settings-section-title" data-ui-key="chooseTheme">テーマを選ぶ</div>
     <div class="category-buttons">
-      <button class="category-btn active" type="button" data-category="all" data-ui-label-key="categoryAll" onclick="setCategory('all')">すべて<span id="category-count-all">1088項目</span></button>
+      <button class="category-btn active" type="button" data-category="all" data-ui-label-key="categoryAll" onclick="setCategory('all')">すべて<span id="category-count-all">1130項目</span></button>
       <button class="category-btn" type="button" data-category="weakWords" data-ui-label-key="categoryWeakWords" onclick="setCategory('weakWords')">苦手<span id="category-count-weakWords">0項目</span></button>
       <button class="category-btn" type="button" data-category="katakanaGap" data-ui-label-key="categoryKatakanaGap" onclick="setCategory('katakanaGap')" aria-label="カタカナ注意 知ってるつもりになりやすい語">カタカナ注意<span id="category-count-katakanaGap">33項目</span></button>
       <button class="category-btn" type="button" data-category="phrasalVerb" data-ui-label-key="categoryPhrasalVerb" onclick="setCategory('phrasalVerb')">句動詞<span id="category-count-phrasalVerb">100項目</span></button>
@@ -2157,6 +2157,7 @@
       <button class="category-btn" type="button" data-category="abbreviationEducation" data-ui-label-key="categoryAbbreviationEducation" onclick="setCategory('abbreviationEducation')">略語 教育・言語<span id="category-count-abbreviationEducation">1項目</span></button>
       <button class="category-btn" type="button" data-category="pronunciationNote" data-ui-label-key="categoryPronunciationNote" onclick="setCategory('pronunciationNote')">発音注意<span id="category-count-pronunciationNote">90項目</span></button>
       <button class="category-btn" type="button" data-category="rlContrast" data-ui-label-key="categoryRlContrast" onclick="setCategory('rlContrast')">R/L注意<span id="category-count-rlContrast">8項目</span></button>
+      <button class="category-btn" type="button" data-category="wordRelation" data-ui-label-key="categoryWordRelation" onclick="setCategory('wordRelation')">語彙関係<span id="category-count-wordRelation">42項目</span></button>
     </div>
     <div class="storage-note" data-ui-key="themeNote">テーマ別に確認できます。苦手は間違えた語や定着しにくい語、カタカナ注意は「知ってるつもり」になりやすい意味のズレ、句動詞は会話のまとまり、ニュース英語は報道でよく見る語、ATM・銀行は海外生活で画面に出やすい語、不可算名詞は数え方の引っ掛け、略語は分野別、発音注意は音と綴りの違い、R/L注意は語頭の音で意味が変わる組を集中的に学べます。</div>
   </div>
@@ -10089,7 +10090,7 @@ const WORDS = [
     "level": "発展",
     "ipa": "əkˈseləreɪt",
     "ph": "アクセレレイト",
-    "m": "加速する、〜を加速させる",
+    "m": "加速する、〜を加速させる（対義語: decelerate）",
     "ex": "The new system can accelerate the work.",
     "exJa": "新しい仕組みは作業を加速させることができる。"
   },
@@ -10125,6 +10126,258 @@ const WORDS = [
     "m": "〜を予想する、期待する",
     "ex": "We anticipate a busy day tomorrow.",
     "exJa": "明日は忙しい一日になると予想している。"
+  },
+  {
+    "id": "antonym_noun_vocab",
+    "w": "antonym",
+    "cat": "word-relation",
+    "pos": "名詞",
+    "level": "発展",
+    "ipa": "ˈæntənɪm",
+    "ph": "アントニム",
+    "m": "対義語、反対の意味の語",
+    "ex": "Hot is an antonym of cold.",
+    "exJa": "hot は cold の対義語です。"
+  },
+  {
+    "id": "antonym_hot_adjective",
+    "w": "hot",
+    "cat": "word-relation",
+    "pos": "形容詞",
+    "level": "高校基礎",
+    "ipa": "hɒt",
+    "ph": "ホット",
+    "m": "暑い、熱い（対義語: cold）",
+    "ex": "The soup is hot.",
+    "exJa": "そのスープは熱い。"
+  },
+  {
+    "id": "antonym_cold_adjective",
+    "w": "cold",
+    "cat": "word-relation",
+    "pos": "形容詞",
+    "level": "高校基礎",
+    "ipa": "kəʊld",
+    "ph": "コウルド",
+    "m": "寒い、冷たい（対義語: hot）",
+    "ex": "The water is cold.",
+    "exJa": "その水は冷たい。"
+  },
+  {
+    "id": "antonym_decrease_verb",
+    "w": "decrease",
+    "cat": "word-relation",
+    "pos": "動詞",
+    "level": "高校基礎",
+    "ipa": "dɪˈkriːs",
+    "ph": "ディクリース",
+    "m": "減少する、〜を減らす（対義語: increase）",
+    "ex": "The number of mistakes decreased.",
+    "exJa": "間違いの数は減った。"
+  },
+  {
+    "id": "antonym_refuse_verb",
+    "w": "refuse",
+    "cat": "word-relation",
+    "pos": "動詞",
+    "level": "高校基礎",
+    "ipa": "rɪˈfjuːz",
+    "ph": "リフューズ",
+    "m": "拒む、断る（対義語: accept）",
+    "ex": "She refused the offer politely.",
+    "exJa": "彼女はその申し出を丁寧に断った。"
+  },
+  {
+    "id": "antonym_arrive_verb",
+    "w": "arrive",
+    "cat": "word-relation",
+    "pos": "動詞",
+    "level": "高校基礎",
+    "ipa": "əˈraɪv",
+    "ph": "アライヴ",
+    "m": "到着する（対義語: leave）",
+    "ex": "The train will arrive soon.",
+    "exJa": "その電車はもうすぐ到着する。"
+  },
+  {
+    "id": "antonym_end_noun_verb",
+    "w": "end",
+    "cat": "word-relation",
+    "pos": "名詞・動詞",
+    "level": "高校基礎",
+    "ipa": "end",
+    "ph": "エンド",
+    "m": "終わり、終える（対義語: begin）",
+    "ex": "The story ends happily.",
+    "exJa": "その物語は幸せに終わる。"
+  },
+  {
+    "id": "antonym_buy_verb",
+    "w": "buy",
+    "cat": "word-relation",
+    "pos": "動詞",
+    "level": "高校基礎",
+    "ipa": "baɪ",
+    "ph": "バイ",
+    "m": "買う（対義語: sell）",
+    "ex": "I will buy a new notebook.",
+    "exJa": "私は新しいノートを買う。"
+  },
+  {
+    "id": "antonym_sell_verb",
+    "w": "sell",
+    "cat": "word-relation",
+    "pos": "動詞",
+    "level": "高校基礎",
+    "ipa": "sel",
+    "ph": "セル",
+    "m": "売る（対義語: buy）",
+    "ex": "They sell fresh bread every morning.",
+    "exJa": "彼らは毎朝焼きたてのパンを売る。"
+  },
+  {
+    "id": "antonym_open_verb",
+    "w": "open",
+    "cat": "word-relation",
+    "pos": "動詞",
+    "level": "高校基礎",
+    "ipa": "ˈəʊpən",
+    "ph": "オウプン",
+    "m": "開ける、開く（対義語: close）",
+    "ex": "Open the window, please.",
+    "exJa": "窓を開けてください。"
+  },
+  {
+    "id": "antonym_close_verb",
+    "w": "close",
+    "cat": "word-relation",
+    "pos": "動詞",
+    "level": "高校基礎",
+    "ipa": "kləʊz",
+    "ph": "クロウズ",
+    "m": "閉める、閉じる（対義語: open）",
+    "ex": "Close the door quietly.",
+    "exJa": "ドアを静かに閉めなさい。"
+  },
+  {
+    "id": "antonym_include_verb",
+    "w": "include",
+    "cat": "word-relation",
+    "pos": "動詞",
+    "level": "高校基礎",
+    "ipa": "ɪnˈkluːd",
+    "ph": "インクルード",
+    "m": "含む、含める（対義語: exclude）",
+    "ex": "The price includes breakfast.",
+    "exJa": "その料金には朝食が含まれている。"
+  },
+  {
+    "id": "antonym_exclude_verb",
+    "w": "exclude",
+    "cat": "word-relation",
+    "pos": "動詞",
+    "level": "高校基礎",
+    "ipa": "ɪkˈskluːd",
+    "ph": "イクスクルード",
+    "m": "除外する（対義語: include）",
+    "ex": "The list excludes private information.",
+    "exJa": "そのリストは個人情報を除外している。"
+  },
+  {
+    "id": "antonym_shrink_verb",
+    "w": "shrink",
+    "cat": "word-relation",
+    "pos": "動詞",
+    "level": "高校基礎",
+    "ipa": "ʃrɪŋk",
+    "ph": "シュリンク",
+    "m": "縮む、縮小する（対義語: expand）",
+    "ex": "The sweater may shrink in hot water.",
+    "exJa": "そのセーターは熱い水で縮むかもしれない。"
+  },
+  {
+    "id": "antonym_success_noun",
+    "w": "success",
+    "cat": "word-relation",
+    "pos": "名詞",
+    "level": "高校基礎",
+    "ipa": "səkˈses",
+    "ph": "サクセス",
+    "m": "成功（対義語: failure）",
+    "ex": "Practice is important for success.",
+    "exJa": "成功には練習が大切だ。"
+  },
+  {
+    "id": "antonym_safe_adjective",
+    "w": "safe",
+    "cat": "word-relation",
+    "pos": "形容詞",
+    "level": "高校基礎",
+    "ipa": "seɪf",
+    "ph": "セイフ",
+    "m": "安全な（対義語: dangerous）",
+    "ex": "This route is safe for children.",
+    "exJa": "この道は子どもにとって安全だ。"
+  },
+  {
+    "id": "antonym_strong_adjective",
+    "w": "strong",
+    "cat": "word-relation",
+    "pos": "形容詞",
+    "level": "高校基礎",
+    "ipa": "strɒŋ",
+    "ph": "ストロング",
+    "m": "強い（対義語: weak）",
+    "ex": "She has a strong voice.",
+    "exJa": "彼女は力強い声をしている。"
+  },
+  {
+    "id": "antonym_weak_adjective",
+    "w": "weak",
+    "cat": "word-relation",
+    "pos": "形容詞",
+    "level": "高校基礎",
+    "ipa": "wiːk",
+    "ph": "ウィーク",
+    "m": "弱い（対義語: strong）",
+    "ex": "The signal is weak here.",
+    "exJa": "ここでは電波が弱い。"
+  },
+  {
+    "id": "antonym_simple_adjective",
+    "w": "simple",
+    "cat": "word-relation",
+    "pos": "形容詞",
+    "level": "高校基礎",
+    "ipa": "ˈsɪmpəl",
+    "ph": "シンプル",
+    "m": "単純な、簡単な（対義語: complex）",
+    "ex": "The instructions are simple.",
+    "exJa": "その説明は簡単だ。"
+  },
+  {
+    "id": "antonym_early_adjective_adverb",
+    "w": "early",
+    "cat": "word-relation",
+    "pos": "形容詞・副詞",
+    "level": "高校基礎",
+    "ipa": "ˈɜːli",
+    "ph": "アーリ",
+    "m": "早い、早く（対義語: late）",
+    "ex": "We arrived early.",
+    "exJa": "私たちは早く到着した。"
+  },
+  {
+    "id": "antonym_late_adjective_adverb",
+    "w": "late",
+    "cat": "word-relation",
+    "pos": "形容詞・副詞",
+    "level": "高校基礎",
+    "ipa": "leɪt",
+    "ph": "レイト",
+    "m": "遅い、遅く（対義語: early）",
+    "ex": "The bus was late.",
+    "exJa": "そのバスは遅れた。"
   },
   {
     "id": "bridge_appear_verb",
@@ -10244,7 +10497,7 @@ const WORDS = [
     "level": "発展",
     "ipa": "diːˈseləreɪt",
     "ph": "ディーセレレイト",
-    "m": "減速する、〜を減速させる",
+    "m": "減速する、〜を減速させる（対義語: accelerate）",
     "ex": "The car decelerated near the school.",
     "exJa": "その車は学校の近くで減速した。"
   },
@@ -10655,6 +10908,258 @@ const WORDS = [
     "m": "〜を提出する",
     "ex": "Submit your homework by Friday.",
     "exJa": "金曜日までに宿題を提出しなさい。"
+  },
+  {
+    "id": "synonym_noun_vocab",
+    "w": "synonym",
+    "cat": "word-relation",
+    "pos": "名詞",
+    "level": "発展",
+    "ipa": "ˈsɪnənɪm",
+    "ph": "シノニム",
+    "m": "同義語、似た意味の語",
+    "ex": "Big is a synonym of large.",
+    "exJa": "big は large の同義語です。"
+  },
+  {
+    "id": "synonym_big_adjective",
+    "w": "big",
+    "cat": "word-relation",
+    "pos": "形容詞",
+    "level": "高校基礎",
+    "ipa": "bɪɡ",
+    "ph": "ビッグ",
+    "m": "大きい（同義語: large）",
+    "ex": "They live in a big house.",
+    "exJa": "彼らは大きな家に住んでいる。"
+  },
+  {
+    "id": "synonym_large_adjective",
+    "w": "large",
+    "cat": "word-relation",
+    "pos": "形容詞",
+    "level": "高校基礎",
+    "ipa": "lɑːdʒ",
+    "ph": "ラージ",
+    "m": "大きい、広い（同義語: big）",
+    "ex": "The room has a large window.",
+    "exJa": "その部屋には大きな窓がある。"
+  },
+  {
+    "id": "synonym_small_adjective",
+    "w": "small",
+    "cat": "word-relation",
+    "pos": "形容詞",
+    "level": "高校基礎",
+    "ipa": "smɔːl",
+    "ph": "スモール",
+    "m": "小さい（同義語: little）",
+    "ex": "I found a small mistake.",
+    "exJa": "私は小さな間違いを見つけた。"
+  },
+  {
+    "id": "synonym_little_adjective",
+    "w": "little",
+    "cat": "word-relation",
+    "pos": "形容詞",
+    "level": "高校基礎",
+    "ipa": "ˈlɪtəl",
+    "ph": "リトル",
+    "m": "小さい、少しの（同義語: small）",
+    "ex": "A little bird sat on the wall.",
+    "exJa": "小さな鳥が壁にとまった。"
+  },
+  {
+    "id": "synonym_fast_adjective",
+    "w": "fast",
+    "cat": "word-relation",
+    "pos": "形容詞・副詞",
+    "level": "高校基礎",
+    "ipa": "fɑːst",
+    "ph": "ファースト",
+    "m": "速い、速く（同義語: rapid）",
+    "ex": "The train is fast.",
+    "exJa": "その電車は速い。"
+  },
+  {
+    "id": "synonym_calm_adjective",
+    "w": "calm",
+    "cat": "word-relation",
+    "pos": "形容詞",
+    "level": "高校基礎",
+    "ipa": "kɑːm",
+    "ph": "カーム",
+    "m": "落ち着いた、穏やかな（同義語: quiet）",
+    "ex": "The sea was calm in the morning.",
+    "exJa": "朝の海は穏やかだった。"
+  },
+  {
+    "id": "synonym_quiet_adjective",
+    "w": "quiet",
+    "cat": "word-relation",
+    "pos": "形容詞",
+    "level": "高校基礎",
+    "ipa": "ˈkwaɪət",
+    "ph": "クワイエット",
+    "m": "静かな、落ち着いた（同義語: calm）",
+    "ex": "The library is quiet.",
+    "exJa": "図書館は静かだ。"
+  },
+  {
+    "id": "synonym_correct_adjective",
+    "w": "correct",
+    "cat": "word-relation",
+    "pos": "形容詞",
+    "level": "高校基礎",
+    "ipa": "kəˈrekt",
+    "ph": "コレクト",
+    "m": "正しい（同義語: right）",
+    "ex": "Your answer is correct.",
+    "exJa": "あなたの答えは正しい。"
+  },
+  {
+    "id": "synonym_mistake_noun",
+    "w": "mistake",
+    "cat": "word-relation",
+    "pos": "名詞",
+    "level": "高校基礎",
+    "ipa": "mɪˈsteɪk",
+    "ph": "ミステイク",
+    "m": "間違い（同義語: error）",
+    "ex": "Everyone makes mistakes.",
+    "exJa": "誰でも間違いをする。"
+  },
+  {
+    "id": "synonym_difficult_adjective",
+    "w": "difficult",
+    "cat": "word-relation",
+    "pos": "形容詞",
+    "level": "高校基礎",
+    "ipa": "ˈdɪfɪkəlt",
+    "ph": "ディフィカルト",
+    "m": "難しい（同義語: hard）",
+    "ex": "This question is difficult.",
+    "exJa": "この問題は難しい。"
+  },
+  {
+    "id": "synonym_hard_adjective",
+    "w": "hard",
+    "cat": "word-relation",
+    "pos": "形容詞",
+    "level": "高校基礎",
+    "ipa": "hɑːd",
+    "ph": "ハード",
+    "m": "難しい、硬い（同義語: difficult）",
+    "ex": "The test was hard.",
+    "exJa": "そのテストは難しかった。"
+  },
+  {
+    "id": "synonym_easy_adjective",
+    "w": "easy",
+    "cat": "word-relation",
+    "pos": "形容詞",
+    "level": "高校基礎",
+    "ipa": "ˈiːzi",
+    "ph": "イージー",
+    "m": "簡単な（同義語: simple）",
+    "ex": "The first question was easy.",
+    "exJa": "最初の問題は簡単だった。"
+  },
+  {
+    "id": "synonym_need_verb",
+    "w": "need",
+    "cat": "word-relation",
+    "pos": "動詞",
+    "level": "高校基礎",
+    "ipa": "niːd",
+    "ph": "ニード",
+    "m": "必要とする（同義語: require）",
+    "ex": "We need more time.",
+    "exJa": "私たちにはもっと時間が必要だ。"
+  },
+  {
+    "id": "synonym_permit_verb",
+    "w": "permit",
+    "cat": "word-relation",
+    "pos": "動詞",
+    "level": "高校基礎",
+    "ipa": "pəˈmɪt",
+    "ph": "パミット",
+    "m": "許可する（同義語: allow）",
+    "ex": "The rules permit one guest.",
+    "exJa": "その規則は1人の同伴者を許可している。"
+  },
+  {
+    "id": "synonym_show_verb",
+    "w": "show",
+    "cat": "word-relation",
+    "pos": "動詞",
+    "level": "高校基礎",
+    "ipa": "ʃəʊ",
+    "ph": "ショウ",
+    "m": "見せる、示す（同義語: display）",
+    "ex": "Show me your answer.",
+    "exJa": "あなたの答えを見せてください。"
+  },
+  {
+    "id": "synonym_build_verb",
+    "w": "build",
+    "cat": "word-relation",
+    "pos": "動詞",
+    "level": "高校基礎",
+    "ipa": "bɪld",
+    "ph": "ビルド",
+    "m": "建てる、作る（同義語: create）",
+    "ex": "They will build a new library.",
+    "exJa": "彼らは新しい図書館を建てる。"
+  },
+  {
+    "id": "synonym_repair_verb",
+    "w": "repair",
+    "cat": "word-relation",
+    "pos": "動詞",
+    "level": "高校基礎",
+    "ipa": "rɪˈpeə",
+    "ph": "リペア",
+    "m": "修理する（同義語: fix）",
+    "ex": "He repaired the old chair.",
+    "exJa": "彼は古い椅子を修理した。"
+  },
+  {
+    "id": "synonym_fix_verb",
+    "w": "fix",
+    "cat": "word-relation",
+    "pos": "動詞",
+    "level": "高校基礎",
+    "ipa": "fɪks",
+    "ph": "フィックス",
+    "m": "修理する、固定する（同義語: repair）",
+    "ex": "Can you fix this clock?",
+    "exJa": "この時計を修理できますか。"
+  },
+  {
+    "id": "synonym_truthful_adjective",
+    "w": "truthful",
+    "cat": "word-relation",
+    "pos": "形容詞",
+    "level": "高校基礎",
+    "ipa": "ˈtruːθfəl",
+    "ph": "トゥルースフル",
+    "m": "正直な、真実を言う（同義語: honest）",
+    "ex": "A truthful report is important.",
+    "exJa": "正直な報告は大切だ。"
+  },
+  {
+    "id": "synonym_honest_adjective",
+    "w": "honest",
+    "cat": "word-relation",
+    "pos": "形容詞",
+    "level": "高校基礎",
+    "ipa": "ˈɒnɪst",
+    "ph": "オニスト",
+    "m": "正直な（同義語: truthful）",
+    "ex": "He gave an honest answer.",
+    "exJa": "彼は正直に答えた。"
   },
   {
     "id": "bridge_telephone_verb",
@@ -14401,7 +14906,8 @@ const CATEGORY_LABELS = {
   abbreviationPublic: '略語 国際・公的',
   abbreviationEducation: '略語 教育・言語',
   pronunciationNote: '発音注意',
-  rlContrast: 'R/L注意'
+  rlContrast: 'R/L注意',
+  wordRelation: '語彙関係'
 };
 const LEVEL_UI_KEYS = {
   all: 'levelAll',
@@ -14431,7 +14937,8 @@ const CATEGORY_UI_KEYS = {
   abbreviationPublic: 'categoryAbbreviationPublic',
   abbreviationEducation: 'categoryAbbreviationEducation',
   pronunciationNote: 'categoryPronunciationNote',
-  rlContrast: 'categoryRlContrast'
+  rlContrast: 'categoryRlContrast',
+  wordRelation: 'categoryWordRelation'
 };
 const PART_DISPLAY_TRANSLATIONS = {
   '名詞': 'noun',
@@ -14719,8 +15226,9 @@ const UI_TEXT = {
     categoryAbbreviationEducation: '略語 教育・言語',
     categoryPronunciationNote: '発音注意',
     categoryRlContrast: 'R/L注意',
+    categoryWordRelation: '語彙関係',
     katakanaSub: '知ってるつもり',
-    themeNote: 'テーマ別に確認できます。苦手は間違えた語や定着しにくい語、カタカナ注意は「知ってるつもり」になりやすい意味のズレ、句動詞は会話のまとまり、ニュース英語は報道でよく見る語、ATM・銀行は海外生活で画面に出やすい語、不可算名詞は数え方の引っ掛け、略語は分野別、発音注意は音と綴りの違い、R/L注意は語頭の音で意味が変わる組を集中的に学べます。',
+    themeNote: 'テーマ別に確認できます。苦手は間違えた語や定着しにくい語、カタカナ注意は「知ってるつもり」になりやすい意味のズレ、句動詞は会話のまとまり、ニュース英語は報道でよく見る語、ATM・銀行は海外生活で画面に出やすい語、不可算名詞は数え方の引っ掛け、略語は分野別、発音注意は音と綴りの違い、R/L注意は語頭の音、語彙関係は同義語・対義語を集中的に学べます。',
     choosePart: '品詞でしぼる',
     partRandom: 'ランダム',
     partNoun: '名詞',
@@ -14892,8 +15400,9 @@ const UI_TEXT = {
     categoryAbbreviationEducation: 'Education / language',
     categoryPronunciationNote: 'Pronunciation caution',
     categoryRlContrast: 'R/L caution',
+    categoryWordRelation: 'Word relations',
     katakanaSub: 'False friends',
-    themeNote: 'Use themes for focused practice: weak words, katakana meaning gaps, phrasal verbs, news English, ATM and banking words, uncountable noun traps, abbreviations by field, pronunciation traps, and R/L contrast pairs.',
+    themeNote: 'Use themes for focused practice: weak words, katakana meaning gaps, phrasal verbs, news English, ATM and banking words, uncountable noun traps, abbreviations, pronunciation traps, R/L contrast pairs, and synonym/antonym relations.',
     choosePart: 'Filter by part of speech',
     partRandom: 'Random',
     partNoun: 'Nouns',
@@ -15040,7 +15549,8 @@ const CATEGORY_TAGS = {
   abbreviationPublic: 'abbreviation-public',
   abbreviationEducation: 'abbreviation-education',
   pronunciationNote: 'pronunciation-note',
-  rlContrast: 'rl-contrast'
+  rlContrast: 'rl-contrast',
+  wordRelation: 'word-relation'
 };
 const PROOFING_PRIORITY_TAGS = new Set(
   'pronunciation-note rl-contrast katakana-gap abbreviation phrasal-verb'.split(' ')
@@ -17654,6 +18164,7 @@ function getWeaknessBucketLabel(word) {
     if (category.startsWith('abbreviation')) return uiText('categoryAbbreviation');
     if (category === 'rl-contrast') return uiText('categoryRlContrast');
     if (category === 'pronunciation-note') return uiText('categoryPronunciationNote');
+    if (category === 'word-relation') return uiText('categoryWordRelation');
     return label;
   }
   return currentUiLanguage === 'en' ? 'Meaning check' : '意味確認';
