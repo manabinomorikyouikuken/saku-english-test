@@ -15285,8 +15285,8 @@ const UI_TEXT = {
     choice3: '3択',
     choice4: '4択',
     testSettingsNote: '通常は英単語だけを見て、日本語カードを選びます。語彙関係では同義語・対義語を選びます。テストは20問で区切ります。',
-    relationSynonymPrompt: '同義語を選ぶ',
-    relationAntonymPrompt: '対義語を選ぶ',
+    relationSynonymPrompt: '近い意味の語を選ぶ',
+    relationAntonymPrompt: '反対の意味の語を選ぶ',
     displayLanguageTitle: '表示言語',
     languageJa: '日本語表示',
     languageEn: 'English UI',
@@ -15383,6 +15383,8 @@ const UI_TEXT = {
     rateControlsAria: '理解度を選ぶ',
     completeStudyTitle: '今回の学習完了！',
     completeTestTitle: 'テスト完了！',
+    relationCompleteTitle: '語彙関係チェック完了！',
+    relationPerfectTitle: '語彙関係マスター！',
     perfectTestTitle: '満点クリア！',
     missReviewCompleteTitle: 'ミスだけ復習完了！',
     missReviewClearTitle: '今回のミス復習クリア！',
@@ -15395,6 +15397,7 @@ const UI_TEXT = {
     missLabel: 'ミス',
     restartStudy: 'もう一周する',
     testAgain: 'もう一回テスト',
+    relationAgain: 'もう一回ゲーム',
     noCardsMessage: '今の条件では出題できる単語がありません。設定で範囲を広げてください。',
     dataQualityOk: '必須項目、履歴キー重複、略語の元語、略語の音声展開は要確認0件です。',
     dataQualityProofingNote: '校正優先: 発音注意・R/L・カタカナ注意・略語・句動詞を台帳で先に見る。',
@@ -15468,8 +15471,8 @@ const UI_TEXT = {
     choice3: '3 choices',
     choice4: '4 choices',
     testSettingsNote: 'Usually, choose the Japanese meaning from the English word. In Word relations, choose a synonym or antonym. Tests stop at 20 questions.',
-    relationSynonymPrompt: 'Choose a synonym',
-    relationAntonymPrompt: 'Choose an antonym',
+    relationSynonymPrompt: 'Choose a close meaning',
+    relationAntonymPrompt: 'Choose an opposite meaning',
     displayLanguageTitle: 'Display language',
     languageJa: '日本語表示',
     languageEn: 'English UI',
@@ -15566,6 +15569,8 @@ const UI_TEXT = {
     rateControlsAria: 'Choose how well you remembered it',
     completeStudyTitle: 'Practice complete!',
     completeTestTitle: 'Test complete!',
+    relationCompleteTitle: 'Word relation complete!',
+    relationPerfectTitle: 'Word relation master!',
     perfectTestTitle: 'Perfect 20!',
     missReviewCompleteTitle: 'Miss Review complete!',
     missReviewClearTitle: 'Miss Review cleared!',
@@ -15578,6 +15583,7 @@ const UI_TEXT = {
     missLabel: 'Misses',
     restartStudy: 'Practice again',
     testAgain: 'Test again',
+    relationAgain: 'Play again',
     noCardsMessage: 'There are no cards available with the current settings. Widen the range in Settings.',
     dataQualityOk: 'Required fields, duplicate history keys, abbreviation origins, and abbreviation speech checks have 0 items to check.',
     dataQualityProofingNote: 'Proofing priority: pronunciation cautions, R/L, katakana gaps, abbreviations, and phrasal verbs first.',
@@ -15622,24 +15628,114 @@ const WORD_RELATION_LINKS = {
   antonym_late_adjective_adverb: { type: 'antonym', target: 'early' },
   synonym_big_adjective: { type: 'synonym', target: 'large' },
   synonym_large_adjective: { type: 'synonym', target: 'big' },
-  synonym_small_adjective: { type: 'synonym', target: 'little' },
-  synonym_little_adjective: { type: 'synonym', target: 'small' },
-  synonym_fast_adjective: { type: 'synonym', target: 'rapid' },
-  synonym_calm_adjective: { type: 'synonym', target: 'quiet' },
-  synonym_quiet_adjective: { type: 'synonym', target: 'calm' },
-  synonym_correct_adjective: { type: 'synonym', target: 'right' },
-  synonym_mistake_noun: { type: 'synonym', target: 'error' },
-  synonym_difficult_adjective: { type: 'synonym', target: 'hard' },
-  synonym_hard_adjective: { type: 'synonym', target: 'difficult' },
-  synonym_easy_adjective: { type: 'synonym', target: 'simple' },
-  synonym_need_verb: { type: 'synonym', target: 'require' },
-  synonym_permit_verb: { type: 'synonym', target: 'allow' },
-  synonym_show_verb: { type: 'synonym', target: 'display' },
-  synonym_build_verb: { type: 'synonym', target: 'create' },
-  synonym_repair_verb: { type: 'synonym', target: 'fix' },
-  synonym_fix_verb: { type: 'synonym', target: 'repair' },
-  synonym_truthful_adjective: { type: 'synonym', target: 'honest' },
-  synonym_honest_adjective: { type: 'synonym', target: 'truthful' }
+  synonym_small_adjective: {
+    type: 'synonym',
+    target: 'little',
+    noteJa: 'little は「小さい」に加えて、少なさ・幼さを表すこともあります。ここでは大きさの近い意味で確認します。',
+    noteEn: 'Little can also suggest a small amount or young age. Here, it is used as a close size meaning.'
+  },
+  synonym_little_adjective: {
+    type: 'synonym',
+    target: 'small',
+    noteJa: 'little は「小さい」に加えて、少なさ・幼さを表すこともあります。ここでは大きさの近い意味で確認します。',
+    noteEn: 'Little can also suggest a small amount or young age. Here, it is used as a close size meaning.'
+  },
+  synonym_fast_adjective: {
+    type: 'synonym',
+    target: 'rapid',
+    noteJa: 'rapid は速い変化・進行に使うことが多く、fast より少しかたい表現です。',
+    noteEn: 'Rapid is often used for quick change or progress and sounds a little more formal than fast.'
+  },
+  synonym_calm_adjective: {
+    type: 'synonym',
+    target: 'quiet',
+    noteJa: 'calm は落ち着いた状態、quiet は静かさが中心です。重なる場面で近い意味になります。',
+    noteEn: 'Calm focuses on a peaceful state; quiet focuses on low sound. They overlap in some contexts.'
+  },
+  synonym_quiet_adjective: {
+    type: 'synonym',
+    target: 'calm',
+    noteJa: 'calm は落ち着いた状態、quiet は静かさが中心です。重なる場面で近い意味になります。',
+    noteEn: 'Calm focuses on a peaceful state; quiet focuses on low sound. They overlap in some contexts.'
+  },
+  synonym_correct_adjective: {
+    type: 'synonym',
+    target: 'right',
+    noteJa: 'right は「正しい」のほかに「右」の意味もあります。ここでは「正しい」の意味で確認します。',
+    noteEn: 'Right can also mean the opposite of left. Here, it means correct.'
+  },
+  synonym_mistake_noun: {
+    type: 'synonym',
+    target: 'error',
+    noteJa: 'error は mistake より少しかたい表現で、機械・計算・手続きの誤りにもよく使います。',
+    noteEn: 'Error is a little more formal than mistake and is common for technical or procedural mistakes.'
+  },
+  synonym_difficult_adjective: {
+    type: 'synonym',
+    target: 'hard',
+    noteJa: 'hard は「難しい」のほかに「硬い」の意味もあります。ここでは難しさの意味で確認します。',
+    noteEn: 'Hard can also mean physically firm. Here, it means difficult.'
+  },
+  synonym_hard_adjective: {
+    type: 'synonym',
+    target: 'difficult',
+    noteJa: 'hard は「難しい」のほかに「硬い」の意味もあります。ここでは難しさの意味で確認します。',
+    noteEn: 'Hard can also mean physically firm. Here, it means difficult.'
+  },
+  synonym_easy_adjective: {
+    type: 'synonym',
+    target: 'simple',
+    noteJa: 'easy は「やりやすい」、simple は「単純な」が中心です。重なる場面で近い意味になります。',
+    noteEn: 'Easy focuses on low difficulty; simple focuses on low complexity. They overlap in some contexts.'
+  },
+  synonym_need_verb: {
+    type: 'synonym',
+    target: 'require',
+    noteJa: 'require は need より形式ばった表現になりやすいです。',
+    noteEn: 'Require is often more formal than need.'
+  },
+  synonym_permit_verb: {
+    type: 'synonym',
+    target: 'allow',
+    noteJa: 'permit は allow より形式ばった表現になりやすいです。',
+    noteEn: 'Permit is often more formal than allow.'
+  },
+  synonym_show_verb: {
+    type: 'synonym',
+    target: 'display',
+    noteJa: 'display は、見えるように示す・展示する意味が強い語です。',
+    noteEn: 'Display strongly suggests showing something so it can be seen, often publicly or visually.'
+  },
+  synonym_build_verb: {
+    type: 'synonym',
+    target: 'create',
+    noteJa: 'build は建てる・組み立てる、create は作り出す意味が広い語です。',
+    noteEn: 'Build often means construct; create is broader and means make something new.'
+  },
+  synonym_repair_verb: {
+    type: 'synonym',
+    target: 'fix',
+    noteJa: 'fix は repair より会話で広く使われることがあります。',
+    noteEn: 'Fix is often broader and more conversational than repair.'
+  },
+  synonym_fix_verb: {
+    type: 'synonym',
+    target: 'repair',
+    noteJa: 'fix は repair より会話で広く使われることがあります。',
+    noteEn: 'Fix is often broader and more conversational than repair.'
+  },
+  synonym_truthful_adjective: {
+    type: 'synonym',
+    target: 'honest',
+    noteJa: 'truthful は真実を述べること、honest は正直さ全般に使いやすい語です。',
+    noteEn: 'Truthful focuses on telling the truth; honest is broader and covers general honesty.'
+  },
+  synonym_honest_adjective: {
+    type: 'synonym',
+    target: 'truthful',
+    noteJa: 'truthful は真実を述べること、honest は正直さ全般に使いやすい語です。',
+    noteEn: 'Truthful focuses on telling the truth; honest is broader and covers general honesty.'
+  }
 };
 const PROOFING_PRIORITY_TAGS = new Set(
   'pronunciation-note rl-contrast katakana-gap abbreviation phrasal-verb'.split(' ')
@@ -16884,6 +16980,38 @@ function getPhrasalBridgeNote(word) {
   return `${currentUiLanguage === 'en' ? 'Bridge word' : '言い換えヒント'}: ${bridge}`;
 }
 
+function getRelationKindLabel(spec) {
+  if (spec?.type === 'synonym') return currentUiLanguage === 'en' ? 'closest meaning' : '近い意味の語';
+  if (spec?.type === 'antonym') return currentUiLanguage === 'en' ? 'opposite meaning' : '反対の意味の語';
+  return currentUiLanguage === 'en' ? 'word relation' : '語彙関係';
+}
+
+function getRelationNoteText(word) {
+  const spec = getWordRelationSpec(word);
+  if (!spec) return '';
+  const note = currentUiLanguage === 'en' ? spec.noteEn : spec.noteJa;
+  if (note) return note;
+  return spec.type === 'synonym'
+    ? currentUiLanguage === 'en'
+      ? 'Close meanings are not always interchangeable. Check the example and context.'
+      : '近い意味の語でも、いつも置き換えられるとは限りません。例文と文脈で確認します。'
+    : currentUiLanguage === 'en'
+      ? 'Opposite meanings can change with context. Check the core contrast here.'
+      : '反対の意味も文脈で変わることがあります。ここでは中心的な対比を確認します。';
+}
+
+function getRelationConnectionNote(word) {
+  const spec = getWordRelationSpec(word);
+  if (!spec) return '';
+  const targetWord = getRelationTargetWord(word);
+  const targetText = targetWord?.w || spec.target || '';
+  const relationLabel = getRelationKindLabel(spec);
+  const note = getRelationNoteText(word);
+  return currentUiLanguage === 'en'
+    ? `Relation note: ${word.w} -> ${targetText} (${relationLabel}). ${note}`
+    : `関係メモ: ${word.w} → ${targetText}（${relationLabel}）。${note}`;
+}
+
 function getWordConnectionNote(word) {
   const origin = getAbbreviationOrigin(word);
   if (origin && getWordCategories(word).has('abbreviation')) {
@@ -16891,6 +17019,8 @@ function getWordConnectionNote(word) {
   }
   const rlNote = getRlContrastNote(word);
   if (rlNote) return rlNote;
+  const relationNote = getRelationConnectionNote(word);
+  if (relationNote) return relationNote;
   return getPhrasalBridgeNote(word);
 }
 
@@ -18097,18 +18227,17 @@ function getWrongAnswerHint(word, selectedWord) {
   if (isRelationTestWord(word)) {
     const spec = getWordRelationSpec(word);
     const targetWord = getRelationTargetWord(word);
-    const relationLabel = spec?.type === 'synonym'
-      ? (currentUiLanguage === 'en' ? 'synonym' : '同義語')
-      : (currentUiLanguage === 'en' ? 'antonym' : '対義語');
+    const relationLabel = getRelationKindLabel(spec);
     const targetText = targetWord?.w || spec?.target || '';
+    const relationNote = getRelationNoteText(word);
     if (currentUiLanguage === 'en') {
       return selectedWord
-        ? `Correct answer: "${targetText}". Picked: "${selectedWord.w}". Choose the ${relationLabel} of "${word.w}".`
-        : `Correct answer: "${targetText}". Choose the ${relationLabel} of "${word.w}".`;
+        ? `Correct answer: "${targetText}". Picked: "${selectedWord.w}". Choose the ${relationLabel} for "${word.w}". ${relationNote}`
+        : `Correct answer: "${targetText}". Choose the ${relationLabel} for "${word.w}". ${relationNote}`;
     }
     return selectedWord
-      ? `正解は「${targetText}」。選んだのは「${selectedWord.w}」。${word.w}の${relationLabel}を選ぶ問題です。`
-      : `正解は「${targetText}」。${word.w}の${relationLabel}を選ぶ問題です。`;
+      ? `正解は「${targetText}」。選んだのは「${selectedWord.w}」。${word.w}の${relationLabel}を選ぶ問題です。${relationNote}`
+      : `正解は「${targetText}」。${word.w}の${relationLabel}を選ぶ問題です。${relationNote}`;
   }
 
   const correctMeaning = getShortMeaning(word.m);
@@ -18451,6 +18580,74 @@ function getTestNextStepMessage({ testLength, misses, isMissReview, remainingMis
     : '次の一手: まだ覚えているうちに、もう一回だけテスト。';
 }
 
+function getRelationTypeLabel(type) {
+  if (currentUiLanguage === 'en') return type === 'synonym' ? 'Synonyms' : 'Antonyms';
+  return type === 'synonym' ? '同義語' : '対義語';
+}
+
+function getRelationTypeCounts(words) {
+  return words.reduce((counts, word) => {
+    const type = getWordRelationSpec(word)?.type;
+    if (type === 'synonym' || type === 'antonym') counts[type]++;
+    return counts;
+  }, { synonym: 0, antonym: 0 });
+}
+
+function formatRelationTypeCounts(counts) {
+  return ['synonym', 'antonym']
+    .filter(type => counts[type] > 0)
+    .map(type => currentUiLanguage === 'en'
+      ? `${getRelationTypeLabel(type)}: ${counts[type]}`
+      : `${getRelationTypeLabel(type)} ${counts[type]}問`)
+    .join(' / ');
+}
+
+function getRelationCompleteMessage(misses) {
+  if (!testCards.length) return uiText('noCardsMessage');
+  if (misses > 0) {
+    return currentUiLanguage === 'en'
+      ? `${misses} missed ${misses === 1 ? 'relation was' : 'relations were'} saved to Miss Review.`
+      : `ミスした${misses}問は、ミス復習に残しました。`;
+  }
+  const summary = formatRelationTypeCounts(getRelationTypeCounts(testCards));
+  return currentUiLanguage === 'en'
+    ? `You checked ${testCards.length} word relations. ${summary}`
+    : `語と語のつながりを${testCards.length}問確認しました。${summary}`;
+}
+
+function getRelationFocusLine(misses, isPerfect20) {
+  if (!testCards.length) return '';
+  if (misses === 0) {
+    if (currentUiLanguage === 'en') {
+      return isPerfect20
+        ? 'Word relation master. Synonyms and antonyms both cleared.'
+        : 'Synonyms and antonyms both cleared.';
+    }
+    return isPerfect20
+      ? '語彙関係マスター。同義語・対義語どちらもクリア。'
+      : '同義語・対義語どちらもクリア。';
+  }
+  const missedSummary = formatRelationTypeCounts(getRelationTypeCounts(getTestMissedWords()));
+  return currentUiLanguage === 'en'
+    ? `Today’s weak points: ${missedSummary}.`
+    : `今日の弱点: ${missedSummary}。`;
+}
+
+function getRelationNextStepMessage(misses, isPerfect20) {
+  if (!testCards.length) return currentUiLanguage === 'en'
+    ? 'Next: widen the range in Settings to restart.'
+    : '次の一手: 設定で範囲を広げると再開できます。';
+  if (misses > 0) return currentUiLanguage === 'en'
+    ? 'Next: use Miss Review to recover the relation pairs you missed.'
+    : '次の一手: ミス復習で、間違えた関係ペアだけ回収。';
+  if (isPerfect20) return currentUiLanguage === 'en'
+    ? 'Next: keep the clean win, or play one more relation round.'
+    : '次の一手: 満点で一区切り。もう一回ゲームで定着させてもいい。';
+  return currentUiLanguage === 'en'
+    ? 'Next: play again, or switch to today’s 20 for meaning practice.'
+    : '次の一手: もう一回ゲームか、今日の20問で意味選択へ。';
+}
+
 function getWeaknessBucketLabel(word) {
   const categories = getWordCategories(word);
   for (const [category, label] of WEAKNESS_CATEGORY_PRIORITY) {
@@ -18687,6 +18884,7 @@ function showTestComplete() {
   if (completeBackBtn) completeBackBtn.hidden = false;
 
 	  const isMissReview = testSessionKind === 'missReview';
+	  const isRelationGame = testSessionKind === 'wordRelation';
 	  const misses = testMissedKeys.size;
 	  const isPerfect20 = testCards.length === TEST_CARD_LIMIT && testCorrect === TEST_CARD_LIMIT && misses === 0;
 	  const remainingMisses = getMissedReviewWords().length;
@@ -18696,9 +18894,10 @@ function showTestComplete() {
   completionAction = canContinueMissReview ? 'missReview' : 'restart';
   const completeIcon = document.getElementById('complete-icon');
   completeIcon.className = `complete-icon${isPerfect20 ? ' perfect-score-icon' : ' success-icon'}`;
-  completeIcon.textContent = isPerfect20 ? '20/20' : '✓';
+  completeIcon.textContent = isPerfect20 ? '20/20' : isRelationGame ? '↔' : '✓';
   document.getElementById('complete-title').textContent = isMissReviewCleared
     ? (remainingMisses === 0 ? uiText('weaknessClearedTitle') : uiText('missReviewClearTitle'))
+    : isRelationGame ? (isPerfect20 ? uiText('relationPerfectTitle') : uiText('relationCompleteTitle'))
     : isPerfect20 ? uiText('perfectTestTitle')
       : isMissReview ? uiText('missReviewCompleteTitle') : uiText('completeTestTitle');
   document.getElementById('cs-reviewed-label').textContent = uiText('questionCountLabel');
@@ -18707,12 +18906,14 @@ function showTestComplete() {
   const restartBtn = document.getElementById('restart-btn');
   restartBtn.textContent = canContinueMissReview
     ? uiText('missReview')
-    : isMissReviewCleared ? uiText('today20') : uiText('testAgain');
+    : isMissReviewCleared ? uiText('today20') : isRelationGame ? uiText('relationAgain') : uiText('testAgain');
   restartBtn.classList.toggle('miss-review', canContinueMissReview);
   document.getElementById('cs-reviewed').textContent = testCards.length;
   document.getElementById('cs-mastered').textContent = testCorrect;
   document.getElementById('cs-due').textContent = misses;
-  const baseCompleteMessage = testCards.length === 0
+  const baseCompleteMessage = isRelationGame
+    ? getRelationCompleteMessage(misses)
+    : testCards.length === 0
     ? uiText('noCardsMessage')
     : misses > 0
       ? currentUiLanguage === 'en'
@@ -18720,7 +18921,9 @@ function showTestComplete() {
         : `ミスした${misses}語は、ミス復習に残しました。`
       : '';
 	  document.getElementById('complete-msg').textContent = baseCompleteMessage;
-  const weaknessLine = isMissReviewCleared
+  const weaknessLine = isRelationGame
+    ? getRelationFocusLine(misses, isPerfect20)
+    : isMissReviewCleared
     ? (remainingMisses === 0
       ? currentUiLanguage === 'en'
         ? 'Weaknesses cleared. Miss Review is empty.'
@@ -18729,16 +18932,18 @@ function showTestComplete() {
         ? `Weaknesses cleared for this round. ${remainingMisses} ${remainingMisses === 1 ? 'word remains' : 'words remain'}.`
         : `今回の弱点回収完了。残り${remainingMisses}語もこの調子。`)
     : getWeaknessSummaryLine(isMissReview);
-	  setCompleteFocus(weaknessLine, isMissReviewCleared ? 'cleared' : 'normal');
+	  setCompleteFocus(weaknessLine, isMissReviewCleared || (isRelationGame && misses === 0) ? 'cleared' : 'normal');
 	  setCompleteNextStep(
-	    getTestNextStepMessage({
+	    isRelationGame
+	      ? getRelationNextStepMessage(misses, isPerfect20)
+	      : getTestNextStepMessage({
 	      testLength: testCards.length,
 	      misses,
 	      isMissReview,
 	      remainingMisses,
 	      isPerfect20
 	    }),
-	    (isMissReviewCleared && remainingMisses === 0) || isPerfect20 ? 'success' : 'normal'
+	    (isMissReviewCleared && remainingMisses === 0) || (isRelationGame && misses === 0) || isPerfect20 ? 'success' : 'normal'
 	  );
 		  if (isPerfect20) showRandomPerfectQuote();
 		  else {
