@@ -1211,6 +1211,11 @@
       text-overflow: ellipsis;
       white-space: nowrap;
     }
+    .test-front-pron.relation-prompt {
+      color: #0f766e;
+      font-size: 13px;
+      font-weight: 900;
+    }
     .test-front-pron:empty {
       display: none;
     }
@@ -1310,6 +1315,11 @@
     }
     .test-choice-meaning {
       vertical-align: middle;
+    }
+    .test-choice-card.relation-choice .test-choice-meaning {
+      color: #1e3a8a;
+      font-size: 17px;
+      font-weight: 900;
     }
     .test-choice-card:disabled {
       cursor: default;
@@ -2194,6 +2204,7 @@
     </div>
     <div class="quick-start-actions">
       <button class="quick-start-btn primary" type="button" onclick="startQuickTest('all')" data-ui-key="today20Short">今日の20問</button>
+      <button class="quick-start-btn" type="button" onclick="startQuickTest('wordRelation')" data-ui-key="relationGame">語彙関係ゲーム</button>
       <button class="quick-start-btn" type="button" onclick="startMissReviewSession()" data-ui-key="missReview">ミス復習</button>
       <button class="quick-start-btn" type="button" onclick="startWeakWordsSession()" data-ui-label-key="weakWords">苦手<span data-ui-key="weakWordsSub">つまずき語</span></button>
       <button class="quick-start-btn" type="button" onclick="startQuickStudy('katakanaGap')" data-ui-label-key="categoryKatakanaGap">カタカナ注意<span data-ui-key="katakanaSub">知ってるつもり</span></button>
@@ -10090,7 +10101,7 @@ const WORDS = [
     "level": "発展",
     "ipa": "əkˈseləreɪt",
     "ph": "アクセレレイト",
-    "m": "加速する、〜を加速させる（対義語: decelerate）",
+    "m": "加速する、〜を加速させる",
     "ex": "The new system can accelerate the work.",
     "exJa": "新しい仕組みは作業を加速させることができる。"
   },
@@ -10147,7 +10158,7 @@ const WORDS = [
     "level": "高校基礎",
     "ipa": "hɒt",
     "ph": "ホット",
-    "m": "暑い、熱い（対義語: cold）",
+    "m": "暑い、熱い",
     "ex": "The soup is hot.",
     "exJa": "そのスープは熱い。"
   },
@@ -10159,7 +10170,7 @@ const WORDS = [
     "level": "高校基礎",
     "ipa": "kəʊld",
     "ph": "コウルド",
-    "m": "寒い、冷たい（対義語: hot）",
+    "m": "寒い、冷たい",
     "ex": "The water is cold.",
     "exJa": "その水は冷たい。"
   },
@@ -10171,7 +10182,7 @@ const WORDS = [
     "level": "高校基礎",
     "ipa": "dɪˈkriːs",
     "ph": "ディクリース",
-    "m": "減少する、〜を減らす（対義語: increase）",
+    "m": "減少する、〜を減らす",
     "ex": "The number of mistakes decreased.",
     "exJa": "間違いの数は減った。"
   },
@@ -10183,7 +10194,7 @@ const WORDS = [
     "level": "高校基礎",
     "ipa": "rɪˈfjuːz",
     "ph": "リフューズ",
-    "m": "拒む、断る（対義語: accept）",
+    "m": "拒む、断る",
     "ex": "She refused the offer politely.",
     "exJa": "彼女はその申し出を丁寧に断った。"
   },
@@ -10195,7 +10206,7 @@ const WORDS = [
     "level": "高校基礎",
     "ipa": "əˈraɪv",
     "ph": "アライヴ",
-    "m": "到着する（対義語: leave）",
+    "m": "到着する",
     "ex": "The train will arrive soon.",
     "exJa": "その電車はもうすぐ到着する。"
   },
@@ -10207,7 +10218,7 @@ const WORDS = [
     "level": "高校基礎",
     "ipa": "end",
     "ph": "エンド",
-    "m": "終わり、終える（対義語: begin）",
+    "m": "終わり、終える",
     "ex": "The story ends happily.",
     "exJa": "その物語は幸せに終わる。"
   },
@@ -10219,7 +10230,7 @@ const WORDS = [
     "level": "高校基礎",
     "ipa": "baɪ",
     "ph": "バイ",
-    "m": "買う（対義語: sell）",
+    "m": "買う",
     "ex": "I will buy a new notebook.",
     "exJa": "私は新しいノートを買う。"
   },
@@ -10231,7 +10242,7 @@ const WORDS = [
     "level": "高校基礎",
     "ipa": "sel",
     "ph": "セル",
-    "m": "売る（対義語: buy）",
+    "m": "売る",
     "ex": "They sell fresh bread every morning.",
     "exJa": "彼らは毎朝焼きたてのパンを売る。"
   },
@@ -10243,7 +10254,7 @@ const WORDS = [
     "level": "高校基礎",
     "ipa": "ˈəʊpən",
     "ph": "オウプン",
-    "m": "開ける、開く（対義語: close）",
+    "m": "開ける、開く",
     "ex": "Open the window, please.",
     "exJa": "窓を開けてください。"
   },
@@ -10255,7 +10266,7 @@ const WORDS = [
     "level": "高校基礎",
     "ipa": "kləʊz",
     "ph": "クロウズ",
-    "m": "閉める、閉じる（対義語: open）",
+    "m": "閉める、閉じる",
     "ex": "Close the door quietly.",
     "exJa": "ドアを静かに閉めなさい。"
   },
@@ -10267,7 +10278,7 @@ const WORDS = [
     "level": "高校基礎",
     "ipa": "ɪnˈkluːd",
     "ph": "インクルード",
-    "m": "含む、含める（対義語: exclude）",
+    "m": "含む、含める",
     "ex": "The price includes breakfast.",
     "exJa": "その料金には朝食が含まれている。"
   },
@@ -10279,7 +10290,7 @@ const WORDS = [
     "level": "高校基礎",
     "ipa": "ɪkˈskluːd",
     "ph": "イクスクルード",
-    "m": "除外する（対義語: include）",
+    "m": "除外する",
     "ex": "The list excludes private information.",
     "exJa": "そのリストは個人情報を除外している。"
   },
@@ -10291,7 +10302,7 @@ const WORDS = [
     "level": "高校基礎",
     "ipa": "ʃrɪŋk",
     "ph": "シュリンク",
-    "m": "縮む、縮小する（対義語: expand）",
+    "m": "縮む、縮小する",
     "ex": "The sweater may shrink in hot water.",
     "exJa": "そのセーターは熱い水で縮むかもしれない。"
   },
@@ -10303,7 +10314,7 @@ const WORDS = [
     "level": "高校基礎",
     "ipa": "səkˈses",
     "ph": "サクセス",
-    "m": "成功（対義語: failure）",
+    "m": "成功",
     "ex": "Practice is important for success.",
     "exJa": "成功には練習が大切だ。"
   },
@@ -10315,7 +10326,7 @@ const WORDS = [
     "level": "高校基礎",
     "ipa": "seɪf",
     "ph": "セイフ",
-    "m": "安全な（対義語: dangerous）",
+    "m": "安全な",
     "ex": "This route is safe for children.",
     "exJa": "この道は子どもにとって安全だ。"
   },
@@ -10327,7 +10338,7 @@ const WORDS = [
     "level": "高校基礎",
     "ipa": "strɒŋ",
     "ph": "ストロング",
-    "m": "強い（対義語: weak）",
+    "m": "強い",
     "ex": "She has a strong voice.",
     "exJa": "彼女は力強い声をしている。"
   },
@@ -10339,7 +10350,7 @@ const WORDS = [
     "level": "高校基礎",
     "ipa": "wiːk",
     "ph": "ウィーク",
-    "m": "弱い（対義語: strong）",
+    "m": "弱い",
     "ex": "The signal is weak here.",
     "exJa": "ここでは電波が弱い。"
   },
@@ -10351,7 +10362,7 @@ const WORDS = [
     "level": "高校基礎",
     "ipa": "ˈsɪmpəl",
     "ph": "シンプル",
-    "m": "単純な、簡単な（対義語: complex）",
+    "m": "単純な、簡単な",
     "ex": "The instructions are simple.",
     "exJa": "その説明は簡単だ。"
   },
@@ -10363,7 +10374,7 @@ const WORDS = [
     "level": "高校基礎",
     "ipa": "ˈɜːli",
     "ph": "アーリ",
-    "m": "早い、早く（対義語: late）",
+    "m": "早い、早く",
     "ex": "We arrived early.",
     "exJa": "私たちは早く到着した。"
   },
@@ -10375,7 +10386,7 @@ const WORDS = [
     "level": "高校基礎",
     "ipa": "leɪt",
     "ph": "レイト",
-    "m": "遅い、遅く（対義語: early）",
+    "m": "遅い、遅く",
     "ex": "The bus was late.",
     "exJa": "そのバスは遅れた。"
   },
@@ -10497,7 +10508,7 @@ const WORDS = [
     "level": "発展",
     "ipa": "diːˈseləreɪt",
     "ph": "ディーセレレイト",
-    "m": "減速する、〜を減速させる（対義語: accelerate）",
+    "m": "減速する、〜を減速させる",
     "ex": "The car decelerated near the school.",
     "exJa": "その車は学校の近くで減速した。"
   },
@@ -10929,7 +10940,7 @@ const WORDS = [
     "level": "高校基礎",
     "ipa": "bɪɡ",
     "ph": "ビッグ",
-    "m": "大きい（同義語: large）",
+    "m": "大きい",
     "ex": "They live in a big house.",
     "exJa": "彼らは大きな家に住んでいる。"
   },
@@ -10941,7 +10952,7 @@ const WORDS = [
     "level": "高校基礎",
     "ipa": "lɑːdʒ",
     "ph": "ラージ",
-    "m": "大きい、広い（同義語: big）",
+    "m": "大きい、広い",
     "ex": "The room has a large window.",
     "exJa": "その部屋には大きな窓がある。"
   },
@@ -10953,7 +10964,7 @@ const WORDS = [
     "level": "高校基礎",
     "ipa": "smɔːl",
     "ph": "スモール",
-    "m": "小さい（同義語: little）",
+    "m": "小さい",
     "ex": "I found a small mistake.",
     "exJa": "私は小さな間違いを見つけた。"
   },
@@ -10965,7 +10976,7 @@ const WORDS = [
     "level": "高校基礎",
     "ipa": "ˈlɪtəl",
     "ph": "リトル",
-    "m": "小さい、少しの（同義語: small）",
+    "m": "小さい、少しの",
     "ex": "A little bird sat on the wall.",
     "exJa": "小さな鳥が壁にとまった。"
   },
@@ -10977,7 +10988,7 @@ const WORDS = [
     "level": "高校基礎",
     "ipa": "fɑːst",
     "ph": "ファースト",
-    "m": "速い、速く（同義語: rapid）",
+    "m": "速い、速く",
     "ex": "The train is fast.",
     "exJa": "その電車は速い。"
   },
@@ -10989,7 +11000,7 @@ const WORDS = [
     "level": "高校基礎",
     "ipa": "kɑːm",
     "ph": "カーム",
-    "m": "落ち着いた、穏やかな（同義語: quiet）",
+    "m": "落ち着いた、穏やかな",
     "ex": "The sea was calm in the morning.",
     "exJa": "朝の海は穏やかだった。"
   },
@@ -11001,7 +11012,7 @@ const WORDS = [
     "level": "高校基礎",
     "ipa": "ˈkwaɪət",
     "ph": "クワイエット",
-    "m": "静かな、落ち着いた（同義語: calm）",
+    "m": "静かな、落ち着いた",
     "ex": "The library is quiet.",
     "exJa": "図書館は静かだ。"
   },
@@ -11013,7 +11024,7 @@ const WORDS = [
     "level": "高校基礎",
     "ipa": "kəˈrekt",
     "ph": "コレクト",
-    "m": "正しい（同義語: right）",
+    "m": "正しい",
     "ex": "Your answer is correct.",
     "exJa": "あなたの答えは正しい。"
   },
@@ -11025,7 +11036,7 @@ const WORDS = [
     "level": "高校基礎",
     "ipa": "mɪˈsteɪk",
     "ph": "ミステイク",
-    "m": "間違い（同義語: error）",
+    "m": "間違い",
     "ex": "Everyone makes mistakes.",
     "exJa": "誰でも間違いをする。"
   },
@@ -11037,7 +11048,7 @@ const WORDS = [
     "level": "高校基礎",
     "ipa": "ˈdɪfɪkəlt",
     "ph": "ディフィカルト",
-    "m": "難しい（同義語: hard）",
+    "m": "難しい",
     "ex": "This question is difficult.",
     "exJa": "この問題は難しい。"
   },
@@ -11049,7 +11060,7 @@ const WORDS = [
     "level": "高校基礎",
     "ipa": "hɑːd",
     "ph": "ハード",
-    "m": "難しい、硬い（同義語: difficult）",
+    "m": "難しい、硬い",
     "ex": "The test was hard.",
     "exJa": "そのテストは難しかった。"
   },
@@ -11061,7 +11072,7 @@ const WORDS = [
     "level": "高校基礎",
     "ipa": "ˈiːzi",
     "ph": "イージー",
-    "m": "簡単な（同義語: simple）",
+    "m": "簡単な",
     "ex": "The first question was easy.",
     "exJa": "最初の問題は簡単だった。"
   },
@@ -11073,7 +11084,7 @@ const WORDS = [
     "level": "高校基礎",
     "ipa": "niːd",
     "ph": "ニード",
-    "m": "必要とする（同義語: require）",
+    "m": "必要とする",
     "ex": "We need more time.",
     "exJa": "私たちにはもっと時間が必要だ。"
   },
@@ -11085,7 +11096,7 @@ const WORDS = [
     "level": "高校基礎",
     "ipa": "pəˈmɪt",
     "ph": "パミット",
-    "m": "許可する（同義語: allow）",
+    "m": "許可する",
     "ex": "The rules permit one guest.",
     "exJa": "その規則は1人の同伴者を許可している。"
   },
@@ -11097,7 +11108,7 @@ const WORDS = [
     "level": "高校基礎",
     "ipa": "ʃəʊ",
     "ph": "ショウ",
-    "m": "見せる、示す（同義語: display）",
+    "m": "見せる、示す",
     "ex": "Show me your answer.",
     "exJa": "あなたの答えを見せてください。"
   },
@@ -11109,7 +11120,7 @@ const WORDS = [
     "level": "高校基礎",
     "ipa": "bɪld",
     "ph": "ビルド",
-    "m": "建てる、作る（同義語: create）",
+    "m": "建てる、作る",
     "ex": "They will build a new library.",
     "exJa": "彼らは新しい図書館を建てる。"
   },
@@ -11121,7 +11132,7 @@ const WORDS = [
     "level": "高校基礎",
     "ipa": "rɪˈpeə",
     "ph": "リペア",
-    "m": "修理する（同義語: fix）",
+    "m": "修理する",
     "ex": "He repaired the old chair.",
     "exJa": "彼は古い椅子を修理した。"
   },
@@ -11133,7 +11144,7 @@ const WORDS = [
     "level": "高校基礎",
     "ipa": "fɪks",
     "ph": "フィックス",
-    "m": "修理する、固定する（同義語: repair）",
+    "m": "修理する、固定する",
     "ex": "Can you fix this clock?",
     "exJa": "この時計を修理できますか。"
   },
@@ -11145,7 +11156,7 @@ const WORDS = [
     "level": "高校基礎",
     "ipa": "ˈtruːθfəl",
     "ph": "トゥルースフル",
-    "m": "正直な、真実を言う（同義語: honest）",
+    "m": "正直な、真実を言う",
     "ex": "A truthful report is important.",
     "exJa": "正直な報告は大切だ。"
   },
@@ -11157,7 +11168,7 @@ const WORDS = [
     "level": "高校基礎",
     "ipa": "ˈɒnɪst",
     "ph": "オニスト",
-    "m": "正直な（同義語: truthful）",
+    "m": "正直な",
     "ex": "He gave an honest answer.",
     "exJa": "彼は正直に答えた。"
   },
@@ -15195,13 +15206,13 @@ const UI_TEXT = {
     studyPrompt: 'タップすると答えが出るよ',
     next: '次へ',
     navPractice: '学習',
-    navTest: 'テスト',
+    navTest: 'テスト開始',
     navSettings: '設定',
     settingsTitle: '設定',
     settingsLead: 'よく使う設定を先に置き、発音や語形成の細かい設定は必要なときだけ開けます。',
     tabLevel: 'レベル',
     tabTheme: 'テーマ',
-    tabTest: 'テスト',
+    tabTest: 'テスト設定',
     tabDisplay: '表示',
     tabHistory: '履歴',
     chooseLevel: 'レベルを選ぶ',
@@ -15240,17 +15251,20 @@ const UI_TEXT = {
     introText: 'まずは20問。ミスした語は「ミス復習」に残ります。答えたあとは下の案内を右スワイプで次へ進めます。',
     today20: '今日の20問へ',
     today20Short: '今日の20問',
+    relationGame: '語彙関係ゲーム',
     close: '閉じる',
     quickStartTitle: '今日の入口',
     quickStartNote: '迷ったらここから',
     missReview: 'ミス復習',
     weakWords: '苦手',
     weakWordsSub: 'つまずき語',
-    testSettingsTitle: 'テスト',
+    testSettingsTitle: 'テスト設定',
     choice2: '2択',
     choice3: '3択',
     choice4: '4択',
-    testSettingsNote: '英単語だけを見て、日本語カードを選びます。テストは20問で区切ります。解答後は出題カードをタップすると裏面を確認できます。',
+    testSettingsNote: '通常は英単語だけを見て、日本語カードを選びます。語彙関係では同義語・対義語を選びます。テストは20問で区切ります。',
+    relationSynonymPrompt: '同義語を選ぶ',
+    relationAntonymPrompt: '対義語を選ぶ',
     displayLanguageTitle: '表示言語',
     languageJa: '日本語表示',
     languageEn: 'English UI',
@@ -15306,6 +15320,7 @@ const UI_TEXT = {
     audioUnsupported: '音声非対応',
     audioButtonUk: 'en_GB',
     audioButtonUs: 'en_US',
+    audioButtonFallback: '代替音声',
     audioUnsupportedNote: 'この端末では音声再生に対応していません。',
     voiceLoading: '音声を取得中',
     voiceLoadingNote: '音声候補を取得中です。少し待ってから設定を開き直してください。',
@@ -15317,6 +15332,7 @@ const UI_TEXT = {
     audioAriaUnsupported: 'この端末では音声再生に対応していません',
     audioAriaUk: 'en_GB音声で単語を再生',
     audioAriaUs: 'en_US音声で単語を再生',
+    audioFallbackAria: '指定した音声タグがないため、端末内の英語音声で再生',
     swipeLearn: '←前へ　　スワイプ　　次へ→',
     swipeLearnRate: '評価して次へ　右=バッチリ',
     swipeTestReady: '次へをタップ / 右スワイプ　→',
@@ -15369,13 +15385,13 @@ const UI_TEXT = {
     studyPrompt: 'Tap to see the answer',
     next: 'Next',
     navPractice: 'Practice',
-    navTest: 'Test',
+    navTest: 'Start test',
     navSettings: 'Settings',
     settingsTitle: 'Settings',
     settingsLead: 'Frequent controls are first. Detailed pronunciation and word-part options stay tucked away.',
     tabLevel: 'Level',
     tabTheme: 'Theme',
-    tabTest: 'Test',
+    tabTest: 'Test settings',
     tabDisplay: 'Display',
     tabHistory: 'History',
     chooseLevel: 'Choose level',
@@ -15414,17 +15430,20 @@ const UI_TEXT = {
     introText: 'Try 20 questions first. Missed words stay in Miss Review. After answering, swipe right on the guide below to move on.',
     today20: 'Start today’s 20',
     today20Short: 'Today’s 20',
+    relationGame: 'Word relation game',
     close: 'Close',
     quickStartTitle: 'Today’s start',
     quickStartNote: 'Start here when unsure',
     missReview: 'Miss Review',
     weakWords: 'Weak',
     weakWordsSub: 'Needs work',
-    testSettingsTitle: 'Test',
+    testSettingsTitle: 'Test settings',
     choice2: '2 choices',
     choice3: '3 choices',
     choice4: '4 choices',
-    testSettingsNote: 'Look at the English word and choose the Japanese meaning card. Tests stop at 20 questions. After answering, tap the word card to check the back.',
+    testSettingsNote: 'Usually, choose the Japanese meaning from the English word. In Word relations, choose a synonym or antonym. Tests stop at 20 questions.',
+    relationSynonymPrompt: 'Choose a synonym',
+    relationAntonymPrompt: 'Choose an antonym',
     displayLanguageTitle: 'Display language',
     languageJa: '日本語表示',
     languageEn: 'English UI',
@@ -15480,6 +15499,7 @@ const UI_TEXT = {
     audioUnsupported: 'Audio unsupported',
     audioButtonUk: 'en_GB',
     audioButtonUs: 'en_US',
+    audioButtonFallback: 'Alt audio',
     audioUnsupportedNote: 'This device does not support audio playback.',
     voiceLoading: 'Loading voices',
     voiceLoadingNote: 'Voice candidates are loading. Please wait and reopen settings.',
@@ -15491,6 +15511,7 @@ const UI_TEXT = {
     audioAriaUnsupported: 'This device does not support audio playback',
     audioAriaUk: 'Play word with en_GB voice',
     audioAriaUs: 'Play word with en_US voice',
+    audioFallbackAria: 'The selected voice tag is unavailable, so this uses this device’s English voice',
     swipeLearn: '← Previous　　Swipe　　Next →',
     swipeLearnRate: 'Rate it. Right swipe = Great',
     swipeTestReady: 'Tap Next or swipe right →',
@@ -15551,6 +15572,48 @@ const CATEGORY_TAGS = {
   pronunciationNote: 'pronunciation-note',
   rlContrast: 'rl-contrast',
   wordRelation: 'word-relation'
+};
+const WORD_RELATION_LINKS = {
+  antonym_hot_adjective: { type: 'antonym', target: 'cold' },
+  antonym_cold_adjective: { type: 'antonym', target: 'hot' },
+  antonym_decrease_verb: { type: 'antonym', target: 'increase' },
+  antonym_refuse_verb: { type: 'antonym', target: 'accept' },
+  antonym_arrive_verb: { type: 'antonym', target: 'leave' },
+  antonym_end_noun_verb: { type: 'antonym', target: 'begin' },
+  antonym_buy_verb: { type: 'antonym', target: 'sell' },
+  antonym_sell_verb: { type: 'antonym', target: 'buy' },
+  antonym_open_verb: { type: 'antonym', target: 'close' },
+  antonym_close_verb: { type: 'antonym', target: 'open' },
+  antonym_include_verb: { type: 'antonym', target: 'exclude' },
+  antonym_exclude_verb: { type: 'antonym', target: 'include' },
+  antonym_shrink_verb: { type: 'antonym', target: 'expand' },
+  antonym_success_noun: { type: 'antonym', target: 'failure' },
+  antonym_safe_adjective: { type: 'antonym', target: 'dangerous' },
+  antonym_strong_adjective: { type: 'antonym', target: 'weak' },
+  antonym_weak_adjective: { type: 'antonym', target: 'strong' },
+  antonym_simple_adjective: { type: 'antonym', target: 'complex' },
+  antonym_early_adjective_adverb: { type: 'antonym', target: 'late' },
+  antonym_late_adjective_adverb: { type: 'antonym', target: 'early' },
+  synonym_big_adjective: { type: 'synonym', target: 'large' },
+  synonym_large_adjective: { type: 'synonym', target: 'big' },
+  synonym_small_adjective: { type: 'synonym', target: 'little' },
+  synonym_little_adjective: { type: 'synonym', target: 'small' },
+  synonym_fast_adjective: { type: 'synonym', target: 'rapid' },
+  synonym_calm_adjective: { type: 'synonym', target: 'quiet' },
+  synonym_quiet_adjective: { type: 'synonym', target: 'calm' },
+  synonym_correct_adjective: { type: 'synonym', target: 'right' },
+  synonym_mistake_noun: { type: 'synonym', target: 'error' },
+  synonym_difficult_adjective: { type: 'synonym', target: 'hard' },
+  synonym_hard_adjective: { type: 'synonym', target: 'difficult' },
+  synonym_easy_adjective: { type: 'synonym', target: 'simple' },
+  synonym_need_verb: { type: 'synonym', target: 'require' },
+  synonym_permit_verb: { type: 'synonym', target: 'allow' },
+  synonym_show_verb: { type: 'synonym', target: 'display' },
+  synonym_build_verb: { type: 'synonym', target: 'create' },
+  synonym_repair_verb: { type: 'synonym', target: 'fix' },
+  synonym_fix_verb: { type: 'synonym', target: 'repair' },
+  synonym_truthful_adjective: { type: 'synonym', target: 'honest' },
+  synonym_honest_adjective: { type: 'synonym', target: 'truthful' }
 };
 const PROOFING_PRIORITY_TAGS = new Set(
   'pronunciation-note rl-contrast katakana-gap abbreviation phrasal-verb'.split(' ')
@@ -16340,6 +16403,25 @@ function selectTaggedEnglishVoice(voices, accent = currentSpeechAccent) {
     .sort((a, b) => getVoiceRank(a, accent) - getVoiceRank(b, accent) || String(a.name).localeCompare(String(b.name)))[0] || null;
 }
 
+function selectFallbackEnglishVoice(voices, accent = currentSpeechAccent) {
+  const englishVoices = [...voices].filter(isEnglishVoice);
+  if (selectedSpeechVoiceKey && selectedSpeechVoiceKey !== SPEECH_AUTO_FEMALE) {
+    const selectedVoice = englishVoices.find(voice => getSpeechVoiceKey(voice) === selectedSpeechVoiceKey);
+    if (selectedVoice) return selectedVoice;
+  }
+  return englishVoices
+    .sort((a, b) => getVoiceRank(a, accent) - getVoiceRank(b, accent) || String(a.name).localeCompare(String(b.name)))[0] || null;
+}
+
+function resolveEnglishVoice(voices, accent = currentSpeechAccent) {
+  const taggedVoice = selectTaggedEnglishVoice(voices, accent);
+  if (taggedVoice) return { voice: taggedVoice, isFallback: false };
+  const fallbackVoice = selectFallbackEnglishVoice(voices, accent);
+  return fallbackVoice
+    ? { voice: fallbackVoice, isFallback: true }
+    : { voice: null, isFallback: false };
+}
+
 function getSpeechVoiceLabel(voice) {
   const gender = getVoiceGenderHint(voice);
   const genderLabel = currentUiLanguage === 'en'
@@ -16435,8 +16517,11 @@ function getAudioVoiceUnavailableText(accent = currentSpeechAccent) {
 function getAudioAriaLabel(accent = currentSpeechAccent) {
   if (!speechVoiceReady) return uiText('audioAriaUnsupported');
   const voices = getSpeechEngine()?.getVoices() || [];
-  const voice = selectTaggedEnglishVoice(voices, accent);
+  const { voice, isFallback } = resolveEnglishVoice(voices, accent);
   const accentAria = accent === 'us' ? uiText('audioAriaUs') : uiText('audioAriaUk');
+  if (voice && isFallback) {
+    return `${uiText('audioFallbackAria')}（${voice.name || 'English'} / ${voice.lang || 'en'}）`;
+  }
   if (voice) {
     return `${accentAria}（${voice.name || 'English'} / ${voice.lang || getSpeechLang(accent)}）`;
   }
@@ -16455,11 +16540,15 @@ function updateAudioButtons() {
       : button.dataset.audioAccent === 'uk'
         ? 'uk'
         : currentSpeechAccent;
-    const voice = isSupported ? selectTaggedEnglishVoice(voices, accent) : null;
+    const { voice, isFallback } = isSupported
+      ? resolveEnglishVoice(voices, accent)
+      : { voice: null, isFallback: false };
     button.disabled = !isSupported || !voice;
-    button.textContent = button.dataset.audioAccent === 'current'
-      ? getAudioButtonLabel(currentSpeechAccent)
-      : getAudioAccentLabel(accent);
+    button.textContent = isFallback
+      ? uiText('audioButtonFallback')
+      : button.dataset.audioAccent === 'current'
+        ? getAudioButtonLabel(currentSpeechAccent)
+        : getAudioAccentLabel(accent);
     button.setAttribute('aria-label', getAudioAriaLabel(accent));
     button.title = getAudioAriaLabel(accent);
   });
@@ -16526,7 +16615,10 @@ function refreshVisiblePronunciationDisplay() {
   }
   if (currentMode === 'test' && testCards[testIndex]) {
     const word = testCards[testIndex];
-    document.getElementById('test-front-pron').textContent = getTestFrontPronunciationText(word);
+    const testFrontPron = document.getElementById('test-front-pron');
+    const isRelationQuestion = isRelationTestWord(word);
+    testFrontPron.textContent = isRelationQuestion ? getRelationPromptText(word) : getTestFrontPronunciationText(word);
+    testFrontPron.classList.toggle('relation-prompt', isRelationQuestion);
     document.getElementById('test-back-pron').textContent = getTestPronunciationText(word);
   }
 }
@@ -16570,7 +16662,7 @@ function speakEnglishWord(word, event, accent = currentSpeechAccent) {
   }
   refreshSpeechVoices();
   const voices = synth.getVoices();
-  const voice = selectTaggedEnglishVoice(voices, accent);
+  const { voice } = resolveEnglishVoice(voices, accent);
   if (!voice) {
     alert(voices.some(isEnglishVoice) ? getAudioVoiceUnavailableText(accent) : uiText('voiceLoadingNote'));
     updateAudioButtons();
@@ -17401,6 +17493,55 @@ function createAdaptiveTestDeck(activeWords, limit = TEST_CARD_LIMIT) {
   ].slice(0, targetCount);
 }
 
+function normalizeRelationWordText(value) {
+  return String(value || '').trim().toLowerCase();
+}
+
+function getWordRelationSpec(word) {
+  return WORD_RELATION_LINKS[getWordIdKey(word)] || null;
+}
+
+function isRelationTestKind() {
+  return testSessionKind === 'wordRelation';
+}
+
+function findWordByText(wordText, preferWordRelation = false) {
+  const normalized = normalizeRelationWordText(wordText);
+  if (!normalized) return null;
+  if (preferWordRelation) {
+    const relationWord = WORDS.find(word =>
+      normalizeRelationWordText(word.w) === normalized &&
+      getWordCategories(word).has('word-relation')
+    );
+    if (relationWord) return relationWord;
+  }
+  return WORDS.find(word => normalizeRelationWordText(word.w) === normalized) || null;
+}
+
+function getRelationTargetWord(word) {
+  const spec = getWordRelationSpec(word);
+  if (!spec) return null;
+  return findWordByText(spec.target, true);
+}
+
+function isRelationTestWord(word) {
+  return isRelationTestKind() && Boolean(getWordRelationSpec(word)) && Boolean(getRelationTargetWord(word));
+}
+
+function getRelationPromptText(word) {
+  const spec = getWordRelationSpec(word);
+  if (spec?.type === 'synonym') return uiText('relationSynonymPrompt');
+  if (spec?.type === 'antonym') return uiText('relationAntonymPrompt');
+  return getTestFrontPronunciationText(word);
+}
+
+function createRelationTestDeck(activeWords, limit = TEST_CARD_LIMIT) {
+  const relationWords = uniqueCards(activeWords).filter(word =>
+    Boolean(getWordRelationSpec(word)) && Boolean(getRelationTargetWord(word))
+  );
+  return shuffle(relationWords).slice(0, Math.min(limit, relationWords.length));
+}
+
 function startSession() {
   document.body.classList.remove('test-mode');
   currentMode = 'learn';
@@ -17550,8 +17691,13 @@ function beginTestSession(cards, kind = 'normal') {
 
 function startTestSession() {
   markIntroSeen();
+  showLearnView();
   const activeWords = getActiveWords();
-  beginTestSession(createAdaptiveTestDeck(activeWords), 'normal');
+  const isRelationScope = currentCategory === 'wordRelation';
+  const testDeck = isRelationScope
+    ? createRelationTestDeck(activeWords)
+    : createAdaptiveTestDeck(activeWords);
+  beginTestSession(testDeck, isRelationScope ? 'wordRelation' : 'normal');
 }
 
 function startMissReviewSession() {
@@ -17609,7 +17755,7 @@ function getDistractorPool(correctWord, neededDistractors = currentTestChoiceCou
   return [...scopedFirst, ...shuffle(fallback)];
 }
 
-function buildTestChoices(correctWord) {
+function buildMeaningTestChoices(correctWord) {
   const activeWords = getActiveWords();
   const choiceCount = Math.max(2, Math.min(currentTestChoiceCount, activeWords.length || currentTestChoiceCount));
   const neededDistractors = Math.max(0, choiceCount - 1);
@@ -17618,6 +17764,63 @@ function buildTestChoices(correctWord) {
     { word: correctWord, correct: true },
     ...distractors.map(word => ({ word, correct: false }))
   ]);
+}
+
+function uniqueChoiceWords(words, excludedWords = new Set()) {
+  const seen = new Set([...excludedWords].map(normalizeRelationWordText));
+  return words.filter(word => {
+    const normalized = normalizeRelationWordText(word?.w);
+    if (!normalized || seen.has(normalized)) return false;
+    seen.add(normalized);
+    return true;
+  });
+}
+
+function sharesPartWith(word, referenceWord) {
+  const referenceParts = new Set(getPartKeys(referenceWord));
+  return getPartKeys(word).some(part => referenceParts.has(part));
+}
+
+function getRelationChoicePool(correctWord, correctTargetWord) {
+  const spec = getWordRelationSpec(correctWord);
+  const excluded = new Set([correctWord.w, correctTargetWord?.w]);
+  const relationSources = WORDS.filter(word => getWordRelationSpec(word));
+  const sameTypeTargets = relationSources
+    .filter(word => getWordRelationSpec(word)?.type === spec?.type)
+    .map(getRelationTargetWord)
+    .filter(Boolean);
+  const otherRelationTargets = relationSources
+    .filter(word => getWordRelationSpec(word)?.type !== spec?.type)
+    .map(getRelationTargetWord)
+    .filter(Boolean);
+  const samePartCandidates = [
+    ...shuffle(sameTypeTargets),
+    ...shuffle(otherRelationTargets),
+    ...shuffle(WORDS)
+  ].filter(word => sharesPartWith(word, correctTargetWord));
+  return uniqueChoiceWords(samePartCandidates, excluded);
+}
+
+function buildRelationTestChoices(correctWord) {
+  const correctTargetWord = getRelationTargetWord(correctWord);
+  if (!correctTargetWord) return buildMeaningTestChoices(correctWord);
+  const pool = getRelationChoicePool(correctWord, correctTargetWord);
+  const choiceCount = Math.max(2, Math.min(currentTestChoiceCount, pool.length + 1));
+  const distractors = pool.slice(0, Math.max(0, choiceCount - 1));
+  return shuffle([
+    { word: correctTargetWord, correct: true, relationChoice: true },
+    ...distractors.map(word => ({ word, correct: false, relationChoice: true }))
+  ]);
+}
+
+function buildTestChoices(correctWord) {
+  return isRelationTestWord(correctWord)
+    ? buildRelationTestChoices(correctWord)
+    : buildMeaningTestChoices(correctWord);
+}
+
+function getTestChoiceDisplayText(choice, promptWord) {
+  return isRelationTestWord(promptWord) ? choice.word.w : choice.word.m;
 }
 
 function setTestCardFlipped(nextFlipped) {
@@ -17678,10 +17881,13 @@ function showTestQuestion() {
   if (testIndex >= testCards.length || testCards.length === 0) { showTestComplete(); return; }
 
   const word = testCards[testIndex];
+  const isRelationQuestion = isRelationTestWord(word);
   testAnswered = false;
   setTestCardFlipped(false);
   document.getElementById('test-word-text').textContent = word.w;
-  document.getElementById('test-front-pron').textContent = getTestFrontPronunciationText(word);
+  const testFrontPron = document.getElementById('test-front-pron');
+  testFrontPron.textContent = isRelationQuestion ? getRelationPromptText(word) : getTestFrontPronunciationText(word);
+  testFrontPron.classList.toggle('relation-prompt', isRelationQuestion);
   document.querySelector('.test-word-card')?.classList.remove('wrong-cue');
   document.querySelector('.test-word-card')?.classList.remove('feedback-visible');
   updateTestCardBack(word);
@@ -17697,21 +17903,23 @@ function showTestQuestion() {
   letterRow.innerHTML = '';
   buildTestChoices(word).forEach((choice, index) => {
     const label = TEST_CHOICE_LABELS[index] || String(index + 1);
+    const choiceDisplayText = getTestChoiceDisplayText(choice, word);
     const button = document.createElement('button');
     button.type = 'button';
     button.className = 'test-choice-card';
+    button.classList.toggle('relation-choice', isRelationQuestion);
     const labelSpan = document.createElement('span');
     labelSpan.className = 'test-choice-label';
     labelSpan.textContent = label;
     const meaningSpan = document.createElement('span');
     meaningSpan.className = 'test-choice-meaning';
-    meaningSpan.textContent = choice.word.m;
+    meaningSpan.textContent = choiceDisplayText;
     button.append(labelSpan, meaningSpan);
     button.setAttribute(
       'aria-label',
       currentUiLanguage === 'en'
-        ? `Press ${index + 1} to choose ${label}: ${choice.word.m}`
-        : `${index + 1}キーで${label} ${choice.word.m}を選ぶ`
+        ? `Press ${index + 1} to choose ${label}: ${choiceDisplayText}`
+        : `${index + 1}キーで${label} ${choiceDisplayText}を選ぶ`
     );
     button.title = currentUiLanguage === 'en' ? `Press ${index + 1}` : `${index + 1}キーで選択`;
     button.dataset.correct = choice.correct ? 'true' : 'false';
@@ -17814,6 +18022,23 @@ function getFocusHint(word) {
 }
 
 function getWrongAnswerHint(word, selectedWord) {
+  if (isRelationTestWord(word)) {
+    const spec = getWordRelationSpec(word);
+    const targetWord = getRelationTargetWord(word);
+    const relationLabel = spec?.type === 'synonym'
+      ? (currentUiLanguage === 'en' ? 'synonym' : '同義語')
+      : (currentUiLanguage === 'en' ? 'antonym' : '対義語');
+    const targetText = targetWord?.w || spec?.target || '';
+    if (currentUiLanguage === 'en') {
+      return selectedWord
+        ? `Correct answer: "${targetText}". Picked: "${selectedWord.w}". Choose the ${relationLabel} of "${word.w}".`
+        : `Correct answer: "${targetText}". Choose the ${relationLabel} of "${word.w}".`;
+    }
+    return selectedWord
+      ? `正解は「${targetText}」。選んだのは「${selectedWord.w}」。${word.w}の${relationLabel}を選ぶ問題です。`
+      : `正解は「${targetText}」。${word.w}の${relationLabel}を選ぶ問題です。`;
+  }
+
   const correctMeaning = getShortMeaning(word.m);
   const focusHint = getFocusHint(word);
   if (!selectedWord || selectedWord === word) {
@@ -18095,9 +18320,12 @@ function showPreviousCard() {
 }
 
 function getTestScoreLabel() {
-  const base = testSessionKind === 'missReview'
-    ? `${uiText('missReviewScore')}: ${testCorrect}${currentUiLanguage === 'en' ? ' ' : ''}${uiText('correctQuestions')}`
-    : `${uiText('testScore')}: ${testCorrect}${currentUiLanguage === 'en' ? ' ' : ''}${uiText('correctQuestions')}`;
+  const scoreTitle = testSessionKind === 'missReview'
+    ? uiText('missReviewScore')
+    : testSessionKind === 'wordRelation'
+      ? uiText('categoryWordRelation')
+      : uiText('testScore');
+  const base = `${scoreTitle}: ${testCorrect}${currentUiLanguage === 'en' ? ' ' : ''}${uiText('correctQuestions')}`;
   if (testCurrentStreak < 2) return base;
   return currentUiLanguage === 'en'
     ? `${base} / ${testCurrentStreak} ${uiText('inARow')}`
