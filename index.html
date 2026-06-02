@@ -11007,8 +11007,8 @@ const WORDS = [
     "ipa": "fɑːst",
     "ph": "ファースト",
     "m": "速い、速く",
-    "ex": "The train is fast.",
-    "exJa": "その電車は速い。"
+    "ex": "The project moved at a fast pace.",
+    "exJa": "そのプロジェクトは速いペースで進んだ。"
   },
   {
     "id": "synonym_calm_adjective",
@@ -11127,8 +11127,8 @@ const WORDS = [
     "ipa": "ʃəʊ",
     "ph": "ショウ",
     "m": "見せる、示す",
-    "ex": "Show me your answer.",
-    "exJa": "あなたの答えを見せてください。"
+    "ex": "The screen shows the result.",
+    "exJa": "その画面は結果を表示している。"
   },
   {
     "id": "synonym_build_verb",
@@ -11139,8 +11139,8 @@ const WORDS = [
     "ipa": "bɪld",
     "ph": "ビルド",
     "m": "建てる、作る",
-    "ex": "They will build a new library.",
-    "exJa": "彼らは新しい図書館を建てる。"
+    "ex": "They build useful tools for learners.",
+    "exJa": "彼らは学習者に役立つ道具を作る。"
   },
   {
     "id": "synonym_repair_verb",
@@ -15610,8 +15610,18 @@ const WORD_RELATION_LINKS = {
   antonym_cold_adjective: { type: 'antonym', target: 'hot' },
   antonym_decrease_verb: { type: 'antonym', target: 'increase' },
   antonym_refuse_verb: { type: 'antonym', target: 'accept' },
-  antonym_arrive_verb: { type: 'antonym', target: 'leave' },
-  antonym_end_noun_verb: { type: 'antonym', target: 'begin' },
+  antonym_arrive_verb: {
+    type: 'antonym',
+    target: 'depart',
+    noteJa: 'arrive は「到着する」、depart は「出発する」です。leave も近い反対になりますが、「残す」の意味もあるため、ここでは depart で確認します。',
+    noteEn: 'Arrive means reach a place; depart means leave from a place. Leave is also possible, but it has other meanings, so depart is clearer here.'
+  },
+  antonym_end_noun_verb: {
+    type: 'antonym',
+    target: 'begin',
+    noteJa: 'end と begin は動詞の「終わる／始まる」で反対になります。名詞の end に対しては beginning が自然です。',
+    noteEn: 'End and begin are opposites as verbs. For the noun end, beginning is the more direct opposite.'
+  },
   antonym_buy_verb: { type: 'antonym', target: 'sell' },
   antonym_sell_verb: { type: 'antonym', target: 'buy' },
   antonym_open_verb: { type: 'antonym', target: 'close' },
@@ -15619,15 +15629,35 @@ const WORD_RELATION_LINKS = {
   antonym_include_verb: { type: 'antonym', target: 'exclude' },
   antonym_exclude_verb: { type: 'antonym', target: 'include' },
   antonym_shrink_verb: { type: 'antonym', target: 'expand' },
-  antonym_success_noun: { type: 'antonym', target: 'failure' },
+  antonym_success_noun: {
+    type: 'antonym',
+    target: 'failure',
+    noteJa: 'failure は「失敗」の意味で success の反対です。「故障」の意味ではこの対比とは別に考えます。',
+    noteEn: 'Failure is the opposite of success when it means not succeeding. Its machine-breakdown meaning is separate.'
+  },
   antonym_safe_adjective: { type: 'antonym', target: 'dangerous' },
   antonym_strong_adjective: { type: 'antonym', target: 'weak' },
   antonym_weak_adjective: { type: 'antonym', target: 'strong' },
-  antonym_simple_adjective: { type: 'antonym', target: 'complex' },
+  antonym_simple_adjective: {
+    type: 'antonym',
+    target: 'complex',
+    noteJa: 'simple と complex は、仕組みや構造が単純か複雑かで反対になります。simple は「簡単な」の意味でも使います。',
+    noteEn: 'Simple and complex contrast in structure or design. Simple can also mean easy.'
+  },
   antonym_early_adjective_adverb: { type: 'antonym', target: 'late' },
   antonym_late_adjective_adverb: { type: 'antonym', target: 'early' },
-  synonym_big_adjective: { type: 'synonym', target: 'large' },
-  synonym_large_adjective: { type: 'synonym', target: 'big' },
+  synonym_big_adjective: {
+    type: 'synonym',
+    target: 'large',
+    noteJa: 'big は会話で広く使いやすく、large は大きさ・量を少し客観的に表すことが多い語です。',
+    noteEn: 'Big is common in everyday speech; large often sounds a little more neutral or measured.'
+  },
+  synonym_large_adjective: {
+    type: 'synonym',
+    target: 'big',
+    noteJa: 'big は会話で広く使いやすく、large は大きさ・量を少し客観的に表すことが多い語です。',
+    noteEn: 'Big is common in everyday speech; large often sounds a little more neutral or measured.'
+  },
   synonym_small_adjective: {
     type: 'synonym',
     target: 'little',
@@ -15643,8 +15673,8 @@ const WORD_RELATION_LINKS = {
   synonym_fast_adjective: {
     type: 'synonym',
     target: 'rapid',
-    noteJa: 'rapid は速い変化・進行に使うことが多く、fast より少しかたい表現です。',
-    noteEn: 'Rapid is often used for quick change or progress and sounds a little more formal than fast.'
+    noteJa: 'rapid は速い変化・進行・ペースに使うことが多く、fast より少しかたい表現です。',
+    noteEn: 'Rapid is often used for quick change, progress, or pace and sounds a little more formal than fast.'
   },
   synonym_calm_adjective: {
     type: 'synonym',
