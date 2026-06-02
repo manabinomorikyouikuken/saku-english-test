@@ -283,6 +283,13 @@
       grid-template-columns: repeat(2, 1fr);
       gap: 8px;
     }
+    .test-entry-actions {
+      grid-template-columns: 1fr;
+    }
+    .test-entry-panel {
+      margin-top: clamp(18px, 8svh, 48px);
+      margin-bottom: 12px;
+    }
     .quick-start-btn {
       border: 1px solid var(--warm-border);
       background: var(--warm-primary-soft);
@@ -2007,6 +2014,17 @@
   </div>
 
   <div id="card-area">
+    <section class="quick-start-panel test-entry-panel" id="test-entry-panel" aria-label="テストとゲームの入口" hidden>
+      <div class="quick-start-head">
+        <div class="quick-start-title" data-ui-key="testEntryTitle">テストとゲーム</div>
+        <div class="quick-start-note" data-ui-key="testEntryNote">選んで始める</div>
+      </div>
+      <div class="quick-start-actions test-entry-actions">
+        <button class="quick-start-btn primary" type="button" onclick="startQuickTest('all')" data-ui-key="today20Short">今日の20問</button>
+        <button class="quick-start-btn" type="button" onclick="startQuickTest('wordRelation')" data-ui-key="relationGame">語彙関係ゲーム</button>
+        <button class="quick-start-btn" type="button" onclick="startMissReviewSession()" data-ui-key="missReview">ミス復習</button>
+      </div>
+    </section>
     <div class="card-prompt" id="study-prompt" data-ui-key="studyPrompt">タップすると答えが出るよ</div>
     <div class="card-container" id="card-container" role="button" tabindex="0" aria-label="単語カードを反転">
       <div class="card" id="card">
@@ -2111,7 +2129,7 @@
 
   <div class="learn-bottom-bar">
     <button class="settings-open-btn mode-btn active" id="learn-mode-btn" type="button" onclick="showLearningTab()" data-ui-key="navPractice">学習</button>
-    <button class="settings-open-btn mode-btn test-open-btn" id="test-mode-btn" type="button" onclick="startTestSession()" data-ui-key="navTest">テスト</button>
+    <button class="settings-open-btn mode-btn test-open-btn" id="test-mode-btn" type="button" onclick="showTestEntryPanel()" data-ui-key="navTest">テスト</button>
     <button class="settings-open-btn" id="settings-mode-btn" type="button" onclick="showSettingsView()" data-ui-key="navSettings">設定</button>
   </div>
 </main>
@@ -15255,6 +15273,10 @@ const UI_TEXT = {
     close: '閉じる',
     quickStartTitle: '今日の入口',
     quickStartNote: '迷ったらここから',
+    testEntryTitle: 'テストとゲーム',
+    testEntryNote: '選んで始める',
+    testEntryProgress: 'テスト入口',
+    testEntryDue: '今日の20問 / 語彙関係 / ミス復習',
     missReview: 'ミス復習',
     weakWords: '苦手',
     weakWordsSub: 'つまずき語',
@@ -15434,6 +15456,10 @@ const UI_TEXT = {
     close: 'Close',
     quickStartTitle: 'Today’s start',
     quickStartNote: 'Start here when unsure',
+    testEntryTitle: 'Tests and games',
+    testEntryNote: 'Choose a start',
+    testEntryProgress: 'Test start',
+    testEntryDue: 'Today’s 20 / Word relations / Miss Review',
     missReview: 'Miss Review',
     weakWords: 'Weak',
     weakWordsSub: 'Needs work',
@@ -15992,6 +16018,7 @@ function applyUiLanguage() {
   updateStats();
   if (currentMode === 'test') setTestCardFlipped(testCardFlipped);
   updateSettingsPagerHeight();
+  if (currentMode === 'testEntry') updateTestEntryStatus();
 }
 
 function setUiLanguage(language) {
@@ -16073,6 +16100,49 @@ function showLearningTab() {
     return;
   }
   startSession();
+}
+
+function hideTestEntryPanel() {
+  const panel = document.getElementById('test-entry-panel');
+  if (panel) panel.hidden = true;
+}
+
+function updateTestEntryStatus() {
+  document.getElementById('progress-fill').style.width = '0%';
+  document.getElementById('progress-text').textContent = uiText('testEntryProgress');
+  document.getElementById('due-text').textContent = uiText('testEntryDue');
+}
+
+function showTestEntryPanel() {
+  markIntroSeen();
+  currentMode = 'testEntry';
+  testSessionKind = 'normal';
+  testCards = [];
+  testIndex = 0;
+  testCorrect = 0;
+  testCurrentStreak = 0;
+  testBestStreak = 0;
+  testAnswered = false;
+  testMissedKeys = new Set();
+  testPerfectQuote = null;
+  completionAction = 'restart';
+
+  showLearnView();
+  document.body.classList.remove('test-mode');
+  document.getElementById('session-complete').style.display = 'none';
+  document.getElementById('study-prompt').style.display = 'none';
+  document.getElementById('card-container').style.display = 'none';
+  document.getElementById('test-panel').style.display = 'none';
+  setLearningAudioButtonVisible(false);
+  updateRatingControls();
+  const swipeMsg = document.getElementById('swipe-msg');
+  swipeMsg.style.display = 'none';
+  setTestSwipeHintReady(false);
+  const panel = document.getElementById('test-entry-panel');
+  if (panel) panel.hidden = false;
+  updateModeButtons();
+  updateStats();
+  updateTestEntryStatus();
 }
 
 function loadData() {
@@ -17158,7 +17228,7 @@ function applyFrontMetaVisibility() {
 }
 
 function updateModeButtons() {
-  const isTest = currentMode === 'test';
+  const isTest = currentMode === 'test' || currentMode === 'testEntry';
   document.getElementById('learn-mode-btn')?.classList.toggle('active', !isTest);
   document.getElementById('test-mode-btn')?.classList.toggle('active', isTest);
   updateIntroPanelVisibility();
@@ -17543,6 +17613,7 @@ function createRelationTestDeck(activeWords, limit = TEST_CARD_LIMIT) {
 }
 
 function startSession() {
+  hideTestEntryPanel();
   document.body.classList.remove('test-mode');
   currentMode = 'learn';
   completionAction = 'restart';
@@ -17655,6 +17726,7 @@ function updateSwipeMessage() {
 }
 
 function beginTestSession(cards, kind = 'normal') {
+  hideTestEntryPanel();
   document.body.classList.add('test-mode');
   currentMode = 'test';
   testSessionKind = kind;
@@ -18548,13 +18620,16 @@ function updateStats() {
   setText('stat-due', due);
   document.getElementById('due-text').textContent = currentMode === 'test'
     ? getTestScoreLabel()
-    : `${uiText('dueCandidatesCount')}: ${formatItemCount(due)}`;
+    : currentMode === 'testEntry'
+      ? uiText('testEntryDue')
+      : `${uiText('dueCandidatesCount')}: ${formatItemCount(due)}`;
   setText('stat-left', Math.max(0, target - mastered));
   updateGrowthBadge(meta, missedReviewCount);
   updateCategoryButtons();
 }
 
 function showComplete() {
+  hideTestEntryPanel();
   document.getElementById('study-prompt').style.display = 'none';
   document.getElementById('card-container').style.display = 'none';
   document.getElementById('test-panel').style.display = 'none';
@@ -18862,6 +18937,7 @@ document.addEventListener('keydown', e => {
     }
     return;
   }
+  if (currentMode !== 'learn') return;
   if (e.key === ' ' || e.key === 'Enter' || e.key === 'ArrowUp') { e.preventDefault(); flipCard(); }
   if (e.key === 'ArrowRight') { e.preventDefault(); rate(5); }
   if (e.key === 'ArrowLeft') { e.preventDefault(); showPreviousCard(); }
