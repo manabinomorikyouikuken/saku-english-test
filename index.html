@@ -15257,7 +15257,7 @@ const UI_TEXT = {
     categoryRlContrast: 'R/L注意',
     categoryWordRelation: '語彙関係',
     katakanaSub: '知ってるつもり',
-    themeNote: 'テーマ別に確認できます。苦手は間違えた語や定着しにくい語、カタカナ注意は「知ってるつもり」になりやすい意味のズレ、句動詞は会話のまとまり、ニュース英語は報道でよく見る語、ATM・銀行は海外生活で画面に出やすい語、不可算名詞は数え方の引っ掛け、略語は分野別、発音注意は音と綴りの違い、R/L注意は語頭の音、語彙関係は同義語・対義語を集中的に学べます。',
+    themeNote: 'テーマ別に確認できます。苦手は間違えた語や定着しにくい語、カタカナ注意は「知ってるつもり」になりやすい意味のズレ、句動詞は会話のまとまり、ニュース英語は報道でよく見る語、ATM・銀行は海外生活で画面に出やすい語、不可算名詞は数え方の引っ掛け、略語は分野別、発音注意は音と綴りの違い、R/L注意は語頭の音、語彙関係は近い意味の語・反対の意味の語を集中的に学べます。',
     choosePart: '品詞でしぼる',
     partRandom: 'ランダム',
     partNoun: '名詞',
@@ -15284,7 +15284,7 @@ const UI_TEXT = {
     choice2: '2択',
     choice3: '3択',
     choice4: '4択',
-    testSettingsNote: '通常は英単語だけを見て、日本語カードを選びます。語彙関係では同義語・対義語を選びます。テストは20問で区切ります。',
+    testSettingsNote: '通常は英単語だけを見て、日本語カードを選びます。語彙関係では近い意味の語・反対の意味の語を選びます。テストは20問で区切ります。',
     relationSynonymPrompt: '近い意味の語を選ぶ',
     relationAntonymPrompt: '反対の意味の語を選ぶ',
     displayLanguageTitle: '表示言語',
@@ -15443,7 +15443,7 @@ const UI_TEXT = {
     categoryRlContrast: 'R/L caution',
     categoryWordRelation: 'Word relations',
     katakanaSub: 'False friends',
-    themeNote: 'Use themes for focused practice: weak words, katakana meaning gaps, phrasal verbs, news English, ATM and banking words, uncountable noun traps, abbreviations, pronunciation traps, R/L contrast pairs, and synonym/antonym relations.',
+    themeNote: 'Use themes for focused practice: weak words, katakana meaning gaps, phrasal verbs, news English, ATM and banking words, uncountable noun traps, abbreviations, pronunciation traps, R/L contrast pairs, and close/opposite meaning relations.',
     choosePart: 'Filter by part of speech',
     partRandom: 'Random',
     partNoun: 'Nouns',
@@ -15470,7 +15470,7 @@ const UI_TEXT = {
     choice2: '2 choices',
     choice3: '3 choices',
     choice4: '4 choices',
-    testSettingsNote: 'Usually, choose the Japanese meaning from the English word. In Word relations, choose a synonym or antonym. Tests stop at 20 questions.',
+    testSettingsNote: 'Usually, choose the Japanese meaning from the English word. In Word relations, choose a close meaning or opposite meaning. Tests stop at 20 questions.',
     relationSynonymPrompt: 'Choose a close meaning',
     relationAntonymPrompt: 'Choose an opposite meaning',
     displayLanguageTitle: 'Display language',
@@ -18581,8 +18581,8 @@ function getTestNextStepMessage({ testLength, misses, isMissReview, remainingMis
 }
 
 function getRelationTypeLabel(type) {
-  if (currentUiLanguage === 'en') return type === 'synonym' ? 'Synonyms' : 'Antonyms';
-  return type === 'synonym' ? '同義語' : '対義語';
+  if (currentUiLanguage === 'en') return type === 'synonym' ? 'Close meanings' : 'Opposite meanings';
+  return type === 'synonym' ? '近い意味の語' : '反対の意味の語';
 }
 
 function getRelationTypeCounts(words) {
@@ -18620,12 +18620,12 @@ function getRelationFocusLine(misses, isPerfect20) {
   if (misses === 0) {
     if (currentUiLanguage === 'en') {
       return isPerfect20
-        ? 'Word relation master. Synonyms and antonyms both cleared.'
-        : 'Synonyms and antonyms both cleared.';
+        ? 'Word relation master. Close and opposite meanings both cleared.'
+        : 'Close and opposite meanings both cleared.';
     }
     return isPerfect20
-      ? '語彙関係マスター。同義語・対義語どちらもクリア。'
-      : '同義語・対義語どちらもクリア。';
+      ? '語彙関係マスター。近い意味の語・反対の意味の語どちらもクリア。'
+      : '近い意味の語・反対の意味の語どちらもクリア。';
   }
   const missedSummary = formatRelationTypeCounts(getRelationTypeCounts(getTestMissedWords()));
   return currentUiLanguage === 'en'
