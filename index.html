@@ -1436,6 +1436,8 @@
     }
     .test-feedback {
       display: none;
+      flex-direction: column;
+      gap: 4px;
       width: 100%;
       box-sizing: border-box;
       margin: 8px 0 0;
@@ -1456,7 +1458,7 @@
       display: none;
     }
     .test-feedback.is-visible {
-      display: block;
+      display: flex;
     }
     .test-feedback.correct-feedback {
       display: none;
@@ -1474,6 +1476,43 @@
       background: #fffbeb;
       color: #92400e;
       text-align: left;
+    }
+    .test-feedback-row {
+      display: grid;
+      grid-template-columns: 56px minmax(0, 1fr);
+      gap: 7px;
+      align-items: baseline;
+    }
+    .test-feedback-label {
+      color: #a16207;
+      font-size: 10px;
+      font-weight: 900;
+      line-height: 1.35;
+      white-space: nowrap;
+    }
+    .test-feedback-value {
+      min-width: 0;
+      color: #78350f;
+      font-size: 12px;
+      font-weight: 900;
+      line-height: 1.35;
+      overflow-wrap: anywhere;
+    }
+    .test-feedback-row.correct-answer .test-feedback-value {
+      color: #166534;
+    }
+    .test-feedback-row.picked-answer .test-feedback-value {
+      color: #b91c1c;
+    }
+    .test-feedback-row.feedback-note {
+      grid-template-columns: 56px minmax(0, 1fr);
+      padding-top: 2px;
+    }
+    .test-feedback-row.feedback-note .test-feedback-value {
+      color: #92400e;
+      font-size: 11px;
+      font-weight: 800;
+      line-height: 1.45;
     }
     .test-word-card.is-flipped .test-feedback {
       opacity: 0;
@@ -1649,7 +1688,7 @@
       transition: opacity 0.12s ease;
     }
     body.test-mode .test-feedback.is-visible {
-      display: block;
+      display: flex;
       opacity: 1;
     }
     body.test-mode .test-next-btn {
@@ -1726,8 +1765,21 @@
         box-sizing: border-box;
       }
       body.test-mode .test-feedback.is-visible {
-        display: block;
+        display: flex;
         opacity: 1;
+      }
+      body.test-mode .test-feedback-row {
+        grid-template-columns: 48px minmax(0, 1fr);
+        gap: 6px;
+      }
+      body.test-mode .test-feedback-label {
+        font-size: 9px;
+      }
+      body.test-mode .test-feedback-value {
+        font-size: 10.5px;
+      }
+      body.test-mode .test-feedback-row.feedback-note .test-feedback-value {
+        font-size: 10px;
       }
       body.test-mode .test-next-btn {
         display: inline-flex;
@@ -15415,6 +15467,10 @@ const UI_TEXT = {
     testFrontButton: 'Front',
     testBackButtonAria: 'カード裏面を表示',
     testFrontButtonAria: 'カード表面に戻る',
+    feedbackCorrectLabel: '正解',
+    feedbackPickedLabel: '選択',
+    feedbackMemoLabel: 'メモ',
+    feedbackNoChoice: '未選択',
     testFlipChip: 'タップで裏面',
     items: '項目',
     dueCandidatesCount: '出題候補',
@@ -15605,6 +15661,10 @@ const UI_TEXT = {
     testFrontButton: 'Front',
     testBackButtonAria: 'Show the card back',
     testFrontButtonAria: 'Return to the card front',
+    feedbackCorrectLabel: 'Correct',
+    feedbackPickedLabel: 'Picked',
+    feedbackMemoLabel: 'Note',
+    feedbackNoChoice: 'No choice',
     testFlipChip: 'Tap for back',
     items: 'items',
     dueCandidatesCount: 'Due',
@@ -18320,43 +18380,75 @@ function getFocusHint(word) {
   return 'ヒント: 例文で確認しよう。';
 }
 
-function getWrongAnswerHint(word, selectedWord) {
+function getWrongAnswerFeedbackParts(word, selectedWord) {
   if (isRelationTestWord(word)) {
     const spec = getWordRelationSpec(word);
     const targetWord = getRelationTargetWord(word);
     const relationLabel = getRelationKindLabel(spec);
     const targetText = targetWord?.w || spec?.target || '';
     const relationNote = getRelationNoteText(word);
-    if (currentUiLanguage === 'en') {
-      return selectedWord
-        ? `Correct answer: "${targetText}". Picked: "${selectedWord.w}". Choose the ${relationLabel} for "${word.w}". ${relationNote}`
-        : `Correct answer: "${targetText}". Choose the ${relationLabel} for "${word.w}". ${relationNote}`;
-    }
-    return selectedWord
-      ? `正解は「${targetText}」。選んだのは「${selectedWord.w}」。${word.w}の${relationLabel}を選ぶ問題です。${relationNote}`
-      : `正解は「${targetText}」。${word.w}の${relationLabel}を選ぶ問題です。${relationNote}`;
+    return {
+      correct: targetText,
+      picked: selectedWord?.w || uiText('feedbackNoChoice'),
+      note: currentUiLanguage === 'en'
+        ? `Choose the ${relationLabel} for "${word.w}". ${relationNote}`
+        : `${word.w}の${relationLabel}を選ぶ問題です。${relationNote}`
+    };
   }
 
   const correctMeaning = getShortMeaning(word.m);
   const focusHint = getFocusHint(word);
   if (!selectedWord || selectedWord === word) {
-    return currentUiLanguage === 'en'
-      ? `Correct answer: "${correctMeaning}". ${focusHint}`
-      : `正解は「${correctMeaning}」。${focusHint}`;
+    return {
+      correct: correctMeaning,
+      picked: uiText('feedbackNoChoice'),
+      note: focusHint
+    };
   }
 
   const selectedMeaning = getShortMeaning(selectedWord.m);
   const correctPart = formatPartOfSpeechForDisplay(getPartOfSpeech(word));
   const selectedPart = formatPartOfSpeechForDisplay(getPartOfSpeech(selectedWord));
   if (correctPart !== selectedPart) {
-    return currentUiLanguage === 'en'
-      ? `Check the part of speech. Correct: ${correctPart} "${correctMeaning}". Picked: ${selectedPart} "${selectedMeaning}".`
-      : `品詞に注意。正解は${correctPart}「${correctMeaning}」、選んだ選択肢は${selectedPart}「${selectedMeaning}」。`;
+    return {
+      correct: `${correctPart}「${correctMeaning}」`,
+      picked: `${selectedPart}「${selectedMeaning}」`,
+      note: currentUiLanguage === 'en'
+        ? 'Check the part of speech.'
+        : '品詞に注意。'
+    };
   }
 
-  return currentUiLanguage === 'en'
-    ? `Compare the core meanings. Correct: "${correctMeaning}". Picked: "${selectedMeaning}". ${focusHint}`
-    : `意味の中心を比べよう。正解は「${correctMeaning}」、選んだ選択肢は「${selectedMeaning}」。${focusHint}`;
+  return {
+    correct: correctMeaning,
+    picked: selectedMeaning,
+    note: currentUiLanguage === 'en'
+      ? `Compare the core meanings. ${focusHint}`
+      : `意味の中心を比べよう。${focusHint}`
+  };
+}
+
+function appendFeedbackRow(container, label, value, className = '') {
+  if (!container || !value) return;
+  const row = document.createElement('div');
+  row.className = `test-feedback-row${className ? ` ${className}` : ''}`;
+  const labelEl = document.createElement('span');
+  labelEl.className = 'test-feedback-label';
+  labelEl.textContent = label;
+  const valueEl = document.createElement('span');
+  valueEl.className = 'test-feedback-value';
+  valueEl.textContent = value;
+  row.append(labelEl, valueEl);
+  container.appendChild(row);
+}
+
+function renderWrongAnswerFeedback(feedbackEl, word, selectedWord) {
+  if (!feedbackEl) return;
+  const feedback = getWrongAnswerFeedbackParts(word, selectedWord);
+  feedbackEl.textContent = '';
+  appendFeedbackRow(feedbackEl, uiText('feedbackCorrectLabel'), feedback.correct, 'correct-answer');
+  appendFeedbackRow(feedbackEl, uiText('feedbackPickedLabel'), feedback.picked, 'picked-answer');
+  appendFeedbackRow(feedbackEl, uiText('feedbackMemoLabel'), feedback.note, 'feedback-note');
 }
 
 function getStreakMilestoneFeedback() {
@@ -18436,7 +18528,7 @@ function answerTestChoice(button, word) {
     feedbackEl.classList.remove('is-visible', 'correct-feedback', 'wrong-feedback', 'streak-milestone');
     cardEl?.classList.remove('feedback-visible');
   } else {
-    feedbackEl.textContent = getWrongAnswerHint(word, getWordByCardKey(button.dataset.choiceKey));
+    renderWrongAnswerFeedback(feedbackEl, word, getWordByCardKey(button.dataset.choiceKey));
     feedbackEl.classList.remove('correct-feedback', 'streak-milestone');
     feedbackEl.classList.add('is-visible', 'wrong-feedback');
     cardEl?.classList.add('feedback-visible');
