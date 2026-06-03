@@ -908,8 +908,14 @@
       justify-content: center;
       align-items: center;
     }
+    .card-audio-label {
+      color: #64748b;
+      font-size: 11px;
+      font-weight: 900;
+      line-height: 1;
+    }
     .accent-compare-row {
-      display: none;
+      display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
       gap: 8px;
       width: min(100%, 232px);
@@ -2006,6 +2012,8 @@
       margin: 6px auto 0;
       padding: 8px 12px;
       border-radius: 999px;
+      border: 1px solid rgba(249,115,22,0.18);
+      background: rgba(255,255,255,0.62);
       font-size: 12px;
       color: #94a3b8;
       font-weight: 800;
@@ -2157,7 +2165,8 @@
       </div>
     </div>
     <div class="card-audio-row" id="card-audio-row">
-      <button class="word-audio-btn card-audio-btn" id="card-audio-btn" type="button" data-audio-accent="current" onclick="playCurrentLearningAudio(event)" aria-label="en_GB音声で単語を再生">en_GB</button>
+      <span class="card-audio-label" data-ui-key="audioGroupLabel">発音</span>
+      <button class="word-audio-btn card-audio-btn" id="card-audio-btn" type="button" data-audio-accent="current" onclick="playCurrentLearningAudio(event)" aria-label="en_GB音声で単語を再生" hidden>en_GB</button>
       <div class="accent-compare-row" id="accent-compare-row" aria-label="en_GB/en_US音声ボタン">
         <button class="word-audio-btn card-audio-btn" id="card-audio-uk-btn" type="button" data-audio-accent="uk" onclick="playCurrentLearningAudio(event, 'uk')" aria-label="en_GB音声で単語を再生">en_GB</button>
         <button class="word-audio-btn card-audio-btn" id="card-audio-us-btn" type="button" data-audio-accent="us" onclick="playCurrentLearningAudio(event, 'us')" aria-label="en_US音声で単語を再生">en_US</button>
@@ -2436,10 +2445,6 @@
       </div>
       <div class="storage-note" data-ui-key="speechAccentNote">カード下の音声ボタンで使う音声タグを選びます。カード上の発音記号はBritish基準で固定します。</div>
       <div class="settings-section-title" data-ui-key="speechCompareTitle">en_GB/en_US音声</div>
-      <div class="speech-compare-buttons" aria-label="en_GB/en_US音声ボタン">
-        <button class="speech-compare-btn" type="button" data-speech-compare="on" onclick="setSpeechComparisonEnabled(true)" data-ui-key="on">オン</button>
-        <button class="speech-compare-btn active" type="button" data-speech-compare="off" onclick="setSpeechComparisonEnabled(false)" data-ui-key="off">オフ</button>
-      </div>
       <div class="storage-note" data-ui-key="speechCompareNote">オンにすると学習カード下にen_GB/en_USの2ボタンを表示します。発音記号はBritish基準のままです。</div>
       <div class="speech-voice-buttons" id="speech-voice-buttons" aria-label="発音音声">
         <button class="speech-voice-btn active" type="button" disabled data-ui-key="femaleVoicePriority">女性声を優先</button>
@@ -15424,9 +15429,9 @@ const UI_TEXT = {
     speechAccentTitle: '音声タグ',
     accentUk: 'en_GB',
     accentUs: 'en_US',
-    speechAccentNote: 'カード下の音声ボタンで使う音声タグを選びます。カード上の発音記号はBritish基準で固定します。',
-    speechCompareTitle: 'en_GB/en_US音声',
-    speechCompareNote: 'オンにすると学習カード下にen_GB/en_USの2ボタンを表示します。発音記号はBritish基準のままです。',
+    speechAccentNote: '学習カード下にはen_GB/en_USの2ボタンを常に表示します。カード上の発音記号はBritish基準で固定します。',
+    speechCompareTitle: '学習画面の発音ボタン',
+    speechCompareNote: '知人テストでは、発音機能に気づきやすいようにen_GB/en_USを見える形で表示します。',
     femaleVoicePriority: '女性声を優先',
     speechVoiceNote: '初期値は女性声を優先します。使える声は端末とブラウザにより変わります。',
     wordPartsDetails: '単語の成り立ちメモ',
@@ -15454,6 +15459,7 @@ const UI_TEXT = {
     audioUnsupported: '音声非対応',
     audioButtonUk: 'en_GB',
     audioButtonUs: 'en_US',
+    audioGroupLabel: '発音',
     audioButtonFallback: '代替音声',
     audioUnsupportedNote: 'この端末では音声再生に対応していません。',
     voiceLoading: '音声を取得中',
@@ -15467,8 +15473,8 @@ const UI_TEXT = {
     audioAriaUk: 'en_GB音声で単語を再生',
     audioAriaUs: 'en_US音声で単語を再生',
     audioFallbackAria: '指定した音声タグがないため、端末内の英語音声で再生',
-    swipeLearn: '←前へ　　スワイプ　　次へ→',
-    swipeLearnRate: '評価して次へ　右=バッチリ',
+    swipeLearn: 'ここだけスワイプ　←前へ / 次へ→',
+    swipeLearnRate: 'ここだけスワイプ　右=バッチリ',
     swipeTestReady: '次へをタップ / 右スワイプ　→',
     swipeTestWaiting: '答えを選ぶと次へ進めます',
     swipeReadyAria: '次へボタンをタップするか右にスワイプすると次の問題に進みます',
@@ -15618,9 +15624,9 @@ const UI_TEXT = {
     speechAccentTitle: 'Voice tag',
     accentUk: 'en_GB',
     accentUs: 'en_US',
-    speechAccentNote: 'Choose the voice tag used by the normal audio button. IPA on the card stays fixed to British IPA.',
-    speechCompareTitle: 'en_GB/en_US audio',
-    speechCompareNote: 'When on, the learning card shows separate en_GB/en_US audio buttons. IPA remains British.',
+    speechAccentNote: 'The learning card always shows en_GB/en_US audio buttons. IPA on the card stays fixed to British IPA.',
+    speechCompareTitle: 'Learning audio buttons',
+    speechCompareNote: 'For friend testing, en_GB/en_US are shown visibly so testers notice the audio feature.',
     femaleVoicePriority: 'Prefer female voice',
     speechVoiceNote: 'The default prefers a female voice. Available voices depend on the device and browser.',
     wordPartsDetails: 'Word-part notes',
@@ -15648,6 +15654,7 @@ const UI_TEXT = {
     audioUnsupported: 'Audio unsupported',
     audioButtonUk: 'en_GB',
     audioButtonUs: 'en_US',
+    audioGroupLabel: 'Audio',
     audioButtonFallback: 'Alt audio',
     audioUnsupportedNote: 'This device does not support audio playback.',
     voiceLoading: 'Loading voices',
@@ -15661,8 +15668,8 @@ const UI_TEXT = {
     audioAriaUk: 'Play word with en_GB voice',
     audioAriaUs: 'Play word with en_US voice',
     audioFallbackAria: 'The selected voice tag is unavailable, so this uses this device’s English voice',
-    swipeLearn: '← Previous　　Swipe　　Next →',
-    swipeLearnRate: 'Rate it. Right swipe = Great',
+    swipeLearn: 'Swipe here only　← Previous / Next →',
+    swipeLearnRate: 'Swipe here only　Right = Great',
     swipeTestReady: 'Tap Next or swipe right →',
     swipeTestWaiting: 'Choose an answer to continue',
     swipeReadyAria: 'Tap the Next button or swipe right to move to the next question',
@@ -16878,10 +16885,10 @@ function updateAudioButtons() {
   });
   const singleButton = document.getElementById('card-audio-btn');
   const compareRow = document.getElementById('accent-compare-row');
-  if (singleButton) singleButton.hidden = speechComparisonEnabled;
+  if (singleButton) singleButton.hidden = true;
   if (compareRow) {
-    compareRow.classList.toggle('is-visible', speechComparisonEnabled);
-    compareRow.hidden = !speechComparisonEnabled;
+    compareRow.classList.add('is-visible');
+    compareRow.hidden = false;
   }
 }
 
@@ -18010,7 +18017,10 @@ function flipCard() {
 }
 
 function updateSwipeMessage() {
-  document.getElementById('swipe-msg').textContent = isFlipped ? uiText('swipeLearnRate') : uiText('swipeLearn');
+  const swipeMsg = document.getElementById('swipe-msg');
+  if (!swipeMsg) return;
+  swipeMsg.textContent = isFlipped ? uiText('swipeLearnRate') : uiText('swipeLearn');
+  swipeMsg.setAttribute('aria-label', swipeMsg.textContent);
 }
 
 function beginTestSession(cards, kind = 'normal') {
@@ -19162,12 +19172,17 @@ function showTestComplete() {
 		}
 
 // ─── スワイプ操作 ─────────────────────────────────────────────────────
-let touchStartX = 0, touchStartY = 0;
 let lastTouchTime = 0;
-let touchStartedOnControl = false;
 const learnViewEl = document.getElementById('learn-view');
 const testSwipeTargetEl = document.getElementById('swipe-msg');
 const settingsViewEl = document.getElementById('settings-view');
+let learnTouchStartX = 0, learnTouchStartY = 0;
+let learnSwipeActive = false;
+let learnPointerId = null;
+let suppressLearnClickUntil = 0;
+let learnViewPointerStartX = 0, learnViewPointerStartY = 0;
+let learnViewPointerId = null;
+let suppressLearnViewClickUntil = 0;
 let settingsTouchStartX = 0, settingsTouchStartY = 0;
 let settingsSwipeActive = false;
 let suppressSettingsClickUntil = 0;
@@ -19250,6 +19265,14 @@ bindSettingsSwipeTarget(settingsViewEl);
 
 if (testSwipeTargetEl) {
   testSwipeTargetEl.addEventListener('pointerdown', e => {
+    if (currentMode === 'learn') {
+      learnPointerId = e.pointerId;
+      learnTouchStartX = e.clientX;
+      learnTouchStartY = e.clientY;
+      learnSwipeActive = false;
+      testSwipeTargetEl.setPointerCapture?.(e.pointerId);
+      return;
+    }
     if (currentMode !== 'test') return;
     testPointerId = e.pointerId;
     testTouchStartX = e.clientX;
@@ -19259,6 +19282,18 @@ if (testSwipeTargetEl) {
   });
 
   testSwipeTargetEl.addEventListener('pointermove', e => {
+    if (currentMode === 'learn') {
+      if (learnPointerId !== null && e.pointerId !== learnPointerId) return;
+      if (document.getElementById('session-complete').style.display === 'block') return;
+      const dx = e.clientX - learnTouchStartX;
+      const dy = e.clientY - learnTouchStartY;
+      const absDx = Math.abs(dx), absDy = Math.abs(dy);
+      if (absDx > 12 && absDx > absDy * 1.15) {
+        learnSwipeActive = true;
+        e.preventDefault();
+      }
+      return;
+    }
     if (testPointerId !== null && e.pointerId !== testPointerId) return;
     if (currentMode !== 'test' || !testAnswered) return;
     const dx = e.clientX - testTouchStartX;
@@ -19271,6 +19306,27 @@ if (testSwipeTargetEl) {
   });
 
   testSwipeTargetEl.addEventListener('pointerup', e => {
+    if (currentMode === 'learn') {
+      if (learnPointerId !== null && e.pointerId !== learnPointerId) return;
+      if (document.getElementById('session-complete').style.display === 'block') {
+        learnPointerId = null;
+        learnSwipeActive = false;
+        return;
+      }
+      const dx = e.clientX - learnTouchStartX;
+      const dy = e.clientY - learnTouchStartY;
+      const absDx = Math.abs(dx), absDy = Math.abs(dy);
+      if ((learnSwipeActive || absDx > 40) && absDx > absDy) {
+        e.preventDefault();
+        lastTouchTime = Date.now();
+        suppressLearnClickUntil = Date.now() + 450;
+        triggerHapticFeedback(30);
+        dx > 0 ? rate(5) : showPreviousCard();
+      }
+      learnPointerId = null;
+      learnSwipeActive = false;
+      return;
+    }
     if (testPointerId !== null && e.pointerId !== testPointerId) return;
     if (currentMode !== 'test' || !testAnswered) {
       testPointerId = null;
@@ -19291,11 +19347,19 @@ if (testSwipeTargetEl) {
   });
 
   testSwipeTargetEl.addEventListener('pointercancel', () => {
+    learnPointerId = null;
+    learnSwipeActive = false;
     testPointerId = null;
     testSwipeActive = false;
   });
 
   testSwipeTargetEl.addEventListener('click', e => {
+    if (currentMode === 'learn') {
+      e.preventDefault();
+      e.stopPropagation();
+      if (Date.now() <= suppressLearnClickUntil) return;
+      return;
+    }
     if (Date.now() > suppressTestClickUntil) return;
     e.preventDefault();
     e.stopPropagation();
@@ -19307,36 +19371,36 @@ learnViewEl.addEventListener('click', e => {
   if (isControlTarget(e.target)) return;
   if (document.getElementById('session-complete').style.display === 'block') return;
   if (Date.now() - lastTouchTime < 450) return;
+  if (Date.now() < suppressLearnViewClickUntil) return;
   flipCard();
 });
 
-learnViewEl.addEventListener('touchstart', e => {
+learnViewEl.addEventListener('pointerdown', e => {
   if (currentMode !== 'learn') return;
-  touchStartedOnControl = isControlTarget(e.target);
-  if (touchStartedOnControl) return;
-  touchStartX = e.changedTouches[0].clientX;
-  touchStartY = e.changedTouches[0].clientY;
-}, { passive: true });
+  if (isControlTarget(e.target) || e.target.closest('#swipe-msg')) return;
+  learnViewPointerId = e.pointerId;
+  learnViewPointerStartX = e.clientX;
+  learnViewPointerStartY = e.clientY;
+});
 
-learnViewEl.addEventListener('touchend', e => {
-  if (currentMode !== 'learn') return;
-  if (touchStartedOnControl) return;
-  if (document.getElementById('session-complete').style.display === 'block') return;
-  const dx = e.changedTouches[0].clientX - touchStartX;
-  const dy = e.changedTouches[0].clientY - touchStartY;
-  const absDx = Math.abs(dx), absDy = Math.abs(dy);
+learnViewEl.addEventListener('pointermove', e => {
+  if (learnViewPointerId === null || e.pointerId !== learnViewPointerId) return;
+  const dx = e.clientX - learnViewPointerStartX;
+  const dy = e.clientY - learnViewPointerStartY;
+  if (Math.hypot(dx, dy) > 12) suppressLearnViewClickUntil = Date.now() + 450;
+});
 
-  if (absDx < 10 && absDy < 10) {
-    lastTouchTime = Date.now();
-    flipCard();
-    return;
-  }
-  if (absDx > absDy && absDx > 50) {
-    lastTouchTime = Date.now();
-    triggerHapticFeedback(30);
-    dx > 0 ? rate(5) : showPreviousCard();
-  }
-}, { passive: true });
+learnViewEl.addEventListener('pointerup', e => {
+  if (learnViewPointerId === null || e.pointerId !== learnViewPointerId) return;
+  const dx = e.clientX - learnViewPointerStartX;
+  const dy = e.clientY - learnViewPointerStartY;
+  if (Math.hypot(dx, dy) > 12) suppressLearnViewClickUntil = Date.now() + 450;
+  learnViewPointerId = null;
+});
+
+learnViewEl.addEventListener('pointercancel', () => {
+  learnViewPointerId = null;
+});
 
 // ─── キーボード操作 ────────────────────────────────────────────────────
 document.addEventListener('keydown', e => {
