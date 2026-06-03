@@ -18399,25 +18399,29 @@ function getWrongAnswerFeedbackParts(word, selectedWord) {
   if (isRelationTestWord(word)) {
     const spec = getWordRelationSpec(word);
     const targetWord = getRelationTargetWord(word);
-    const relationLabel = getRelationKindLabel(spec);
     const targetText = targetWord?.w || spec?.target || '';
-    const relationNote = getRelationNoteText(word);
+    const isSynonym = spec?.type === 'synonym';
     return {
       correct: targetText,
       picked: selectedWord?.w || uiText('feedbackNoChoice'),
       note: currentUiLanguage === 'en'
-        ? `Choose the ${relationLabel} for "${word.w}". ${relationNote}`
-        : `${word.w}の${relationLabel}を選ぶ問題です。${relationNote}`
+        ? isSynonym
+          ? `${word.w} is close to ${targetText}. Use Back for nuance.`
+          : `${word.w} contrasts with ${targetText}. Use Back for nuance.`
+        : isSynonym
+          ? `${word.w} は ${targetText} と近い意味。詳しくはBackで確認。`
+          : `${word.w} は ${targetText} と反対の関係。詳しくはBackで確認。`
     };
   }
 
   const correctMeaning = getShortMeaning(word.m);
-  const focusHint = getFocusHint(word);
   if (!selectedWord || selectedWord === word) {
     return {
       correct: correctMeaning,
       picked: uiText('feedbackNoChoice'),
-      note: focusHint
+      note: currentUiLanguage === 'en'
+        ? 'Use Back to check the meaning and example.'
+        : 'Backで意味と例文を確認。'
     };
   }
 
@@ -18438,8 +18442,8 @@ function getWrongAnswerFeedbackParts(word, selectedWord) {
     correct: correctMeaning,
     picked: selectedMeaning,
     note: currentUiLanguage === 'en'
-      ? `Compare the core meanings. ${focusHint}`
-      : `意味の中心を比べよう。${focusHint}`
+      ? 'Compare the core meanings. Use Back for examples.'
+      : '意味の中心を比べよう。Backで例文を確認。'
   };
 }
 
