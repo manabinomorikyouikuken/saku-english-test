@@ -1578,7 +1578,7 @@
       min-height: 0;
       overflow: hidden;
       padding-top: 8px;
-      padding-bottom: calc(26px + env(safe-area-inset-bottom));
+      padding-bottom: calc(14px + env(safe-area-inset-bottom));
     }
     body.test-mode .progress-wrap {
       flex: 0 0 auto;
@@ -1616,6 +1616,9 @@
     body.test-mode .test-word-card-wrap {
       flex: 0 0 clamp(180px, 31svh, 240px);
       min-height: 0;
+    }
+    body.test-mode.test-answered .test-word-card-wrap {
+      flex-basis: clamp(150px, 23svh, 190px);
     }
     body.test-mode .test-card-action-row {
       flex: 0 0 34px;
@@ -1678,6 +1681,9 @@
       gap: 8px;
       margin-top: 8px;
     }
+    body.test-mode.test-answered .test-letter-row {
+      display: none;
+    }
     body.test-mode .test-letter-btn {
       border-radius: 14px;
       font-size: clamp(20px, 5.8vw, 26px);
@@ -1718,12 +1724,18 @@
       display: none;
     }
 
+    @media (max-height: 600px) {
+      body.test-mode.test-answered .test-choice-grid {
+        display: none;
+      }
+    }
+
     @media (max-height: 700px) {
       body.test-mode header { padding: 7px 12px; }
       body.test-mode #learn-view {
         height: calc(100svh - 54px);
         padding-top: 6px;
-        padding-bottom: calc(18px + env(safe-area-inset-bottom));
+        padding-bottom: calc(8px + env(safe-area-inset-bottom));
       }
       body.test-mode .progress-wrap { margin-bottom: 6px; }
       body.test-mode .test-card-action-row {
@@ -1737,6 +1749,7 @@
         font-size: 12px;
       }
       body.test-mode .test-word-card-wrap { flex-basis: clamp(150px, 25svh, 180px); }
+      body.test-mode.test-answered .test-word-card-wrap { flex-basis: clamp(136px, 22svh, 158px); }
       body.test-mode .test-word-text { font-size: clamp(25px, 7.2vw, 34px); }
       body.test-mode .test-card-face { padding: 10px 11px; }
       body.test-mode .test-card-front-face { gap: 6px; }
@@ -18003,6 +18016,7 @@ function updateSwipeMessage() {
 function beginTestSession(cards, kind = 'normal') {
   hideTestEntryPanel();
   document.body.classList.add('test-mode');
+  document.body.classList.remove('test-answered');
   currentMode = 'test';
   testSessionKind = kind;
   updateLevelButtons();
@@ -18242,6 +18256,7 @@ function showTestQuestion() {
   const word = testCards[testIndex];
   const isRelationQuestion = isRelationTestWord(word);
   testAnswered = false;
+  document.body.classList.remove('test-answered');
   setTestCardFlipped(false);
   document.getElementById('test-word-text').textContent = word.w;
   const testFrontPron = document.getElementById('test-front-pron');
@@ -18487,6 +18502,7 @@ function markPickedAnswer(choiceIndex) {
 function answerTestChoice(button, word) {
   if (testAnswered) return;
   testAnswered = true;
+  document.body.classList.add('test-answered');
   const isCorrect = button.dataset.correct === 'true';
   const selectedChoiceIndex = button.dataset.choiceIndex;
   markPickedAnswer(selectedChoiceIndex);
