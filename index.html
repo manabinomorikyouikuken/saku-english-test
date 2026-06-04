@@ -1759,7 +1759,7 @@
     body.test-mode .test-next-btn:not(.is-visible) {
       display: none;
     }
-    body.test-mode.test-answered .test-feedback.is-visible + .test-answer-zone .test-choice-grid {
+    body.test-mode.test-answered .test-feedback.wrong-feedback.is-visible + .test-answer-zone .test-choice-grid {
       display: none;
     }
     body.test-mode .learn-bottom-bar {
@@ -1784,6 +1784,12 @@
       }
     }
 
+    @media (max-height: 780px) {
+      body.test-mode .test-answer-zone {
+        --test-action-square-size: min(42vw, 164px);
+      }
+    }
+
     @media (max-height: 600px) {
       body.test-mode.test-answered .test-choice-grid {
         display: none;
@@ -1792,7 +1798,7 @@
 
     @media (max-height: 700px) {
       body.test-mode .test-answer-zone {
-        --test-action-square-size: min(44vw, 172px);
+        --test-action-square-size: min(42vw, 164px);
       }
       body.test-mode header { padding: 7px 12px; }
       body.test-mode #learn-view {
