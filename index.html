@@ -2189,15 +2189,15 @@
   </div>
 
   <div id="card-area">
-    <section class="quick-start-panel test-entry-panel" id="test-entry-panel" aria-label="テストとゲームの入口" hidden>
+    <section class="quick-start-panel test-entry-panel" id="test-entry-panel" aria-label="ゲーム・復習の入口" hidden>
       <div class="quick-start-head">
-        <div class="quick-start-title" data-ui-key="testEntryTitle">テストとゲーム</div>
-        <div class="quick-start-note" data-ui-key="testEntryNote">選んで始める</div>
+        <div class="quick-start-title" data-ui-key="testEntryTitle">ゲーム・復習</div>
+        <div class="quick-start-note" data-ui-key="testEntryNote">選んで続ける</div>
       </div>
       <div class="quick-start-actions test-entry-actions">
-        <button class="quick-start-btn primary" type="button" onclick="startQuickTest('all')" data-ui-key="today20Short">今日の20問</button>
-        <button class="quick-start-btn" type="button" onclick="startQuickTest('wordRelation')" data-ui-key="relationGame">語彙関係ゲーム</button>
+        <button class="quick-start-btn primary" type="button" onclick="startQuickTest('wordRelation')" data-ui-key="relationGame">語彙関係ゲーム</button>
         <button class="quick-start-btn" type="button" onclick="startMissReviewSession()" data-ui-key="missReview">ミス復習</button>
+        <button class="quick-start-btn" type="button" onclick="startQuickTest('all')" data-ui-key="today20Short">今日の20問</button>
       </div>
     </section>
     <div class="card-prompt" id="study-prompt" data-ui-key="studyPrompt">タップすると答えが出るよ</div>
@@ -15456,10 +15456,10 @@ const UI_TEXT = {
     close: '閉じる',
     quickStartTitle: '今日の入口',
     quickStartNote: '迷ったらここから',
-    testEntryTitle: 'テストとゲーム',
-    testEntryNote: '選んで始める',
-    testEntryProgress: 'テスト入口',
-    testEntryDue: '今日の20問 / 語彙関係 / ミス復習',
+    testEntryTitle: 'ゲーム・復習',
+    testEntryNote: '選んで続ける',
+    testEntryProgress: 'ゲーム・復習',
+    testEntryDue: '語彙関係ゲーム / ミス復習 / 今日の20問',
     missReview: 'ミス復習',
     missReviewEmpty: 'ミス復習なし',
     weakWords: '苦手',
@@ -15658,10 +15658,10 @@ const UI_TEXT = {
     close: 'Close',
     quickStartTitle: 'Today’s start',
     quickStartNote: 'Start here when unsure',
-    testEntryTitle: 'Tests and games',
-    testEntryNote: 'Choose a start',
-    testEntryProgress: 'Test start',
-    testEntryDue: 'Today’s 20 / Word relations / Miss Review',
+    testEntryTitle: 'Games / Review',
+    testEntryNote: 'Choose next practice',
+    testEntryProgress: 'Games / Review',
+    testEntryDue: 'Word relations / Miss Review / Today’s 20',
     missReview: 'Miss Review',
     missReviewEmpty: 'No Miss Review',
     weakWords: 'Weak',
