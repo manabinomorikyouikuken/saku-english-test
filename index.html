@@ -2166,7 +2166,7 @@
     </div>
     <div class="card-audio-row" id="card-audio-row">
       <span class="card-audio-label" data-ui-key="audioGroupLabel">発音</span>
-      <button class="word-audio-btn card-audio-btn" id="card-audio-btn" type="button" data-audio-accent="current" onclick="playCurrentLearningAudio(event)" aria-label="en_GB音声で単語を再生" hidden>en_GB</button>
+      <button class="word-audio-btn card-audio-btn" id="card-audio-btn" type="button" data-audio-accent="current" onclick="playFallbackLearningAudio(event)" aria-label="端末で利用できる英語音声で単語を再生" hidden>英語音声</button>
       <div class="accent-compare-row" id="accent-compare-row" aria-label="en_GB/en_US音声ボタン">
         <button class="word-audio-btn card-audio-btn" id="card-audio-uk-btn" type="button" data-audio-accent="uk" onclick="playCurrentLearningAudio(event, 'uk')" aria-label="en_GB音声で単語を再生">en_GB</button>
         <button class="word-audio-btn card-audio-btn" id="card-audio-us-btn" type="button" data-audio-accent="us" onclick="playCurrentLearningAudio(event, 'us')" aria-label="en_US音声で単語を再生">en_US</button>
@@ -15462,6 +15462,8 @@ const UI_TEXT = {
     audioGroupLabel: '発音',
     audioButtonUkUnavailable: 'en_GBなし',
     audioButtonUsUnavailable: 'en_USなし',
+    audioButtonEnglish: '英語音声',
+    audioButtonEnglishUnavailable: '英語音声なし',
     audioUnsupportedNote: 'この端末では音声再生に対応していません。',
     voiceLoading: '音声を取得中',
     voiceLoadingNote: '音声候補を取得中です。少し待ってから設定を開き直してください。',
@@ -15473,6 +15475,8 @@ const UI_TEXT = {
     audioAriaUnsupported: 'この端末では音声再生に対応していません',
     audioAriaUk: 'en_GB音声で単語を再生',
     audioAriaUs: 'en_US音声で単語を再生',
+    audioAriaEnglish: '端末で利用できる英語音声で単語を再生',
+    audioEnglishUnavailableNote: 'この端末で利用できる英語音声が見つかりません。',
     swipeLearn: 'ここだけスワイプ　←前へ / 次へ→',
     swipeLearnRate: 'ここだけスワイプ　右=バッチリ',
     swipeTestReady: '次へをタップ / 右スワイプ　→',
@@ -15657,6 +15661,8 @@ const UI_TEXT = {
     audioGroupLabel: 'Audio',
     audioButtonUkUnavailable: 'No en_GB',
     audioButtonUsUnavailable: 'No en_US',
+    audioButtonEnglish: 'English audio',
+    audioButtonEnglishUnavailable: 'No English',
     audioUnsupportedNote: 'This device does not support audio playback.',
     voiceLoading: 'Loading voices',
     voiceLoadingNote: 'Voice candidates are loading. Please wait and reopen settings.',
@@ -15668,6 +15674,8 @@ const UI_TEXT = {
     audioAriaUnsupported: 'This device does not support audio playback',
     audioAriaUk: 'Play word with en_GB voice',
     audioAriaUs: 'Play word with en_US voice',
+    audioAriaEnglish: 'Play word with this device’s available English voice',
+    audioEnglishUnavailableNote: 'No available English voice was found on this device.',
     swipeLearn: 'Swipe here only　← Previous / Next →',
     swipeLearnRate: 'Swipe here only　Right = Great',
     swipeTestReady: 'Tap Next or swipe right →',
@@ -16734,9 +16742,22 @@ function selectTaggedEnglishVoice(voices, accent = currentSpeechAccent) {
     .sort((a, b) => getVoiceRank(a, accent) - getVoiceRank(b, accent) || String(a.name).localeCompare(String(b.name)))[0] || null;
 }
 
-function resolveEnglishVoice(voices, accent = currentSpeechAccent) {
+function selectFallbackEnglishVoice(voices, accent = currentSpeechAccent) {
+  const englishVoices = [...voices].filter(isEnglishVoice);
+  if (selectedSpeechVoiceKey && selectedSpeechVoiceKey !== SPEECH_AUTO_FEMALE) {
+    const selectedVoice = englishVoices.find(voice => getSpeechVoiceKey(voice) === selectedSpeechVoiceKey);
+    if (selectedVoice) return selectedVoice;
+  }
+  return englishVoices
+    .sort((a, b) => getVoiceRank(a, accent) - getVoiceRank(b, accent) || String(a.name).localeCompare(String(b.name)))[0] || null;
+}
+
+function resolveEnglishVoice(voices, accent = currentSpeechAccent, options = {}) {
   const taggedVoice = selectTaggedEnglishVoice(voices, accent);
-  return { voice: taggedVoice || null };
+  if (taggedVoice) return { voice: taggedVoice, isFallback: false };
+  if (!options.allowFallback) return { voice: null, isFallback: false };
+  const fallbackVoice = selectFallbackEnglishVoice(voices, accent);
+  return { voice: fallbackVoice, isFallback: Boolean(fallbackVoice) };
 }
 
 function getSpeechVoiceLabel(voice) {
@@ -16765,7 +16786,7 @@ function updateSpeechVoiceButtons() {
   }
 
   const voices = synth.getVoices().filter(isEnglishVoice);
-  const activeVoice = activeEnglishVoice || selectTaggedEnglishVoice(voices);
+  const activeVoice = activeEnglishVoice || selectTaggedEnglishVoice(voices) || selectFallbackEnglishVoice(voices);
   const makeButton = (value, label, meta = '') => {
     const button = document.createElement('button');
     button.className = 'speech-voice-btn';
@@ -16835,11 +16856,17 @@ function getAudioVoiceUnavailableText(accent = currentSpeechAccent) {
     : `${label}音声がこの端末で見つかりません。`;
 }
 
-function getAudioAriaLabel(accent = currentSpeechAccent) {
+function getFallbackAudioAriaLabel(voice) {
+  const label = voice ? `${voice.name || 'English'} / ${voice.lang || 'en'}` : '';
+  return label ? `${uiText('audioAriaEnglish')}（${label}）` : uiText('audioAriaEnglish');
+}
+
+function getAudioAriaLabel(accent = currentSpeechAccent, options = {}) {
   if (!speechVoiceReady) return uiText('audioAriaUnsupported');
   const voices = getSpeechEngine()?.getVoices() || [];
-  const { voice } = resolveEnglishVoice(voices, accent);
+  const { voice, isFallback } = resolveEnglishVoice(voices, accent, options);
   const accentAria = accent === 'us' ? uiText('audioAriaUs') : uiText('audioAriaUk');
+  if (voice && isFallback) return getFallbackAudioAriaLabel(voice);
   if (voice) {
     return `${accentAria}（${voice.name || 'English'} / ${voice.lang || getSpeechLang(accent)}）`;
   }
@@ -16851,8 +16878,12 @@ function updateAudioButtons() {
   const synth = getSpeechEngine();
   const isSupported = Boolean(synth);
   const voices = synth?.getVoices() || [];
+  const fallbackVoice = isSupported ? selectFallbackEnglishVoice(voices) : null;
+  const hasTaggedVoice = isSupported && Boolean(
+    selectTaggedEnglishVoice(voices, 'uk') || selectTaggedEnglishVoice(voices, 'us')
+  );
   speechVoiceReady = isSupported;
-  document.querySelectorAll('.word-audio-btn').forEach(button => {
+  document.querySelectorAll('#accent-compare-row .word-audio-btn').forEach(button => {
     const accent = button.dataset.audioAccent === 'us'
       ? 'us'
       : button.dataset.audioAccent === 'uk'
@@ -16872,10 +16903,34 @@ function updateAudioButtons() {
   });
   const singleButton = document.getElementById('card-audio-btn');
   const compareRow = document.getElementById('accent-compare-row');
-  if (singleButton) singleButton.hidden = true;
+  if (singleButton) {
+    singleButton.hidden = hasTaggedVoice;
+    if (hasTaggedVoice) {
+      singleButton.disabled = true;
+    } else {
+      singleButton.disabled = !isSupported || !fallbackVoice;
+      if (!isSupported) {
+        singleButton.textContent = uiText('audioUnsupported');
+        singleButton.setAttribute('aria-label', uiText('audioAriaUnsupported'));
+        singleButton.title = uiText('audioUnsupportedNote');
+      } else if (!voices.length) {
+        singleButton.textContent = uiText('voiceLoading');
+        singleButton.setAttribute('aria-label', uiText('voiceLoadingNote'));
+        singleButton.title = uiText('voiceLoadingNote');
+      } else if (fallbackVoice) {
+        singleButton.textContent = uiText('audioButtonEnglish');
+        singleButton.setAttribute('aria-label', getFallbackAudioAriaLabel(fallbackVoice));
+        singleButton.title = getFallbackAudioAriaLabel(fallbackVoice);
+      } else {
+        singleButton.textContent = uiText('audioButtonEnglishUnavailable');
+        singleButton.setAttribute('aria-label', uiText('audioEnglishUnavailableNote'));
+        singleButton.title = uiText('audioEnglishUnavailableNote');
+      }
+    }
+  }
   if (compareRow) {
-    compareRow.classList.add('is-visible');
-    compareRow.hidden = false;
+    compareRow.classList.toggle('is-visible', hasTaggedVoice);
+    compareRow.hidden = !hasTaggedVoice;
   }
 }
 
@@ -16887,7 +16942,7 @@ function refreshSpeechVoices() {
     return;
   }
   const voices = synth.getVoices();
-  activeEnglishVoice = selectTaggedEnglishVoice(voices);
+  activeEnglishVoice = selectTaggedEnglishVoice(voices) || selectFallbackEnglishVoice(voices);
   updateAudioButtons();
   updateSpeechVoiceButtons();
 }
@@ -16966,7 +17021,7 @@ function getSpeechText(word) {
   return SPEECH_TEXT_OVERRIDES[text] || text;
 }
 
-function speakEnglishWord(word, event, accent = currentSpeechAccent) {
+function speakEnglishWord(word, event, accent = currentSpeechAccent, options = {}) {
   if (event) {
     event.preventDefault();
     event.stopPropagation();
@@ -16980,15 +17035,17 @@ function speakEnglishWord(word, event, accent = currentSpeechAccent) {
   }
   refreshSpeechVoices();
   const voices = synth.getVoices();
-  const { voice } = resolveEnglishVoice(voices, accent);
+  const { voice, isFallback } = resolveEnglishVoice(voices, accent, options);
   if (!voice) {
-    alert(voices.some(isEnglishVoice) ? getAudioVoiceUnavailableText(accent) : uiText('voiceLoadingNote'));
+    alert(options.allowFallback
+      ? (voices.length ? uiText('audioEnglishUnavailableNote') : uiText('voiceLoadingNote'))
+      : (voices.some(isEnglishVoice) ? getAudioVoiceUnavailableText(accent) : uiText('voiceLoadingNote')));
     updateAudioButtons();
     return;
   }
   const utterance = new SpeechSynthesisUtterance(text);
   utterance.voice = voice;
-  utterance.lang = voice.lang || getSpeechLang(accent);
+  utterance.lang = voice.lang || (isFallback ? 'en' : getSpeechLang(accent));
   utterance.rate = 0.84;
   utterance.pitch = 1;
   utterance.volume = 1;
@@ -17000,6 +17057,11 @@ function speakEnglishWord(word, event, accent = currentSpeechAccent) {
 function playCurrentLearningAudio(event, accent = currentSpeechAccent) {
   if (currentMode !== 'learn') return;
   speakEnglishWord(sessionCards[currentIndex], event, accent);
+}
+
+function playFallbackLearningAudio(event) {
+  if (currentMode !== 'learn') return;
+  speakEnglishWord(sessionCards[currentIndex], event, currentSpeechAccent, { allowFallback: true });
 }
 
 function setLearningAudioButtonVisible(visible) {
