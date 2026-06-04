@@ -933,12 +933,6 @@
       justify-content: center;
       align-items: center;
     }
-    .card-audio-label {
-      color: #64748b;
-      font-size: 11px;
-      font-weight: 900;
-      line-height: 1;
-    }
     .accent-compare-row {
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -2336,8 +2330,7 @@
       </div>
     </div>
     <div class="card-audio-row" id="card-audio-row">
-      <span class="card-audio-label" data-ui-key="audioGroupLabel">発音</span>
-      <button class="word-audio-btn card-audio-btn" id="card-audio-btn" type="button" data-audio-accent="current" onclick="playFallbackLearningAudio(event)" aria-label="端末で利用できる英語音声で単語を再生" hidden>英語音声</button>
+      <button class="word-audio-btn card-audio-btn" id="card-audio-btn" type="button" data-audio-accent="current" onclick="playFallbackLearningAudio(event)" aria-label="端末で利用できる英語音声で単語を再生" hidden>聴く</button>
       <div class="accent-compare-row" id="accent-compare-row" aria-label="en_GB/en_US音声ボタン">
         <button class="word-audio-btn card-audio-btn" id="card-audio-uk-btn" type="button" data-audio-accent="uk" onclick="playCurrentLearningAudio(event, 'uk')" aria-label="en_GB音声で単語を再生">en_GB</button>
         <button class="word-audio-btn card-audio-btn" id="card-audio-us-btn" type="button" data-audio-accent="us" onclick="playCurrentLearningAudio(event, 'us')" aria-label="en_US音声で単語を再生">en_US</button>
@@ -16019,11 +16012,10 @@ const UI_TEXT = {
     audioUnsupported: '音声非対応',
     audioButtonUk: 'en_GB',
     audioButtonUs: 'en_US',
-    audioGroupLabel: '発音',
     audioButtonUkUnavailable: 'en_GBなし',
     audioButtonUsUnavailable: 'en_USなし',
-    audioButtonEnglish: '英語音声',
-    audioButtonEnglishUnavailable: '英語音声なし',
+    audioButtonEnglish: '聴く',
+    audioButtonEnglishUnavailable: '音声なし',
     audioUnsupportedNote: 'この端末では音声再生に対応していません。',
     voiceLoading: '音声を取得中',
     voiceLoadingNote: '音声候補を取得中です。少し待ってから設定を開き直してください。',
@@ -16224,10 +16216,9 @@ const UI_TEXT = {
     audioUnsupported: 'Audio unsupported',
     audioButtonUk: 'en_GB',
     audioButtonUs: 'en_US',
-    audioGroupLabel: 'Audio',
     audioButtonUkUnavailable: 'No en_GB',
     audioButtonUsUnavailable: 'No en_US',
-    audioButtonEnglish: 'English audio',
+    audioButtonEnglish: 'Listen',
     audioButtonEnglishUnavailable: 'No English',
     audioUnsupportedNote: 'This device does not support audio playback.',
     voiceLoading: 'Loading voices',
