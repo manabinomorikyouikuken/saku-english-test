@@ -1917,6 +1917,7 @@
 
     /* Complete screen */
     .session-complete {
+      --complete-action-square-size: min(52vw, 216px);
       display: none;
       text-align: center;
       width: min(92%, 420px);
@@ -2099,6 +2100,7 @@
     }
     .complete-actions {
       display: flex;
+      align-items: center;
       justify-content: center;
       width: 100%;
       margin-top: 12px;
@@ -2121,9 +2123,19 @@
       transition: transform 0.12s, filter 0.12s;
     }
     .complete-back-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex: 0 0 var(--complete-action-square-size);
+      width: var(--complete-action-square-size);
+      height: var(--complete-action-square-size);
+      padding: 0;
       background: white;
       color: #1a2a4a;
       border: 1px solid var(--warm-border);
+      border-radius: 20px;
+      font-size: 15px;
+      font-weight: 900;
       box-shadow: 0 4px 14px rgba(249,115,22,0.1);
     }
     .restart-btn:active,
@@ -2210,6 +2222,33 @@
       }
       .complete-route-actions { gap: 7px; margin-top: 8px; }
       .complete-route-btn { min-height: 38px; font-size: 12px; }
+    }
+    @media (max-height: 820px) {
+      .session-complete {
+        --complete-action-square-size: min(46vw, 188px);
+      }
+      .complete-back-btn {
+        border-radius: 18px;
+      }
+    }
+    @media (max-height: 780px) {
+      .session-complete {
+        --complete-action-square-size: min(35vw, 136px);
+      }
+    }
+    @media (max-height: 600px) {
+      .session-complete {
+        --complete-action-square-size: min(24vw, 96px);
+      }
+      body.test-mode .session-complete {
+        max-height: calc(100svh - 84px);
+        overflow-y: auto;
+        padding-bottom: 10px;
+      }
+      .complete-back-btn {
+        border-radius: 14px;
+        font-size: 12px;
+      }
     }
     @media (max-width: 390px) {
       header { padding: 12px 14px; }
@@ -5792,6 +5831,18 @@ const WORDS = [
     "m": "生産的な",
     "ex": "A good night's sleep makes the next day more productive.",
     "exJa": "よく眠ると翌日がより生産的になる。"
+  },
+  {
+    "id": "profession_noun",
+    "w": "profession",
+    "cat": "pronunciation-note",
+    "pos": "名詞",
+    "level": "高校基礎",
+    "ipa": "prəˈfeʃən",
+    "ph": "プロフェッション",
+    "m": "職業、専門職",
+    "ex": "Teaching is a profession that requires patience.",
+    "exJa": "教える仕事は忍耐を必要とする専門職だ。"
   },
   {
     "w": "professional",
@@ -14607,6 +14658,221 @@ const WORDS = [
     "exJa": "双方は一時的な停戦に合意した。"
   },
   {
+    "id": "hezbollah_noun_news",
+    "w": "Hezbollah",
+    "cat": "news-english",
+    "pos": "名詞",
+    "level": "発展",
+    "ipa": "ˌhezbəˈlɑː",
+    "ph": "ヘズボラ",
+    "m": "ヒズボラ（固有名詞）、レバノンを拠点とする政治・武装組織",
+    "ex": "Hezbollah was mentioned in the news report.",
+    "exJa": "そのニュース報道ではヒズボラについて触れられていた。"
+  },
+  {
+    "id": "disarmament_noun_news",
+    "w": "disarmament",
+    "cats": ["news-english", "pronunciation-note"],
+    "pos": "名詞",
+    "level": "発展",
+    "ipa": "dɪsˈɑːməmənt",
+    "ph": "ディスアーマメント",
+    "m": "武装解除、軍縮",
+    "ex": "The talks focused on disarmament and security.",
+    "exJa": "その協議は武装解除と安全保障に焦点を当てた。"
+  },
+  {
+    "id": "invade_verb_news",
+    "w": "invade",
+    "cat": "news-english",
+    "pos": "動詞",
+    "level": "発展",
+    "ipa": "ɪnˈveɪd",
+    "ph": "インヴェイド",
+    "m": "侵攻する、侵入する",
+    "ex": "The army planned to invade the region.",
+    "exJa": "その軍はその地域へ侵攻する計画を立てた。"
+  },
+  {
+    "id": "invaded_adjective_news",
+    "w": "invaded",
+    "cat": "news-english",
+    "pos": "形容詞",
+    "level": "発展",
+    "ipa": "ɪnˈveɪdɪd",
+    "ph": "インヴェイディド",
+    "m": "侵攻された、侵入された",
+    "ex": "People fled from the invaded town.",
+    "exJa": "人々は侵攻された町から逃れた。"
+  },
+  {
+    "id": "indeed_adverb",
+    "w": "indeed",
+    "pos": "副詞",
+    "level": "高校基礎",
+    "ipa": "ɪnˈdiːd",
+    "ph": "インディード",
+    "m": "実に、本当に、確かに",
+    "ex": "The situation is indeed serious.",
+    "exJa": "その状況は確かに深刻だ。"
+  },
+  {
+    "id": "world_noun",
+    "w": "world",
+    "cats": ["news-english", "pronunciation-note"],
+    "pos": "名詞",
+    "level": "中学復習",
+    "ipa": "wɜːld",
+    "ph": "ワールド",
+    "m": "世界",
+    "ex": "People around the world watched the news.",
+    "exJa": "世界中の人々がそのニュースを見た。"
+  },
+  {
+    "id": "ward_noun",
+    "w": "ward",
+    "cats": ["news-english", "pronunciation-note"],
+    "pos": "名詞",
+    "level": "発展",
+    "ipa": "wɔːd",
+    "ph": "ウォード",
+    "m": "病棟、区、選挙区",
+    "ex": "The hospital opened a new emergency ward.",
+    "exJa": "その病院は新しい救急病棟を開いた。"
+  },
+  {
+    "id": "war_noun_news",
+    "w": "war",
+    "cats": ["news-english", "pronunciation-note"],
+    "pos": "名詞",
+    "level": "中学復習",
+    "ipa": "wɔː",
+    "ph": "ウォー",
+    "m": "戦争",
+    "ex": "The war changed many people's lives.",
+    "exJa": "その戦争は多くの人々の生活を変えた。"
+  },
+  {
+    "id": "dispose_verb",
+    "w": "dispose",
+    "cat": "pronunciation-note",
+    "pos": "動詞",
+    "level": "発展",
+    "ipa": "dɪˈspəʊz",
+    "ph": "ディスポウズ",
+    "m": "処分する、配置する",
+    "ex": "Please dispose of batteries safely.",
+    "exJa": "電池は安全に処分してください。"
+  },
+  {
+    "id": "disposal_noun",
+    "w": "disposal",
+    "cat": "pronunciation-note",
+    "pos": "名詞",
+    "level": "発展",
+    "ipa": "dɪˈspəʊzəl",
+    "ph": "ディスポウザル",
+    "m": "処分、廃棄",
+    "ex": "Waste disposal is a serious problem in the city.",
+    "exJa": "廃棄物処理はその都市で深刻な問題だ。"
+  },
+  {
+    "id": "disposable_adjective",
+    "w": "disposable",
+    "cat": "pronunciation-note",
+    "pos": "形容詞",
+    "level": "発展",
+    "ipa": "dɪˈspəʊzəbəl",
+    "ph": "ディスポウザブル",
+    "m": "使い捨ての、処分できる",
+    "ex": "Disposable cups create a lot of waste.",
+    "exJa": "使い捨てカップは多くのごみを生む。"
+  },
+  {
+    "id": "possession_noun",
+    "w": "possession",
+    "cat": "news-english",
+    "pos": "名詞",
+    "level": "発展",
+    "ipa": "pəˈzeʃən",
+    "ph": "ポゼッション",
+    "m": "所有、所持、所有物",
+    "ex": "The law restricts possession of dangerous weapons.",
+    "exJa": "その法律は危険な武器の所持を制限している。"
+  },
+  {
+    "id": "israel_noun_news",
+    "w": "Israel",
+    "cats": ["news-english", "pronunciation-note"],
+    "pos": "名詞",
+    "level": "発展",
+    "ipa": "ˈɪzreɪəl",
+    "ph": "イズレイアル",
+    "m": "イスラエル（固有名詞）",
+    "ex": "Israel was discussed at the international meeting.",
+    "exJa": "その国際会議でイスラエルについて議論された。"
+  },
+  {
+    "id": "surrender_verb_noun_news",
+    "w": "surrender",
+    "cats": ["news-english", "pronunciation-note"],
+    "pos": "動詞・名詞",
+    "level": "発展",
+    "ipa": "səˈrendə",
+    "ph": "サレンダ",
+    "m": "降伏する、引き渡す、降伏",
+    "ex": "The soldiers were ordered to surrender.",
+    "exJa": "兵士たちは降伏するよう命じられた。"
+  },
+  {
+    "id": "defeat_verb_noun",
+    "w": "defeat",
+    "cat": "news-english",
+    "pos": "動詞・名詞",
+    "level": "高校基礎",
+    "ipa": "dɪˈfiːt",
+    "ph": "ディフィート",
+    "m": "〜を破る、敗北",
+    "ex": "The team suffered a heavy defeat.",
+    "exJa": "そのチームは大敗を喫した。"
+  },
+  {
+    "id": "threat_noun_news",
+    "w": "threat",
+    "cat": "news-english",
+    "pos": "名詞",
+    "level": "高校基礎",
+    "ipa": "θret",
+    "ph": "スレト",
+    "m": "脅威、脅し",
+    "ex": "The warning described a serious threat.",
+    "exJa": "その警告は深刻な脅威について述べていた。"
+  },
+  {
+    "id": "threshold_noun",
+    "w": "threshold",
+    "cat": "pronunciation-note",
+    "pos": "名詞",
+    "level": "発展",
+    "ipa": "ˈθreʃhəʊld",
+    "ph": "スレシュホウルド",
+    "m": "しきい値、境目、入り口",
+    "ex": "The alarm sounds when the level passes the threshold.",
+    "exJa": "数値がしきい値を超えると警報が鳴る。"
+  },
+  {
+    "id": "threaten_verb_news",
+    "w": "threaten",
+    "cat": "news-english",
+    "pos": "動詞",
+    "level": "高校基礎",
+    "ipa": "ˈθretn",
+    "ph": "スレトゥン",
+    "m": "〜を脅す、〜のおそれがある",
+    "ex": "The storm could threaten coastal towns.",
+    "exJa": "その嵐は沿岸の町々を脅かすおそれがある。"
+  },
+  {
     "id": "truce_noun_news",
     "w": "truce",
     "cat": "news-english",
@@ -15532,6 +15798,16 @@ const US_IPA_OVERRIDES = {
   row_noun_line: 'roʊ',
   negotiation_noun_news: 'nɪˌɡoʊʃiˈeɪʃən',
   death_toll_noun_news: 'ˈdeθ toʊl',
+  disarmament_noun_news: 'dɪsˈɑːrməmənt',
+  world_noun: 'wɝːld',
+  ward_noun: 'wɔːrd',
+  war_noun_news: 'wɔːr',
+  dispose_verb: 'dɪˈspoʊz',
+  disposal_noun: 'dɪˈspoʊzəl',
+  disposable_adjective: 'dɪˈspoʊzəbəl',
+  israel_noun_news: 'ˈɪzriəl',
+  surrender_verb_noun_news: 'səˈrendɚ',
+  threshold_noun: 'ˈθreʃhoʊld',
   english_0140: 'koʊˈɑːpəreɪt',
   english_0292: 'ˌoʊvɚˈɔːl',
   english_0294: 'pɚˈsoʊnə',
@@ -16416,7 +16692,7 @@ const MORPHEME_PREFIX_HINTS = {
   auto: new Set('autonomous'.split(' ')),
   psycho: new Set('psychological'.split(' ')),
   pre: new Set('prepare predict preserve prevent preview'.split(' ')),
-  dis: new Set('disconnect disappear discover distribute distributor'.split(' ')),
+  dis: new Set('disarmament disconnect disappear discover distribute distributor'.split(' ')),
   en: new Set('encourage encounter enforce ensure'.split(' ')),
   un: new Set('unequal unfortunately'.split(' ')),
   in: new Set('inactive income independent inequality injustice inconvenient inside'.split(' ')),
@@ -16434,11 +16710,11 @@ const MORPHEME_PREFIX_HINTS = {
 };
 const MORPHEME_SUFFIX_HINTS = {
   ation: new Set('activation adaptation allocation application calculation celebration communication determination elimination estimation evacuation evaluation generation innovation inspiration justification modification motivation observation preparation pronunciation realisation rehabilitation separation transformation'.split(' ')),
-  sion: new Set('decision discussion expression extension progression'.split(' ')),
+  sion: new Set('decision discussion expression extension possession profession progression'.split(' ')),
   ion: new Set('addition assumption collection competition concentration condition conduction connection convention conversation correction creation direction education election emotion evolution examination foundation function institution intention organisation population promotion protection reaction recognition reflection relation restriction selection solution suggestion tradition'.split(' ')),
   ance: new Set('affordance appliance assistance compliance circumstance guidance maintenance performance'.split(' ')),
   ence: new Set('absence conference consequence convenience difference evidence existence experience independence influence'.split(' ')),
-  ment: new Set('achievement acknowledgement agreement argument arrangement assessment development employment engagement equipment improvement judgement management replacement requirement acquirement'.split(' ')),
+  ment: new Set('achievement acknowledgement agreement argument arrangement assessment development disarmament employment engagement equipment improvement judgement management replacement requirement acquirement'.split(' ')),
   ness: new Set('awareness quickness recklessness'.split(' ')),
   ful: new Set('careful helpful useful'.split(' ')),
   less: new Set('reckless seamless'.split(' ')),
@@ -16446,11 +16722,11 @@ const MORPHEME_SUFFIX_HINTS = {
   ive: new Set('adaptive adjective alternative competitive comprehensive creative extensive innovative negative objective perspective positive productive progressive protective representative responsive sensitive'.split(' ')),
   fy: new Set('classify identify justify modify simplify specify verify'.split(' ')),
   ial: new Set('artificial'.split(' ')),
-  al: new Set('abnormal approval external local survival traditional professional rational usual verbal'.split(' ')),
+  al: new Set('abnormal approval disposal external local survival traditional professional rational usual verbal'.split(' ')),
   ent: new Set('convenient inconvenient'.split(' ')),
   ate: new Set('activate rehabilitate'.split(' ')),
   ibility: new Set('responsibility'.split(' ')),
-  able: new Set('accountable adaptable available capable comfortable considerable exchangeable reasonable reliable sustainable'.split(' ')),
+  able: new Set('accountable adaptable available capable comfortable considerable disposable exchangeable reasonable reliable sustainable'.split(' ')),
   ic: new Set('athletic economic'.split(' ')),
   ly: new Set('accidentally actively carefully equally finally formally fortunately frequently generally gradually immediately naturally originally physically precisely progressively rapidly really recently responsibly suddenly unfortunately'.split(' ')),
   ary: new Set('elementary evolutionary missionary'.split(' ')),
