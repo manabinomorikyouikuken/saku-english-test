@@ -390,7 +390,7 @@
     }
     .learning-summary-grid {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
+      grid-template-columns: repeat(4, 1fr);
       gap: 6px;
     }
     .growth-badge {
@@ -1489,10 +1489,16 @@
       display: flex;
     }
     .test-feedback.correct-feedback {
-      display: none;
+      align-items: center;
+      justify-content: center;
+      border-color: #bbf7d0;
+      background: #f0fdf4;
+      color: #166534;
+      text-align: center;
+      animation: milestonePop 0.38s ease-out;
     }
     .test-feedback.correct-feedback.streak-milestone {
-      display: none;
+      display: flex;
     }
     @keyframes milestonePop {
       0% { transform: scale(0.98); opacity: 0.82; }
@@ -2544,6 +2550,10 @@
         <div class="learning-summary-label" data-ui-key="streakDays">連続日</div>
       </div>
       <div class="learning-summary-item">
+        <span class="learning-summary-num" id="stat-correct-streak-main">0</span>
+        <div class="learning-summary-label" data-ui-key="correctStreak">連続正解</div>
+      </div>
+      <div class="learning-summary-item">
         <span class="learning-summary-num" id="stat-miss-cleared-main">0</span>
         <div class="learning-summary-label" data-ui-key="missCleared">ミス克服</div>
       </div>
@@ -2571,6 +2581,10 @@
       <div class="achievement-item">
         <span class="achievement-num" id="stat-streak-panel">0</span>
         <div class="achievement-label" data-ui-key="streakDays">連続日</div>
+      </div>
+      <div class="achievement-item">
+        <span class="achievement-num" id="stat-correct-streak-panel">0</span>
+        <div class="achievement-label" data-ui-key="correctStreak">連続正解</div>
       </div>
       <div class="achievement-item">
         <span class="achievement-num" id="stat-miss-cleared-panel">0</span>
@@ -14980,6 +14994,13 @@ const STREAK_MILESTONE_MESSAGES = {
   15: '15連続！かなり集中できている。',
   20: '20連続！満点ペースを走り切った。'
 };
+const CORRECT_STREAK_MILESTONE_MESSAGES = {
+  20: '20連続正解！次は40を狙える。',
+  40: '40連続正解！かなり強い。',
+  60: '60連続正解！集中が続いている。',
+  80: '80連続正解！100が見えてきた。',
+  100: '100連続正解！これは大きな記録。'
+};
 const SPEECH_LANG_BY_ACCENT = { uk: 'en-GB', us: 'en-US' };
 const SPEECH_AUTO_FEMALE = 'auto-female';
 const SPEECH_TEXT_OVERRIDES = {
@@ -15508,6 +15529,7 @@ const UI_TEXT = {
     wordPartsNote: '暗記の手がかりとして、確認済みの語だけ表示します。語源の厳密な分解ではなく、覚えやすさを優先した補助表示です。',
     thisWeek: '今週',
     streakDays: '連続日',
+    correctStreak: '連続正解',
     missCleared: 'ミス克服',
     todayBadge: '今日の称号',
     historyOverview: '履歴の概要',
@@ -15710,6 +15732,7 @@ const UI_TEXT = {
     wordPartsNote: 'Only confirmed helper notes are shown. This is a memory aid, not a strict etymology breakdown.',
     thisWeek: 'This week',
     streakDays: 'Streak',
+    correctStreak: 'Correct streak',
     missCleared: 'Misses cleared',
     todayBadge: 'Today’s badge',
     historyOverview: 'History overview',
@@ -16526,7 +16549,9 @@ function getMeta(data = loadData()) {
     streak: Number.isFinite(Number(rawMeta.streak)) ? Number(rawMeta.streak) : 0,
     lastStudyDate: typeof rawMeta.lastStudyDate === 'string' ? rawMeta.lastStudyDate : '',
     dailyReviews,
-    missClearedTotal: Number.isFinite(Number(rawMeta.missClearedTotal)) ? Number(rawMeta.missClearedTotal) : 0
+    missClearedTotal: Number.isFinite(Number(rawMeta.missClearedTotal)) ? Number(rawMeta.missClearedTotal) : 0,
+    correctStreak: Number.isFinite(Number(rawMeta.correctStreak)) ? Number(rawMeta.correctStreak) : 0,
+    bestCorrectStreak: Number.isFinite(Number(rawMeta.bestCorrectStreak)) ? Number(rawMeta.bestCorrectStreak) : 0
   };
 }
 
@@ -16582,6 +16607,20 @@ function recordMissCleared() {
   meta.missClearedTotal = (Number(meta.missClearedTotal) || 0) + 1;
   data.__meta = meta;
   saveData(data);
+}
+
+function recordCorrectAnswerStreak(isCorrect) {
+  const data = loadData();
+  const meta = getMeta(data);
+  if (isCorrect) {
+    meta.correctStreak = (Number(meta.correctStreak) || 0) + 1;
+    meta.bestCorrectStreak = Math.max(Number(meta.bestCorrectStreak) || 0, meta.correctStreak);
+  } else {
+    meta.correctStreak = 0;
+  }
+  data.__meta = meta;
+  saveData(data);
+  return meta;
 }
 
 function getWordLevel(word, index) {
@@ -18615,6 +18654,12 @@ function renderWrongAnswerFeedback(feedbackEl, word, selectedWord) {
 }
 
 function getStreakMilestoneFeedback() {
+  const correctStreakFeedback = getCorrectStreakMilestoneFeedback(getMeta().correctStreak);
+  if (correctStreakFeedback) return correctStreakFeedback;
+  return getSessionStreakMilestoneFeedback();
+}
+
+function getSessionStreakMilestoneFeedback() {
   if (currentUiLanguage === 'en') {
     if (testCurrentStreak === 10) return '10 in a row. You have momentum.';
     if (testCurrentStreak === 15) return '15 in a row. Strong focus.';
@@ -18624,8 +18669,24 @@ function getStreakMilestoneFeedback() {
   return STREAK_MILESTONE_MESSAGES[testCurrentStreak] || '';
 }
 
-function getCorrectAnswerFeedback() {
-  const milestoneFeedback = getStreakMilestoneFeedback();
+function getCorrectStreakMilestoneFeedback(streak) {
+  const count = Number(streak) || 0;
+  if (currentUiLanguage === 'en') {
+    if (count === 20) return '20 correct in a row. Next goal: 40.';
+    if (count === 40) return '40 correct in a row. Strong run.';
+    if (count === 60) return '60 correct in a row. Your focus is holding.';
+    if (count === 80) return '80 correct in a row. 100 is close.';
+    if (count === 100) return '100 correct in a row. A serious record.';
+    if (count > 100 && count % 20 === 0) return `${count} correct in a row. Record still growing.`;
+    return '';
+  }
+  if (CORRECT_STREAK_MILESTONE_MESSAGES[count]) return CORRECT_STREAK_MILESTONE_MESSAGES[count];
+  if (count > 100 && count % 20 === 0) return `${count}連続正解！記録更新中。`;
+  return '';
+}
+
+function getCorrectAnswerFeedback(correctStreak = getMeta().correctStreak) {
+  const milestoneFeedback = getCorrectStreakMilestoneFeedback(correctStreak) || getSessionStreakMilestoneFeedback();
   if (milestoneFeedback) return milestoneFeedback;
   if (currentUiLanguage === 'en') {
     if (testCurrentStreak >= 5) return `Correct. ${testCurrentStreak} in a row. Good rhythm.`;
@@ -18654,15 +18715,20 @@ function answerTestChoice(button, word) {
   const isCorrect = button.dataset.correct === 'true';
   const selectedChoiceIndex = button.dataset.choiceIndex;
   markPickedAnswer(selectedChoiceIndex);
+  let correctStreakMeta = getMeta();
+  let streakMilestoneFeedback = '';
   if (isCorrect) {
     testCorrect++;
     testCurrentStreak++;
     testBestStreak = Math.max(testBestStreak, testCurrentStreak);
+    correctStreakMeta = recordCorrectAnswerStreak(true);
+    streakMilestoneFeedback = getCorrectStreakMilestoneFeedback(correctStreakMeta.correctStreak) || getSessionStreakMilestoneFeedback();
     clearMissedReviewWord(word);
-    triggerHapticFeedback(getStreakMilestoneFeedback() ? [22, 26, 42] : 18);
+    triggerHapticFeedback(streakMilestoneFeedback ? [22, 26, 42] : 18);
   }
   else {
     testCurrentStreak = 0;
+    correctStreakMeta = recordCorrectAnswerStreak(false);
     addMissedReviewWord(word);
     triggerWrongAnswerCue();
   }
@@ -18688,9 +18754,16 @@ function answerTestChoice(button, word) {
   const feedbackEl = document.getElementById('test-feedback');
   const cardEl = document.getElementById('test-word-card');
   if (isCorrect) {
-    feedbackEl.textContent = '';
-    feedbackEl.classList.remove('is-visible', 'correct-feedback', 'wrong-feedback', 'streak-milestone');
-    cardEl?.classList.remove('feedback-visible');
+    if (streakMilestoneFeedback) {
+      feedbackEl.textContent = getCorrectAnswerFeedback(correctStreakMeta.correctStreak);
+      feedbackEl.classList.remove('wrong-feedback');
+      feedbackEl.classList.add('is-visible', 'correct-feedback', 'streak-milestone');
+      cardEl?.classList.add('feedback-visible');
+    } else {
+      feedbackEl.textContent = '';
+      feedbackEl.classList.remove('is-visible', 'correct-feedback', 'wrong-feedback', 'streak-milestone');
+      cardEl?.classList.remove('feedback-visible');
+    }
   } else {
     renderWrongAnswerFeedback(feedbackEl, word, getWordByCardKey(button.dataset.choiceKey));
     feedbackEl.classList.remove('correct-feedback', 'streak-milestone');
@@ -18949,6 +19022,15 @@ function getTestNextStepMessage({ testLength, misses, isMissReview, remainingMis
     : '次の一手: まだ覚えているうちに、もう一回だけテスト。';
 }
 
+function getCorrectStreakCompleteMessage(correctStreak) {
+  const count = Number(correctStreak) || 0;
+  if (count < TEST_CARD_LIMIT) return '';
+  const nextGoal = Math.ceil((count + 1) / 20) * 20;
+  return currentUiLanguage === 'en'
+    ? `Correct streak: ${count}. Next goal: ${nextGoal}.`
+    : `連続正解記録: ${count}。次は${nextGoal}を狙える。`;
+}
+
 function getRelationTypeLabel(type) {
   if (currentUiLanguage === 'en') return type === 'synonym' ? 'Close meanings' : 'Opposite meanings';
   return type === 'synonym' ? '近い意味の語' : '反対の意味の語';
@@ -19180,6 +19262,8 @@ function updateStats() {
   setText('stat-weekly-panel', weeklyReviewed);
   setText('stat-streak-main', meta.streak || 0);
   setText('stat-streak-panel', meta.streak || 0);
+  setText('stat-correct-streak-main', meta.correctStreak || 0);
+  setText('stat-correct-streak-panel', meta.correctStreak || 0);
   setText('stat-miss-cleared-main', meta.missClearedTotal || 0);
   setText('stat-miss-cleared-panel', meta.missClearedTotal || 0);
   setText('stat-miss-review-panel', missedReviewCount);
@@ -19263,6 +19347,7 @@ function showTestComplete() {
 	  const remainingMisses = getMissedReviewWords().length;
 	  const canContinueMissReview = misses > 0 || (isMissReview && remainingMisses > 0);
 	  const isMissReviewCleared = isMissReview && testCards.length > 0 && misses === 0;
+	  const correctStreakMessage = getCorrectStreakCompleteMessage(getMeta().correctStreak);
 	  completeEl.classList.toggle('weakness-cleared', isMissReviewCleared);
   completionAction = canContinueMissReview ? 'missReview' : 'restart';
   const completeIcon = document.getElementById('complete-icon');
@@ -19286,7 +19371,7 @@ function showTestComplete() {
   document.getElementById('cs-mastered').textContent = testCorrect;
   document.getElementById('cs-due').textContent = misses;
   setCompleteRouteActionsVisible(testCards.length > 0, remainingMisses);
-  const baseCompleteMessage = isRelationGame
+  let baseCompleteMessage = isRelationGame
     ? getRelationCompleteMessage(misses)
     : testCards.length === 0
     ? uiText('noCardsMessage')
@@ -19295,6 +19380,11 @@ function showTestComplete() {
         ? `${misses} missed ${misses === 1 ? 'word was' : 'words were'} saved to Miss Review.`
         : `ミスした${misses}語は、ミス復習に残しました。`
       : '';
+  if (misses === 0 && correctStreakMessage) {
+    baseCompleteMessage = baseCompleteMessage
+      ? `${baseCompleteMessage}\n${correctStreakMessage}`
+      : correctStreakMessage;
+  }
 	  document.getElementById('complete-msg').textContent = baseCompleteMessage;
   const weaknessLine = isRelationGame
     ? getRelationFocusLine(misses, isPerfect20)
