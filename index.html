@@ -15547,8 +15547,8 @@ const UI_TEXT = {
     audioAriaUs: 'en_US音声で単語を再生',
     audioAriaEnglish: '端末で利用できる英語音声で単語を再生',
     audioEnglishUnavailableNote: 'この端末で利用できる英語音声が見つかりません。',
-    swipeLearn: 'ここだけスワイプ　←前へ / 次へ→',
-    swipeLearnRate: 'ここだけスワイプ　右=バッチリ',
+    swipeLearn: 'カードをタップして答えを確認',
+    swipeLearnRate: '下のボタンで次へ',
     swipeTestReady: '次へをタップ / 右スワイプ　→',
     swipeTestWaiting: '答えを選ぶと次へ進めます',
     swipeReadyAria: '次へボタンをタップするか右にスワイプすると次の問題に進みます',
@@ -15749,8 +15749,8 @@ const UI_TEXT = {
     audioAriaUs: 'Play word with en_US voice',
     audioAriaEnglish: 'Play word with this device’s available English voice',
     audioEnglishUnavailableNote: 'No available English voice was found on this device.',
-    swipeLearn: 'Swipe here only　← Previous / Next →',
-    swipeLearnRate: 'Swipe here only　Right = Great',
+    swipeLearn: 'Tap the card to check the answer',
+    swipeLearnRate: 'Choose a button below to continue',
     swipeTestReady: 'Tap Next or swipe right →',
     swipeTestWaiting: 'Choose an answer to continue',
     swipeReadyAria: 'Tap the Next button or swipe right to move to the next question',
@@ -19327,15 +19327,10 @@ function showTestComplete() {
 		  }
 		}
 
-// ─── スワイプ操作 ─────────────────────────────────────────────────────
-let lastTouchTime = 0;
+// ─── 画面操作：学習は理解度ボタン、テストは回答後だけ専用バーでスワイプ ───
 const learnViewEl = document.getElementById('learn-view');
 const testSwipeTargetEl = document.getElementById('swipe-msg');
 const settingsViewEl = document.getElementById('settings-view');
-let learnTouchStartX = 0, learnTouchStartY = 0;
-let learnSwipeActive = false;
-let learnPointerId = null;
-let suppressLearnClickUntil = 0;
 let learnViewPointerStartX = 0, learnViewPointerStartY = 0;
 let learnViewPointerId = null;
 let suppressLearnViewClickUntil = 0;
@@ -19421,14 +19416,7 @@ bindSettingsSwipeTarget(settingsViewEl);
 
 if (testSwipeTargetEl) {
   testSwipeTargetEl.addEventListener('pointerdown', e => {
-    if (currentMode === 'learn') {
-      learnPointerId = e.pointerId;
-      learnTouchStartX = e.clientX;
-      learnTouchStartY = e.clientY;
-      learnSwipeActive = false;
-      testSwipeTargetEl.setPointerCapture?.(e.pointerId);
-      return;
-    }
+    if (currentMode === 'learn') return;
     if (currentMode !== 'test') return;
     testPointerId = e.pointerId;
     testTouchStartX = e.clientX;
@@ -19438,18 +19426,7 @@ if (testSwipeTargetEl) {
   });
 
   testSwipeTargetEl.addEventListener('pointermove', e => {
-    if (currentMode === 'learn') {
-      if (learnPointerId !== null && e.pointerId !== learnPointerId) return;
-      if (document.getElementById('session-complete').style.display === 'block') return;
-      const dx = e.clientX - learnTouchStartX;
-      const dy = e.clientY - learnTouchStartY;
-      const absDx = Math.abs(dx), absDy = Math.abs(dy);
-      if (absDx > 12 && absDx > absDy * 1.15) {
-        learnSwipeActive = true;
-        e.preventDefault();
-      }
-      return;
-    }
+    if (currentMode === 'learn') return;
     if (testPointerId !== null && e.pointerId !== testPointerId) return;
     if (currentMode !== 'test' || !testAnswered) return;
     const dx = e.clientX - testTouchStartX;
@@ -19462,27 +19439,7 @@ if (testSwipeTargetEl) {
   });
 
   testSwipeTargetEl.addEventListener('pointerup', e => {
-    if (currentMode === 'learn') {
-      if (learnPointerId !== null && e.pointerId !== learnPointerId) return;
-      if (document.getElementById('session-complete').style.display === 'block') {
-        learnPointerId = null;
-        learnSwipeActive = false;
-        return;
-      }
-      const dx = e.clientX - learnTouchStartX;
-      const dy = e.clientY - learnTouchStartY;
-      const absDx = Math.abs(dx), absDy = Math.abs(dy);
-      if ((learnSwipeActive || absDx > 40) && absDx > absDy) {
-        e.preventDefault();
-        lastTouchTime = Date.now();
-        suppressLearnClickUntil = Date.now() + 450;
-        triggerHapticFeedback(30);
-        dx > 0 ? rate(5) : showPreviousCard();
-      }
-      learnPointerId = null;
-      learnSwipeActive = false;
-      return;
-    }
+    if (currentMode === 'learn') return;
     if (testPointerId !== null && e.pointerId !== testPointerId) return;
     if (currentMode !== 'test' || !testAnswered) {
       testPointerId = null;
@@ -19503,8 +19460,6 @@ if (testSwipeTargetEl) {
   });
 
   testSwipeTargetEl.addEventListener('pointercancel', () => {
-    learnPointerId = null;
-    learnSwipeActive = false;
     testPointerId = null;
     testSwipeActive = false;
   });
@@ -19513,7 +19468,6 @@ if (testSwipeTargetEl) {
     if (currentMode === 'learn') {
       e.preventDefault();
       e.stopPropagation();
-      if (Date.now() <= suppressLearnClickUntil) return;
       return;
     }
     if (Date.now() > suppressTestClickUntil) return;
@@ -19526,7 +19480,6 @@ learnViewEl.addEventListener('click', e => {
   if (currentMode !== 'learn') return;
   if (isControlTarget(e.target)) return;
   if (document.getElementById('session-complete').style.display === 'block') return;
-  if (Date.now() - lastTouchTime < 450) return;
   if (Date.now() < suppressLearnViewClickUntil) return;
   flipCard();
 });
