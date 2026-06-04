@@ -16037,8 +16037,8 @@ const UI_TEXT = {
     audioAriaUs: 'en_US音声で単語を再生',
     audioAriaEnglish: '端末で利用できる英語音声で単語を再生',
     audioEnglishUnavailableNote: 'この端末で利用できる英語音声が見つかりません。',
-    swipeLearn: 'カード: タップで答え / スワイプで次へ',
-    swipeLearnRate: 'ボタンで記録 / スワイプで次へ',
+    swipeLearn: 'カード: タップで答え / 右で次へ・左で戻る',
+    swipeLearnRate: 'ボタンで記録 / 右で次へ・左で戻る',
     swipeTestReady: '次へをタップ / 右スワイプ　→',
     swipeTestWaiting: '答えを選ぶと次へ進めます',
     swipeReadyAria: '次へボタンをタップするか右にスワイプすると次の問題に進みます',
@@ -16242,8 +16242,8 @@ const UI_TEXT = {
     audioAriaUs: 'Play word with en_US voice',
     audioAriaEnglish: 'Play word with this device’s available English voice',
     audioEnglishUnavailableNote: 'No available English voice was found on this device.',
-    swipeLearn: 'Tap card for answer / swipe for next',
-    swipeLearnRate: 'Choose a button / swipe for next',
+    swipeLearn: 'Tap for answer / right next, left back',
+    swipeLearnRate: 'Choose a button / right next, left back',
     swipeTestReady: 'Tap Next or swipe right →',
     swipeTestWaiting: 'Choose an answer to continue',
     swipeReadyAria: 'Tap the Next button or swipe right to move to the next question',
@@ -20262,8 +20262,13 @@ if (learnCardEl) {
       e.preventDefault();
       e.stopPropagation();
       suppressLearnViewClickUntil = Date.now() + 450;
-      if (!learnCardSwipeHapticPlayed) triggerHapticFeedback(30);
-      rate(3);
+      if (dx > 0) {
+        if (!learnCardSwipeHapticPlayed) triggerHapticFeedback(30);
+        rate(3);
+      } else if (currentIndex > 0) {
+        if (!learnCardSwipeHapticPlayed) triggerHapticFeedback(30);
+        showPreviousCard();
+      }
     }
     learnViewPointerId = null;
     learnCardSwipeHapticPlayed = false;
