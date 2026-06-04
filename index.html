@@ -1440,7 +1440,7 @@
       grid-template-columns: repeat(2, minmax(0, 1fr));
       gap: 8px;
       align-self: center;
-      width: min(64vw, 256px);
+      width: min(54vw, 220px);
       max-width: 100%;
       margin: 9px auto 0;
     }
@@ -1720,7 +1720,7 @@
     body.test-mode .test-letter-row {
       gap: 8px;
       margin-top: 8px;
-      width: min(62vw, 248px);
+      width: min(52vw, 216px);
     }
     body.test-mode.test-answered .test-letter-row {
       display: none;
@@ -1763,6 +1763,12 @@
     }
     body.test-mode .swipe-msg {
       display: none;
+    }
+
+    @media (max-height: 820px) {
+      body.test-mode .test-letter-row {
+        width: min(46vw, 188px);
+      }
     }
 
     @media (max-height: 600px) {
@@ -1813,7 +1819,7 @@
       }
       body.test-mode .test-letter-row {
         gap: 7px;
-        width: min(50vw, 196px);
+        width: min(44vw, 172px);
       }
       body.test-mode .test-feedback {
         display: none;
@@ -1867,7 +1873,7 @@
       body.test-mode .test-letter-row {
         gap: 5px;
         margin-top: 5px;
-        width: min(26vw, 104px);
+        width: min(24vw, 96px);
       }
       body.test-mode .test-letter-btn {
         border-radius: 10px;
