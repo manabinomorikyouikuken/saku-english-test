@@ -1760,7 +1760,11 @@
       display: none;
     }
     body.test-mode.test-answered .test-feedback.wrong-feedback.is-visible + .test-answer-zone .test-choice-grid {
-      display: none;
+      visibility: hidden;
+      pointer-events: none;
+      height: clamp(112px, 18svh, 160px);
+      max-height: clamp(112px, 18svh, 160px);
+      overflow: hidden;
     }
     body.test-mode .learn-bottom-bar {
       display: none;
