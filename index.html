@@ -569,6 +569,7 @@
     .ui-language-buttons,
     .phonetic-assist-buttons,
     .haptic-feedback-buttons,
+    .auto-speech-buttons,
     .speech-accent-buttons,
     .speech-compare-buttons,
     .speech-voice-buttons {
@@ -626,6 +627,7 @@
     .phonetic-assist-btn,
     .word-color-btn,
     .haptic-feedback-btn,
+    .auto-speech-btn,
     .speech-accent-btn,
     .speech-compare-btn,
     .speech-voice-btn {
@@ -701,6 +703,7 @@
     .phonetic-assist-btn.active,
     .word-color-btn.active,
     .haptic-feedback-btn.active,
+    .auto-speech-btn.active,
     .speech-accent-btn.active,
     .speech-compare-btn.active,
     .speech-voice-btn.active {
@@ -2620,6 +2623,12 @@
       <div class="storage-note" data-ui-key="speechAccentNote">カード下の音声ボタンで使う音声タグを選びます。カード上の発音記号はBritish基準で固定します。</div>
       <div class="settings-section-title" data-ui-key="speechCompareTitle">en_GB/en_US音声</div>
       <div class="storage-note" data-ui-key="speechCompareNote">オンにすると学習カード下にen_GB/en_USの2ボタンを表示します。発音記号はBritish基準のままです。</div>
+      <div class="settings-section-title" data-ui-key="autoSpeechTitle">自動で1回だけ発音</div>
+      <div class="auto-speech-buttons" aria-label="自動で1回だけ発音">
+        <button class="auto-speech-btn" type="button" data-auto-speech="on" onclick="setAutoSpeechEnabled(true)" data-ui-key="on">オン</button>
+        <button class="auto-speech-btn active" type="button" data-auto-speech="off" onclick="setAutoSpeechEnabled(false)" data-ui-key="off">オフ</button>
+      </div>
+      <div class="storage-note" data-ui-key="autoSpeechNote">初期値はオフです。学習・テストで新しいカードに進んだ直後、選択中の音声タグで1回だけ読み上げます。</div>
       <div class="speech-voice-buttons" id="speech-voice-buttons" aria-label="発音音声">
         <button class="speech-voice-btn active" type="button" disabled data-ui-key="femaleVoicePriority">女性声を優先</button>
       </div>
@@ -15405,6 +15414,7 @@ const HAPTIC_FEEDBACK_STORAGE_KEY = 'vocab_trainer_haptic_feedback_v1';
 const SPEECH_VOICE_STORAGE_KEY = 'vocab_trainer_speech_voice_v1';
 const SPEECH_ACCENT_STORAGE_KEY = 'vocab_trainer_speech_accent_v1';
 const SPEECH_COMPARE_STORAGE_KEY = 'vocab_trainer_speech_compare_v1';
+const AUTO_SPEECH_STORAGE_KEY = 'vocab_trainer_auto_speech_v1';
 const MISSED_REVIEW_STORAGE_KEY = 'vocab_trainer_missed_review_v1';
 const INTRO_SEEN_STORAGE_KEY = 'vocab_trainer_intro_seen_v1';
 const UI_LANGUAGE_STORAGE_KEY = 'vocab_trainer_ui_language_v1';
@@ -15979,6 +15989,8 @@ const UI_TEXT = {
     speechAccentNote: '学習カード下にはen_GB/en_USの2ボタンを常に表示します。カード上の発音記号はBritish基準で固定します。',
     speechCompareTitle: '学習画面の発音ボタン',
     speechCompareNote: '知人テストでは、発音機能に気づきやすいようにen_GB/en_USを見える形で表示します。',
+    autoSpeechTitle: '自動で1回だけ発音',
+    autoSpeechNote: '初期値はオフです。学習・テストで新しいカードに進んだ直後、選択中の音声タグで1回だけ読み上げます。',
     femaleVoicePriority: '女性声を優先',
     speechVoiceNote: '初期値は女性声を優先します。使える声は端末とブラウザにより変わります。',
     wordPartsDetails: '単語の成り立ちメモ',
@@ -16182,6 +16194,8 @@ const UI_TEXT = {
     speechAccentNote: 'The learning card always shows en_GB/en_US audio buttons. IPA on the card stays fixed to British IPA.',
     speechCompareTitle: 'Learning audio buttons',
     speechCompareNote: 'For friend testing, en_GB/en_US are shown visibly so testers notice the audio feature.',
+    autoSpeechTitle: 'Auto play once',
+    autoSpeechNote: 'Default is off. When a new practice or test card appears, the selected voice tag speaks it once.',
     femaleVoicePriority: 'Prefer female voice',
     speechVoiceNote: 'The default prefers a female voice. Available voices depend on the device and browser.',
     wordPartsDetails: 'Word-part notes',
@@ -16758,6 +16772,7 @@ let hapticFeedbackEnabled = localStorage.getItem(HAPTIC_FEEDBACK_STORAGE_KEY) !=
 let selectedSpeechVoiceKey = localStorage.getItem(SPEECH_VOICE_STORAGE_KEY) || SPEECH_AUTO_FEMALE;
 let currentSpeechAccent = localStorage.getItem(SPEECH_ACCENT_STORAGE_KEY) === 'us' ? 'us' : 'uk';
 let speechComparisonEnabled = localStorage.getItem(SPEECH_COMPARE_STORAGE_KEY) === 'on';
+let autoSpeechEnabled = localStorage.getItem(AUTO_SPEECH_STORAGE_KEY) === 'on';
 const SETTINGS_PAGE_ORDER = ['level', 'theme', 'test', 'display', 'history'];
 let currentSettingsPage = 'level';
 
@@ -16835,6 +16850,7 @@ function applyUiLanguage() {
   updateHapticFeedbackButtons();
   updateSpeechAccentButtons();
   updateSpeechCompareButtons();
+  updateAutoSpeechButtons();
   updateSpeechVoiceButtons();
   updateStats();
   if (!document.getElementById('complete-route-actions')?.hidden) updateCompleteRouteActions();
@@ -16951,6 +16967,7 @@ function showTestEntryPanel() {
   testBestStreak = 0;
   testAnswered = false;
   testMissedKeys = new Set();
+  lastAutoSpeechTestKey = '';
   testPerfectQuote = null;
   completionAction = 'restart';
 
@@ -17597,6 +17614,15 @@ function updateSpeechCompareButtons() {
   updateAudioButtons();
 }
 
+function updateAutoSpeechButtons() {
+  document.querySelectorAll('.auto-speech-btn').forEach(btn => {
+    const isOnButton = btn.dataset.autoSpeech === 'on';
+    const isActive = isOnButton === autoSpeechEnabled;
+    btn.classList.toggle('active', isActive);
+    btn.setAttribute('aria-pressed', isActive ? 'true' : 'false');
+  });
+}
+
 function refreshVisiblePronunciationDisplay() {
   if (currentMode === 'learn' && sessionCards[currentIndex]) {
     updateFrontPronunciation(sessionCards[currentIndex]);
@@ -17630,6 +17656,21 @@ function setSpeechComparisonEnabled(enabled) {
   if (speechComparisonEnabled) triggerHapticFeedback(12);
 }
 
+function setAutoSpeechEnabled(enabled) {
+  autoSpeechEnabled = Boolean(enabled);
+  localStorage.setItem(AUTO_SPEECH_STORAGE_KEY, autoSpeechEnabled ? 'on' : 'off');
+  updateAutoSpeechButtons();
+  if (autoSpeechEnabled) {
+    triggerHapticFeedback(12);
+    if (currentMode === 'learn' && sessionCards[currentIndex]) {
+      playOneShotCardAudio(sessionCards[currentIndex], 'learn', { force: true });
+    }
+    if (currentMode === 'test' && !testAnswered && testCards[testIndex]) {
+      playOneShotCardAudio(testCards[testIndex], 'test', { force: true });
+    }
+  }
+}
+
 function getSpeechText(word) {
   const text = String(word?.w || '').trim();
   if (!text) return '';
@@ -17642,21 +17683,23 @@ function speakEnglishWord(word, event, accent = currentSpeechAccent, options = {
     event.stopPropagation();
   }
   const text = getSpeechText(word);
-  if (!text) return;
+  if (!text) return false;
   const synth = getSpeechEngine();
   if (!synth) {
-    alert(uiText('audioUnsupportedNote'));
-    return;
+    if (!options.silentFailure) alert(uiText('audioUnsupportedNote'));
+    return false;
   }
   refreshSpeechVoices();
   const voices = synth.getVoices();
   const { voice, isFallback } = resolveEnglishVoice(voices, accent, options);
   if (!voice) {
-    alert(options.allowFallback
-      ? (voices.length ? uiText('audioEnglishUnavailableNote') : uiText('voiceLoadingNote'))
-      : (voices.some(isEnglishVoice) ? getAudioVoiceUnavailableText(accent) : uiText('voiceLoadingNote')));
+    if (!options.silentFailure) {
+      alert(options.allowFallback
+        ? (voices.length ? uiText('audioEnglishUnavailableNote') : uiText('voiceLoadingNote'))
+        : (voices.some(isEnglishVoice) ? getAudioVoiceUnavailableText(accent) : uiText('voiceLoadingNote')));
+    }
     updateAudioButtons();
-    return;
+    return false;
   }
   const utterance = new SpeechSynthesisUtterance(text);
   utterance.voice = voice;
@@ -17666,7 +17709,45 @@ function speakEnglishWord(word, event, accent = currentSpeechAccent, options = {
   utterance.volume = 1;
   synth.cancel();
   synth.speak(utterance);
-  triggerHapticFeedback(8);
+  if (options.haptic !== false) triggerHapticFeedback(8);
+  return true;
+}
+
+let lastAutoSpeechLearnKey = '';
+let lastAutoSpeechTestKey = '';
+
+function getOneShotAudioKey(word, mode) {
+  return `${mode}:${getCardKey(word)}:${currentSpeechAccent}`;
+}
+
+function playOneShotCardAudio(word, mode, options = {}) {
+  if (!autoSpeechEnabled || !word) return false;
+  const key = getOneShotAudioKey(word, mode);
+  if (!options.force) {
+    if (mode === 'learn' && lastAutoSpeechLearnKey === key) return false;
+    if (mode === 'test' && lastAutoSpeechTestKey === key) return false;
+  }
+  if (mode === 'learn') lastAutoSpeechLearnKey = key;
+  if (mode === 'test') lastAutoSpeechTestKey = key;
+
+  const spoken = speakEnglishWord(word, null, currentSpeechAccent, {
+    silentFailure: true,
+    haptic: false
+  });
+  if (!spoken) {
+    setTimeout(() => {
+      const stillCurrent = mode === 'learn'
+        ? currentMode === 'learn' && sessionCards[currentIndex] === word
+        : currentMode === 'test' && !testAnswered && testCards[testIndex] === word;
+      if (autoSpeechEnabled && stillCurrent) {
+        speakEnglishWord(word, null, currentSpeechAccent, {
+          silentFailure: true,
+          haptic: false
+        });
+      }
+    }, 240);
+  }
+  return spoken;
 }
 
 function playCurrentLearningAudio(event, accent = currentSpeechAccent) {
@@ -18615,6 +18696,7 @@ function startSession() {
   currentIndex  = 0;
   isFlipped     = false;
   sessionReviewedKeys = new Set();
+  lastAutoSpeechLearnKey = '';
 
   document.getElementById('session-complete').style.display = 'none';
   document.getElementById('study-prompt').style.display = 'block';
@@ -18663,6 +18745,7 @@ function showCard() {
   document.getElementById('progress-fill').style.width = pct + '%';
   document.getElementById('progress-text').textContent  = `${currentIndex} / ${sessionCards.length}`;
   updateRatingControls();
+  playOneShotCardAudio(w, 'learn');
 }
 
 function resetCardToFrontInstantly() {
@@ -19041,6 +19124,7 @@ function showTestQuestion() {
   document.getElementById('progress-fill').style.width = pct + '%';
   document.getElementById('progress-text').textContent = `${testIndex} / ${testCards.length}`;
   document.getElementById('due-text').textContent = getTestScoreLabel();
+  playOneShotCardAudio(word, 'test');
 }
 
 function triggerWrongAnswerCue() {
@@ -19356,6 +19440,7 @@ function exportData() {
     selectedSpeechVoiceKey,
     selectedSpeechAccent: currentSpeechAccent,
     selectedSpeechComparisonEnabled: speechComparisonEnabled,
+    selectedAutoSpeechEnabled: autoSpeechEnabled,
     selectedUiLanguage: currentUiLanguage,
     missedReviewKeys: loadMissedReviewKeys(),
     data: loadData()
@@ -19434,6 +19519,11 @@ async function importData(event) {
       localStorage.setItem(SPEECH_COMPARE_STORAGE_KEY, speechComparisonEnabled ? 'on' : 'off');
       updateSpeechCompareButtons();
       refreshVisiblePronunciationDisplay();
+    }
+    if (typeof payload.selectedAutoSpeechEnabled === 'boolean') {
+      autoSpeechEnabled = payload.selectedAutoSpeechEnabled;
+      localStorage.setItem(AUTO_SPEECH_STORAGE_KEY, autoSpeechEnabled ? 'on' : 'off');
+      updateAutoSpeechButtons();
     }
     if (payload.selectedUiLanguage === 'ja' || payload.selectedUiLanguage === 'en') {
       currentUiLanguage = payload.selectedUiLanguage;
