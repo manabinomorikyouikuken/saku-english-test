@@ -1500,6 +1500,12 @@
     .test-feedback.correct-feedback.streak-milestone {
       display: flex;
     }
+    .test-feedback.correct-feedback.streak-special {
+      border-color: #fbbf24;
+      background: linear-gradient(135deg, #fff7ed, #fef3c7);
+      color: #92400e;
+      box-shadow: 0 6px 18px rgba(217,119,6,0.16);
+    }
     @keyframes milestonePop {
       0% { transform: scale(0.98); opacity: 0.82; }
       48% { transform: scale(1.025); opacity: 1; }
@@ -14963,6 +14969,102 @@ const WORDS = [
     "m": "利用可能残高、今使える残高",
     "ex": "Your available balance is shown on the screen.",
     "exJa": "利用可能残高は画面に表示されている。"
+  },
+  {
+    "id": "bloody_hell_interjection_british",
+    "w": "bloody hell",
+    "cat": "pronunciation-note",
+    "pos": "感動詞",
+    "level": "発展",
+    "ipa": "ˌblʌdi ˈhel",
+    "ph": "ブラディ ヘル",
+    "m": "なんてことだ、まさか（かなりくだけた強い驚き・いら立ちの表現）",
+    "ex": "Bloody hell, that was a close call.",
+    "exJa": "なんてことだ、危ないところだった。"
+  },
+  {
+    "id": "blood_noun_british",
+    "w": "blood",
+    "cat": "pronunciation-note",
+    "pos": "名詞",
+    "level": "中学復習",
+    "ipa": "blʌd",
+    "ph": "ブラッド",
+    "m": "血、血液",
+    "ex": "Blood carries oxygen around the body.",
+    "exJa": "血液は体中に酸素を運ぶ。"
+  },
+  {
+    "id": "hell_noun_british",
+    "w": "hell",
+    "cat": "pronunciation-note",
+    "pos": "名詞",
+    "level": "標準",
+    "ipa": "hel",
+    "ph": "ヘル",
+    "m": "地獄、ひどくつらい状況（強い語）",
+    "ex": "The journey through the storm felt like hell.",
+    "exJa": "嵐の中の旅は地獄のように感じられた。"
+  },
+  {
+    "id": "spiffing_adjective_british",
+    "w": "spiffing",
+    "cat": "pronunciation-note",
+    "pos": "形容詞",
+    "level": "発展",
+    "ipa": "ˈspɪfɪŋ",
+    "ph": "スピフィング",
+    "m": "すばらしい、見事な（古風・英式のくだけた表現）",
+    "ex": "That is a spiffing idea.",
+    "exJa": "それはすばらしい考えだ。"
+  },
+  {
+    "id": "marvellous_adjective_british",
+    "w": "marvellous",
+    "cat": "pronunciation-note",
+    "pos": "形容詞",
+    "level": "標準",
+    "ipa": "ˈmɑːvələs",
+    "ph": "マーヴァラス",
+    "m": "すばらしい、驚くほどよい（英式つづり）",
+    "ex": "She gave a marvellous answer.",
+    "exJa": "彼女はすばらしい答えをした。"
+  },
+  {
+    "id": "extraordinarily_adverb_british",
+    "w": "extraordinarily",
+    "cat": "pronunciation-note",
+    "pos": "副詞",
+    "level": "発展",
+    "ipa": "ɪkˈstrɔːdɪnərəli",
+    "ph": "イクストローディナラリ",
+    "m": "非常に、並外れて",
+    "ex": "The result was extraordinarily good.",
+    "exJa": "その結果は並外れてよかった。"
+  },
+  {
+    "id": "fantastic_adjective_british",
+    "w": "fantastic",
+    "cat": "pronunciation-note",
+    "pos": "形容詞",
+    "level": "標準",
+    "ipa": "fænˈtæstɪk",
+    "ph": "ファンタスティック",
+    "m": "すばらしい、見事な",
+    "ex": "You did a fantastic job.",
+    "exJa": "あなたはすばらしい仕事をした。"
+  },
+  {
+    "id": "splendid_adjective_british",
+    "w": "splendid",
+    "cat": "pronunciation-note",
+    "pos": "形容詞",
+    "level": "標準",
+    "ipa": "ˈsplendɪd",
+    "ph": "スプレンディッド",
+    "m": "すばらしい、立派な",
+    "ex": "It was a splendid performance.",
+    "exJa": "それは見事な演技だった。"
   }
 ];
 
@@ -15000,6 +15102,28 @@ const CORRECT_STREAK_MILESTONE_MESSAGES = {
   60: '60連続正解！集中が続いている。',
   80: '80連続正解！100が見えてきた。',
   100: '100連続正解！これは大きな記録。'
+};
+const CORRECT_STREAK_SPECIAL_EVENTS = {
+  100: {
+    ja: '100連続正解！称号「Blimey!」獲得。',
+    en: '100 correct in a row. Title earned: Blimey!'
+  },
+  200: {
+    ja: '200連続正解！称号「Bloody Hell」獲得。',
+    en: '200 correct in a row. Title earned: Bloody Hell.'
+  },
+  300: {
+    ja: '300連続正解！称号「Stupendous」獲得。',
+    en: '300 correct in a row. Title earned: Stupendous.'
+  },
+  400: {
+    ja: '400連続正解！称号「Gigantic surprise!」獲得。',
+    en: '400 correct in a row. Title earned: Gigantic surprise!'
+  },
+  500: {
+    ja: '500連続正解！称号「Spiffing!」獲得。',
+    en: '500 correct in a row. Title earned: Spiffing!'
+  }
 };
 const SPEECH_LANG_BY_ACCENT = { uk: 'en-GB', us: 'en-US' };
 const SPEECH_AUTO_FEMALE = 'auto-female';
@@ -16551,7 +16675,13 @@ function getMeta(data = loadData()) {
     dailyReviews,
     missClearedTotal: Number.isFinite(Number(rawMeta.missClearedTotal)) ? Number(rawMeta.missClearedTotal) : 0,
     correctStreak: Number.isFinite(Number(rawMeta.correctStreak)) ? Number(rawMeta.correctStreak) : 0,
-    bestCorrectStreak: Number.isFinite(Number(rawMeta.bestCorrectStreak)) ? Number(rawMeta.bestCorrectStreak) : 0
+    bestCorrectStreak: Number.isFinite(Number(rawMeta.bestCorrectStreak)) ? Number(rawMeta.bestCorrectStreak) : 0,
+    lastPerfectTestKeys: Array.isArray(rawMeta.lastPerfectTestKeys)
+      ? rawMeta.lastPerfectTestKeys.map(String).filter(Boolean).slice(0, TEST_CARD_LIMIT)
+      : [],
+    lastPerfectTestWordTexts: Array.isArray(rawMeta.lastPerfectTestWordTexts)
+      ? rawMeta.lastPerfectTestWordTexts.map(String).filter(Boolean).slice(0, TEST_CARD_LIMIT)
+      : []
   };
 }
 
@@ -16621,6 +16751,39 @@ function recordCorrectAnswerStreak(isCorrect) {
   data.__meta = meta;
   saveData(data);
   return meta;
+}
+
+function saveLastPerfectTestKeys(words) {
+  const data = loadData();
+  const meta = getMeta(data);
+  const uniqueWords = uniqueTestWords(words);
+  meta.lastPerfectTestKeys = uniqueWords.map(word => getCardKey(word)).filter(Boolean).slice(0, TEST_CARD_LIMIT);
+  meta.lastPerfectTestWordTexts = uniqueWords.map(getWordTextKey).filter(Boolean).slice(0, TEST_CARD_LIMIT);
+  data.__meta = meta;
+  saveData(data);
+}
+
+function clearLastPerfectTestKeys() {
+  const data = loadData();
+  const meta = getMeta(data);
+  meta.lastPerfectTestKeys = [];
+  meta.lastPerfectTestWordTexts = [];
+  data.__meta = meta;
+  saveData(data);
+}
+
+function getPerfectFollowUpExclusion(activeWords, limit = TEST_CARD_LIMIT) {
+  const meta = getMeta();
+  const keys = new Set(meta.lastPerfectTestKeys || []);
+  const wordTexts = new Set(meta.lastPerfectTestWordTexts || []);
+  if (!keys.size && !wordTexts.size) return { keys: new Set(), wordTexts: new Set() };
+  const pool = uniqueTestWords(activeWords);
+  const withoutLastPerfect = pool.filter(word =>
+    !keys.has(getCardKey(word)) && !wordTexts.has(getWordTextKey(word))
+  );
+  return withoutLastPerfect.length >= Math.min(limit, TEST_CARD_LIMIT)
+    ? { keys, wordTexts }
+    : { keys: new Set(), wordTexts: new Set() };
 }
 
 function getWordLevel(word, index) {
@@ -16726,12 +16889,12 @@ function getPartKey(word) {
 }
 
 function getPartKeys(word) {
-  const part = getPartOfSpeech(word);
+  const parts = String(getPartOfSpeech(word) || '').split('・').map(part => part.trim()).filter(Boolean);
   const keys = [];
-  if (part.includes('名詞')) keys.push('noun');
-  if (part.includes('動詞')) keys.push('verb');
-  if (part.includes('形容詞')) keys.push('adjective');
-  if (part.includes('副詞')) keys.push('adverb');
+  if (parts.includes('名詞')) keys.push('noun');
+  if (parts.includes('動詞')) keys.push('verb');
+  if (parts.includes('形容詞')) keys.push('adjective');
+  if (parts.includes('副詞')) keys.push('adverb');
   return keys.length ? keys : ['other'];
 }
 
@@ -17918,6 +18081,21 @@ function uniqueCards(words) {
   });
 }
 
+function getWordTextKey(word) {
+  return String(word?.w || '').trim().toLowerCase();
+}
+
+function uniqueTestWords(words) {
+  const seenTexts = new Set();
+  return uniqueCards(words).filter(word => {
+    const textKey = getWordTextKey(word);
+    if (!textKey) return true;
+    if (seenTexts.has(textKey)) return false;
+    seenTexts.add(textKey);
+    return true;
+  });
+}
+
 function getStudyState(word, data) {
   return data[getCardKey(word)] || { n: 0, ef: 2.5, interval: 1, nextDate: 0 };
 }
@@ -17949,8 +18127,20 @@ function rankAdaptiveWords(words, scorer) {
   return shuffle(words).sort((a, b) => scorer(b) - scorer(a));
 }
 
-function createAdaptiveTestDeck(activeWords, limit = TEST_CARD_LIMIT) {
-  const pool = uniqueCards(activeWords);
+function createAdaptiveTestDeck(activeWords, limit = TEST_CARD_LIMIT, options = {}) {
+  const excludedKeys = options.excludeKeys instanceof Set
+    ? options.excludeKeys
+    : new Set((options.excludeKeys || []).map(String));
+  const excludedWordTexts = options.excludeWordTexts instanceof Set
+    ? options.excludeWordTexts
+    : new Set((options.excludeWordTexts || []).map(String));
+  const allPool = uniqueTestWords(activeWords);
+  const filteredPool = excludedKeys.size || excludedWordTexts.size
+    ? allPool.filter(word =>
+      !excludedKeys.has(getCardKey(word)) && !excludedWordTexts.has(getWordTextKey(word))
+    )
+    : allPool;
+  const pool = filteredPool.length >= Math.min(limit, allPool.length) ? filteredPool : allPool;
   const targetCount = Math.min(limit, pool.length);
   if (targetCount <= 0) return [];
 
@@ -18238,9 +18428,16 @@ function startTestSession() {
   showLearnView();
   const activeWords = getActiveWords();
   const isRelationScope = currentCategory === 'wordRelation';
+  const perfectFollowUpExclusion = isRelationScope
+    ? { keys: new Set(), wordTexts: new Set() }
+    : getPerfectFollowUpExclusion(activeWords);
   const testDeck = isRelationScope
     ? createRelationTestDeck(activeWords)
-    : createAdaptiveTestDeck(activeWords);
+    : createAdaptiveTestDeck(activeWords, TEST_CARD_LIMIT, {
+      excludeKeys: perfectFollowUpExclusion.keys,
+      excludeWordTexts: perfectFollowUpExclusion.wordTexts
+    });
+  if (perfectFollowUpExclusion.keys.size || perfectFollowUpExclusion.wordTexts.size) clearLastPerfectTestKeys();
   beginTestSession(testDeck, isRelationScope ? 'wordRelation' : 'normal');
 }
 
@@ -18280,23 +18477,28 @@ function startWeakWordsSession() {
 function getDistractorPool(correctWord, neededDistractors = currentTestChoiceCount - 1) {
   const correctKey = getCardKey(correctWord);
   const seenMeanings = new Set([correctWord.m]);
-  const scoped = getActiveWords().filter(word => {
-    const key = getCardKey(word);
-    if (key === correctKey || seenMeanings.has(word.m)) return false;
-    seenMeanings.add(word.m);
-    return true;
-  });
-  const scopedFirst = shuffle(scoped);
-  if (scopedFirst.length >= neededDistractors) return scopedFirst;
-
-  const allSeenMeanings = new Set([correctWord.m, ...scopedFirst.map(word => word.m)]);
-  const fallback = WORDS.filter(word => {
-    const key = getCardKey(word);
-    if (key === correctKey || allSeenMeanings.has(word.m)) return false;
-    allSeenMeanings.add(word.m);
-    return true;
-  });
-  return [...scopedFirst, ...shuffle(fallback)];
+  const selectedKeys = new Set([correctKey]);
+  const selected = [];
+  const addCandidates = candidates => {
+    shuffle(candidates).forEach(word => {
+      if (selected.length >= neededDistractors) return;
+      const key = getCardKey(word);
+      const meaning = String(word.m || '').trim();
+      if (selectedKeys.has(key) || !meaning || seenMeanings.has(meaning)) return;
+      selectedKeys.add(key);
+      seenMeanings.add(meaning);
+      selected.push(word);
+    });
+  };
+  const activeWords = getActiveWords();
+  addCandidates(activeWords.filter(word => sharesPartWith(word, correctWord)));
+  if (selected.length >= neededDistractors) return selected;
+  addCandidates(WORDS.filter(word => sharesPartWith(word, correctWord)));
+  if (selected.length >= neededDistractors) return selected;
+  addCandidates(activeWords);
+  if (selected.length >= neededDistractors) return selected;
+  addCandidates(WORDS);
+  return selected;
 }
 
 function buildMeaningTestChoices(correctWord) {
@@ -18450,7 +18652,7 @@ function showTestQuestion() {
   updateTestCardBack(word);
   const feedbackEl = document.getElementById('test-feedback');
   feedbackEl.textContent = '';
-  feedbackEl.classList.remove('is-visible', 'correct-feedback', 'wrong-feedback', 'streak-milestone');
+  feedbackEl.classList.remove('is-visible', 'correct-feedback', 'wrong-feedback', 'streak-milestone', 'streak-special');
   document.getElementById('test-next-btn').classList.remove('is-visible');
   setTestSwipeHintReady(false);
 
@@ -18671,6 +18873,8 @@ function getSessionStreakMilestoneFeedback() {
 
 function getCorrectStreakMilestoneFeedback(streak) {
   const count = Number(streak) || 0;
+  const specialEvent = getCorrectStreakSpecialEvent(count);
+  if (specialEvent) return currentUiLanguage === 'en' ? specialEvent.en : specialEvent.ja;
   if (currentUiLanguage === 'en') {
     if (count === 20) return '20 correct in a row. Next goal: 40.';
     if (count === 40) return '40 correct in a row. Strong run.';
@@ -18683,6 +18887,10 @@ function getCorrectStreakMilestoneFeedback(streak) {
   if (CORRECT_STREAK_MILESTONE_MESSAGES[count]) return CORRECT_STREAK_MILESTONE_MESSAGES[count];
   if (count > 100 && count % 20 === 0) return `${count}連続正解！記録更新中。`;
   return '';
+}
+
+function getCorrectStreakSpecialEvent(streak) {
+  return CORRECT_STREAK_SPECIAL_EVENTS[Number(streak) || 0] || null;
 }
 
 function getCorrectAnswerFeedback(correctStreak = getMeta().correctStreak) {
@@ -18717,14 +18925,16 @@ function answerTestChoice(button, word) {
   markPickedAnswer(selectedChoiceIndex);
   let correctStreakMeta = getMeta();
   let streakMilestoneFeedback = '';
+  let isSpecialStreakEvent = false;
   if (isCorrect) {
     testCorrect++;
     testCurrentStreak++;
     testBestStreak = Math.max(testBestStreak, testCurrentStreak);
     correctStreakMeta = recordCorrectAnswerStreak(true);
+    isSpecialStreakEvent = Boolean(getCorrectStreakSpecialEvent(correctStreakMeta.correctStreak));
     streakMilestoneFeedback = getCorrectStreakMilestoneFeedback(correctStreakMeta.correctStreak) || getSessionStreakMilestoneFeedback();
     clearMissedReviewWord(word);
-    triggerHapticFeedback(streakMilestoneFeedback ? [22, 26, 42] : 18);
+    triggerHapticFeedback(isSpecialStreakEvent ? [30, 35, 55, 35, 90] : streakMilestoneFeedback ? [22, 26, 42] : 18);
   }
   else {
     testCurrentStreak = 0;
@@ -18758,15 +18968,16 @@ function answerTestChoice(button, word) {
       feedbackEl.textContent = getCorrectAnswerFeedback(correctStreakMeta.correctStreak);
       feedbackEl.classList.remove('wrong-feedback');
       feedbackEl.classList.add('is-visible', 'correct-feedback', 'streak-milestone');
+      feedbackEl.classList.toggle('streak-special', isSpecialStreakEvent);
       cardEl?.classList.add('feedback-visible');
     } else {
       feedbackEl.textContent = '';
-      feedbackEl.classList.remove('is-visible', 'correct-feedback', 'wrong-feedback', 'streak-milestone');
+      feedbackEl.classList.remove('is-visible', 'correct-feedback', 'wrong-feedback', 'streak-milestone', 'streak-special');
       cardEl?.classList.remove('feedback-visible');
     }
   } else {
     renderWrongAnswerFeedback(feedbackEl, word, getWordByCardKey(button.dataset.choiceKey));
-    feedbackEl.classList.remove('correct-feedback', 'streak-milestone');
+    feedbackEl.classList.remove('correct-feedback', 'streak-milestone', 'streak-special');
     feedbackEl.classList.add('is-visible', 'wrong-feedback');
     cardEl?.classList.add('feedback-visible');
   }
@@ -19012,8 +19223,8 @@ function getTestNextStepMessage({ testLength, misses, isMissReview, remainingMis
     : '次の一手: ミスだけ復習で、今のつまずきをすぐ回収。';
   if (isMissReview && remainingMisses === 0) return '';
   if (isPerfect20) return currentUiLanguage === 'en'
-    ? 'Next: stop here with a clean win, or try a wider range tomorrow.'
-    : '次の一手: 満点はここで一区切り。明日は範囲を少し広げてもいい。';
+    ? 'Next: the next 20 will use different words. Keep the streak going.'
+    : '次の一手: 次の20問は別の単語で出題します。連続記録を伸ばそう。';
   if (isMissReview) return currentUiLanguage === 'en'
     ? `Next: clear the remaining ${remainingMisses} ${remainingMisses === 1 ? 'word' : 'words'} the same way.`
     : `次の一手: 残り${remainingMisses}語も、同じ流れで回収。`;
@@ -19026,6 +19237,14 @@ function getCorrectStreakCompleteMessage(correctStreak) {
   const count = Number(correctStreak) || 0;
   if (count < TEST_CARD_LIMIT) return '';
   const nextGoal = Math.ceil((count + 1) / 20) * 20;
+  const specialEvent = getCorrectStreakSpecialEvent(count);
+  if (specialEvent) {
+    const eventLine = currentUiLanguage === 'en' ? specialEvent.en : specialEvent.ja;
+    const nextLine = currentUiLanguage === 'en'
+      ? `Next goal: ${nextGoal}.`
+      : `次は${nextGoal}を狙える。`;
+    return `${eventLine}\n${nextLine}`;
+  }
   return currentUiLanguage === 'en'
     ? `Correct streak: ${count}. Next goal: ${nextGoal}.`
     : `連続正解記録: ${count}。次は${nextGoal}を狙える。`;
@@ -19348,6 +19567,7 @@ function showTestComplete() {
 	  const canContinueMissReview = misses > 0 || (isMissReview && remainingMisses > 0);
 	  const isMissReviewCleared = isMissReview && testCards.length > 0 && misses === 0;
 	  const correctStreakMessage = getCorrectStreakCompleteMessage(getMeta().correctStreak);
+	  if (isPerfect20 && !isRelationGame && !isMissReview) saveLastPerfectTestKeys(testCards);
 	  completeEl.classList.toggle('weakness-cleared', isMissReviewCleared);
   completionAction = canContinueMissReview ? 'missReview' : 'restart';
   const completeIcon = document.getElementById('complete-icon');
