@@ -19342,6 +19342,8 @@ let testTouchStartX = 0, testTouchStartY = 0;
 let testSwipeActive = false;
 let suppressTestClickUntil = 0;
 let testPointerId = null;
+let testSwipeHapticPlayed = false;
+let learnCardSwipeHapticPlayed = false;
 
 function setTestSwipeHintReady(isReady) {
   const swipeMsg = document.getElementById('swipe-msg');
@@ -19423,6 +19425,7 @@ if (testSwipeTargetEl) {
     testTouchStartX = e.clientX;
     testTouchStartY = e.clientY;
     testSwipeActive = false;
+    testSwipeHapticPlayed = false;
     if (testAnswered) testSwipeTargetEl.setPointerCapture?.(e.pointerId);
   });
 
@@ -19436,6 +19439,10 @@ if (testSwipeTargetEl) {
     if (absDx > 12 && absDx > absDy * 1.15) {
       testSwipeActive = true;
       e.preventDefault();
+    }
+    if (dx > 40 && absDx > absDy * 1.15 && !testSwipeHapticPlayed) {
+      testSwipeHapticPlayed = true;
+      triggerHapticFeedback(16);
     }
   });
 
@@ -19453,16 +19460,18 @@ if (testSwipeTargetEl) {
     if (dx > 0 && (testSwipeActive || absDx > 40) && absDx > absDy) {
       e.preventDefault();
       suppressTestClickUntil = Date.now() + 450;
-      triggerHapticFeedback(35);
+      if (!testSwipeHapticPlayed) triggerHapticFeedback(35);
       showNextTestQuestion();
     }
     testPointerId = null;
     testSwipeActive = false;
+    testSwipeHapticPlayed = false;
   });
 
   testSwipeTargetEl.addEventListener('pointercancel', () => {
     testPointerId = null;
     testSwipeActive = false;
+    testSwipeHapticPlayed = false;
   });
 
   testSwipeTargetEl.addEventListener('click', e => {
@@ -19492,6 +19501,7 @@ if (learnCardEl) {
     learnViewPointerId = e.pointerId;
     learnViewPointerStartX = e.clientX;
     learnViewPointerStartY = e.clientY;
+    learnCardSwipeHapticPlayed = false;
     learnCardEl.setPointerCapture?.(e.pointerId);
   });
 
@@ -19503,6 +19513,10 @@ if (learnCardEl) {
     if (absDx > 12 && absDx > absDy * 1.15) {
       suppressLearnViewClickUntil = Date.now() + 450;
       e.preventDefault();
+    }
+    if (absDx > 40 && absDx > absDy * 1.15 && !learnCardSwipeHapticPlayed) {
+      learnCardSwipeHapticPlayed = true;
+      triggerHapticFeedback(16);
     }
   });
 
@@ -19516,15 +19530,17 @@ if (learnCardEl) {
       e.preventDefault();
       e.stopPropagation();
       suppressLearnViewClickUntil = Date.now() + 450;
-      triggerHapticFeedback(30);
+      if (!learnCardSwipeHapticPlayed) triggerHapticFeedback(30);
       rate(3);
     }
     learnViewPointerId = null;
+    learnCardSwipeHapticPlayed = false;
   });
 
   learnCardEl.addEventListener('pointercancel', e => {
     if (learnCardEl.hasPointerCapture?.(e.pointerId)) learnCardEl.releasePointerCapture(e.pointerId);
     learnViewPointerId = null;
+    learnCardSwipeHapticPlayed = false;
   });
 }
 
