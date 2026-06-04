@@ -15547,8 +15547,8 @@ const UI_TEXT = {
     audioAriaUs: 'en_US音声で単語を再生',
     audioAriaEnglish: '端末で利用できる英語音声で単語を再生',
     audioEnglishUnavailableNote: 'この端末で利用できる英語音声が見つかりません。',
-    swipeLearn: 'カードをタップして答えを確認',
-    swipeLearnRate: '下のボタンで次へ',
+    swipeLearn: 'カード: タップで答え / スワイプで次へ',
+    swipeLearnRate: 'ボタンで記録 / スワイプで次へ',
     swipeTestReady: '次へをタップ / 右スワイプ　→',
     swipeTestWaiting: '答えを選ぶと次へ進めます',
     swipeReadyAria: '次へボタンをタップするか右にスワイプすると次の問題に進みます',
@@ -15749,8 +15749,8 @@ const UI_TEXT = {
     audioAriaUs: 'Play word with en_US voice',
     audioAriaEnglish: 'Play word with this device’s available English voice',
     audioEnglishUnavailableNote: 'No available English voice was found on this device.',
-    swipeLearn: 'Tap the card to check the answer',
-    swipeLearnRate: 'Choose a button below to continue',
+    swipeLearn: 'Tap card for answer / swipe for next',
+    swipeLearnRate: 'Choose a button / swipe for next',
     swipeTestReady: 'Tap Next or swipe right →',
     swipeTestWaiting: 'Choose an answer to continue',
     swipeReadyAria: 'Tap the Next button or swipe right to move to the next question',
@@ -19329,6 +19329,7 @@ function showTestComplete() {
 
 // ─── 画面操作：学習は理解度ボタン、テストは回答後だけ専用バーでスワイプ ───
 const learnViewEl = document.getElementById('learn-view');
+const learnCardEl = document.getElementById('card-container');
 const testSwipeTargetEl = document.getElementById('swipe-msg');
 const settingsViewEl = document.getElementById('settings-view');
 let learnViewPointerStartX = 0, learnViewPointerStartY = 0;
@@ -19484,32 +19485,48 @@ learnViewEl.addEventListener('click', e => {
   flipCard();
 });
 
-learnViewEl.addEventListener('pointerdown', e => {
-  if (currentMode !== 'learn') return;
-  if (isControlTarget(e.target) || e.target.closest('#swipe-msg')) return;
-  learnViewPointerId = e.pointerId;
-  learnViewPointerStartX = e.clientX;
-  learnViewPointerStartY = e.clientY;
-});
+if (learnCardEl) {
+  learnCardEl.addEventListener('pointerdown', e => {
+    if (currentMode !== 'learn') return;
+    if (document.getElementById('session-complete').style.display === 'block') return;
+    learnViewPointerId = e.pointerId;
+    learnViewPointerStartX = e.clientX;
+    learnViewPointerStartY = e.clientY;
+    learnCardEl.setPointerCapture?.(e.pointerId);
+  });
 
-learnViewEl.addEventListener('pointermove', e => {
-  if (learnViewPointerId === null || e.pointerId !== learnViewPointerId) return;
-  const dx = e.clientX - learnViewPointerStartX;
-  const dy = e.clientY - learnViewPointerStartY;
-  if (Math.hypot(dx, dy) > 12) suppressLearnViewClickUntil = Date.now() + 450;
-});
+  learnCardEl.addEventListener('pointermove', e => {
+    if (learnViewPointerId === null || e.pointerId !== learnViewPointerId) return;
+    const dx = e.clientX - learnViewPointerStartX;
+    const dy = e.clientY - learnViewPointerStartY;
+    const absDx = Math.abs(dx), absDy = Math.abs(dy);
+    if (absDx > 12 && absDx > absDy * 1.15) {
+      suppressLearnViewClickUntil = Date.now() + 450;
+      e.preventDefault();
+    }
+  });
 
-learnViewEl.addEventListener('pointerup', e => {
-  if (learnViewPointerId === null || e.pointerId !== learnViewPointerId) return;
-  const dx = e.clientX - learnViewPointerStartX;
-  const dy = e.clientY - learnViewPointerStartY;
-  if (Math.hypot(dx, dy) > 12) suppressLearnViewClickUntil = Date.now() + 450;
-  learnViewPointerId = null;
-});
+  learnCardEl.addEventListener('pointerup', e => {
+    if (learnViewPointerId === null || e.pointerId !== learnViewPointerId) return;
+    const dx = e.clientX - learnViewPointerStartX;
+    const dy = e.clientY - learnViewPointerStartY;
+    const absDx = Math.abs(dx), absDy = Math.abs(dy);
+    if (learnCardEl.hasPointerCapture?.(e.pointerId)) learnCardEl.releasePointerCapture(e.pointerId);
+    if (absDx > 40 && absDx > absDy * 1.15) {
+      e.preventDefault();
+      e.stopPropagation();
+      suppressLearnViewClickUntil = Date.now() + 450;
+      triggerHapticFeedback(30);
+      rate(3);
+    }
+    learnViewPointerId = null;
+  });
 
-learnViewEl.addEventListener('pointercancel', () => {
-  learnViewPointerId = null;
-});
+  learnCardEl.addEventListener('pointercancel', e => {
+    if (learnCardEl.hasPointerCapture?.(e.pointerId)) learnCardEl.releasePointerCapture(e.pointerId);
+    learnViewPointerId = null;
+  });
+}
 
 // ─── キーボード操作 ────────────────────────────────────────────────────
 document.addEventListener('keydown', e => {
