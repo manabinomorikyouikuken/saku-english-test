@@ -317,6 +317,28 @@
       color: white;
     }
     .quick-start-btn:active { transform: scale(0.97); filter: brightness(0.96); }
+    .practice-route-btn {
+      display: block;
+      width: min(92%, 420px);
+      min-height: 34px;
+      margin: 8px auto 0;
+      border: 1px solid var(--warm-border);
+      border-radius: 999px;
+      background: rgba(255, 247, 237, 0.9);
+      color: #64748b;
+      font-size: 11.5px;
+      font-weight: 900;
+      cursor: pointer;
+      touch-action: manipulation;
+    }
+    .practice-route-btn[hidden],
+    body.test-mode .practice-route-btn {
+      display: none;
+    }
+    .practice-route-btn:active {
+      transform: scale(0.98);
+      filter: brightness(0.97);
+    }
     .intro-panel {
       width: min(92%, 420px);
       margin: 0 auto 10px;
@@ -1970,6 +1992,42 @@
     .complete-stat { text-align: center; }
     .complete-stat-num { font-size: 24px; font-weight: 800; color: var(--warm-primary-strong); display: block; line-height: 1; }
     .complete-stat-label { font-size: 10px; color: #94a3b8; margin-top: 3px; }
+    .complete-route-actions {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 8px;
+      width: 100%;
+      margin-top: 10px;
+    }
+    .complete-route-actions[hidden] {
+      display: none;
+    }
+    .complete-route-btn {
+      min-height: 42px;
+      border: 1px solid var(--warm-border);
+      border-radius: 12px;
+      background: #fff7ed;
+      color: #334155;
+      font-size: 13px;
+      font-weight: 900;
+      cursor: pointer;
+      touch-action: manipulation;
+    }
+    .complete-route-btn.primary {
+      background: var(--warm-primary);
+      border-color: var(--warm-primary);
+      color: white;
+      box-shadow: 0 4px 15px rgba(234,88,12,0.22);
+    }
+    .complete-route-btn:disabled {
+      cursor: default;
+      opacity: 0.55;
+      box-shadow: none;
+    }
+    .complete-route-btn:not(:disabled):active {
+      transform: scale(0.97);
+      filter: brightness(0.96);
+    }
     .complete-actions {
       display: flex;
       justify-content: center;
@@ -2239,6 +2297,11 @@
           <div class="perfect-quote-ja" id="perfect-quote-ja"></div>
         </div>
       </div>
+      <div class="complete-route-actions" id="complete-route-actions" aria-label="次の行動" hidden>
+        <button class="complete-route-btn primary" id="complete-today-btn" type="button" onclick="startQuickTest('all')" data-ui-key="today20Again">もう一回20問</button>
+        <button class="complete-route-btn" id="complete-miss-review-btn" type="button" onclick="startMissReviewSession()" data-ui-key="missReview">ミス復習</button>
+        <button class="complete-route-btn" id="complete-relation-btn" type="button" onclick="startQuickTest('wordRelation')" data-ui-key="relationGame">語彙関係ゲーム</button>
+      </div>
       <div class="complete-actions">
         <button class="complete-back-btn" id="complete-back-btn" type="button" onclick="startSession()" data-ui-key="back" hidden>戻る</button>
         <button class="restart-btn" id="restart-btn" type="button" onclick="restartCurrentMode()">もう一周する</button>
@@ -2246,6 +2309,7 @@
     </div>
 
     <div class="swipe-msg" id="swipe-msg"></div>
+    <button class="practice-route-btn" id="practice-route-btn" type="button" onclick="showTestEntryPanel()" data-ui-key="gameReview">ゲーム・復習</button>
   </div>
 
   <div class="learn-bottom-bar">
@@ -15386,7 +15450,9 @@ const UI_TEXT = {
     introText: 'まずは20問。ミスした語は「ミス復習」に残ります。答えたあとは下の案内を右スワイプで次へ進めます。',
     today20: '今日の20問へ',
     today20Short: '今日の20問',
+    today20Again: 'もう一回20問',
     relationGame: '語彙関係ゲーム',
+    gameReview: 'ゲーム・復習',
     close: '閉じる',
     quickStartTitle: '今日の入口',
     quickStartNote: '迷ったらここから',
@@ -15395,6 +15461,7 @@ const UI_TEXT = {
     testEntryProgress: 'テスト入口',
     testEntryDue: '今日の20問 / 語彙関係 / ミス復習',
     missReview: 'ミス復習',
+    missReviewEmpty: 'ミス復習なし',
     weakWords: '苦手',
     weakWordsSub: 'つまずき語',
     testSettingsTitle: 'テスト設定',
@@ -15585,7 +15652,9 @@ const UI_TEXT = {
     introText: 'Try 20 questions first. Missed words stay in Miss Review. After answering, swipe right on the guide below to move on.',
     today20: 'Start today’s 20',
     today20Short: 'Today’s 20',
+    today20Again: 'Another 20',
     relationGame: 'Word relation game',
+    gameReview: 'Games / Review',
     close: 'Close',
     quickStartTitle: 'Today’s start',
     quickStartNote: 'Start here when unsure',
@@ -15594,6 +15663,7 @@ const UI_TEXT = {
     testEntryProgress: 'Test start',
     testEntryDue: 'Today’s 20 / Word relations / Miss Review',
     missReview: 'Miss Review',
+    missReviewEmpty: 'No Miss Review',
     weakWords: 'Weak',
     weakWordsSub: 'Needs work',
     testSettingsTitle: 'Test settings',
@@ -16285,6 +16355,7 @@ function applyUiLanguage() {
   updateSpeechCompareButtons();
   updateSpeechVoiceButtons();
   updateStats();
+  if (!document.getElementById('complete-route-actions')?.hidden) updateCompleteRouteActions();
   if (currentMode === 'test') setTestCardFlipped(testCardFlipped);
   updateSettingsPagerHeight();
   if (currentMode === 'testEntry') updateTestEntryStatus();
@@ -16376,6 +16447,11 @@ function hideTestEntryPanel() {
   if (panel) panel.hidden = true;
 }
 
+function setPracticeRouteButtonVisible(visible) {
+  const button = document.getElementById('practice-route-btn');
+  if (button) button.hidden = !visible;
+}
+
 function updateTestEntryStatus() {
   document.getElementById('progress-fill').style.width = '0%';
   document.getElementById('progress-text').textContent = uiText('testEntryProgress');
@@ -16403,6 +16479,8 @@ function showTestEntryPanel() {
   document.getElementById('card-container').style.display = 'none';
   document.getElementById('test-panel').style.display = 'none';
   setLearningAudioButtonVisible(false);
+  setPracticeRouteButtonVisible(false);
+  setCompleteRouteActionsVisible(false);
   updateRatingControls();
   const swipeMsg = document.getElementById('swipe-msg');
   swipeMsg.style.display = 'none';
@@ -17978,6 +18056,8 @@ function startSession() {
   document.getElementById('study-prompt').style.display = 'block';
   document.getElementById('card-container').style.display = 'block';
   setLearningAudioButtonVisible(true);
+  setPracticeRouteButtonVisible(true);
+  setCompleteRouteActionsVisible(false);
   document.getElementById('test-panel').style.display = 'none';
   document.getElementById('swipe-msg').style.display = 'block';
   showCard();
@@ -18100,6 +18180,8 @@ function beginTestSession(cards, kind = 'normal') {
   document.getElementById('study-prompt').style.display = 'none';
   document.getElementById('card-container').style.display = 'none';
   setLearningAudioButtonVisible(false);
+  setPracticeRouteButtonVisible(false);
+  setCompleteRouteActionsVisible(false);
   updateRatingControls();
   const swipeMsg = document.getElementById('swipe-msg');
   swipeMsg.style.display = 'none';
@@ -18820,6 +18902,22 @@ function setCompleteNextStep(message, tone = 'normal') {
   element.className = `complete-next-step${message ? ' is-visible' : ''}${tone === 'success' ? ' success' : ''}`;
 }
 
+function updateCompleteRouteActions(missedCount = getMissedReviewWords().length) {
+  const missButton = document.getElementById('complete-miss-review-btn');
+  if (!missButton) return;
+  const hasMisses = missedCount > 0;
+  missButton.disabled = !hasMisses;
+  missButton.textContent = hasMisses ? `${uiText('missReview')} (${missedCount})` : uiText('missReviewEmpty');
+  missButton.setAttribute('aria-disabled', hasMisses ? 'false' : 'true');
+}
+
+function setCompleteRouteActionsVisible(visible, missedCount = getMissedReviewWords().length) {
+  const actions = document.getElementById('complete-route-actions');
+  if (!actions) return;
+  actions.hidden = !visible;
+  if (visible) updateCompleteRouteActions(missedCount);
+}
+
 function getStudyNextStepMessage(due) {
   if (currentUiLanguage === 'en') {
     if (due <= 0) return 'Next: stop here for today. Continue with a small round tomorrow.';
@@ -19099,14 +19197,16 @@ function showComplete() {
   document.getElementById('card-container').style.display = 'none';
   document.getElementById('test-panel').style.display = 'none';
   setLearningAudioButtonVisible(false);
+  setPracticeRouteButtonVisible(false);
   updateRatingControls();
   document.getElementById('swipe-msg').style.display = 'none';
   const completeEl = document.getElementById('session-complete');
   completeEl.classList.remove('weakness-cleared');
   completeEl.style.display = 'block';
-	  document.getElementById('progress-fill').style.width = '100%';
-	  document.getElementById('progress-text').textContent = `${sessionCards.length} / ${sessionCards.length}`;
-	  setPerfectQuoteVisible(false);
+  document.getElementById('progress-fill').style.width = '100%';
+  document.getElementById('progress-text').textContent = `${sessionCards.length} / ${sessionCards.length}`;
+  setPerfectQuoteVisible(false);
+  setCompleteRouteActionsVisible(false);
   setCompleteFocus('');
   setCompleteNextStep('');
 
@@ -19125,6 +19225,7 @@ function showComplete() {
   document.getElementById('cs-mastered-label').textContent = uiText('masteredLabel');
   document.getElementById('cs-due-label').textContent = uiText('nextDueLabel');
   const restartBtn = document.getElementById('restart-btn');
+  restartBtn.hidden = false;
   restartBtn.textContent = uiText('restartStudy');
   restartBtn.classList.remove('miss-review');
   completionAction = 'restart';
@@ -19142,6 +19243,7 @@ function showTestComplete() {
   document.getElementById('card-container').style.display = 'none';
   document.getElementById('test-panel').style.display = 'none';
   setLearningAudioButtonVisible(false);
+  setPracticeRouteButtonVisible(false);
   document.getElementById('swipe-msg').style.display = 'none';
   const completeEl = document.getElementById('session-complete');
   completeEl.style.display = 'block';
@@ -19172,6 +19274,7 @@ function showTestComplete() {
   document.getElementById('cs-mastered-label').textContent = uiText('correctLabel');
   document.getElementById('cs-due-label').textContent = uiText('missLabel');
   const restartBtn = document.getElementById('restart-btn');
+  restartBtn.hidden = true;
   restartBtn.textContent = canContinueMissReview
     ? uiText('missReview')
     : isMissReviewCleared ? uiText('today20') : isRelationGame ? uiText('relationAgain') : uiText('testAgain');
@@ -19179,6 +19282,7 @@ function showTestComplete() {
   document.getElementById('cs-reviewed').textContent = testCards.length;
   document.getElementById('cs-mastered').textContent = testCorrect;
   document.getElementById('cs-due').textContent = misses;
+  setCompleteRouteActionsVisible(testCards.length > 0, remainingMisses);
   const baseCompleteMessage = isRelationGame
     ? getRelationCompleteMessage(misses)
     : testCards.length === 0
