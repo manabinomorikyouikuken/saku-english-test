@@ -1565,16 +1565,16 @@
       display: none;
       align-items: center;
       justify-content: center;
-      width: min(100%, 340px);
-      height: 52px;
+      width: 96px;
+      height: 96px;
       margin: 10px auto 0;
-      padding: 0 18px;
+      padding: 0;
       box-sizing: border-box;
       border: 1px solid var(--warm-border);
-      border-radius: 999px;
+      border-radius: 20px;
       background: var(--warm-primary-soft);
       color: var(--warm-primary-strong);
-      font-size: 14px;
+      font-size: 15px;
       font-weight: 900;
       letter-spacing: 0;
       cursor: pointer;
@@ -1740,10 +1740,11 @@
     }
     body.test-mode .test-next-btn {
       display: inline-flex;
-      width: min(100%, 340px);
-      height: 52px;
-      border-radius: 999px;
-      font-size: 14px;
+      width: 96px;
+      height: 96px;
+      margin-top: 8px;
+      border-radius: 20px;
+      font-size: 15px;
       visibility: hidden;
       opacity: 0;
       pointer-events: none;
@@ -1768,6 +1769,11 @@
     @media (max-height: 820px) {
       body.test-mode .test-letter-row {
         width: min(46vw, 188px);
+      }
+      body.test-mode .test-next-btn {
+        width: 86px;
+        height: 86px;
+        border-radius: 18px;
       }
     }
 
@@ -1846,10 +1852,10 @@
       }
       body.test-mode .test-next-btn {
         display: inline-flex;
-        width: min(100%, 320px);
-        height: 46px;
+        width: 82px;
+        height: 82px;
         margin-top: 6px;
-        border-radius: 999px;
+        border-radius: 17px;
         font-size: 13px;
         visibility: hidden;
         opacity: 0;
@@ -1857,10 +1863,10 @@
       }
       body.test-mode .test-next-btn.is-visible {
         display: inline-flex;
-        width: min(100%, 320px);
-        height: 46px;
+        width: 82px;
+        height: 82px;
         margin-top: 6px;
-        border-radius: 999px;
+        border-radius: 17px;
         font-size: 13px;
         visibility: visible;
         opacity: 1;
@@ -1878,6 +1884,13 @@
       body.test-mode .test-letter-btn {
         border-radius: 10px;
         font-size: 17px;
+      }
+      body.test-mode .test-next-btn,
+      body.test-mode .test-next-btn.is-visible {
+        width: 64px;
+        height: 64px;
+        border-radius: 14px;
+        font-size: 12px;
       }
     }
 
