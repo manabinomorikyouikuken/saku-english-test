@@ -71,6 +71,57 @@
     }
     .header-right { display: flex; align-items: center; gap: 10px; }
     body:not(.test-mode) .header-right { display: none; }
+    .perfect-star-meter {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-width: 70px;
+      gap: 2px;
+    }
+    .perfect-star-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 1px;
+      min-height: 15px;
+      white-space: nowrap;
+    }
+    .perfect-star-slot {
+      display: inline-block;
+      color: rgba(255,255,255,0.42);
+      font-size: 13px;
+      line-height: 1;
+      letter-spacing: 0;
+      text-shadow: 0 1px 2px rgba(15,23,42,0.22);
+    }
+    .perfect-star-slot.is-earned {
+      color: var(--perfect-star-color, #111827);
+      -webkit-text-stroke: 0.45px var(--perfect-star-stroke, rgba(255,255,255,0.55));
+    }
+    .perfect-star-tier-label {
+      color: rgba(255,255,255,0.9);
+      font-size: 8px;
+      font-weight: 900;
+      line-height: 1;
+      letter-spacing: 0;
+      max-width: 78px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .star-tier-black { --perfect-star-color: #111827; --perfect-star-stroke: rgba(255,255,255,0.5); }
+    .star-tier-white { --perfect-star-color: #f8fafc; --perfect-star-stroke: rgba(15,23,42,0.58); }
+    .star-tier-yellow { --perfect-star-color: #facc15; --perfect-star-stroke: rgba(120,53,15,0.48); }
+    .star-tier-red { --perfect-star-color: #ef4444; --perfect-star-stroke: rgba(127,29,29,0.42); }
+    .star-tier-blue { --perfect-star-color: #2563eb; --perfect-star-stroke: rgba(219,234,254,0.5); }
+    .star-tier-purple { --perfect-star-color: #7c3aed; --perfect-star-stroke: rgba(237,233,254,0.52); }
+    .star-tier-bronze { --perfect-star-color: #b45309; --perfect-star-stroke: rgba(255,237,213,0.46); }
+    .star-tier-silver { --perfect-star-color: #cbd5e1; --perfect-star-stroke: rgba(15,23,42,0.44); }
+    .star-tier-gold { --perfect-star-color: #f59e0b; --perfect-star-stroke: rgba(120,53,15,0.48); }
+    .star-tier-green { --perfect-star-color: #16a34a; --perfect-star-stroke: rgba(220,252,231,0.5); }
+    .star-tier-indigo { --perfect-star-color: #4f46e5; --perfect-star-stroke: rgba(224,231,255,0.5); }
+    .star-tier-rainbow { --perfect-star-color: #ec4899; --perfect-star-stroke: rgba(252,231,243,0.5); }
     .stats { display: flex; gap: 18px; font-size: 13px; }
     .stat-item { text-align: center; }
     .stat-num { font-size: 20px; font-weight: 700; display: block; line-height: 1; }
@@ -844,7 +895,8 @@
       text-align: center;
       line-height: 1.08;
       max-width: 100%;
-      white-space: nowrap;
+      overflow-wrap: anywhere;
+      white-space: normal;
     }
     .word-text.pos-noun { color: #ea580c; }
     .word-text.pos-verb { color: #15803d; }
@@ -2059,6 +2111,38 @@
 	      font-weight: 900;
 	      letter-spacing: 0;
 	    }
+	    .perfect-star-complete {
+	      display: none;
+	      margin: 0 0 10px;
+	      padding: 8px 10px;
+	      border: 1px solid #fed7aa;
+	      border-radius: 12px;
+	      background: #fff7ed;
+	      text-align: center;
+	    }
+	    .perfect-star-complete.is-visible {
+	      display: block;
+	    }
+	    .perfect-star-complete .perfect-star-row {
+	      gap: 4px;
+	      min-height: 27px;
+	      margin-bottom: 5px;
+	    }
+	    .perfect-star-complete .perfect-star-slot {
+	      color: #fdba74;
+	      font-size: 24px;
+	      text-shadow: 0 2px 4px rgba(124,45,18,0.12);
+	    }
+	    .perfect-star-complete .perfect-star-slot.is-earned {
+	      color: var(--perfect-star-color, #111827);
+	      -webkit-text-stroke: 0.65px var(--perfect-star-stroke, rgba(255,255,255,0.6));
+	    }
+	    .perfect-star-complete-msg {
+	      color: #9a3412;
+	      font-size: 11px;
+	      font-weight: 900;
+	      line-height: 1.35;
+	    }
 	    .perfect-quote-text {
 	      color: #1a2a4a;
 	      font-size: 15px;
@@ -2323,6 +2407,10 @@
     <div class="header-sub" id="header-sub">友人テスト版 / IPA英国基準・音声en_GB/en_US</div>
   </div>
   <div class="header-right">
+    <div class="perfect-star-meter" id="perfect-star-meter" aria-label="パーフェクト星">
+      <div class="perfect-star-row" id="perfect-star-row" aria-hidden="true"></div>
+      <div class="perfect-star-tier-label" id="perfect-star-tier-label">Perfect</div>
+    </div>
     <div class="stats">
       <div class="stat-item">
         <span class="stat-num" id="stat-today">0</span>
@@ -2448,6 +2536,10 @@
         <div class="complete-next-step" id="complete-next-step"></div>
         <div class="perfect-quote-panel" id="perfect-quote-panel" aria-label="満点時の英語名言">
           <div class="perfect-badge" id="perfect-badge" data-ui-key="perfectBadge">Perfect 20</div>
+          <div class="perfect-star-complete" id="perfect-star-complete">
+            <div class="perfect-star-row" id="perfect-star-complete-row" aria-hidden="true"></div>
+            <div class="perfect-star-complete-msg" id="perfect-star-complete-msg"></div>
+          </div>
           <div class="perfect-quote-text" id="perfect-quote-text"></div>
           <div class="perfect-quote-source" id="perfect-quote-source"></div>
           <div class="perfect-quote-ja" id="perfect-quote-ja"></div>
@@ -2525,10 +2617,12 @@
       <button class="category-btn" type="button" data-category="abbreviationPublic" data-ui-label-key="categoryAbbreviationPublic" onclick="setCategory('abbreviationPublic')">略語 国際・公的<span id="category-count-abbreviationPublic">24項目</span></button>
       <button class="category-btn" type="button" data-category="abbreviationEducation" data-ui-label-key="categoryAbbreviationEducation" onclick="setCategory('abbreviationEducation')">略語 教育・言語<span id="category-count-abbreviationEducation">1項目</span></button>
       <button class="category-btn" type="button" data-category="pronunciationNote" data-ui-label-key="categoryPronunciationNote" onclick="setCategory('pronunciationNote')">発音注意<span id="category-count-pronunciationNote">90項目</span></button>
+      <button class="category-btn" type="button" data-category="muscleAnatomy" data-ui-label-key="categoryMuscleAnatomy" onclick="setCategory('muscleAnatomy')">筋肉名<span id="category-count-muscleAnatomy">50項目</span></button>
+      <button class="category-btn" type="button" data-category="specialNeedsEducation" data-ui-label-key="categorySpecialNeedsEducation" onclick="setCategory('specialNeedsEducation')">特別支援教育<span id="category-count-specialNeedsEducation">20項目</span></button>
       <button class="category-btn" type="button" data-category="rlContrast" data-ui-label-key="categoryRlContrast" onclick="setCategory('rlContrast')">R/L注意<span id="category-count-rlContrast">8項目</span></button>
       <button class="category-btn" type="button" data-category="wordRelation" data-ui-label-key="categoryWordRelation" onclick="setCategory('wordRelation')">語彙関係<span id="category-count-wordRelation">42項目</span></button>
     </div>
-    <div class="storage-note" data-ui-key="themeNote">テーマ別に確認できます。苦手は間違えた語や定着しにくい語、カタカナ注意は「知ってるつもり」になりやすい意味のズレ、句動詞は会話のまとまり、ニュース英語は報道でよく見る語、ATM・銀行は海外生活で画面に出やすい語、不可算名詞は数え方の引っ掛け、略語は分野別、発音注意は音と綴りの違い、R/L注意は語頭の音で意味が変わる組を集中的に学べます。</div>
+    <div class="storage-note" data-ui-key="themeNote">テーマ別に確認できます。苦手は間違えた語や定着しにくい語、カタカナ注意は「知ってるつもり」になりやすい意味のズレ、句動詞は会話のまとまり、ニュース英語は報道でよく見る語、ATM・銀行は海外生活で画面に出やすい語、不可算名詞は数え方の引っ掛け、略語は分野別、発音注意は音と綴りの違い、筋肉名は人体の主要な筋肉、特別支援教育は状態名と支援用語、R/L注意は語頭の音で意味が変わる組を集中的に学べます。</div>
   </div>
 
   <div class="part-panel" aria-label="品詞選択">
@@ -15964,6 +16058,846 @@ const WORDS = [
     "exJa": "カカオ豆はチョコレートを作るために使われる。"
   },
   {
+    "id": "masseter_noun_muscle",
+    "w": "masseter",
+    "cat": "muscle-anatomy",
+    "pos": "名詞",
+    "level": "発展",
+    "ipa": "məˈsiːtə",
+    "ph": "マシータ",
+    "m": "咬筋、あごを閉じる筋肉",
+    "ex": "The masseter helps close the jaw.",
+    "exJa": "咬筋はあごを閉じるのを助ける。"
+  },
+  {
+    "id": "temporalis_noun_muscle",
+    "w": "temporalis",
+    "cat": "muscle-anatomy",
+    "pos": "名詞",
+    "level": "発展",
+    "ipa": "ˌtempəˈrɑːlɪs",
+    "ph": "テンポラーリス",
+    "m": "側頭筋、あごを動かす筋肉",
+    "ex": "The temporalis helps move the jaw.",
+    "exJa": "側頭筋はあごを動かすのを助ける。"
+  },
+  {
+    "id": "sternocleidomastoid_noun_muscle",
+    "w": "sternocleidomastoid",
+    "cat": "muscle-anatomy",
+    "pos": "名詞",
+    "level": "発展",
+    "ipa": "ˌstɜːnəʊˌklaɪdəˈmæstɔɪd",
+    "ph": "スターノウクライドマストイド",
+    "m": "胸鎖乳突筋、首を回す筋肉",
+    "ex": "The sternocleidomastoid helps turn the head.",
+    "exJa": "胸鎖乳突筋は頭を回すのを助ける。"
+  },
+  {
+    "id": "trapezius_noun_muscle",
+    "w": "trapezius",
+    "cat": "muscle-anatomy",
+    "pos": "名詞",
+    "level": "発展",
+    "ipa": "trəˈpiːziəs",
+    "ph": "トラピーズィアス",
+    "m": "僧帽筋、肩や首を動かす筋肉",
+    "ex": "The trapezius helps lift the shoulders.",
+    "exJa": "僧帽筋は肩を上げるのを助ける。"
+  },
+  {
+    "id": "deltoid_noun_muscle",
+    "w": "deltoid",
+    "cat": "muscle-anatomy",
+    "pos": "名詞",
+    "level": "標準",
+    "ipa": "ˈdeltɔɪd",
+    "ph": "デルトイド",
+    "m": "三角筋、肩を覆う筋肉",
+    "ex": "The deltoid helps raise the arm.",
+    "exJa": "三角筋は腕を上げるのを助ける。"
+  },
+  {
+    "id": "pectoralis_major_noun_muscle",
+    "w": "pectoralis major",
+    "cat": "muscle-anatomy",
+    "pos": "名詞",
+    "level": "発展",
+    "ipa": "ˌpektəˈrɑːlɪs ˈmeɪdʒə",
+    "ph": "ペクトラーリス メイジャ",
+    "m": "大胸筋、胸の大きな筋肉",
+    "ex": "The pectoralis major helps move the arm forward.",
+    "exJa": "大胸筋は腕を前に動かすのを助ける。"
+  },
+  {
+    "id": "pectoralis_minor_noun_muscle",
+    "w": "pectoralis minor",
+    "cat": "muscle-anatomy",
+    "pos": "名詞",
+    "level": "発展",
+    "ipa": "ˌpektəˈrɑːlɪs ˈmaɪnə",
+    "ph": "ペクトラーリス マイナ",
+    "m": "小胸筋、肩甲骨を動かす胸の筋肉",
+    "ex": "The pectoralis minor helps move the shoulder blade.",
+    "exJa": "小胸筋は肩甲骨を動かすのを助ける。"
+  },
+  {
+    "id": "serratus_anterior_noun_muscle",
+    "w": "serratus anterior",
+    "cat": "muscle-anatomy",
+    "pos": "名詞",
+    "level": "発展",
+    "ipa": "səˈreɪtəs ænˈtɪəriə",
+    "ph": "サレイタス アンティアリア",
+    "m": "前鋸筋、肩甲骨を前に出す筋肉",
+    "ex": "The serratus anterior helps push the shoulder blade forward.",
+    "exJa": "前鋸筋は肩甲骨を前に押し出すのを助ける。"
+  },
+  {
+    "id": "latissimus_dorsi_noun_muscle",
+    "w": "latissimus dorsi",
+    "cat": "muscle-anatomy",
+    "pos": "名詞",
+    "level": "発展",
+    "ipa": "ləˌtɪsɪməs ˈdɔːsaɪ",
+    "ph": "ラティシマス ドーサイ",
+    "m": "広背筋、背中の大きな筋肉",
+    "ex": "The latissimus dorsi helps pull the arm down.",
+    "exJa": "広背筋は腕を下に引くのを助ける。"
+  },
+  {
+    "id": "teres_major_noun_muscle",
+    "w": "teres major",
+    "cat": "muscle-anatomy",
+    "pos": "名詞",
+    "level": "発展",
+    "ipa": "ˈtɪəriːz ˈmeɪdʒə",
+    "ph": "ティアリーズ メイジャ",
+    "m": "大円筋、上腕を内側に動かす筋肉",
+    "ex": "The teres major helps rotate the upper arm inward.",
+    "exJa": "大円筋は上腕を内側に回すのを助ける。"
+  },
+  {
+    "id": "supraspinatus_noun_muscle",
+    "w": "supraspinatus",
+    "cat": "muscle-anatomy",
+    "pos": "名詞",
+    "level": "発展",
+    "ipa": "ˌsuːprəspaɪˈneɪtəs",
+    "ph": "スープラスパイネイタス",
+    "m": "棘上筋、腕を外に上げ始める筋肉",
+    "ex": "The supraspinatus starts lifting the arm to the side.",
+    "exJa": "棘上筋は腕を横に上げ始めるのを助ける。"
+  },
+  {
+    "id": "infraspinatus_noun_muscle",
+    "w": "infraspinatus",
+    "cat": "muscle-anatomy",
+    "pos": "名詞",
+    "level": "発展",
+    "ipa": "ˌɪnfrəspaɪˈneɪtəs",
+    "ph": "インフラスパイネイタス",
+    "m": "棘下筋、肩を外側に回す筋肉",
+    "ex": "The infraspinatus helps rotate the shoulder outward.",
+    "exJa": "棘下筋は肩を外側に回すのを助ける。"
+  },
+  {
+    "id": "subscapularis_noun_muscle",
+    "w": "subscapularis",
+    "cat": "muscle-anatomy",
+    "pos": "名詞",
+    "level": "発展",
+    "ipa": "ˌsʌbskæpjʊˈlɑːrɪs",
+    "ph": "サブスキャピュラーリス",
+    "m": "肩甲下筋、肩を内側に回す筋肉",
+    "ex": "The subscapularis helps rotate the shoulder inward.",
+    "exJa": "肩甲下筋は肩を内側に回すのを助ける。"
+  },
+  {
+    "id": "biceps_brachii_noun_muscle",
+    "w": "biceps brachii",
+    "cat": "muscle-anatomy",
+    "pos": "名詞",
+    "level": "標準",
+    "ipa": "ˈbaɪseps ˈbrækiˌaɪ",
+    "ph": "バイセプス ブラキアイ",
+    "m": "上腕二頭筋、肘を曲げる筋肉",
+    "ex": "The biceps brachii helps bend the elbow.",
+    "exJa": "上腕二頭筋は肘を曲げるのを助ける。"
+  },
+  {
+    "id": "brachialis_noun_muscle",
+    "w": "brachialis",
+    "cat": "muscle-anatomy",
+    "pos": "名詞",
+    "level": "発展",
+    "ipa": "ˌbrækiˈɑːlɪs",
+    "ph": "ブラキアーリス",
+    "m": "上腕筋、肘を曲げる深い筋肉",
+    "ex": "The brachialis is a strong elbow flexor.",
+    "exJa": "上腕筋は肘を曲げる強い筋肉です。"
+  },
+  {
+    "id": "triceps_brachii_noun_muscle",
+    "w": "triceps brachii",
+    "cat": "muscle-anatomy",
+    "pos": "名詞",
+    "level": "標準",
+    "ipa": "ˈtraɪseps ˈbrækiˌaɪ",
+    "ph": "トライセプス ブラキアイ",
+    "m": "上腕三頭筋、肘を伸ばす筋肉",
+    "ex": "The triceps brachii helps straighten the elbow.",
+    "exJa": "上腕三頭筋は肘を伸ばすのを助ける。"
+  },
+  {
+    "id": "brachioradialis_noun_muscle",
+    "w": "brachioradialis",
+    "cat": "muscle-anatomy",
+    "pos": "名詞",
+    "level": "発展",
+    "ipa": "ˌbrækiəʊˌreɪdiˈɑːlɪs",
+    "ph": "ブラキオウレイディアーリス",
+    "m": "腕橈骨筋、前腕で肘を曲げる筋肉",
+    "ex": "The brachioradialis helps bend the elbow.",
+    "exJa": "腕橈骨筋は肘を曲げるのを助ける。"
+  },
+  {
+    "id": "flexor_carpi_radialis_noun_muscle",
+    "w": "flexor carpi radialis",
+    "cat": "muscle-anatomy",
+    "pos": "名詞",
+    "level": "発展",
+    "ipa": "ˈfleksə ˈkɑːpaɪ ˌreɪdiˈɑːlɪs",
+    "ph": "フレクサ カーパイ レイディアーリス",
+    "m": "橈側手根屈筋、手首を曲げる筋肉",
+    "ex": "The flexor carpi radialis helps bend the wrist.",
+    "exJa": "橈側手根屈筋は手首を曲げるのを助ける。"
+  },
+  {
+    "id": "extensor_carpi_radialis_noun_muscle",
+    "w": "extensor carpi radialis",
+    "cat": "muscle-anatomy",
+    "pos": "名詞",
+    "level": "発展",
+    "ipa": "ɪkˈstensə ˈkɑːpaɪ ˌreɪdiˈɑːlɪs",
+    "ph": "イクステンサ カーパイ レイディアーリス",
+    "m": "橈側手根伸筋、手首を伸ばす筋肉",
+    "ex": "The extensor carpi radialis helps extend the wrist.",
+    "exJa": "橈側手根伸筋は手首を伸ばすのを助ける。"
+  },
+  {
+    "id": "rectus_abdominis_noun_muscle",
+    "w": "rectus abdominis",
+    "cat": "muscle-anatomy",
+    "pos": "名詞",
+    "level": "発展",
+    "ipa": "ˈrektəs æbˈdɒmɪnɪs",
+    "ph": "レクタス アブドミニス",
+    "m": "腹直筋、体幹を曲げる腹の筋肉",
+    "ex": "The rectus abdominis helps bend the trunk.",
+    "exJa": "腹直筋は体幹を曲げるのを助ける。"
+  },
+  {
+    "id": "external_oblique_noun_muscle",
+    "w": "external oblique",
+    "cat": "muscle-anatomy",
+    "pos": "名詞",
+    "level": "発展",
+    "ipa": "ɪkˈstɜːnəl əˈbliːk",
+    "ph": "イクスターナル オブリーク",
+    "m": "外腹斜筋、体幹をひねる腹の筋肉",
+    "ex": "The external oblique helps twist the trunk.",
+    "exJa": "外腹斜筋は体幹をひねるのを助ける。"
+  },
+  {
+    "id": "internal_oblique_noun_muscle",
+    "w": "internal oblique",
+    "cat": "muscle-anatomy",
+    "pos": "名詞",
+    "level": "発展",
+    "ipa": "ɪnˈtɜːnəl əˈbliːk",
+    "ph": "インターナル オブリーク",
+    "m": "内腹斜筋、体幹をひねる腹の筋肉",
+    "ex": "The internal oblique helps rotate the trunk.",
+    "exJa": "内腹斜筋は体幹を回すのを助ける。"
+  },
+  {
+    "id": "transversus_abdominis_noun_muscle",
+    "w": "transversus abdominis",
+    "cat": "muscle-anatomy",
+    "pos": "名詞",
+    "level": "発展",
+    "ipa": "trænzˈvɜːsəs æbˈdɒmɪnɪs",
+    "ph": "トランズヴァーサス アブドミニス",
+    "m": "腹横筋、腹部を支える深い筋肉",
+    "ex": "The transversus abdominis helps support the abdomen.",
+    "exJa": "腹横筋は腹部を支えるのを助ける。"
+  },
+  {
+    "id": "erector_spinae_noun_muscle",
+    "w": "erector spinae",
+    "cat": "muscle-anatomy",
+    "pos": "名詞",
+    "level": "発展",
+    "ipa": "ɪˈrektə ˈspaɪniː",
+    "ph": "イレクタ スパイニー",
+    "m": "脊柱起立筋、背骨を伸ばす筋群",
+    "ex": "The erector spinae helps keep the back upright.",
+    "exJa": "脊柱起立筋は背中をまっすぐ保つのを助ける。"
+  },
+  {
+    "id": "diaphragm_noun_muscle",
+    "w": "diaphragm",
+    "cat": "muscle-anatomy",
+    "pos": "名詞",
+    "level": "標準",
+    "ipa": "ˈdaɪəfræm",
+    "ph": "ダイアフラム",
+    "m": "横隔膜、呼吸に関わる筋肉",
+    "ex": "The diaphragm is important for breathing.",
+    "exJa": "横隔膜は呼吸に重要な筋肉です。"
+  },
+  {
+    "id": "iliopsoas_noun_muscle",
+    "w": "iliopsoas",
+    "cat": "muscle-anatomy",
+    "pos": "名詞",
+    "level": "発展",
+    "ipa": "ˌɪliəʊˈsəʊəs",
+    "ph": "イリオウソウアス",
+    "m": "腸腰筋、股関節を曲げる筋群",
+    "ex": "The iliopsoas helps lift the thigh.",
+    "exJa": "腸腰筋は太ももを上げるのを助ける。"
+  },
+  {
+    "id": "gluteus_maximus_noun_muscle",
+    "w": "gluteus maximus",
+    "cat": "muscle-anatomy",
+    "pos": "名詞",
+    "level": "標準",
+    "ipa": "ˈɡluːtiəs ˈmæksɪməs",
+    "ph": "グルーティアス マクシマス",
+    "m": "大殿筋、おしりの大きな筋肉",
+    "ex": "The gluteus maximus helps extend the hip.",
+    "exJa": "大殿筋は股関節を伸ばすのを助ける。"
+  },
+  {
+    "id": "gluteus_medius_noun_muscle",
+    "w": "gluteus medius",
+    "cat": "muscle-anatomy",
+    "pos": "名詞",
+    "level": "発展",
+    "ipa": "ˈɡluːtiəs ˈmiːdiəs",
+    "ph": "グルーティアス ミーディアス",
+    "m": "中殿筋、骨盤を安定させる筋肉",
+    "ex": "The gluteus medius helps steady the pelvis.",
+    "exJa": "中殿筋は骨盤を安定させるのを助ける。"
+  },
+  {
+    "id": "tensor_fasciae_latae_noun_muscle",
+    "w": "tensor fasciae latae",
+    "cat": "muscle-anatomy",
+    "pos": "名詞",
+    "level": "発展",
+    "ipa": "ˈtensə ˈfæʃiː ˈleɪtiː",
+    "ph": "テンサ ファシー レイティー",
+    "m": "大腿筋膜張筋、太ももの外側を支える筋肉",
+    "ex": "The tensor fasciae latae helps stabilise the hip.",
+    "exJa": "大腿筋膜張筋は股関節を安定させるのを助ける。"
+  },
+  {
+    "id": "sartorius_noun_muscle",
+    "w": "sartorius",
+    "cat": "muscle-anatomy",
+    "pos": "名詞",
+    "level": "発展",
+    "ipa": "sɑːˈtɔːriəs",
+    "ph": "サートーリアス",
+    "m": "縫工筋、太ももを斜めに走る長い筋肉",
+    "ex": "The sartorius is the longest muscle in the body.",
+    "exJa": "縫工筋は体で最も長い筋肉です。"
+  },
+  {
+    "id": "adductor_longus_noun_muscle",
+    "w": "adductor longus",
+    "cat": "muscle-anatomy",
+    "pos": "名詞",
+    "level": "発展",
+    "ipa": "əˈdʌktə ˈlɒŋɡəs",
+    "ph": "アダクタ ロンガス",
+    "m": "長内転筋、太ももを内側に寄せる筋肉",
+    "ex": "The adductor longus helps pull the thigh inward.",
+    "exJa": "長内転筋は太ももを内側に寄せるのを助ける。"
+  },
+  {
+    "id": "gracilis_noun_muscle",
+    "w": "gracilis",
+    "cat": "muscle-anatomy",
+    "pos": "名詞",
+    "level": "発展",
+    "ipa": "ˈɡræsɪlɪs",
+    "ph": "グラシリス",
+    "m": "薄筋、太ももの内側の細い筋肉",
+    "ex": "The gracilis lies on the inner thigh.",
+    "exJa": "薄筋は太ももの内側にある。"
+  },
+  {
+    "id": "quadriceps_femoris_noun_muscle",
+    "w": "quadriceps femoris",
+    "cat": "muscle-anatomy",
+    "pos": "名詞",
+    "level": "標準",
+    "ipa": "ˈkwɒdrɪseps ˈfemərɪs",
+    "ph": "クウォドリセプス フェモリス",
+    "m": "大腿四頭筋、膝を伸ばす筋群",
+    "ex": "The quadriceps femoris helps straighten the knee.",
+    "exJa": "大腿四頭筋は膝を伸ばすのを助ける。"
+  },
+  {
+    "id": "rectus_femoris_noun_muscle",
+    "w": "rectus femoris",
+    "cat": "muscle-anatomy",
+    "pos": "名詞",
+    "level": "発展",
+    "ipa": "ˈrektəs ˈfemərɪs",
+    "ph": "レクタス フェモリス",
+    "m": "大腿直筋、大腿四頭筋の一部",
+    "ex": "The rectus femoris is part of the quadriceps.",
+    "exJa": "大腿直筋は大腿四頭筋の一部です。"
+  },
+  {
+    "id": "vastus_lateralis_noun_muscle",
+    "w": "vastus lateralis",
+    "cat": "muscle-anatomy",
+    "pos": "名詞",
+    "level": "発展",
+    "ipa": "ˈvæstəs ˌlætəˈrɑːlɪs",
+    "ph": "ヴァスタス ラテラーリス",
+    "m": "外側広筋、太ももの外側の筋肉",
+    "ex": "The vastus lateralis is on the outer thigh.",
+    "exJa": "外側広筋は太ももの外側にある。"
+  },
+  {
+    "id": "vastus_medialis_noun_muscle",
+    "w": "vastus medialis",
+    "cat": "muscle-anatomy",
+    "pos": "名詞",
+    "level": "発展",
+    "ipa": "ˈvæstəs ˌmiːdiˈɑːlɪs",
+    "ph": "ヴァスタス ミーディアーリス",
+    "m": "内側広筋、太ももの内側の筋肉",
+    "ex": "The vastus medialis is on the inner thigh.",
+    "exJa": "内側広筋は太ももの内側にある。"
+  },
+  {
+    "id": "vastus_intermedius_noun_muscle",
+    "w": "vastus intermedius",
+    "cat": "muscle-anatomy",
+    "pos": "名詞",
+    "level": "発展",
+    "ipa": "ˈvæstəs ˌɪntəˈmiːdiəs",
+    "ph": "ヴァスタス インタミーディアス",
+    "m": "中間広筋、大腿四頭筋の深い筋肉",
+    "ex": "The vastus intermedius lies deep in the thigh.",
+    "exJa": "中間広筋は太ももの深いところにある。"
+  },
+  {
+    "id": "hamstrings_noun_muscle",
+    "w": "hamstrings",
+    "cat": "muscle-anatomy",
+    "pos": "名詞",
+    "level": "標準",
+    "ipa": "ˈhæmstrɪŋz",
+    "ph": "ハムストリングズ",
+    "m": "ハムストリングス、膝を曲げる太もも裏の筋群",
+    "ex": "The hamstrings help bend the knee.",
+    "exJa": "ハムストリングスは膝を曲げるのを助ける。"
+  },
+  {
+    "id": "biceps_femoris_noun_muscle",
+    "w": "biceps femoris",
+    "cat": "muscle-anatomy",
+    "pos": "名詞",
+    "level": "発展",
+    "ipa": "ˈbaɪseps ˈfemərɪs",
+    "ph": "バイセプス フェモリス",
+    "m": "大腿二頭筋、ハムストリングスの一部",
+    "ex": "The biceps femoris is part of the hamstrings.",
+    "exJa": "大腿二頭筋はハムストリングスの一部です。"
+  },
+  {
+    "id": "semitendinosus_noun_muscle",
+    "w": "semitendinosus",
+    "cat": "muscle-anatomy",
+    "pos": "名詞",
+    "level": "発展",
+    "ipa": "ˌsemiˌtendɪˈnəʊsəs",
+    "ph": "セミテンディノウサス",
+    "m": "半腱様筋、太もも裏の筋肉",
+    "ex": "The semitendinosus helps bend the knee.",
+    "exJa": "半腱様筋は膝を曲げるのを助ける。"
+  },
+  {
+    "id": "semimembranosus_noun_muscle",
+    "w": "semimembranosus",
+    "cat": "muscle-anatomy",
+    "pos": "名詞",
+    "level": "発展",
+    "ipa": "ˌsemiˌmembrəˈnəʊsəs",
+    "ph": "セミメンブラノウサス",
+    "m": "半膜様筋、太もも裏の筋肉",
+    "ex": "The semimembranosus helps extend the hip.",
+    "exJa": "半膜様筋は股関節を伸ばすのを助ける。"
+  },
+  {
+    "id": "tibialis_anterior_noun_muscle",
+    "w": "tibialis anterior",
+    "cat": "muscle-anatomy",
+    "pos": "名詞",
+    "level": "発展",
+    "ipa": "ˌtɪbiˈɑːlɪs ænˈtɪəriə",
+    "ph": "ティビアーリス アンティアリア",
+    "m": "前脛骨筋、つま先を上げる筋肉",
+    "ex": "The tibialis anterior lifts the foot upward.",
+    "exJa": "前脛骨筋は足を上に持ち上げる。"
+  },
+  {
+    "id": "gastrocnemius_noun_muscle",
+    "w": "gastrocnemius",
+    "cat": "muscle-anatomy",
+    "pos": "名詞",
+    "level": "発展",
+    "ipa": "ˌɡæstrɒkˈniːmiəs",
+    "ph": "ガストロクニーミアス",
+    "m": "腓腹筋、ふくらはぎの大きな筋肉",
+    "ex": "The gastrocnemius helps point the toes.",
+    "exJa": "腓腹筋はつま先を下に向けるのを助ける。"
+  },
+  {
+    "id": "soleus_noun_muscle",
+    "w": "soleus",
+    "cat": "muscle-anatomy",
+    "pos": "名詞",
+    "level": "発展",
+    "ipa": "ˈsəʊliəs",
+    "ph": "ソウリアス",
+    "m": "ヒラメ筋、ふくらはぎの深い筋肉",
+    "ex": "The soleus helps you stand and walk.",
+    "exJa": "ヒラメ筋は立つことや歩くことを助ける。"
+  },
+  {
+    "id": "fibularis_longus_noun_muscle",
+    "w": "fibularis longus",
+    "cat": "muscle-anatomy",
+    "pos": "名詞",
+    "level": "発展",
+    "ipa": "ˌfɪbjʊˈlɑːrɪs ˈlɒŋɡəs",
+    "ph": "フィビュラーリス ロンガス",
+    "m": "長腓骨筋、足首を安定させる筋肉",
+    "ex": "The fibularis longus helps stabilise the ankle.",
+    "exJa": "長腓骨筋は足首を安定させるのを助ける。"
+  },
+  {
+    "id": "flexor_hallucis_longus_noun_muscle",
+    "w": "flexor hallucis longus",
+    "cat": "muscle-anatomy",
+    "pos": "名詞",
+    "level": "発展",
+    "ipa": "ˈfleksə həˈluːsɪs ˈlɒŋɡəs",
+    "ph": "フレクサ ハルーシス ロンガス",
+    "m": "長母趾屈筋、足の親指を曲げる筋肉",
+    "ex": "The flexor hallucis longus bends the big toe.",
+    "exJa": "長母趾屈筋は足の親指を曲げる。"
+  },
+  {
+    "id": "extensor_hallucis_longus_noun_muscle",
+    "w": "extensor hallucis longus",
+    "cat": "muscle-anatomy",
+    "pos": "名詞",
+    "level": "発展",
+    "ipa": "ɪkˈstensə həˈluːsɪs ˈlɒŋɡəs",
+    "ph": "イクステンサ ハルーシス ロンガス",
+    "m": "長母趾伸筋、足の親指を伸ばす筋肉",
+    "ex": "The extensor hallucis longus lifts the big toe.",
+    "exJa": "長母趾伸筋は足の親指を上げる。"
+  },
+  {
+    "id": "pelvic_floor_muscles_noun_muscle",
+    "w": "pelvic floor muscles",
+    "cat": "muscle-anatomy",
+    "pos": "名詞",
+    "level": "標準",
+    "ipa": "ˈpelvɪk flɔː ˈmʌsəlz",
+    "ph": "ペルヴィック フロー マッスルズ",
+    "m": "骨盤底筋群、骨盤の底を支える筋群",
+    "ex": "The pelvic floor muscles support organs in the pelvis.",
+    "exJa": "骨盤底筋群は骨盤内の臓器を支える。"
+  },
+  {
+    "id": "intercostal_muscles_noun_muscle",
+    "w": "intercostal muscles",
+    "cat": "muscle-anatomy",
+    "pos": "名詞",
+    "level": "標準",
+    "ipa": "ˌɪntəˈkɒstəl ˈmʌsəlz",
+    "ph": "インタコスタル マッスルズ",
+    "m": "肋間筋、肋骨の間の筋肉",
+    "ex": "The intercostal muscles help move the ribs during breathing.",
+    "exJa": "肋間筋は呼吸時に肋骨を動かすのを助ける。"
+  },
+  {
+    "id": "levator_scapulae_noun_muscle",
+    "w": "levator scapulae",
+    "cat": "muscle-anatomy",
+    "pos": "名詞",
+    "level": "発展",
+    "ipa": "lɪˈveɪtə ˈskæpjʊliː",
+    "ph": "リヴェイタ スキャピュリー",
+    "m": "肩甲挙筋、肩甲骨を引き上げる筋肉",
+    "ex": "The levator scapulae helps lift the shoulder blade.",
+    "exJa": "肩甲挙筋は肩甲骨を引き上げるのを助ける。"
+  },
+  {
+    "id": "cerebral_palsy_noun_special_needs",
+    "w": "cerebral palsy",
+    "cat": "special-needs-education",
+    "pos": "名詞",
+    "level": "発展",
+    "ipa": "ˈserəbrəl ˈpɔːlzi",
+    "ph": "セレブラル ポールズィ",
+    "m": "脳性麻痺、姿勢や運動に影響する状態",
+    "ex": "A student with cerebral palsy may need support for movement and posture.",
+    "exJa": "脳性麻痺のある生徒は、姿勢や移動の支援を必要とすることがある。"
+  },
+  {
+    "id": "down_syndrome_noun_special_needs",
+    "w": "Down syndrome",
+    "cat": "special-needs-education",
+    "pos": "名詞",
+    "level": "標準",
+    "ipa": "ˈdaʊn ˌsɪndrəʊm",
+    "ph": "ダウン シンドロウム",
+    "m": "ダウン症、21番染色体の変化に関連する状態",
+    "ex": "A child with Down syndrome may learn best with clear routines.",
+    "exJa": "ダウン症のある子どもは、見通しのある流れで学びやすいことがある。"
+  },
+  {
+    "id": "autism_spectrum_disorder_noun_special_needs",
+    "w": "autism spectrum disorder",
+    "cat": "special-needs-education",
+    "pos": "名詞",
+    "level": "標準",
+    "ipa": "ˈɔːtɪzəm ˈspektrəm dɪsˈɔːdə",
+    "ph": "オーティズム スペクトラム ディスオーダ",
+    "m": "自閉スペクトラム症、ASD",
+    "ex": "A visual schedule can help some students with autism spectrum disorder.",
+    "exJa": "視覚的な予定表は、自閉スペクトラム症のある一部の生徒の助けになる。"
+  },
+  {
+    "id": "intellectual_disability_noun_special_needs",
+    "w": "intellectual disability",
+    "cat": "special-needs-education",
+    "pos": "名詞",
+    "level": "標準",
+    "ipa": "ˌɪntəˈlektʃuəl ˌdɪsəˈbɪləti",
+    "ph": "インテレクチュアル ディサビリティ",
+    "m": "知的障害、知的発達に関わる支援ニーズ",
+    "ex": "The lesson was broken into small steps for a student with an intellectual disability.",
+    "exJa": "知的障害のある生徒のために、授業は小さな手順に分けられた。"
+  },
+  {
+    "id": "developmental_disability_noun_special_needs",
+    "w": "developmental disability",
+    "cat": "special-needs-education",
+    "pos": "名詞",
+    "level": "標準",
+    "ipa": "dɪˌveləpˈmentəl ˌdɪsəˈbɪləti",
+    "ph": "ディヴェロプメンタル ディサビリティ",
+    "m": "発達障害、発達に関わる障害・支援ニーズ",
+    "ex": "A developmental disability can affect learning, movement, language, or behaviour.",
+    "exJa": "発達に関わる障害は、学習、運動、言語、行動に影響することがある。"
+  },
+  {
+    "id": "specific_learning_disability_noun_special_needs",
+    "w": "specific learning disability",
+    "cat": "special-needs-education",
+    "pos": "名詞",
+    "level": "発展",
+    "ipa": "spəˈsɪfɪk ˈlɜːnɪŋ ˌdɪsəˈbɪləti",
+    "ph": "スペシフィック ラーニング ディサビリティ",
+    "m": "限局性学習症、読み書き計算などの特定の学習困難",
+    "ex": "A specific learning disability can affect reading, writing, or maths.",
+    "exJa": "限局性学習症は、読むこと、書くこと、計算に影響することがある。"
+  },
+  {
+    "id": "dyslexia_noun_special_needs",
+    "w": "dyslexia",
+    "cat": "special-needs-education",
+    "pos": "名詞",
+    "level": "標準",
+    "ipa": "dɪsˈleksiə",
+    "ph": "ディスレクシア",
+    "m": "ディスレクシア、読字に関わる困難",
+    "ex": "Dyslexia can make reading and spelling difficult.",
+    "exJa": "ディスレクシアは、読むことやつづりを書くことを難しくすることがある。"
+  },
+  {
+    "id": "adhd_noun_special_needs",
+    "w": "ADHD",
+    "cat": "special-needs-education",
+    "pos": "名詞",
+    "level": "標準",
+    "ipa": "ˌeɪ diː eɪtʃ ˈdiː",
+    "ph": "エイ ディー エイチ ディー",
+    "m": "注意欠如・多動症、ADHD",
+    "ex": "ADHD can affect attention, planning, and impulse control.",
+    "exJa": "ADHDは、注意、計画、衝動の調整に影響することがある。"
+  },
+  {
+    "id": "hearing_impairment_noun_special_needs",
+    "w": "hearing impairment",
+    "cat": "special-needs-education",
+    "pos": "名詞",
+    "level": "標準",
+    "ipa": "ˈhɪərɪŋ ɪmˈpeəmənt",
+    "ph": "ヒアリング インペアメント",
+    "m": "聴覚障害、聞こえにくさ",
+    "ex": "The teacher used captions for a student with a hearing impairment.",
+    "exJa": "先生は聴覚障害のある生徒のために字幕を使った。"
+  },
+  {
+    "id": "visual_impairment_noun_special_needs",
+    "w": "visual impairment",
+    "cat": "special-needs-education",
+    "pos": "名詞",
+    "level": "標準",
+    "ipa": "ˈvɪʒuəl ɪmˈpeəmənt",
+    "ph": "ヴィジュアル インペアメント",
+    "m": "視覚障害、見えにくさ",
+    "ex": "The handout was provided in large print for a student with a visual impairment.",
+    "exJa": "視覚障害のある生徒のために、資料は大きな文字で配られた。"
+  },
+  {
+    "id": "physical_disability_noun_special_needs",
+    "w": "physical disability",
+    "cat": "special-needs-education",
+    "pos": "名詞",
+    "level": "標準",
+    "ipa": "ˈfɪzɪkəl ˌdɪsəˈbɪləti",
+    "ph": "フィジカル ディサビリティ",
+    "m": "身体障害、身体面の支援ニーズ",
+    "ex": "The classroom layout was adjusted for a student with a physical disability.",
+    "exJa": "身体障害のある生徒のために、教室の配置が調整された。"
+  },
+  {
+    "id": "speech_or_language_impairment_noun_special_needs",
+    "w": "speech or language impairment",
+    "cat": "special-needs-education",
+    "pos": "名詞",
+    "level": "発展",
+    "ipa": "spiːtʃ ɔː ˈlæŋɡwɪdʒ ɪmˈpeəmənt",
+    "ph": "スピーチ オー ラングウィッジ インペアメント",
+    "m": "言語障害、話すこと・言葉の理解や表現に関わる困難",
+    "ex": "A speech or language impairment can affect communication at school.",
+    "exJa": "言語障害は、学校でのコミュニケーションに影響することがある。"
+  },
+  {
+    "id": "epilepsy_noun_special_needs",
+    "w": "epilepsy",
+    "cat": "special-needs-education",
+    "pos": "名詞",
+    "level": "標準",
+    "ipa": "ˈepɪlepsi",
+    "ph": "エピレプシー",
+    "m": "てんかん、発作を起こすことがある神経系の状態",
+    "ex": "A student with epilepsy may need a safety plan at school.",
+    "exJa": "てんかんのある生徒には、学校での安全計画が必要になることがある。"
+  },
+  {
+    "id": "sensory_processing_noun_special_needs",
+    "w": "sensory processing",
+    "cat": "special-needs-education",
+    "pos": "名詞",
+    "level": "発展",
+    "ipa": "ˈsensəri ˈprəʊsesɪŋ",
+    "ph": "センサリ プロウセシング",
+    "m": "感覚処理、音・光・触覚などの受け取り方",
+    "ex": "Sensory processing differences can affect comfort in a noisy room.",
+    "exJa": "感覚処理の違いは、騒がしい部屋での過ごしやすさに影響することがある。"
+  },
+  {
+    "id": "special_needs_education_noun_special_needs",
+    "w": "special needs education",
+    "cat": "special-needs-education",
+    "pos": "名詞",
+    "level": "標準",
+    "ipa": "ˌspeʃəl ˈniːdz ˌedjʊˈkeɪʃən",
+    "ph": "スペシャル ニーズ エデュケイション",
+    "m": "特別支援教育、学びにくさに応じた教育的支援",
+    "ex": "Special needs education focuses on support that fits each learner.",
+    "exJa": "特別支援教育は、一人ひとりに合った支援に焦点を当てる。"
+  },
+  {
+    "id": "inclusive_education_noun_special_needs",
+    "w": "inclusive education",
+    "cat": "special-needs-education",
+    "pos": "名詞",
+    "level": "標準",
+    "ipa": "ɪnˈkluːsɪv ˌedjʊˈkeɪʃən",
+    "ph": "インクルーシヴ エデュケイション",
+    "m": "インクルーシブ教育、すべての子どもが参加できる教育",
+    "ex": "Inclusive education removes barriers so all learners can participate.",
+    "exJa": "インクルーシブ教育は、すべての学習者が参加できるように障壁を取り除く。"
+  },
+  {
+    "id": "reasonable_accommodation_noun_special_needs",
+    "w": "reasonable accommodation",
+    "cat": "special-needs-education",
+    "pos": "名詞",
+    "level": "発展",
+    "ipa": "ˌriːzənəbəl əˌkɒməˈdeɪʃən",
+    "ph": "リーズナブル アコモデイション",
+    "m": "合理的配慮、必要に応じた調整",
+    "ex": "Extra time can be a reasonable accommodation.",
+    "exJa": "時間を延ばすことは、合理的配慮になることがある。"
+  },
+  {
+    "id": "individualized_education_program_noun_special_needs",
+    "w": "individualized education program",
+    "cat": "special-needs-education",
+    "pos": "名詞",
+    "level": "発展",
+    "ipa": "ˌɪndɪˈvɪdjuəlaɪzd ˌedjʊˈkeɪʃən ˈprəʊɡræm",
+    "ph": "インディヴィジュアライズド エデュケイション プログラム",
+    "m": "個別教育計画、IEP（米国などの制度用語）",
+    "ex": "The IEP lists the support a student needs at school.",
+    "exJa": "IEPには、学校で生徒が必要とする支援が記される。"
+  },
+  {
+    "id": "assistive_technology_noun_special_needs",
+    "w": "assistive technology",
+    "cat": "special-needs-education",
+    "pos": "名詞",
+    "level": "標準",
+    "ipa": "əˈsɪstɪv tekˈnɒlədʒi",
+    "ph": "アシスティヴ テクノロジー",
+    "m": "支援技術、補助機器や支援アプリなど",
+    "ex": "A speech-to-text app is a form of assistive technology.",
+    "exJa": "音声入力アプリは、支援技術の一つです。"
+  },
+  {
+    "id": "augmentative_alternative_communication_noun_special_needs",
+    "w": "augmentative and alternative communication",
+    "cat": "special-needs-education",
+    "pos": "名詞",
+    "level": "発展",
+    "ipa": "ɔːɡˈmentətɪv ənd ɔːlˈtɜːnətɪv kəˌmjuːnɪˈkeɪʃən",
+    "ph": "オーグメンタティヴ アンド オールターナティヴ コミュニケイション",
+    "m": "拡大・代替コミュニケーション、AAC",
+    "ex": "AAC can include picture boards or speech devices.",
+    "exJa": "AACには、絵カードや音声出力機器が含まれることがある。"
+  },
+  {
     "id": "spiffing_adjective_british",
     "w": "spiffing",
     "cat": "pronunciation-note",
@@ -16049,6 +16983,22 @@ const TEST_CARD_LIMIT = 20;
 const TEST_CHOICE_LABELS = ['A', 'B', 'C', 'D'];
 const DAY_MS = 24 * 60 * 60 * 1000;
 const WEAK_EF_THRESHOLD = 1.8;
+const PERFECT_STAR_UNIT = TEST_CARD_LIMIT;
+const PERFECT_STAR_MAX_VISIBLE = 5;
+const PERFECT_STAR_TIERS = [
+  { className: 'black', ja: '黒星', en: 'Black Star' },
+  { className: 'white', ja: '白星', en: 'White Star' },
+  { className: 'yellow', ja: '黄星', en: 'Yellow Star' },
+  { className: 'red', ja: '赤星', en: 'Red Star' },
+  { className: 'blue', ja: '青星', en: 'Blue Star' },
+  { className: 'purple', ja: '紫星', en: 'Purple Star' },
+  { className: 'bronze', ja: '銅星', en: 'Bronze Star' },
+  { className: 'silver', ja: '銀星', en: 'Silver Star' },
+  { className: 'gold', ja: '金星', en: 'Gold Star' },
+  { className: 'green', ja: '緑星', en: 'Green Star' },
+  { className: 'indigo', ja: '藍星', en: 'Indigo Star' },
+  { className: 'rainbow', ja: '虹星', en: 'Rainbow Star' }
+];
 const STREAK_MILESTONE_MESSAGES = {
   10: '10連続！流れができてきた。',
   15: '15連続！かなり集中できている。',
@@ -16222,6 +17172,8 @@ const CATEGORY_LABELS = {
   abbreviationPublic: '略語 国際・公的',
   abbreviationEducation: '略語 教育・言語',
   pronunciationNote: '発音注意',
+  muscleAnatomy: '筋肉名',
+  specialNeedsEducation: '特別支援教育',
   rlContrast: 'R/L注意',
   wordRelation: '語彙関係'
 };
@@ -16253,6 +17205,8 @@ const CATEGORY_UI_KEYS = {
   abbreviationPublic: 'categoryAbbreviationPublic',
   abbreviationEducation: 'categoryAbbreviationEducation',
   pronunciationNote: 'categoryPronunciationNote',
+  muscleAnatomy: 'categoryMuscleAnatomy',
+  specialNeedsEducation: 'categorySpecialNeedsEducation',
   rlContrast: 'categoryRlContrast',
   wordRelation: 'categoryWordRelation'
 };
@@ -16573,10 +17527,12 @@ const UI_TEXT = {
     categoryAbbreviationPublic: '略語 国際・公的',
     categoryAbbreviationEducation: '略語 教育・言語',
     categoryPronunciationNote: '発音注意',
+    categoryMuscleAnatomy: '筋肉名',
+    categorySpecialNeedsEducation: '特別支援教育',
     categoryRlContrast: 'R/L注意',
     categoryWordRelation: '語彙関係',
     katakanaSub: '知ってるつもり',
-    themeNote: 'テーマ別に確認できます。苦手は間違えた語や定着しにくい語、カタカナ注意は「知ってるつもり」になりやすい意味のズレ、句動詞は会話のまとまり、ニュース英語は報道でよく見る語、ATM・銀行は海外生活で画面に出やすい語、不可算名詞は数え方の引っ掛け、略語は分野別、発音注意は音と綴りの違い、R/L注意は語頭の音、語彙関係は近い意味の語・反対の意味の語を集中的に学べます。',
+    themeNote: 'テーマ別に確認できます。苦手は間違えた語や定着しにくい語、カタカナ注意は「知ってるつもり」になりやすい意味のズレ、句動詞は会話のまとまり、ニュース英語は報道でよく見る語、ATM・銀行は海外生活で画面に出やすい語、不可算名詞は数え方の引っ掛け、略語は分野別、発音注意は音と綴りの違い、筋肉名は人体の主要な筋肉、特別支援教育は状態名と支援用語、R/L注意は語頭の音、語彙関係は近い意味の語・反対の意味の語を集中的に学べます。',
     choosePart: '品詞でしぼる',
     partRandom: 'ランダム',
     partNoun: '名詞',
@@ -16777,10 +17733,12 @@ const UI_TEXT = {
     categoryAbbreviationPublic: 'Public / international',
     categoryAbbreviationEducation: 'Education / language',
     categoryPronunciationNote: 'Pronunciation caution',
+    categoryMuscleAnatomy: 'Muscles',
+    categorySpecialNeedsEducation: 'Special needs education',
     categoryRlContrast: 'R/L caution',
     categoryWordRelation: 'Word relations',
     katakanaSub: 'False friends',
-    themeNote: 'Use themes for focused practice: weak words, katakana meaning gaps, phrasal verbs, news English, ATM and banking words, uncountable noun traps, abbreviations, pronunciation traps, R/L contrast pairs, and close/opposite meaning relations.',
+    themeNote: 'Use themes for focused practice: weak words, katakana meaning gaps, phrasal verbs, news English, ATM and banking words, uncountable noun traps, abbreviations, pronunciation traps, major muscle names, special needs education terms, R/L contrast pairs, and close/opposite meaning relations.',
     choosePart: 'Filter by part of speech',
     partRandom: 'Random',
     partNoun: 'Nouns',
@@ -16957,6 +17915,8 @@ const CATEGORY_TAGS = {
   abbreviationPublic: 'abbreviation-public',
   abbreviationEducation: 'abbreviation-education',
   pronunciationNote: 'pronunciation-note',
+  muscleAnatomy: 'muscle-anatomy',
+  specialNeedsEducation: 'special-needs-education',
   rlContrast: 'rl-contrast',
   wordRelation: 'word-relation'
 };
@@ -17238,6 +18198,8 @@ const WEAKNESS_CATEGORY_PRIORITY = [
   ['abbreviation-business', '略語'],
   ['abbreviation-public', '略語'],
   ['abbreviation-education', '略語'],
+  ['muscle-anatomy', '筋肉名'],
+  ['special-needs-education', '特別支援教育'],
   ['rl-contrast', 'R/L注意'],
   ['pronunciation-note', '発音注意']
 ];
@@ -20245,6 +21207,86 @@ function setText(id, value) {
   if (element) element.textContent = String(value);
 }
 
+function getPerfectStarProgress(correctStreak) {
+  const streak = Math.max(0, Math.floor(Number(correctStreak) || 0));
+  const blocks = Math.floor(streak / PERFECT_STAR_UNIT);
+  const tierIndex = blocks > 0 ? Math.floor((blocks - 1) / PERFECT_STAR_MAX_VISIBLE) : 0;
+  const tier = PERFECT_STAR_TIERS[tierIndex % PERFECT_STAR_TIERS.length];
+  const cycle = Math.floor(tierIndex / PERFECT_STAR_TIERS.length);
+  const starCount = blocks > 0 ? ((blocks - 1) % PERFECT_STAR_MAX_VISIBLE) + 1 : 0;
+  return { streak, blocks, tierIndex, tier, cycle, starCount };
+}
+
+function getPerfectStarTierLabel(progress) {
+  const base = currentUiLanguage === 'en' ? progress.tier.en : progress.tier.ja;
+  if (!progress.cycle) return base;
+  return currentUiLanguage === 'en'
+    ? `${base} ${progress.cycle + 1}`
+    : `${base}${progress.cycle + 1}周目`;
+}
+
+function renderPerfectStarRow(container, progress) {
+  if (!container) return;
+  container.textContent = '';
+  for (let index = 0; index < PERFECT_STAR_MAX_VISIBLE; index++) {
+    const star = document.createElement('span');
+    const isEarned = index < progress.starCount;
+    star.className = `perfect-star-slot${isEarned ? ` is-earned star-tier-${progress.tier.className}` : ''}`;
+    star.textContent = isEarned ? '★' : '☆';
+    container.appendChild(star);
+  }
+}
+
+function updatePerfectStarMeter(meta = getMeta()) {
+  const bestStreak = Math.max(Number(meta.bestCorrectStreak) || 0, Number(meta.correctStreak) || 0);
+  const progress = getPerfectStarProgress(bestStreak);
+  renderPerfectStarRow(document.getElementById('perfect-star-row'), progress);
+  const label = progress.blocks > 0 ? getPerfectStarTierLabel(progress) : 'Perfect';
+  setText('perfect-star-tier-label', label);
+  const meter = document.getElementById('perfect-star-meter');
+  if (meter) {
+    const countText = progress.blocks > 0
+      ? `${label} ${progress.starCount}/${PERFECT_STAR_MAX_VISIBLE}, ${bestStreak}${currentUiLanguage === 'en' ? ' correct streak' : '連続正解'}`
+      : currentUiLanguage === 'en' ? 'No perfect stars yet' : 'パーフェクト星はまだありません';
+    meter.setAttribute('aria-label', countText);
+  }
+}
+
+function getPerfectStarCompleteMessage(progress, currentStreak = progress.streak) {
+  const label = getPerfectStarTierLabel(progress);
+  const isCurrentRecord = (Number(currentStreak) || 0) >= progress.streak;
+  if (!isCurrentRecord) {
+    return currentUiLanguage === 'en'
+      ? `Best record: ${label} ${progress.starCount}/${PERFECT_STAR_MAX_VISIBLE} · ${progress.streak} correct streak`
+      : `最高記録: ${label} ${progress.starCount}/${PERFECT_STAR_MAX_VISIBLE}・${progress.streak}連続正解`;
+  }
+  if (currentUiLanguage === 'en') {
+    const action = progress.starCount === PERFECT_STAR_MAX_VISIBLE
+      ? `${label} complete!`
+      : progress.starCount === 1 && progress.blocks > 1
+        ? `Rank up to ${label}!`
+        : `${label} earned!`;
+    return `${action} ${progress.starCount}/${PERFECT_STAR_MAX_VISIBLE} · ${progress.streak} correct streak`;
+  }
+  const action = progress.starCount === PERFECT_STAR_MAX_VISIBLE
+    ? `${label}完成！`
+    : progress.starCount === 1 && progress.blocks > 1
+      ? `${label}へ昇格！`
+      : `${label}獲得！`;
+  return `${action} ${progress.starCount}/${PERFECT_STAR_MAX_VISIBLE}・${progress.streak}連続正解`;
+}
+
+function updatePerfectStarComplete(correctStreak, bestCorrectStreak = correctStreak) {
+  const displayStreak = Math.max(Number(correctStreak) || 0, Number(bestCorrectStreak) || 0);
+  const progress = getPerfectStarProgress(displayStreak);
+  const panel = document.getElementById('perfect-star-complete');
+  if (!panel) return;
+  const isVisible = progress.starCount > 0;
+  panel.classList.toggle('is-visible', isVisible);
+  renderPerfectStarRow(document.getElementById('perfect-star-complete-row'), progress);
+  setText('perfect-star-complete-msg', isVisible ? getPerfectStarCompleteMessage(progress, correctStreak) : '');
+}
+
 function setCompleteFocus(message, tone = 'normal') {
   const element = document.getElementById('complete-focus');
   if (!element) return;
@@ -20420,6 +21462,8 @@ function getWeaknessBucketLabel(word) {
     if (category === 'atm-banking') return uiText('categoryBankingEnglish');
     if (category === 'uncountable-noun') return uiText('categoryUncountableNoun');
     if (category.startsWith('abbreviation')) return uiText('categoryAbbreviation');
+    if (category === 'muscle-anatomy') return uiText('categoryMuscleAnatomy');
+    if (category === 'special-needs-education') return uiText('categorySpecialNeedsEducation');
     if (category === 'rl-contrast') return uiText('categoryRlContrast');
     if (category === 'pronunciation-note') return uiText('categoryPronunciationNote');
     if (category === 'word-relation') return uiText('categoryWordRelation');
@@ -20543,6 +21587,7 @@ function setPerfectQuoteVisible(isVisible) {
   const panel = document.getElementById('perfect-quote-panel');
   if (!panel) return;
   panel.classList.toggle('is-visible', Boolean(isVisible));
+  if (!isVisible) updatePerfectStarComplete(0);
 }
 
 function showRandomPerfectQuote() {
@@ -20550,6 +21595,8 @@ function showRandomPerfectQuote() {
     testPerfectQuote = PERFECT_QUOTE_POOL[Math.floor(Math.random() * PERFECT_QUOTE_POOL.length)];
   }
   const quote = testPerfectQuote;
+  const meta = getMeta();
+  updatePerfectStarComplete(meta.correctStreak, meta.bestCorrectStreak);
   setText('perfect-quote-text', `"${quote.quote}"`);
   setText('perfect-quote-source', quote.source);
   setText('perfect-quote-ja', quote.ja);
@@ -20578,6 +21625,7 @@ function updateStats() {
   setText('stat-miss-cleared-panel', meta.missClearedTotal || 0);
   setText('stat-miss-review-panel', missedReviewCount);
   setText('stat-due', due);
+  updatePerfectStarMeter(meta);
   document.getElementById('due-text').textContent = currentMode === 'test'
     ? getTestScoreLabel()
     : currentMode === 'testEntry'
