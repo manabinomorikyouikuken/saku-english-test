@@ -2108,6 +2108,19 @@
       display: none;
     }
     .complete-route-actions:not([hidden]) + .complete-actions {
+      display: flex;
+      margin-top: clamp(26px, 5svh, 42px);
+    }
+    .complete-route-actions:not([hidden]) + .complete-actions .complete-back-btn {
+      flex: 0 1 min(46vw, 184px);
+      width: min(46vw, 184px);
+      height: auto;
+      min-height: 44px;
+      padding: 0 18px;
+      border-radius: 999px;
+      font-size: 13px;
+    }
+    .complete-route-actions:not([hidden]) + .complete-actions .restart-btn {
       display: none;
     }
     .complete-route-btn {
