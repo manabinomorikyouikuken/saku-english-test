@@ -2077,6 +2077,7 @@
       display: none;
     }
     .complete-route-btn {
+      order: 2;
       min-height: 42px;
       border: 1px solid var(--warm-border);
       border-radius: 12px;
@@ -2087,12 +2088,19 @@
       cursor: pointer;
       touch-action: manipulation;
     }
+    .complete-route-btn[hidden] {
+      display: none;
+    }
     .complete-route-btn.primary {
+      order: 1;
       grid-column: 1 / -1;
       background: var(--warm-primary);
       border-color: var(--warm-primary);
       color: white;
       box-shadow: 0 4px 15px rgba(234,88,12,0.22);
+    }
+    .complete-route-actions.no-misses #complete-relation-btn {
+      grid-column: 1 / -1;
     }
     .complete-route-btn:disabled {
       cursor: default;
@@ -15785,7 +15793,7 @@ const US_IPA_OVERRIDES = {
   english_0139: 'kənˈtroʊl',
   english_0257: 'ɪˈmoʊʃənəl',
   english_0375: 'ɡroʊθ',
-  english_0400: 'prəˈpoʊzəl',
+  english_0401: 'prəˈpoʊzəl',
   english_0418: 'ɪˈmoʊʃən',
   english_0458: 'əˈproʊtʃ',
   slowly_adverb: 'ˈsloʊli',
@@ -19611,12 +19619,29 @@ function setCompleteNextStep(message, tone = 'normal') {
 }
 
 function updateCompleteRouteActions(missedCount = getMissedReviewWords().length) {
+  const actions = document.getElementById('complete-route-actions');
+  const todayButton = document.getElementById('complete-today-btn');
   const missButton = document.getElementById('complete-miss-review-btn');
-  if (!missButton) return;
+  const relationButton = document.getElementById('complete-relation-btn');
+  if (!actions || !todayButton || !missButton || !relationButton) return;
   const hasMisses = missedCount > 0;
+  const recommendedPrefix = currentUiLanguage === 'en' ? 'Recommended: ' : 'おすすめ: ';
+  [todayButton, missButton, relationButton].forEach(button => button.classList.remove('primary'));
+  actions.classList.toggle('has-misses', hasMisses);
+  actions.classList.toggle('no-misses', !hasMisses);
+  todayButton.textContent = hasMisses
+    ? uiText('today20Again')
+    : `${recommendedPrefix}${uiText('today20Again')}`;
+  todayButton.classList.toggle('primary', !hasMisses);
+  missButton.hidden = !hasMisses;
   missButton.disabled = !hasMisses;
-  missButton.textContent = hasMisses ? `${uiText('missReview')} (${missedCount})` : uiText('missReviewEmpty');
+  missButton.textContent = hasMisses
+    ? `${recommendedPrefix}${uiText('missReview')} (${missedCount})`
+    : uiText('missReviewEmpty');
+  missButton.classList.toggle('primary', hasMisses);
   missButton.setAttribute('aria-disabled', hasMisses ? 'false' : 'true');
+  relationButton.textContent = uiText('relationGame');
+  relationButton.hidden = false;
 }
 
 function setCompleteRouteActionsVisible(visible, missedCount = getMissedReviewWords().length) {
@@ -19636,19 +19661,23 @@ function getStudyNextStepMessage(due) {
 }
 
 function getTestNextStepMessage({ testLength, misses, isMissReview, remainingMisses, isPerfect20 }) {
+  const remaining = Number(remainingMisses) || 0;
   if (!testLength) return currentUiLanguage === 'en'
     ? 'Next: widen the range in Settings to restart.'
     : '次の一手: 設定で範囲を広げると再開できます。';
   if (misses > 0) return currentUiLanguage === 'en'
     ? 'Next: use Miss Review to recover today’s misses.'
     : '次の一手: ミスだけ復習で、今のつまずきをすぐ回収。';
-  if (isMissReview && remainingMisses === 0) return '';
+  if (isMissReview && remaining === 0) return '';
+  if (!isMissReview && remaining > 0) return currentUiLanguage === 'en'
+    ? `Next: clear ${remaining} ${remaining === 1 ? 'word' : 'words'} in Miss Review, then start another 20.`
+    : `次の一手: ミス復習${remaining}語を先に回収。その後で次の20問へ。`;
   if (isPerfect20) return currentUiLanguage === 'en'
     ? 'Next: the next 20 will use different words. Keep the streak going.'
     : '次の一手: 次の20問は別の単語で出題します。連続記録を伸ばそう。';
   if (isMissReview) return currentUiLanguage === 'en'
-    ? `Next: clear the remaining ${remainingMisses} ${remainingMisses === 1 ? 'word' : 'words'} the same way.`
-    : `次の一手: 残り${remainingMisses}語も、同じ流れで回収。`;
+    ? `Next: clear the remaining ${remaining} ${remaining === 1 ? 'word' : 'words'} the same way.`
+    : `次の一手: 残り${remaining}語も、同じ流れで回収。`;
   return currentUiLanguage === 'en'
     ? 'Next: test again while the words are still fresh.'
     : '次の一手: まだ覚えているうちに、もう一回だけテスト。';
