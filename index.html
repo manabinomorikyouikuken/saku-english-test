@@ -2073,6 +2073,9 @@
     .complete-route-actions[hidden] {
       display: none;
     }
+    .complete-route-actions:not([hidden]) + .complete-actions {
+      display: none;
+    }
     .complete-route-btn {
       min-height: 42px;
       border: 1px solid var(--warm-border);
