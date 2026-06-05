@@ -1251,24 +1251,6 @@
     .test-word-card.can-flip {
       cursor: pointer;
     }
-    .test-word-card.can-flip::after {
-      content: attr(data-flip-label);
-      position: absolute;
-      right: 10px;
-      bottom: 8px;
-      z-index: 2;
-      border-radius: 999px;
-      background: rgba(26,42,74,0.82);
-      color: white;
-      padding: 4px 8px;
-      font-size: 10px;
-      font-weight: 900;
-      line-height: 1;
-      pointer-events: none;
-    }
-    .test-word-card.feedback-visible:not(.is-flipped)::after {
-      display: none;
-    }
     .test-word-card.wrong-cue {
       animation: wrongCue 0.34s ease-in-out;
     }
@@ -2485,7 +2467,7 @@
 
     <div class="test-panel" id="test-panel" aria-live="polite">
       <div class="test-word-card-wrap">
-        <div class="test-word-card" id="test-word-card" role="button" tabindex="0" aria-pressed="false" aria-disabled="true" aria-label="解答後に単語カードを反転して裏面情報を表示できます" data-flip-label="タップで裏面" onclick="toggleTestCardFlip()" onkeydown="handleTestCardKey(event)">
+        <div class="test-word-card" id="test-word-card" role="button" tabindex="0" aria-pressed="false" aria-disabled="true" aria-label="解答後に単語カードを反転して裏面情報を表示できます" onclick="toggleTestCardFlip()" onkeydown="handleTestCardKey(event)">
           <div class="test-card-inner">
             <div class="test-card-face test-card-front-face">
               <div class="test-word-text" id="test-word-text">—</div>
@@ -17657,7 +17639,6 @@ const UI_TEXT = {
     feedbackPickedLabel: '選択',
     feedbackMemoLabel: 'メモ',
     feedbackNoChoice: '未選択',
-    testFlipChip: 'タップで裏面',
     items: '項目',
     dueCandidatesCount: '出題候補',
     testScore: 'テスト',
@@ -17863,7 +17844,6 @@ const UI_TEXT = {
     feedbackPickedLabel: 'Picked',
     feedbackMemoLabel: 'Note',
     feedbackNoChoice: 'No choice',
-    testFlipChip: 'Tap for back',
     items: 'items',
     dueCandidatesCount: 'Due',
     testScore: 'Test',
@@ -18445,7 +18425,6 @@ function applyUiLanguage() {
   document.getElementById('header-back-btn')?.setAttribute('aria-label', uiText('backToPracticeAria'));
   document.getElementById('card-container')?.setAttribute('aria-label', uiText('cardFlipAria'));
   document.getElementById('rating-controls')?.setAttribute('aria-label', uiText('rateControlsAria'));
-  document.getElementById('test-word-card')?.setAttribute('data-flip-label', uiText('testFlipChip'));
   updateHeaderSub();
   updateUiLanguageButtons();
   updateAudioButtons();
