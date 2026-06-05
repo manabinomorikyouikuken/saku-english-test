@@ -1917,6 +1917,40 @@
       }
     }
 
+    body.test-mode.test-answered .test-feedback.correct-feedback.is-visible + .test-answer-zone {
+      --test-action-square-size: min(42vw, 172px);
+      margin-top: 6px;
+    }
+    body.test-mode.test-answered .test-feedback.correct-feedback.is-visible + .test-answer-zone .test-choice-grid {
+      gap: 6px;
+      margin-top: 6px;
+    }
+    body.test-mode.test-answered .test-feedback.correct-feedback.is-visible + .test-answer-zone .test-choice-card {
+      min-height: 43px;
+      max-height: 50px;
+      padding: 8px 10px;
+      font-size: 12.5px;
+    }
+    body.test-mode.test-answered .test-feedback.correct-feedback.is-visible + .test-answer-zone .test-next-btn.is-visible {
+      margin-top: 6px;
+    }
+    @media (max-height: 820px) {
+      body.test-mode.test-answered .test-feedback.correct-feedback.is-visible + .test-answer-zone {
+        --test-action-square-size: min(38vw, 148px);
+      }
+    }
+    @media (max-height: 760px) {
+      body.test-mode.test-answered .test-feedback.correct-feedback.is-visible + .test-answer-zone {
+        --test-action-square-size: min(35vw, 136px);
+      }
+      body.test-mode.test-answered .test-feedback.correct-feedback.is-visible + .test-answer-zone .test-choice-card {
+        min-height: 40px;
+        max-height: 46px;
+        padding: 7px 9px;
+        font-size: 12px;
+      }
+    }
+
     /* Complete screen */
     .session-complete {
       --complete-action-square-size: min(52vw, 216px);
