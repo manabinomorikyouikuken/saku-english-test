@@ -17900,6 +17900,30 @@ const CATEGORY_TAGS = {
   rlContrast: 'rl-contrast',
   wordRelation: 'word-relation'
 };
+const SPECIAL_NEEDS_CONDITION_WORD_IDS = new Set([
+  'cerebral_palsy_noun_special_needs',
+  'down_syndrome_noun_special_needs',
+  'autism_spectrum_disorder_noun_special_needs',
+  'intellectual_disability_noun_special_needs',
+  'developmental_disability_noun_special_needs',
+  'specific_learning_disability_noun_special_needs',
+  'dyslexia_noun_special_needs',
+  'adhd_noun_special_needs',
+  'hearing_impairment_noun_special_needs',
+  'visual_impairment_noun_special_needs',
+  'physical_disability_noun_special_needs',
+  'speech_or_language_impairment_noun_special_needs',
+  'epilepsy_noun_special_needs',
+  'sensory_processing_noun_special_needs'
+]);
+const SPECIAL_NEEDS_SUPPORT_WORD_IDS = new Set([
+  'special_needs_education_noun_special_needs',
+  'inclusive_education_noun_special_needs',
+  'reasonable_accommodation_noun_special_needs',
+  'individualized_education_program_noun_special_needs',
+  'assistive_technology_noun_special_needs',
+  'augmentative_alternative_communication_noun_special_needs'
+]);
 const WORD_RELATION_LINKS = {
   antonym_hot_adjective: { type: 'antonym', target: 'cold' },
   antonym_cold_adjective: { type: 'antonym', target: 'hot' },
@@ -20219,6 +20243,46 @@ function createAdaptiveTestDeck(activeWords, limit = TEST_CARD_LIMIT, options = 
   ].slice(0, targetCount);
 }
 
+function getChoiceGroup(word) {
+  if (word?.choiceGroup) return word.choiceGroup;
+  const categories = getWordCategories(word);
+  const wordId = getWordIdKey(word);
+  if (SPECIAL_NEEDS_CONDITION_WORD_IDS.has(wordId)) return 'special-needs-condition';
+  if (SPECIAL_NEEDS_SUPPORT_WORD_IDS.has(wordId)) return 'special-needs-support';
+  if (categories.has('muscle-anatomy')) return 'muscle';
+  if (categories.has('atm-banking')) return 'banking';
+  if (categories.has('news-english')) return 'news';
+  if (categories.has('phrasal-verb')) return 'phrasal-verb';
+  if (categories.has('uncountable-noun')) return 'uncountable-noun';
+  if (categories.has('abbreviation-tech')) return 'abbreviation-tech';
+  if (categories.has('abbreviation-business')) return 'abbreviation-business';
+  if (categories.has('abbreviation-public')) return 'abbreviation-public';
+  if (categories.has('abbreviation-education')) return 'abbreviation-education';
+  if (categories.has('abbreviation')) return 'abbreviation';
+  if (categories.has('word-relation')) return 'word-relation';
+  if (categories.has('katakana-gap')) return 'katakana-gap';
+  if (categories.has('rl-contrast')) return 'rl-contrast';
+  return 'general';
+}
+
+function getChoiceRelevantCategories(word) {
+  const broadCategories = new Set(['pronunciation-note']);
+  return [...getWordCategories(word)].filter(category => !broadCategories.has(category));
+}
+
+function sharesChoiceCategoryWith(word, referenceWord) {
+  const referenceCategories = new Set(getChoiceRelevantCategories(referenceWord));
+  if (!referenceCategories.size) return false;
+  return getChoiceRelevantCategories(word).some(category => referenceCategories.has(category));
+}
+
+function isChoiceGroupCompatible(word, referenceWord, allowMixed = false) {
+  if (allowMixed) return true;
+  const group = getChoiceGroup(word);
+  const referenceGroup = getChoiceGroup(referenceWord);
+  return group === referenceGroup;
+}
+
 function normalizeRelationWordText(value) {
   return String(value || '').trim().toLowerCase();
 }
@@ -20495,9 +20559,33 @@ function getDistractorPool(correctWord, neededDistractors = currentTestChoiceCou
     });
   };
   const activeWords = getActiveWords();
-  addCandidates(activeWords.filter(word => sharesPartWith(word, correctWord)));
+  const sameGroup = word => isChoiceGroupCompatible(word, correctWord);
+  const sameCategory = word => sharesChoiceCategoryWith(word, correctWord);
+  const sameLevel = word => getWordLevel(word) === getWordLevel(correctWord);
+  const samePart = word => sharesPartWith(word, correctWord);
+  addCandidates(activeWords.filter(word => sameGroup(word) && samePart(word)));
   if (selected.length >= neededDistractors) return selected;
-  addCandidates(WORDS.filter(word => sharesPartWith(word, correctWord)));
+  addCandidates(WORDS.filter(word => sameGroup(word) && samePart(word)));
+  if (selected.length >= neededDistractors) return selected;
+  addCandidates(activeWords.filter(sameGroup));
+  if (selected.length >= neededDistractors) return selected;
+  addCandidates(WORDS.filter(sameGroup));
+  if (selected.length >= neededDistractors) return selected;
+  addCandidates(activeWords.filter(word => sameCategory(word) && samePart(word)));
+  if (selected.length >= neededDistractors) return selected;
+  addCandidates(WORDS.filter(word => sameCategory(word) && samePart(word)));
+  if (selected.length >= neededDistractors) return selected;
+  addCandidates(activeWords.filter(word => sameCategory(word)));
+  if (selected.length >= neededDistractors) return selected;
+  addCandidates(WORDS.filter(word => sameCategory(word)));
+  if (selected.length >= neededDistractors) return selected;
+  addCandidates(activeWords.filter(word => sameLevel(word) && samePart(word)));
+  if (selected.length >= neededDistractors) return selected;
+  addCandidates(WORDS.filter(word => sameLevel(word) && samePart(word)));
+  if (selected.length >= neededDistractors) return selected;
+  addCandidates(activeWords.filter(samePart));
+  if (selected.length >= neededDistractors) return selected;
+  addCandidates(WORDS.filter(samePart));
   if (selected.length >= neededDistractors) return selected;
   addCandidates(activeWords);
   if (selected.length >= neededDistractors) return selected;
