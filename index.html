@@ -2599,12 +2599,13 @@
       <button class="category-btn" type="button" data-category="abbreviationPublic" data-ui-label-key="categoryAbbreviationPublic" onclick="setCategory('abbreviationPublic')">略語 国際・公的<span id="category-count-abbreviationPublic">24項目</span></button>
       <button class="category-btn" type="button" data-category="abbreviationEducation" data-ui-label-key="categoryAbbreviationEducation" onclick="setCategory('abbreviationEducation')">略語 教育・言語<span id="category-count-abbreviationEducation">1項目</span></button>
       <button class="category-btn" type="button" data-category="pronunciationNote" data-ui-label-key="categoryPronunciationNote" onclick="setCategory('pronunciationNote')">発音注意<span id="category-count-pronunciationNote">90項目</span></button>
+      <button class="category-btn" type="button" data-category="technical" data-ui-label-key="categoryTechnical" onclick="setCategory('technical')">テクニカル<span id="category-count-technical">70項目</span></button>
       <button class="category-btn" type="button" data-category="muscleAnatomy" data-ui-label-key="categoryMuscleAnatomy" onclick="setCategory('muscleAnatomy')">筋肉名<span id="category-count-muscleAnatomy">50項目</span></button>
       <button class="category-btn" type="button" data-category="specialNeedsEducation" data-ui-label-key="categorySpecialNeedsEducation" onclick="setCategory('specialNeedsEducation')">特別支援教育<span id="category-count-specialNeedsEducation">20項目</span></button>
       <button class="category-btn" type="button" data-category="rlContrast" data-ui-label-key="categoryRlContrast" onclick="setCategory('rlContrast')">R/L注意<span id="category-count-rlContrast">8項目</span></button>
       <button class="category-btn" type="button" data-category="wordRelation" data-ui-label-key="categoryWordRelation" onclick="setCategory('wordRelation')">語彙関係<span id="category-count-wordRelation">42項目</span></button>
     </div>
-    <div class="storage-note" data-ui-key="themeNote">テーマ別に確認できます。苦手は間違えた語や定着しにくい語、カタカナ注意は「知ってるつもり」になりやすい意味のズレ、句動詞は会話のまとまり、ニュース英語は報道でよく見る語、ATM・銀行は海外生活で画面に出やすい語、不可算名詞は数え方の引っ掛け、略語は分野別、発音注意は音と綴りの違い、筋肉名は人体の主要な筋肉、特別支援教育は状態名と支援用語、R/L注意は語頭の音で意味が変わる組を集中的に学べます。</div>
+    <div class="storage-note" data-ui-key="themeNote">テーマ別に確認できます。苦手は間違えた語や定着しにくい語、カタカナ注意は「知ってるつもり」になりやすい意味のズレ、句動詞は会話のまとまり、ニュース英語は報道でよく見る語、ATM・銀行は海外生活で画面に出やすい語、不可算名詞は数え方の引っ掛け、略語は分野別、発音注意は音と綴りの違い、テクニカルは筋肉名と特別支援教育、R/L注意は語頭の音で意味が変わる組を集中的に学べます。</div>
   </div>
 
   <div class="part-panel" aria-label="品詞選択">
@@ -17154,6 +17155,7 @@ const CATEGORY_LABELS = {
   abbreviationPublic: '略語 国際・公的',
   abbreviationEducation: '略語 教育・言語',
   pronunciationNote: '発音注意',
+  technical: 'テクニカル',
   muscleAnatomy: '筋肉名',
   specialNeedsEducation: '特別支援教育',
   rlContrast: 'R/L注意',
@@ -17187,6 +17189,7 @@ const CATEGORY_UI_KEYS = {
   abbreviationPublic: 'categoryAbbreviationPublic',
   abbreviationEducation: 'categoryAbbreviationEducation',
   pronunciationNote: 'categoryPronunciationNote',
+  technical: 'categoryTechnical',
   muscleAnatomy: 'categoryMuscleAnatomy',
   specialNeedsEducation: 'categorySpecialNeedsEducation',
   rlContrast: 'categoryRlContrast',
@@ -17509,12 +17512,13 @@ const UI_TEXT = {
     categoryAbbreviationPublic: '略語 国際・公的',
     categoryAbbreviationEducation: '略語 教育・言語',
     categoryPronunciationNote: '発音注意',
+    categoryTechnical: 'テクニカル',
     categoryMuscleAnatomy: '筋肉名',
     categorySpecialNeedsEducation: '特別支援教育',
     categoryRlContrast: 'R/L注意',
     categoryWordRelation: '語彙関係',
     katakanaSub: '知ってるつもり',
-    themeNote: 'テーマ別に確認できます。苦手は間違えた語や定着しにくい語、カタカナ注意は「知ってるつもり」になりやすい意味のズレ、句動詞は会話のまとまり、ニュース英語は報道でよく見る語、ATM・銀行は海外生活で画面に出やすい語、不可算名詞は数え方の引っ掛け、略語は分野別、発音注意は音と綴りの違い、筋肉名は人体の主要な筋肉、特別支援教育は状態名と支援用語、R/L注意は語頭の音、語彙関係は近い意味の語・反対の意味の語を集中的に学べます。',
+    themeNote: 'テーマ別に確認できます。苦手は間違えた語や定着しにくい語、カタカナ注意は「知ってるつもり」になりやすい意味のズレ、句動詞は会話のまとまり、ニュース英語は報道でよく見る語、ATM・銀行は海外生活で画面に出やすい語、不可算名詞は数え方の引っ掛け、略語は分野別、発音注意は音と綴りの違い、テクニカルは筋肉名と特別支援教育、R/L注意は語頭の音、語彙関係は近い意味の語・反対の意味の語を集中的に学べます。',
     choosePart: '品詞でしぼる',
     partRandom: 'ランダム',
     partNoun: '名詞',
@@ -17714,12 +17718,13 @@ const UI_TEXT = {
     categoryAbbreviationPublic: 'Public / international',
     categoryAbbreviationEducation: 'Education / language',
     categoryPronunciationNote: 'Pronunciation caution',
+    categoryTechnical: 'Technical',
     categoryMuscleAnatomy: 'Muscles',
     categorySpecialNeedsEducation: 'Special needs education',
     categoryRlContrast: 'R/L caution',
     categoryWordRelation: 'Word relations',
     katakanaSub: 'False friends',
-    themeNote: 'Use themes for focused practice: weak words, katakana meaning gaps, phrasal verbs, news English, ATM and banking words, uncountable noun traps, abbreviations, pronunciation traps, major muscle names, special needs education terms, R/L contrast pairs, and close/opposite meaning relations.',
+    themeNote: 'Use themes for focused practice: weak words, katakana meaning gaps, phrasal verbs, news English, ATM and banking words, uncountable noun traps, abbreviations, pronunciation traps, technical terms such as major muscle names and special needs education, R/L contrast pairs, and close/opposite meaning relations.',
     choosePart: 'Filter by part of speech',
     partRandom: 'Random',
     partNoun: 'Nouns',
@@ -17895,6 +17900,7 @@ const CATEGORY_TAGS = {
   abbreviationPublic: 'abbreviation-public',
   abbreviationEducation: 'abbreviation-education',
   pronunciationNote: 'pronunciation-note',
+  technical: 'technical',
   muscleAnatomy: 'muscle-anatomy',
   specialNeedsEducation: 'special-needs-education',
   rlContrast: 'rl-contrast',
@@ -18204,6 +18210,7 @@ const WEAKNESS_CATEGORY_PRIORITY = [
   ['abbreviation-education', '略語'],
   ['muscle-anatomy', '筋肉名'],
   ['special-needs-education', '特別支援教育'],
+  ['technical', 'テクニカル'],
   ['rl-contrast', 'R/L注意'],
   ['pronunciation-note', '発音注意']
 ];
@@ -19453,6 +19460,9 @@ function getWordCategories(word) {
   if (RL_CONTRAST_PAIRS[String(word.w || '').toLowerCase()]) {
     categories.add('rl-contrast');
   }
+  if (categories.has('muscle-anatomy') || categories.has('special-needs-education')) {
+    categories.add('technical');
+  }
   return categories;
 }
 
@@ -19663,6 +19673,16 @@ function getActiveWords() {
   let active = getCategoryFilteredWords();
   if (currentPart === 'random') return active;
   return active.filter(word => hasPart(word, currentPart));
+}
+
+function isTechnicalWord(word) {
+  return getWordCategories(word).has('technical');
+}
+
+function getTestActiveWords() {
+  const activeWords = getActiveWords();
+  if (currentCategory !== 'all') return activeWords;
+  return activeWords.filter(word => !isTechnicalWord(word));
 }
 
 function getLevelCount(level) {
@@ -20494,7 +20514,7 @@ function beginTestSession(cards, kind = 'normal') {
 function startTestSession() {
   markIntroSeen();
   showLearnView();
-  const activeWords = getActiveWords();
+  const activeWords = getTestActiveWords();
   const isRelationScope = currentCategory === 'wordRelation';
   const perfectFollowUpExclusion = isRelationScope
     ? { keys: new Set(), wordTexts: new Set() }
@@ -20545,6 +20565,7 @@ function startWeakWordsSession() {
 function getDistractorPool(correctWord, neededDistractors = currentTestChoiceCount - 1) {
   const correctKey = getCardKey(correctWord);
   const seenMeanings = new Set([correctWord.m]);
+  const seenShortMeanings = new Set([getShortMeaning(correctWord.m)]);
   const selectedKeys = new Set([correctKey]);
   const selected = [];
   const addCandidates = candidates => {
@@ -20552,13 +20573,15 @@ function getDistractorPool(correctWord, neededDistractors = currentTestChoiceCou
       if (selected.length >= neededDistractors) return;
       const key = getCardKey(word);
       const meaning = String(word.m || '').trim();
-      if (selectedKeys.has(key) || !meaning || seenMeanings.has(meaning)) return;
+      const shortMeaning = getShortMeaning(meaning);
+      if (selectedKeys.has(key) || !meaning || seenMeanings.has(meaning) || seenShortMeanings.has(shortMeaning)) return;
       selectedKeys.add(key);
       seenMeanings.add(meaning);
+      seenShortMeanings.add(shortMeaning);
       selected.push(word);
     });
   };
-  const activeWords = getActiveWords();
+  const activeWords = getTestActiveWords();
   const sameGroup = word => isChoiceGroupCompatible(word, correctWord);
   const sameCategory = word => sharesChoiceCategoryWith(word, correctWord);
   const sameLevel = word => getWordLevel(word) === getWordLevel(correctWord);
@@ -20594,7 +20617,7 @@ function getDistractorPool(correctWord, neededDistractors = currentTestChoiceCou
 }
 
 function buildMeaningTestChoices(correctWord) {
-  const activeWords = getActiveWords();
+  const activeWords = getTestActiveWords();
   const choiceCount = Math.max(2, Math.min(currentTestChoiceCount, activeWords.length || currentTestChoiceCount));
   const neededDistractors = Math.max(0, choiceCount - 1);
   const distractors = getDistractorPool(correctWord, neededDistractors).slice(0, neededDistractors);
@@ -20821,6 +20844,18 @@ function getShortMeaning(meaning, limit = 20) {
   return first.length > limit ? `${first.slice(0, limit)}…` : first;
 }
 
+function getFeedbackMeaning(word, comparisonWord = null) {
+  const meaning = String(word?.m || '').trim();
+  const shortMeaning = getShortMeaning(meaning);
+  if (!comparisonWord) return shortMeaning;
+  const comparisonMeaning = String(comparisonWord?.m || '').trim();
+  const comparisonShortMeaning = getShortMeaning(comparisonMeaning);
+  if (meaning && comparisonMeaning && meaning !== comparisonMeaning && shortMeaning === comparisonShortMeaning) {
+    return meaning;
+  }
+  return shortMeaning;
+}
+
 function getFocusHint(word) {
   const categories = getWordCategories(word);
   const origin = getAbbreviationOrigin(word);
@@ -20892,7 +20927,7 @@ function getWrongAnswerFeedbackParts(word, selectedWord) {
     };
   }
 
-  const correctMeaning = getShortMeaning(word.m);
+  const correctMeaning = getFeedbackMeaning(word, selectedWord);
   if (!selectedWord || selectedWord === word) {
     return {
       correct: correctMeaning,
@@ -20903,7 +20938,7 @@ function getWrongAnswerFeedbackParts(word, selectedWord) {
     };
   }
 
-  const selectedMeaning = getShortMeaning(selectedWord.m);
+  const selectedMeaning = getFeedbackMeaning(selectedWord, word);
   const correctPart = formatPartOfSpeechForDisplay(getPartOfSpeech(word));
   const selectedPart = formatPartOfSpeechForDisplay(getPartOfSpeech(selectedWord));
   if (correctPart !== selectedPart) {
@@ -21531,6 +21566,7 @@ function getWeaknessBucketLabel(word) {
     if (category.startsWith('abbreviation')) return uiText('categoryAbbreviation');
     if (category === 'muscle-anatomy') return uiText('categoryMuscleAnatomy');
     if (category === 'special-needs-education') return uiText('categorySpecialNeedsEducation');
+    if (category === 'technical') return uiText('categoryTechnical');
     if (category === 'rl-contrast') return uiText('categoryRlContrast');
     if (category === 'pronunciation-note') return uiText('categoryPronunciationNote');
     if (category === 'word-relation') return uiText('categoryWordRelation');
