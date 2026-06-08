@@ -7,7 +7,9 @@ import vm from 'node:vm';
 const DEFAULT_MIN = 10;
 const DEFAULT_MAX = 20;
 const DEFAULT_PH_MAX = 15;
+const DEFAULT_LEARNER_MAX = 20;
 const VOCAB_FILE = 'index.html';
+const LEARNER_REVIEW_FIELDS = new Set(['pos', 'm', 'ex', 'exJa']);
 const COMPARED_FIELDS = [
   'id',
   'w',
@@ -31,8 +33,10 @@ function parseArgs(argv) {
   let min = DEFAULT_MIN;
   let max = DEFAULT_MAX;
   let phMax = DEFAULT_PH_MAX;
+  let learnerMax = DEFAULT_LEARNER_MAX;
   let json = false;
   let phoneticsOnly = false;
+  let learnerOnly = false;
 
   argv.forEach(arg => {
     if (arg === '--json') {
@@ -41,6 +45,10 @@ function parseArgs(argv) {
     }
     if (arg === '--phonetics') {
       phoneticsOnly = true;
+      return;
+    }
+    if (arg === '--learner') {
+      learnerOnly = true;
       return;
     }
     if (arg.startsWith('--min=')) {
@@ -55,18 +63,24 @@ function parseArgs(argv) {
       phMax = Number(arg.slice('--ph-max='.length));
       return;
     }
+    if (arg.startsWith('--learner-max=')) {
+      learnerMax = Number(arg.slice('--learner-max='.length));
+      return;
+    }
     refs.push(arg);
   });
 
   if (!Number.isFinite(min) || min < 0) throw new Error('--min must be a non-negative number');
   if (!Number.isFinite(max) || max < 1) throw new Error('--max must be a positive number');
   if (!Number.isFinite(phMax) || phMax < 1) throw new Error('--ph-max must be a positive number');
+  if (!Number.isFinite(learnerMax) || learnerMax < 1) throw new Error('--learner-max must be a positive number');
+  if (phoneticsOnly && learnerOnly) throw new Error('Use either --phonetics or --learner, not both');
   if (min > max) throw new Error('--min must be less than or equal to --max');
   if (refs.length > 2) {
-    throw new Error('Usage: node tools/check_vocab_batch.mjs [before-ref] [after-ref] [--min=10] [--max=20] [--phonetics] [--ph-max=15] [--json]');
+    throw new Error('Usage: node tools/check_vocab_batch.mjs [before-ref] [after-ref] [--min=10] [--max=20] [--phonetics] [--ph-max=15] [--learner] [--learner-max=20] [--json]');
   }
 
-  return { refs, min, max, phMax, json, phoneticsOnly };
+  return { refs, min, max, phMax, learnerMax, json, phoneticsOnly, learnerOnly };
 }
 
 function readHtml(spec) {
@@ -212,8 +226,37 @@ function getPhoneticChanges(entries) {
     }));
 }
 
+function getLearnerChanges(entries) {
+  return entries
+    .filter(entry => entry.changes.some(change => LEARNER_REVIEW_FIELDS.has(change.field)))
+    .map(entry => ({
+      key: entry.key,
+      word: entry.word,
+      changedFields: entry.changes
+        .filter(change => LEARNER_REVIEW_FIELDS.has(change.field))
+        .map(change => change.field),
+      posBefore: getChangeValue(entry, 'pos', 'before'),
+      posAfter: getChangeValue(entry, 'pos', 'after'),
+      meaningBefore: getChangeValue(entry, 'm', 'before'),
+      meaningAfter: getChangeValue(entry, 'm', 'after'),
+      exampleBefore: getChangeValue(entry, 'ex', 'before'),
+      exampleAfter: getChangeValue(entry, 'ex', 'after'),
+      exampleJaBefore: getChangeValue(entry, 'exJa', 'before'),
+      exampleJaAfter: getChangeValue(entry, 'exJa', 'after')
+    }));
+}
+
+function getLearnerReviewFocus(entry) {
+  const fields = new Set(entry.changedFields);
+  const focus = [];
+  if (fields.has('pos')) focus.push('part of speech matches usage in the example');
+  if (fields.has('m')) focus.push('Japanese meaning keeps the core sense without over-narrowing');
+  if (fields.has('ex') || fields.has('exJa')) focus.push('example and Japanese translation say the same thing');
+  return focus.join('; ');
+}
+
 function main() {
-  const { refs, min, max, phMax, json, phoneticsOnly } = parseArgs(process.argv.slice(2));
+  const { refs, min, max, phMax, learnerMax, json, phoneticsOnly, learnerOnly } = parseArgs(process.argv.slice(2));
   const beforeRef = refs[0] || 'HEAD';
   const afterRef = refs[1] || 'WORKTREE';
   const beforeWords = extractWords(readHtml(beforeRef), beforeRef);
@@ -221,6 +264,7 @@ function main() {
   const result = compareWords(beforeWords, afterWords);
   const changedEntries = result.changed.length + result.added.length + result.removed.length;
   const phoneticChanges = getPhoneticChanges(result.changed);
+  const learnerChanges = getLearnerChanges(result.changed);
   const batchStatus = changedEntries > max
     ? 'fail'
     : changedEntries > 0 && changedEntries < min
@@ -231,26 +275,36 @@ function main() {
     : phoneticChanges.length > 0
       ? 'review'
       : 'pass';
-  const status = phoneticsOnly ? phoneticsStatus : batchStatus;
+  const learnerStatus = learnerChanges.length > learnerMax
+    ? 'fail'
+    : learnerChanges.length > 0
+      ? 'review'
+      : 'pass';
+  const status = phoneticsOnly ? phoneticsStatus : learnerOnly ? learnerStatus : batchStatus;
 
   const report = {
     goal: `Keep vocabulary data edits in ${min}-${max} changed entries per batch. More than ${max} stops the release path.`,
     phoneticsGoal: `Review every ph change against the British IPA shown here before release. Keep ph/IPA edits at ${phMax} or fewer per batch.`,
+    learnerGoal: `Review every meaning, part-of-speech, and example translation change for learner misunderstanding risk. Keep learner-facing edits at ${learnerMax} or fewer per batch.`,
     beforeRef,
     afterRef,
     min,
     max,
     phMax,
+    learnerMax,
     status,
     batchStatus,
     phoneticsStatus,
+    learnerStatus,
     changedEntries,
     modified: result.changed.length,
     addedCount: result.added.length,
     removedCount: result.removed.length,
     phoneticChangeCount: phoneticChanges.length,
+    learnerChangeCount: learnerChanges.length,
     fieldCounts: summariseFieldCounts(result.changed),
     phoneticChanges,
+    learnerChanges,
     changed: result.changed,
     added: result.added,
     removed: result.removed
@@ -259,8 +313,14 @@ function main() {
   if (json) {
     console.log(JSON.stringify(report, null, 2));
   } else {
-    console.log(`${phoneticsOnly ? 'Pronunciation helper check' : 'Vocabulary batch check'}: ${status.toUpperCase()}`);
-    console.log(`Goal: ${phoneticsOnly ? report.phoneticsGoal : report.goal}`);
+    const modeTitle = phoneticsOnly
+      ? 'Pronunciation helper check'
+      : learnerOnly
+        ? 'Learner-facing data check'
+        : 'Vocabulary batch check';
+    const modeGoal = phoneticsOnly ? report.phoneticsGoal : learnerOnly ? report.learnerGoal : report.goal;
+    console.log(`${modeTitle}: ${status.toUpperCase()}`);
+    console.log(`Goal: ${modeGoal}`);
     console.log(`Range: ${beforeRef} -> ${afterRef}`);
     if (phoneticsOnly) {
       console.log(`Pronunciation changes: ${phoneticChanges.length}`);
@@ -279,9 +339,29 @@ function main() {
       if (phoneticChanges.length > 0 && phoneticChanges.length <= phMax) {
         console.log('Status REVIEW means this batch is small enough, but each line still needs IPA-based human review.');
       }
+    } else if (learnerOnly) {
+      console.log(`Learner-facing changes: ${learnerChanges.length}`);
+      if (learnerChanges.length) {
+        console.log('Review for learner misunderstanding risk before release:');
+        learnerChanges.forEach(entry => {
+          console.log(`- ${entry.word} [${entry.changedFields.join(',')}]`);
+          console.log(`  POS: ${entry.posBefore} -> ${entry.posAfter}`);
+          console.log(`  Meaning: ${entry.meaningBefore} -> ${entry.meaningAfter}`);
+          console.log(`  Example: ${entry.exampleBefore} -> ${entry.exampleAfter}`);
+          console.log(`  Example JA: ${entry.exampleJaBefore} -> ${entry.exampleJaAfter}`);
+          console.log(`  Focus: ${getLearnerReviewFocus(entry)}`);
+        });
+      }
+      if (learnerChanges.length > learnerMax) {
+        console.log(`Too many learner-facing edits: ${learnerChanges.length} > ${learnerMax}. Split the batch before release.`);
+      }
+      if (learnerChanges.length > 0 && learnerChanges.length <= learnerMax) {
+        console.log('Status REVIEW means this batch is small enough, but each line still needs learner-risk review.');
+      }
     } else {
     console.log(`Changed entries: ${changedEntries} (modified ${report.modified}, added ${report.addedCount}, removed ${report.removedCount})`);
     console.log(`Pronunciation changes: ${phoneticChanges.length}`);
+    console.log(`Learner-facing changes: ${learnerChanges.length}`);
     console.log(`Field counts: ${JSON.stringify(report.fieldCounts)}`);
     if (changedEntries) {
       console.log('Entries:');
