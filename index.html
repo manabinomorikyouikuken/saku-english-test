@@ -2593,9 +2593,9 @@
       <button class="category-btn" type="button" data-category="newsEnglish" data-ui-label-key="categoryNewsEnglish" onclick="setCategory('newsEnglish')">ニュース英語<span id="category-count-newsEnglish">25項目</span></button>
       <button class="category-btn" type="button" data-category="bankingEnglish" data-ui-label-key="categoryBankingEnglish" onclick="setCategory('bankingEnglish')">ATM・銀行<span id="category-count-bankingEnglish">22項目</span></button>
       <button class="category-btn" type="button" data-category="uncountableNoun" data-ui-label-key="categoryUncountableNoun" onclick="setCategory('uncountableNoun')">不可算名詞<span id="category-count-uncountableNoun">7項目</span></button>
-      <button class="category-btn" type="button" data-category="foodFish" data-ui-label-key="categoryFoodFish" onclick="setCategory('foodFish')">魚<span id="category-count-foodFish">4項目</span></button>
+      <button class="category-btn" type="button" data-category="foodFish" data-ui-label-key="categoryFoodFish" onclick="setCategory('foodFish')">魚<span id="category-count-foodFish">10項目</span></button>
       <button class="category-btn" type="button" data-category="foodFruit" data-ui-label-key="categoryFoodFruit" onclick="setCategory('foodFruit')">果物<span id="category-count-foodFruit">4項目</span></button>
-      <button class="category-btn" type="button" data-category="foodVegetable" data-ui-label-key="categoryFoodVegetable" onclick="setCategory('foodVegetable')">野菜<span id="category-count-foodVegetable">4項目</span></button>
+      <button class="category-btn" type="button" data-category="foodVegetable" data-ui-label-key="categoryFoodVegetable" onclick="setCategory('foodVegetable')">野菜<span id="category-count-foodVegetable">10項目</span></button>
       <button class="category-btn" type="button" data-category="abbreviation" data-ui-label-key="categoryAbbreviation" onclick="setCategory('abbreviation')">略語<span id="category-count-abbreviation">73項目</span></button>
       <button class="category-btn" type="button" data-category="abbreviationTech" data-ui-label-key="categoryAbbreviationTech" onclick="setCategory('abbreviationTech')">略語 ICT・AI<span id="category-count-abbreviationTech">32項目</span></button>
       <button class="category-btn" type="button" data-category="abbreviationBusiness" data-ui-label-key="categoryAbbreviationBusiness" onclick="setCategory('abbreviationBusiness')">略語 ビジネス<span id="category-count-abbreviationBusiness">13項目</span></button>
@@ -15791,6 +15791,78 @@ const WORDS = [
     "exJa": "タラは一般的な白身魚だ。"
   },
   {
+    "id": "trout_noun_fish",
+    "w": "trout",
+    "cat": "food-fish",
+    "pos": "名詞",
+    "level": "標準",
+    "ipa": "traʊt",
+    "ph": "トラウt",
+    "m": "マス、トラウト",
+    "ex": "Trout live in cold rivers and lakes.",
+    "exJa": "マスは冷たい川や湖にすむ。"
+  },
+  {
+    "id": "mackerel_noun_fish",
+    "w": "mackerel",
+    "cat": "food-fish",
+    "pos": "名詞",
+    "level": "標準",
+    "ipa": "ˈmæk.rəl",
+    "ph": "マクラル",
+    "m": "サバ",
+    "ex": "Mackerel is an oily fish.",
+    "exJa": "サバは脂の多い魚だ。"
+  },
+  {
+    "id": "sardine_noun_fish",
+    "w": "sardine",
+    "cat": "food-fish",
+    "pos": "名詞",
+    "level": "標準",
+    "ipa": "sɑːˈdiːn",
+    "ph": "サーディーン",
+    "m": "イワシ、サーディン",
+    "ex": "Sardines are small fish often sold in tins.",
+    "exJa": "イワシは缶詰で売られることも多い小さな魚だ。"
+  },
+  {
+    "id": "herring_noun_fish",
+    "w": "herring",
+    "cat": "food-fish",
+    "pos": "名詞",
+    "level": "標準",
+    "ipa": "ˈherɪŋ",
+    "ph": "ヘリング",
+    "m": "ニシン",
+    "ex": "Herring is common in northern Europe.",
+    "exJa": "ニシンは北ヨーロッパでよく食べられる。"
+  },
+  {
+    "id": "eel_noun_fish",
+    "w": "eel",
+    "cat": "food-fish",
+    "pos": "名詞",
+    "level": "標準",
+    "ipa": "iːl",
+    "ph": "イール",
+    "m": "ウナギ",
+    "ex": "An eel has a long, thin body.",
+    "exJa": "ウナギは細長い体をしている。"
+  },
+  {
+    "id": "sea_bass_noun_fish",
+    "w": "sea bass",
+    "cat": "food-fish",
+    "pos": "名詞",
+    "level": "発展",
+    "ipa": "ˈsiː bæs",
+    "ph": "シー バス",
+    "m": "スズキ、シーバス",
+    "ex": "Sea bass is often served with lemon.",
+    "exJa": "スズキはレモンと一緒に出されることが多い。"
+  },
+  {
     "id": "banana_noun_fruit",
     "w": "banana",
     "cat": "food-fruit",
@@ -15885,6 +15957,78 @@ const WORDS = [
     "m": "じゃがいも",
     "ex": "A potato can be baked or boiled.",
     "exJa": "じゃがいもは焼いたりゆでたりできる。"
+  },
+  {
+    "id": "cabbage_noun_vegetable",
+    "w": "cabbage",
+    "cat": "food-vegetable",
+    "pos": "名詞",
+    "level": "中学復習",
+    "ipa": "ˈkæbɪdʒ",
+    "ph": "キャビッジ",
+    "m": "キャベツ",
+    "ex": "Cabbage is used in salads and soups.",
+    "exJa": "キャベツはサラダやスープに使われる。"
+  },
+  {
+    "id": "lettuce_noun_vegetable",
+    "w": "lettuce",
+    "cat": "food-vegetable",
+    "pos": "名詞",
+    "level": "中学復習",
+    "ipa": "ˈletɪs",
+    "ph": "レティs",
+    "m": "レタス",
+    "ex": "Put some lettuce in the sandwich.",
+    "exJa": "サンドイッチにレタスを少し入れなさい。"
+  },
+  {
+    "id": "cucumber_noun_vegetable",
+    "w": "cucumber",
+    "cat": "food-vegetable",
+    "pos": "名詞",
+    "level": "中学復習",
+    "ipa": "ˈkjuːkʌmbə",
+    "ph": "キューカンバ",
+    "m": "きゅうり",
+    "ex": "Slice the cucumber thinly.",
+    "exJa": "きゅうりを薄く切りなさい。"
+  },
+  {
+    "id": "pepper_noun_vegetable",
+    "w": "pepper",
+    "cat": "food-vegetable",
+    "pos": "名詞",
+    "level": "中学復習",
+    "ipa": "ˈpepə",
+    "ph": "ペパ",
+    "m": "ピーマン、唐辛子、こしょう",
+    "ex": "Cut the pepper into strips.",
+    "exJa": "ピーマンを細長く切りなさい。"
+  },
+  {
+    "id": "broccoli_noun_vegetable",
+    "w": "broccoli",
+    "cat": "food-vegetable",
+    "pos": "名詞",
+    "level": "中学復習",
+    "ipa": "ˈbrɒkəli",
+    "ph": "ブロカリ",
+    "m": "ブロッコリー",
+    "ex": "Broccoli is rich in nutrients.",
+    "exJa": "ブロッコリーは栄養が豊富だ。"
+  },
+  {
+    "id": "spinach_noun_vegetable",
+    "w": "spinach",
+    "cat": "food-vegetable",
+    "pos": "名詞",
+    "level": "中学復習",
+    "ipa": "ˈspɪnɪtʃ",
+    "ph": "スピニチ",
+    "m": "ほうれん草",
+    "ex": "Spinach is often used in soup.",
+    "exJa": "ほうれん草はスープによく使われる。"
   },
   {
     "id": "water_noun_daily",
