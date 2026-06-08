@@ -70,7 +70,15 @@
       white-space: nowrap;
     }
     .header-right { display: flex; align-items: center; gap: 10px; }
-    body:not(.test-mode) .header-right { display: none; }
+    .header-right .stats { display: none; }
+    body.test-mode .header-right .stats { display: flex; }
+    body:not(.test-mode) .header-right {
+      flex-shrink: 0;
+      margin-left: auto;
+    }
+    body.settings-active .header-right {
+      display: none;
+    }
     .perfect-star-meter {
       display: flex;
       flex-direction: column;
@@ -18948,6 +18956,7 @@ function setSettingsPage(page) {
 function showSettingsView() {
   markIntroSeen();
   document.body.classList.remove('test-mode');
+  document.body.classList.add('settings-active');
   updateLevelButtons();
   updateCategoryButtons();
   updatePartButtons();
@@ -18966,6 +18975,7 @@ function showSettingsView() {
 }
 
 function showLearnView() {
+  document.body.classList.remove('settings-active');
   document.body.classList.toggle('test-mode', currentMode === 'test');
   document.getElementById('settings-view').hidden = true;
   document.getElementById('learn-view').hidden = false;
