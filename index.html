@@ -2019,6 +2019,20 @@
       }
     }
 
+    body.test-mode.test-answered:not(.test-feedback-visible) .test-next-btn.is-visible {
+      margin-top: clamp(18px, 3svh, 26px);
+    }
+    @media (max-height: 760px) {
+      body.test-mode.test-answered:not(.test-feedback-visible) .test-next-btn.is-visible {
+        margin-top: clamp(12px, 2.1svh, 18px);
+      }
+    }
+    @media (max-height: 600px) {
+      body.test-mode.test-answered:not(.test-feedback-visible) .test-next-btn.is-visible {
+        margin-top: 8px;
+      }
+    }
+
     body.test-mode.test-answered .test-feedback.correct-feedback.is-visible ~ .test-answer-zone {
       --test-action-square-size: min(42vw, 172px);
       margin-top: 6px;
@@ -21395,7 +21409,7 @@ function showTestQuestion() {
   const word = testCards[testIndex];
   const isRelationQuestion = isRelationTestWord(word);
   testAnswered = false;
-  document.body.classList.remove('test-answered');
+  document.body.classList.remove('test-answered', 'test-feedback-visible');
   setTestCardFlipped(false);
   const testWordText = document.getElementById('test-word-text');
   testWordText.className = `test-word-text ${getDisplayWordClass(word)}`.trim();
@@ -21751,6 +21765,7 @@ function answerTestChoice(button, word) {
     feedbackEl.classList.add('is-visible', 'wrong-feedback');
     cardEl?.classList.add('feedback-visible');
   }
+  document.body.classList.toggle('test-feedback-visible', feedbackEl.classList.contains('is-visible'));
   document.getElementById('test-next-btn').classList.add('is-visible');
   setTestCardFlipped(false);
   setTestSwipeHintReady(true);
