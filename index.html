@@ -442,6 +442,14 @@
       cursor: pointer;
       touch-action: manipulation;
     }
+    .intro-btn span {
+      display: block;
+      margin-top: 1px;
+      font-size: 10px;
+      font-weight: 800;
+      line-height: 1.1;
+      opacity: 0.82;
+    }
     .intro-btn.primary {
       background: var(--warm-primary);
       border-color: var(--warm-primary);
@@ -619,6 +627,14 @@
       display: grid;
       grid-template-columns: repeat(2, 1fr);
       gap: 8px;
+    }
+    .category-group-label {
+      grid-column: 1 / -1;
+      color: #64748b;
+      font-size: 11px;
+      font-weight: 900;
+      letter-spacing: 0;
+      padding: 6px 2px 0;
     }
     .part-buttons {
       display: grid;
@@ -2239,6 +2255,14 @@
       cursor: pointer;
       touch-action: manipulation;
     }
+    .complete-route-btn span {
+      display: block;
+      margin-top: 2px;
+      font-size: 10px;
+      font-weight: 800;
+      line-height: 1.1;
+      opacity: 0.78;
+    }
     .complete-route-btn[hidden] {
       display: none;
     }
@@ -2475,7 +2499,7 @@
       <div class="quick-start-actions test-entry-actions">
         <button class="quick-start-btn primary" type="button" onclick="startQuickTest('wordRelation')" data-ui-key="relationGame">語彙関係ゲーム</button>
         <button class="quick-start-btn" type="button" onclick="startMissReviewSession()" data-ui-key="missReview">ミス復習</button>
-        <button class="quick-start-btn" type="button" onclick="startQuickTest('all')" data-ui-key="today20Short">今日の20問</button>
+        <button class="quick-start-btn" type="button" onclick="startQuickTest('standardPractice')" data-ui-label-key="today20Short">今日の20問<span data-ui-key="standardScopeSub">標準</span></button>
       </div>
     </section>
     <div class="card-prompt" id="study-prompt" data-ui-key="studyPrompt">タップすると答えが出るよ</div>
@@ -2577,7 +2601,7 @@
         </div>
       </div>
       <div class="complete-route-actions" id="complete-route-actions" aria-label="次の行動" hidden>
-        <button class="complete-route-btn primary" id="complete-today-btn" type="button" onclick="startQuickTest('all')" data-ui-key="today20Again">もう一回20問</button>
+        <button class="complete-route-btn primary" id="complete-today-btn" type="button" onclick="startQuickTest('standardPractice')" data-ui-label-key="today20Again">もう一回20問<span data-ui-key="standardScopeSub">標準</span></button>
         <button class="complete-route-btn" id="complete-miss-review-btn" type="button" onclick="startMissReviewSession()" data-ui-key="missReview">ミス復習</button>
         <button class="complete-route-btn" id="complete-relation-btn" type="button" onclick="startQuickTest('wordRelation')" data-ui-key="relationGame">語彙関係ゲーム</button>
       </div>
@@ -2593,7 +2617,7 @@
 
   <div class="learn-bottom-bar">
     <button class="settings-open-btn mode-btn active" id="learn-mode-btn" type="button" onclick="showLearningTab()" data-ui-key="navPractice">学習</button>
-    <button class="settings-open-btn mode-btn test-open-btn" id="test-mode-btn" type="button" onclick="startQuickTest('all')" data-ui-key="navTest">テスト</button>
+    <button class="settings-open-btn mode-btn test-open-btn" id="test-mode-btn" type="button" onclick="startQuickTest('standardPractice')" data-ui-key="navTest">テスト</button>
     <button class="settings-open-btn" id="settings-mode-btn" type="button" onclick="showSettingsView()" data-ui-key="navSettings">設定</button>
   </div>
 </main>
@@ -2635,29 +2659,37 @@
   <div class="category-panel" aria-label="カテゴリ選択">
     <div class="settings-section-title" data-ui-key="chooseTheme">テーマを選ぶ</div>
     <div class="category-buttons">
-      <button class="category-btn active" type="button" data-category="all" data-ui-label-key="categoryAll" onclick="setCategory('all')">すべて<span id="category-count-all">1130項目</span></button>
+      <div class="category-group-label" data-ui-key="categoryGroupStart">入口</div>
+      <button class="category-btn active" type="button" data-category="standardPractice" data-ui-label-key="categoryStandardPractice" onclick="setCategory('standardPractice')">標準<span id="category-count-standardPractice">1208項目</span></button>
+      <button class="category-btn" type="button" data-category="all" data-ui-label-key="categoryAll" onclick="setCategory('all')">全単語<span id="category-count-all">1314項目</span></button>
       <button class="category-btn" type="button" data-category="weakWords" data-ui-label-key="categoryWeakWords" onclick="setCategory('weakWords')">苦手<span id="category-count-weakWords">0項目</span></button>
+      <div class="category-group-label" data-ui-key="categoryGroupDaily">日常・実用</div>
       <button class="category-btn" type="button" data-category="katakanaGap" data-ui-label-key="categoryKatakanaGap" onclick="setCategory('katakanaGap')" aria-label="カタカナ注意 知ってるつもりになりやすい語">カタカナ注意<span id="category-count-katakanaGap">33項目</span></button>
       <button class="category-btn" type="button" data-category="phrasalVerb" data-ui-label-key="categoryPhrasalVerb" onclick="setCategory('phrasalVerb')">句動詞<span id="category-count-phrasalVerb">100項目</span></button>
       <button class="category-btn" type="button" data-category="newsEnglish" data-ui-label-key="categoryNewsEnglish" onclick="setCategory('newsEnglish')">ニュース英語<span id="category-count-newsEnglish">25項目</span></button>
       <button class="category-btn" type="button" data-category="bankingEnglish" data-ui-label-key="categoryBankingEnglish" onclick="setCategory('bankingEnglish')">ATM・銀行<span id="category-count-bankingEnglish">22項目</span></button>
       <button class="category-btn" type="button" data-category="uncountableNoun" data-ui-label-key="categoryUncountableNoun" onclick="setCategory('uncountableNoun')">不可算名詞<span id="category-count-uncountableNoun">7項目</span></button>
+      <div class="category-group-label" data-ui-key="categoryGroupFood">食べ物</div>
+      <button class="category-btn" type="button" data-category="food" data-ui-label-key="categoryFood" onclick="setCategory('food')">食べ物<span id="category-count-food">30項目</span></button>
       <button class="category-btn" type="button" data-category="foodFish" data-ui-label-key="categoryFoodFish" onclick="setCategory('foodFish')">魚<span id="category-count-foodFish">10項目</span></button>
       <button class="category-btn" type="button" data-category="foodFruit" data-ui-label-key="categoryFoodFruit" onclick="setCategory('foodFruit')">果物<span id="category-count-foodFruit">10項目</span></button>
       <button class="category-btn" type="button" data-category="foodVegetable" data-ui-label-key="categoryFoodVegetable" onclick="setCategory('foodVegetable')">野菜<span id="category-count-foodVegetable">10項目</span></button>
+      <div class="category-group-label" data-ui-key="categoryGroupAbbreviation">略語・発音</div>
       <button class="category-btn" type="button" data-category="abbreviation" data-ui-label-key="categoryAbbreviation" onclick="setCategory('abbreviation')">略語<span id="category-count-abbreviation">73項目</span></button>
       <button class="category-btn" type="button" data-category="abbreviationTech" data-ui-label-key="categoryAbbreviationTech" onclick="setCategory('abbreviationTech')">略語 ICT・AI<span id="category-count-abbreviationTech">32項目</span></button>
       <button class="category-btn" type="button" data-category="abbreviationBusiness" data-ui-label-key="categoryAbbreviationBusiness" onclick="setCategory('abbreviationBusiness')">略語 ビジネス<span id="category-count-abbreviationBusiness">13項目</span></button>
       <button class="category-btn" type="button" data-category="abbreviationPublic" data-ui-label-key="categoryAbbreviationPublic" onclick="setCategory('abbreviationPublic')">略語 国際・公的<span id="category-count-abbreviationPublic">24項目</span></button>
       <button class="category-btn" type="button" data-category="abbreviationEducation" data-ui-label-key="categoryAbbreviationEducation" onclick="setCategory('abbreviationEducation')">略語 教育・言語<span id="category-count-abbreviationEducation">1項目</span></button>
       <button class="category-btn" type="button" data-category="pronunciationNote" data-ui-label-key="categoryPronunciationNote" onclick="setCategory('pronunciationNote')">発音注意<span id="category-count-pronunciationNote">90項目</span></button>
-      <button class="category-btn" type="button" data-category="technical" data-ui-label-key="categoryTechnical" onclick="setCategory('technical')">テクニカル<span id="category-count-technical">70項目</span></button>
+      <button class="category-btn" type="button" data-category="rlContrast" data-ui-label-key="categoryRlContrast" onclick="setCategory('rlContrast')">R/L注意<span id="category-count-rlContrast">8項目</span></button>
+      <div class="category-group-label" data-ui-key="categoryGroupTechnical">専門</div>
+      <button class="category-btn" type="button" data-category="technical" data-ui-label-key="categoryTechnical" onclick="setCategory('technical')">テクニカル<span id="category-count-technical">106項目</span></button>
       <button class="category-btn" type="button" data-category="muscleAnatomy" data-ui-label-key="categoryMuscleAnatomy" onclick="setCategory('muscleAnatomy')">筋肉名<span id="category-count-muscleAnatomy">50項目</span></button>
       <button class="category-btn" type="button" data-category="specialNeedsEducation" data-ui-label-key="categorySpecialNeedsEducation" onclick="setCategory('specialNeedsEducation')">特別支援教育<span id="category-count-specialNeedsEducation">20項目</span></button>
-      <button class="category-btn" type="button" data-category="rlContrast" data-ui-label-key="categoryRlContrast" onclick="setCategory('rlContrast')">R/L注意<span id="category-count-rlContrast">8項目</span></button>
+      <div class="category-group-label" data-ui-key="categoryGroupRelation">語彙関係</div>
       <button class="category-btn" type="button" data-category="wordRelation" data-ui-label-key="categoryWordRelation" onclick="setCategory('wordRelation')">語彙関係<span id="category-count-wordRelation">42項目</span></button>
     </div>
-    <div class="storage-note" data-ui-key="themeNote">テーマ別に確認できます。苦手は間違えた語や定着しにくい語、カタカナ注意は「知ってるつもり」になりやすい意味のズレ、句動詞は会話のまとまり、ニュース英語は報道でよく見る語、ATM・銀行は海外生活で画面に出やすい語、不可算名詞は数え方の引っ掛け、魚・果物・野菜は身近な食べ物、略語は分野別、発音注意は音と綴りの違い、テクニカルは筋肉名と特別支援教育、R/L注意は語頭の音で意味が変わる組を集中的に学べます。</div>
+    <div class="storage-note" data-ui-key="themeNote">標準は専門語を外した通常練習です。全単語は筋肉名・特別支援教育・ICT/AI略語なども含めます。食べ物は魚・果物・野菜をまとめて練習できます。専門語はテクニカル、筋肉名、特別支援教育から意図して選べます。</div>
   </div>
 
   <div class="part-panel" aria-label="品詞選択">
@@ -2680,7 +2712,7 @@
       まずは20問。ミスした語は「ミス復習」に残ります。答えたあとは下の案内を右スワイプで次へ進めます。
     </div>
     <div class="intro-actions">
-      <button class="intro-btn primary" type="button" onclick="startIntroQuickTest()" data-ui-key="today20">今日の20問へ</button>
+      <button class="intro-btn primary" type="button" onclick="startIntroQuickTest()" data-ui-label-key="today20">今日の20問へ<span data-ui-key="standardScopeSub">標準</span></button>
       <button class="intro-btn" type="button" onclick="dismissIntroPanel()" data-ui-key="close">閉じる</button>
     </div>
   </section>
@@ -2691,7 +2723,7 @@
       <div class="quick-start-note" data-ui-key="quickStartNote">迷ったらここから</div>
     </div>
     <div class="quick-start-actions">
-      <button class="quick-start-btn primary" type="button" onclick="startQuickTest('all')" data-ui-key="today20Short">今日の20問</button>
+      <button class="quick-start-btn primary" type="button" onclick="startQuickTest('standardPractice')" data-ui-label-key="today20Short">今日の20問<span data-ui-key="standardScopeSub">標準</span></button>
       <button class="quick-start-btn" type="button" onclick="startQuickTest('wordRelation')" data-ui-key="relationGame">語彙関係ゲーム</button>
       <button class="quick-start-btn" type="button" onclick="startMissReviewSession()" data-ui-key="missReview">ミス復習</button>
       <button class="quick-start-btn" type="button" onclick="startWeakWordsSession()" data-ui-label-key="weakWords">苦手<span data-ui-key="weakWordsSub">つまずき語</span></button>
@@ -17625,13 +17657,15 @@ const PART_LABELS = {
   adverb: '副詞'
 };
 const CATEGORY_LABELS = {
-  all: 'すべて',
+  standardPractice: '標準',
+  all: '全単語',
   weakWords: '苦手',
   katakanaGap: 'カタカナ注意',
   phrasalVerb: '句動詞',
   newsEnglish: 'ニュース英語',
   bankingEnglish: 'ATM・銀行',
   uncountableNoun: '不可算名詞',
+  food: '食べ物',
   foodFish: '魚',
   foodFruit: '果物',
   foodVegetable: '野菜',
@@ -17662,6 +17696,7 @@ const PART_UI_KEYS = {
   adverb: 'partAdverb'
 };
 const CATEGORY_UI_KEYS = {
+  standardPractice: 'categoryStandardPractice',
   all: 'categoryAll',
   weakWords: 'categoryWeakWords',
   katakanaGap: 'categoryKatakanaGap',
@@ -17669,6 +17704,7 @@ const CATEGORY_UI_KEYS = {
   newsEnglish: 'categoryNewsEnglish',
   bankingEnglish: 'categoryBankingEnglish',
   uncountableNoun: 'categoryUncountableNoun',
+  food: 'categoryFood',
   foodFish: 'categoryFoodFish',
   foodFruit: 'categoryFoodFruit',
   foodVegetable: 'categoryFoodVegetable',
@@ -17988,13 +18024,21 @@ const UI_TEXT = {
     levelAdvanced: '発展',
     levelNote: 'レベル名は学習の目安です。句動詞・実用は、get up などの句動詞や日常で使うまとまり表現を中心にしています。',
     chooseTheme: 'テーマを選ぶ',
-    categoryAll: 'すべて',
+    categoryStandardPractice: '標準',
+    categoryAll: '全単語',
     categoryWeakWords: '苦手',
+    categoryGroupStart: '入口',
+    categoryGroupDaily: '日常・実用',
+    categoryGroupFood: '食べ物',
+    categoryGroupAbbreviation: '略語・発音',
+    categoryGroupTechnical: '専門',
+    categoryGroupRelation: '語彙関係',
     categoryKatakanaGap: 'カタカナ注意',
     categoryPhrasalVerb: '句動詞',
     categoryNewsEnglish: 'ニュース英語',
     categoryBankingEnglish: 'ATM・銀行',
     categoryUncountableNoun: '不可算名詞',
+    categoryFood: '食べ物',
     categoryFoodFish: '魚',
     categoryFoodFruit: '果物',
     categoryFoodVegetable: '野菜',
@@ -18010,7 +18054,7 @@ const UI_TEXT = {
     categoryRlContrast: 'R/L注意',
     categoryWordRelation: '語彙関係',
     katakanaSub: '知ってるつもり',
-    themeNote: 'テーマ別に確認できます。苦手は間違えた語や定着しにくい語、カタカナ注意は「知ってるつもり」になりやすい意味のズレ、句動詞は会話のまとまり、ニュース英語は報道でよく見る語、ATM・銀行は海外生活で画面に出やすい語、不可算名詞は数え方の引っ掛け、魚・果物・野菜は身近な食べ物、略語は分野別、発音注意は音と綴りの違い、テクニカルは筋肉名と特別支援教育、R/L注意は語頭の音、語彙関係は近い意味の語・反対の意味の語を集中的に学べます。',
+    themeNote: '標準は専門語を外した通常練習です。全単語は筋肉名・特別支援教育・ICT/AI略語なども含めます。食べ物は魚・果物・野菜をまとめて練習できます。専門語はテクニカル、筋肉名、特別支援教育から意図して選べます。',
     choosePart: '品詞でしぼる',
     partRandom: 'ランダム',
     partNoun: '名詞',
@@ -18023,6 +18067,7 @@ const UI_TEXT = {
     today20: '今日の20問へ',
     today20Short: '今日の20問',
     today20Again: 'もう一回20問',
+    standardScopeSub: '標準',
     relationGame: '語彙関係ゲーム',
     gameReview: 'ゲーム・復習',
     close: '閉じる',
@@ -18197,13 +18242,21 @@ const UI_TEXT = {
     levelAdvanced: 'Advanced',
     levelNote: 'Level names are study guides. Phrases & practical focuses on phrasal verbs such as get up and useful everyday chunks.',
     chooseTheme: 'Choose theme',
-    categoryAll: 'All',
+    categoryStandardPractice: 'Standard',
+    categoryAll: 'All words',
     categoryWeakWords: 'Weak',
+    categoryGroupStart: 'Start',
+    categoryGroupDaily: 'Daily / practical',
+    categoryGroupFood: 'Food',
+    categoryGroupAbbreviation: 'Abbreviations / sounds',
+    categoryGroupTechnical: 'Technical',
+    categoryGroupRelation: 'Word relations',
     categoryKatakanaGap: 'Katakana caution',
     categoryPhrasalVerb: 'Phrasal verbs',
     categoryNewsEnglish: 'News English',
     categoryBankingEnglish: 'ATM & banking',
     categoryUncountableNoun: 'Uncountable nouns',
+    categoryFood: 'Food',
     categoryFoodFish: 'Fish',
     categoryFoodFruit: 'Fruit',
     categoryFoodVegetable: 'Vegetables',
@@ -18219,7 +18272,7 @@ const UI_TEXT = {
     categoryRlContrast: 'R/L caution',
     categoryWordRelation: 'Word relations',
     katakanaSub: 'False friends',
-    themeNote: 'Use themes for focused practice: weak words, katakana meaning gaps, phrasal verbs, news English, ATM and banking words, uncountable noun traps, fish, fruit, vegetables, abbreviations, pronunciation traps, technical terms such as major muscle names and special needs education, R/L contrast pairs, and close/opposite meaning relations.',
+    themeNote: 'Standard practice excludes technical terms. All words includes muscle names, special needs education, and ICT/AI abbreviations. Food combines fish, fruit, and vegetables. Choose Technical, Muscles, or Special needs education when you want those terms.',
     choosePart: 'Filter by part of speech',
     partRandom: 'Random',
     partNoun: 'Nouns',
@@ -18232,6 +18285,7 @@ const UI_TEXT = {
     today20: 'Start today’s 20',
     today20Short: 'Today’s 20',
     today20Again: 'Another 20',
+    standardScopeSub: 'Standard',
     relationGame: 'Word relation game',
     gameReview: 'Games / Review',
     close: 'Close',
@@ -18389,6 +18443,7 @@ const CATEGORY_TAGS = {
   newsEnglish: 'news-english',
   bankingEnglish: 'atm-banking',
   uncountableNoun: 'uncountable-noun',
+  food: 'food',
   foodFish: 'food-fish',
   foodFruit: 'food-fruit',
   foodVegetable: 'food-vegetable',
@@ -18404,6 +18459,12 @@ const CATEGORY_TAGS = {
   rlContrast: 'rl-contrast',
   wordRelation: 'word-relation'
 };
+const EXTRA_TECHNICAL_WORD_IDS = new Set([
+  'capillary_noun_science',
+  'vessel_noun_science',
+  'arteriole_noun_science',
+  'venule_noun_science'
+]);
 const SPECIAL_NEEDS_CONDITION_WORD_IDS = new Set([
   'cerebral_palsy_noun_special_needs',
   'down_syndrome_noun_special_needs',
@@ -18882,8 +18943,8 @@ if (LEGACY_LEVEL_MAP[currentLevel]) currentLevel = LEGACY_LEVEL_MAP[currentLevel
 if (!LEVEL_LABELS[currentLevel]) currentLevel = 'all';
 let currentPart = localStorage.getItem(PART_STORAGE_KEY) || 'random';
 if (!PART_LABELS[currentPart]) currentPart = 'random';
-let currentCategory = localStorage.getItem(CATEGORY_STORAGE_KEY) || 'all';
-if (!CATEGORY_LABELS[currentCategory]) currentCategory = 'all';
+let currentCategory = localStorage.getItem(CATEGORY_STORAGE_KEY) || 'standardPractice';
+if (!CATEGORY_LABELS[currentCategory]) currentCategory = 'standardPractice';
 let currentTestChoiceCount = Number(localStorage.getItem(TEST_CHOICE_COUNT_STORAGE_KEY)) || DEFAULT_TEST_CHOICE_COUNT;
 if (!TEST_CHOICE_COUNT_OPTIONS.includes(currentTestChoiceCount)) currentTestChoiceCount = DEFAULT_TEST_CHOICE_COUNT;
 let showPhoneticAssist = localStorage.getItem(PHONETIC_ASSIST_STORAGE_KEY) === 'shown';
@@ -18936,6 +18997,16 @@ function setElementLeadingText(element, value) {
     return;
   }
   element.insertBefore(document.createTextNode(value), element.firstChild);
+}
+
+function setButtonTextWithScope(button, label, scopeLabel = '') {
+  if (!button) return;
+  button.textContent = '';
+  button.appendChild(document.createTextNode(label));
+  if (!scopeLabel) return;
+  const scope = document.createElement('span');
+  scope.textContent = scopeLabel;
+  button.appendChild(scope);
 }
 
 function updateUiLanguageButtons() {
@@ -19996,10 +20067,22 @@ function getWordCategories(word) {
   if (RL_CONTRAST_PAIRS[String(word.w || '').toLowerCase()]) {
     categories.add('rl-contrast');
   }
-  if (categories.has('muscle-anatomy') || categories.has('special-needs-education')) {
+  if (categories.has('food-fish') || categories.has('food-fruit') || categories.has('food-vegetable')) {
+    categories.add('food');
+  }
+  if (
+    categories.has('muscle-anatomy')
+    || categories.has('special-needs-education')
+    || categories.has('abbreviation-tech')
+    || EXTRA_TECHNICAL_WORD_IDS.has(getWordIdKey(word))
+  ) {
     categories.add('technical');
   }
   return categories;
+}
+
+function isStandardPracticeWord(word) {
+  return !getWordCategories(word).has('technical');
 }
 
 function isWeakStudyState(state) {
@@ -20014,6 +20097,7 @@ function isWeakWord(word, data = loadData(), missedKeys = new Set(loadMissedRevi
 }
 
 function hasCategory(word, category, data = loadData(), missedKeys = new Set(loadMissedReviewKeys())) {
+  if (category === 'standardPractice') return isStandardPracticeWord(word);
   if (category === 'all') return true;
   if (category === 'weakWords') return isWeakWord(word, data, missedKeys);
   const tag = CATEGORY_TAGS[category];
@@ -20217,8 +20301,9 @@ function isTechnicalWord(word) {
 
 function getTestActiveWords() {
   const activeWords = getActiveWords();
-  if (currentCategory !== 'all') return activeWords;
-  return activeWords.filter(word => !isTechnicalWord(word));
+  if (currentCategory === 'all') return activeWords;
+  if (currentCategory === 'standardPractice') return activeWords.filter(isStandardPracticeWord);
+  return activeWords;
 }
 
 function getLevelCount(level) {
@@ -20464,7 +20549,7 @@ function dismissIntroPanel() {
 
 function startIntroQuickTest() {
   markIntroSeen();
-  startQuickTest('all');
+  startQuickTest('standardPractice');
 }
 
 function setTestChoiceCount(count) {
@@ -21835,11 +21920,14 @@ function showPreviousCard() {
 }
 
 function getTestScoreLabel() {
+  const normalTestTitle = currentCategory === 'standardPractice'
+    ? `${uiText('testScore')}（${uiText('categoryStandardPractice')}）`
+    : uiText('testScore');
   const scoreTitle = testSessionKind === 'missReview'
     ? uiText('missReviewScore')
     : testSessionKind === 'wordRelation'
       ? uiText('categoryWordRelation')
-      : uiText('testScore');
+      : normalTestTitle;
   const base = `${scoreTitle}: ${testCorrect}${currentUiLanguage === 'en' ? ' ' : ''}${uiText('correctQuestions')}`;
   if (testCurrentStreak < 2) return base;
   return currentUiLanguage === 'en'
@@ -21957,9 +22045,11 @@ function updateCompleteRouteActions(missedCount = getMissedReviewWords().length)
   [todayButton, missButton, relationButton].forEach(button => button.classList.remove('primary'));
   actions.classList.toggle('has-misses', hasMisses);
   actions.classList.toggle('no-misses', !hasMisses);
-  todayButton.textContent = hasMisses
-    ? uiText('today20Again')
-    : `${recommendedPrefix}${uiText('today20Again')}`;
+  setButtonTextWithScope(
+    todayButton,
+    hasMisses ? uiText('today20Again') : `${recommendedPrefix}${uiText('today20Again')}`,
+    uiText('standardScopeSub')
+  );
   todayButton.classList.toggle('primary', !hasMisses);
   missButton.hidden = !hasMisses;
   missButton.disabled = !hasMisses;
