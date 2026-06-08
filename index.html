@@ -2005,6 +2005,20 @@
       }
     }
 
+    body.test-mode:not(.test-answered) .test-letter-row {
+      margin-top: clamp(56px, 9.4svh, 80px);
+    }
+    @media (max-height: 760px) {
+      body.test-mode:not(.test-answered) .test-letter-row {
+        margin-top: clamp(28px, 5.6svh, 46px);
+      }
+    }
+    @media (max-height: 600px) {
+      body.test-mode:not(.test-answered) .test-letter-row {
+        margin-top: 8px;
+      }
+    }
+
     body.test-mode.test-answered .test-feedback.correct-feedback.is-visible ~ .test-answer-zone {
       --test-action-square-size: min(42vw, 172px);
       margin-top: 6px;
