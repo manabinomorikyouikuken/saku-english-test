@@ -2338,6 +2338,17 @@
     .session-complete.perfect-complete .complete-route-actions.no-misses:not([hidden]) + .complete-actions {
       margin-top: clamp(6px, 1.3svh, 12px);
     }
+    .session-complete.relation-complete.perfect-complete {
+      --complete-action-square-size: min(34vw, 132px);
+    }
+    .session-complete.relation-complete.perfect-complete .perfect-quote-panel {
+      margin-bottom: 8px;
+      padding: 8px 2px 2px;
+    }
+    .session-complete.relation-complete.perfect-complete .perfect-quote-source,
+    .session-complete.relation-complete.perfect-complete .perfect-quote-ja {
+      display: none;
+    }
     .complete-route-btn {
       order: 2;
       min-height: 42px;
@@ -2570,6 +2581,16 @@
         font-size: 11.5px;
         line-height: 1.32;
       }
+      .session-complete.relation-complete.perfect-complete {
+        --complete-action-square-size: min(24vw, 96px);
+      }
+      .session-complete.relation-complete.perfect-complete .perfect-quote-panel {
+        margin-bottom: 6px;
+        padding: 6px 2px 0;
+      }
+      .session-complete.relation-complete.perfect-complete .perfect-quote-text {
+        display: none;
+      }
       .complete-route-actions { margin-top: 5px; }
       .complete-route-actions:not([hidden]) + .complete-actions {
         margin-top: clamp(6px, 1.4svh, 10px);
@@ -2585,6 +2606,9 @@
       }
       .session-complete.perfect-complete {
         --complete-action-square-size: min(22vw, 88px);
+      }
+      .session-complete.relation-complete.perfect-complete {
+        --complete-action-square-size: min(18.5vw, 72px);
       }
       body.test-mode .session-complete {
         max-height: calc(100svh - 84px);
@@ -2602,6 +2626,20 @@
       .perfect-quote-source,
       .perfect-quote-ja {
         display: none;
+      }
+      .session-complete.relation-complete.perfect-complete .perfect-star-complete {
+        margin-bottom: 4px;
+        padding: 4px 8px;
+      }
+      .session-complete.relation-complete.perfect-complete .perfect-star-complete .perfect-star-row {
+        min-height: 20px;
+        margin-bottom: 2px;
+      }
+      .session-complete.relation-complete.perfect-complete .perfect-star-complete .perfect-star-slot {
+        font-size: 20px;
+      }
+      .session-complete.relation-complete.perfect-complete .perfect-star-complete-msg {
+        font-size: 10.5px;
       }
       .complete-back-btn {
         border-radius: 14px;
@@ -22616,7 +22654,7 @@ function showComplete() {
   updateRatingControls();
   document.getElementById('swipe-msg').style.display = 'none';
   const completeEl = document.getElementById('session-complete');
-  completeEl.classList.remove('weakness-cleared', 'perfect-complete');
+  completeEl.classList.remove('weakness-cleared', 'perfect-complete', 'relation-complete');
   completeEl.style.display = 'block';
   document.getElementById('progress-fill').style.width = '100%';
   document.getElementById('progress-text').textContent = `${sessionCards.length} / ${sessionCards.length}`;
@@ -22661,7 +22699,7 @@ function showTestComplete() {
   setPracticeRouteButtonVisible(false);
   document.getElementById('swipe-msg').style.display = 'none';
   const completeEl = document.getElementById('session-complete');
-  completeEl.classList.remove('perfect-complete');
+  completeEl.classList.remove('perfect-complete', 'relation-complete');
   completeEl.style.display = 'block';
   document.getElementById('progress-fill').style.width = '100%';
   document.getElementById('progress-text').textContent = `${testCards.length} / ${testCards.length}`;
@@ -22681,6 +22719,7 @@ function showTestComplete() {
 	  if (isPerfect20 && !isRelationGame && !isMissReview) saveLastPerfectTestKeys(testCards);
 	  completeEl.classList.toggle('weakness-cleared', isMissReviewCleared);
 	  completeEl.classList.toggle('perfect-complete', isPerfect20);
+	  completeEl.classList.toggle('relation-complete', isRelationGame);
   completionAction = canContinueMissReview ? 'missReview' : 'restart';
   const completeIcon = document.getElementById('complete-icon');
   completeIcon.className = `complete-icon${isPerfect20 ? ' perfect-score-icon' : ' success-icon'}`;
