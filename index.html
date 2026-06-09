@@ -18869,6 +18869,15 @@ const ABBREVIATION_PUBLIC_WORDS = new Set(
 const ABBREVIATION_EDUCATION_WORDS = new Set(
   'IPA'.split(' ')
 );
+const ABBREVIATION_MEDICAL_PUBLIC_CHOICE_WORDS = new Set(
+  'ICU AED CDC WHO PCR DNA MRI'.split(' ')
+);
+const ABBREVIATION_EDUCATION_LANGUAGE_CHOICE_WORDS = new Set(
+  'IPA MIT UCLA ICT'.split(' ')
+);
+const ABBREVIATION_TRANSPORT_DAILY_CHOICE_WORDS = new Set(
+  'ATM ETC GPS LCC SIM'.split(' ')
+);
 const ABBREVIATION_ORIGINS = {
   AED: 'Automated External Defibrillator',
   LLM: 'Large Language Model',
@@ -20972,6 +20981,10 @@ function getChoiceGroup(word) {
   if (SPECIAL_NEEDS_CONDITION_WORD_IDS.has(wordId)) return 'special-needs-condition';
   if (SPECIAL_NEEDS_SUPPORT_WORD_IDS.has(wordId)) return 'special-needs-support';
   if (categories.has('muscle-anatomy')) return 'muscle';
+  const wordText = String(word?.w || '').trim();
+  if (ABBREVIATION_MEDICAL_PUBLIC_CHOICE_WORDS.has(wordText)) return 'abbreviation-medical-public';
+  if (ABBREVIATION_EDUCATION_LANGUAGE_CHOICE_WORDS.has(wordText)) return 'abbreviation-education-language';
+  if (ABBREVIATION_TRANSPORT_DAILY_CHOICE_WORDS.has(wordText)) return 'abbreviation-transport-daily';
   if (categories.has('atm-banking')) return 'banking';
   if (categories.has('news-english')) return 'news';
   if (categories.has('phrasal-verb')) return 'phrasal-verb';
