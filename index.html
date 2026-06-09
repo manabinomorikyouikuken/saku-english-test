@@ -2304,7 +2304,8 @@
       display: flex;
       margin-top: clamp(10px, 2svh, 18px);
     }
-    .complete-route-actions:not([hidden]) + .complete-actions .complete-back-btn {
+    .complete-route-actions:not([hidden]) + .complete-actions .complete-back-btn,
+    .complete-route-actions:not([hidden]) + .complete-actions .complete-repeat-btn {
       flex: 0 0 var(--complete-action-square-size);
       width: var(--complete-action-square-size);
       height: var(--complete-action-square-size);
@@ -2314,6 +2315,9 @@
       font-size: 15px;
     }
     .complete-route-actions:not([hidden]) + .complete-actions .restart-btn {
+      display: none;
+    }
+    .complete-route-actions.no-misses + .complete-actions .complete-back-btn {
       display: none;
     }
     .complete-route-btn {
@@ -2339,6 +2343,9 @@
     .complete-route-btn[hidden] {
       display: none;
     }
+    .complete-route-back-btn {
+      display: none;
+    }
     .complete-route-btn.primary {
       order: 1;
       grid-column: 1 / -1;
@@ -2346,6 +2353,9 @@
       border-color: var(--warm-primary);
       color: white;
       box-shadow: 0 4px 15px rgba(234,88,12,0.22);
+    }
+    .complete-route-actions.no-misses .complete-route-back-btn {
+      display: block;
     }
     .complete-route-actions.no-misses #complete-relation-btn {
       grid-column: 1 / -1;
@@ -2368,7 +2378,8 @@
       gap: 10px;
     }
     .restart-btn,
-    .complete-back-btn {
+    .complete-back-btn,
+    .complete-repeat-btn {
       flex: 1 1 0;
       background: linear-gradient(135deg, var(--warm-primary-strong), var(--warm-primary));
       color: white;
@@ -2383,7 +2394,8 @@
       box-shadow: 0 4px 15px rgba(234,88,12,0.32);
       transition: transform 0.12s, filter 0.12s;
     }
-    .complete-back-btn {
+    .complete-back-btn,
+    .complete-repeat-btn {
       display: inline-flex;
       align-items: center;
       justify-content: center;
@@ -2400,7 +2412,8 @@
       box-shadow: 0 4px 14px rgba(249,115,22,0.1);
     }
     .restart-btn:active,
-    .complete-back-btn:active { transform: scale(0.97); filter: brightness(0.9); }
+    .complete-back-btn:active,
+    .complete-repeat-btn:active { transform: scale(0.97); filter: brightness(0.9); }
     .restart-btn.miss-review {
       background: linear-gradient(135deg, #15803d, #22c55e);
       box-shadow: 0 4px 15px rgba(21,128,61,0.32);
@@ -2731,11 +2744,13 @@
         </div>
       </div>
       <div class="complete-route-actions" id="complete-route-actions" aria-label="次の行動" hidden>
+        <button class="complete-route-btn complete-route-back-btn" id="complete-route-back-btn" type="button" onclick="startSession()" data-ui-key="back">戻る</button>
         <button class="complete-route-btn primary" id="complete-today-btn" type="button" onclick="startQuickTest('standardPractice')" data-ui-label-key="today20Again">もう一回20問<span data-ui-key="standardScopeSub">ミックス</span></button>
         <button class="complete-route-btn" id="complete-miss-review-btn" type="button" onclick="startMissReviewSession()" data-ui-key="missReview">ミス復習</button>
         <button class="complete-route-btn" id="complete-relation-btn" type="button" onclick="startQuickTest('wordRelation')" data-ui-key="relationGame">語彙関係ゲーム</button>
       </div>
       <div class="complete-actions">
+        <button class="complete-repeat-btn" id="complete-repeat-btn" type="button" onclick="startQuickTest('standardPractice')" hidden>もう一回</button>
         <button class="complete-back-btn" id="complete-back-btn" type="button" onclick="startSession()" data-ui-key="back" hidden>戻る</button>
         <button class="restart-btn" id="restart-btn" type="button" onclick="restartCurrentMode()">もう一周する</button>
       </div>
@@ -18343,6 +18358,7 @@ const UI_TEXT = {
     restartStudy: 'もう一周する',
     testAgain: 'もう一回テスト',
     relationAgain: 'もう一回ゲーム',
+    oneMore: 'もう一回',
     noCardsMessage: '今の条件では出題できる単語がありません。設定で範囲を広げてください。',
     dataQualityOk: '必須項目、履歴キー重複、略語の元語、略語の音声展開は要確認0件です。',
     dataQualityProofingNote: '校正優先: 発音注意・R/L・カタカナ注意・略語・句動詞を台帳で先に見る。'
@@ -18560,6 +18576,7 @@ const UI_TEXT = {
     restartStudy: 'Practice again',
     testAgain: 'Test again',
     relationAgain: 'Play again',
+    oneMore: 'Again',
     noCardsMessage: 'There are no cards available with the current settings. Widen the range in Settings.',
     dataQualityOk: 'Required fields, duplicate history keys, abbreviation origins, and abbreviation speech checks have 0 items to check.',
     dataQualityProofingNote: 'Proofing priority: pronunciation cautions, R/L, katakana gaps, abbreviations, and phrasal verbs first.'
@@ -22196,21 +22213,28 @@ function setCompleteNextStep(message, tone = 'normal') {
 
 function updateCompleteRouteActions(missedCount = getMissedReviewWords().length) {
   const actions = document.getElementById('complete-route-actions');
+  const routeBackButton = document.getElementById('complete-route-back-btn');
   const todayButton = document.getElementById('complete-today-btn');
   const missButton = document.getElementById('complete-miss-review-btn');
   const relationButton = document.getElementById('complete-relation-btn');
-  if (!actions || !todayButton || !missButton || !relationButton) return;
+  const repeatButton = document.getElementById('complete-repeat-btn');
+  const completeBackButton = document.getElementById('complete-back-btn');
+  if (!actions || !routeBackButton || !todayButton || !missButton || !relationButton || !repeatButton || !completeBackButton) return;
   const hasMisses = missedCount > 0;
   const recommendedPrefix = currentUiLanguage === 'en' ? 'Recommended: ' : 'おすすめ: ';
-  [todayButton, missButton, relationButton].forEach(button => button.classList.remove('primary'));
+  [routeBackButton, todayButton, missButton, relationButton].forEach(button => button.classList.remove('primary'));
   actions.classList.toggle('has-misses', hasMisses);
   actions.classList.toggle('no-misses', !hasMisses);
+  routeBackButton.hidden = hasMisses;
+  routeBackButton.textContent = uiText('back');
+  routeBackButton.classList.toggle('primary', !hasMisses);
   setButtonTextWithScope(
     todayButton,
-    hasMisses ? uiText('today20Again') : `${recommendedPrefix}${uiText('today20Again')}`,
+    uiText('today20Again'),
     uiText('standardScopeSub')
   );
-  todayButton.classList.toggle('primary', !hasMisses);
+  todayButton.hidden = !hasMisses;
+  todayButton.disabled = !hasMisses;
   missButton.hidden = !hasMisses;
   missButton.disabled = !hasMisses;
   missButton.textContent = hasMisses
@@ -22220,6 +22244,9 @@ function updateCompleteRouteActions(missedCount = getMissedReviewWords().length)
   missButton.setAttribute('aria-disabled', hasMisses ? 'false' : 'true');
   relationButton.textContent = uiText('relationGame');
   relationButton.hidden = false;
+  repeatButton.hidden = hasMisses;
+  repeatButton.textContent = uiText('oneMore');
+  completeBackButton.hidden = !hasMisses;
 }
 
 function setCompleteRouteActionsVisible(visible, missedCount = getMissedReviewWords().length) {
@@ -22227,6 +22254,10 @@ function setCompleteRouteActionsVisible(visible, missedCount = getMissedReviewWo
   if (!actions) return;
   actions.hidden = !visible;
   if (visible) updateCompleteRouteActions(missedCount);
+  else {
+    const repeatButton = document.getElementById('complete-repeat-btn');
+    if (repeatButton) repeatButton.hidden = true;
+  }
 }
 
 function getStudyNextStepMessage(due) {
