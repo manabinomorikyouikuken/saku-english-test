@@ -22243,8 +22243,11 @@ function setCompleteFocus(message, tone = 'normal') {
 function setCompleteNextStep(message, tone = 'normal') {
   const element = document.getElementById('complete-next-step');
   if (!element) return;
-  element.textContent = message || '';
-  element.className = `complete-next-step${message ? ' is-visible' : ''}${tone === 'success' ? ' success' : ''}`;
+  const cleanMessage = String(message || '')
+    .replace(/^\s*次の一手[:：]\s*/, '')
+    .replace(/^\s*Next:\s*/i, '');
+  element.textContent = cleanMessage;
+  element.className = `complete-next-step${cleanMessage ? ' is-visible' : ''}${tone === 'success' ? ' success' : ''}`;
 }
 
 function updateCompleteRouteActions(missedCount = getMissedReviewWords().length) {
