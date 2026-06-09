@@ -2123,7 +2123,7 @@
 
     /* Complete screen */
     .session-complete {
-      --complete-action-square-size: min(52vw, 216px);
+      --complete-action-square-size: min(44vw, 176px);
       display: none;
       text-align: center;
       width: min(92%, 420px);
@@ -2314,13 +2314,13 @@
       margin-top: clamp(26px, 5svh, 42px);
     }
     .complete-route-actions:not([hidden]) + .complete-actions .complete-back-btn {
-      flex: 0 1 min(46vw, 184px);
-      width: min(46vw, 184px);
-      height: auto;
-      min-height: 44px;
-      padding: 0 18px;
-      border-radius: 999px;
-      font-size: 13px;
+      flex: 0 0 var(--complete-action-square-size);
+      width: var(--complete-action-square-size);
+      height: var(--complete-action-square-size);
+      min-height: 0;
+      padding: 0;
+      border-radius: 20px;
+      font-size: 15px;
     }
     .complete-route-actions:not([hidden]) + .complete-actions .restart-btn {
       display: none;
@@ -2495,15 +2495,29 @@
     }
     @media (max-height: 820px) {
       .session-complete {
-        --complete-action-square-size: min(46vw, 188px);
+        --complete-action-square-size: min(44vw, 176px);
       }
       .complete-back-btn {
+        border-radius: 18px;
+      }
+      .complete-route-actions:not([hidden]) + .complete-actions .complete-back-btn {
         border-radius: 18px;
       }
     }
     @media (max-height: 780px) {
       .session-complete {
-        --complete-action-square-size: min(35vw, 136px);
+        --complete-action-square-size: min(37.5vw, 146px);
+      }
+    }
+    @media (max-height: 660px) {
+      .session-complete {
+        --complete-action-square-size: min(31vw, 120px);
+      }
+    }
+    @media (max-height: 700px) {
+      .complete-route-actions:not([hidden]) + .complete-actions .complete-back-btn {
+        border-radius: 17px;
+        font-size: 13px;
       }
     }
     @media (max-height: 600px) {
@@ -2516,6 +2530,10 @@
         padding-bottom: 10px;
       }
       .complete-back-btn {
+        border-radius: 14px;
+        font-size: 12px;
+      }
+      .complete-route-actions:not([hidden]) + .complete-actions .complete-back-btn {
         border-radius: 14px;
         font-size: 12px;
       }
