@@ -2320,6 +2320,13 @@
     .complete-route-actions.no-misses + .complete-actions .complete-back-btn {
       display: none;
     }
+    .complete-route-actions.no-misses #complete-today-btn,
+    .complete-route-actions.no-misses #complete-miss-review-btn {
+      display: none !important;
+    }
+    .complete-route-actions.no-misses + .complete-actions .complete-repeat-btn {
+      display: inline-flex;
+    }
     .complete-route-btn {
       order: 2;
       min-height: 42px;
@@ -22220,7 +22227,7 @@ function updateCompleteRouteActions(missedCount = getMissedReviewWords().length)
   const repeatButton = document.getElementById('complete-repeat-btn');
   const completeBackButton = document.getElementById('complete-back-btn');
   if (!actions || !routeBackButton || !todayButton || !missButton || !relationButton || !repeatButton || !completeBackButton) return;
-  const hasMisses = missedCount > 0;
+  const hasMisses = Number(missedCount) > 0;
   const recommendedPrefix = currentUiLanguage === 'en' ? 'Recommended: ' : 'おすすめ: ';
   [routeBackButton, todayButton, missButton, relationButton].forEach(button => button.classList.remove('primary'));
   actions.classList.toggle('has-misses', hasMisses);
@@ -22661,7 +22668,8 @@ function showTestComplete() {
   document.getElementById('cs-reviewed').textContent = testCards.length;
   document.getElementById('cs-mastered').textContent = testCorrect;
   document.getElementById('cs-due').textContent = misses;
-  setCompleteRouteActionsVisible(testCards.length > 0, remainingMisses);
+  const actionMissCount = misses > 0 ? remainingMisses : 0;
+  setCompleteRouteActionsVisible(testCards.length > 0, actionMissCount);
   let baseCompleteMessage = isRelationGame
     ? getRelationCompleteMessage(misses)
     : testCards.length === 0
