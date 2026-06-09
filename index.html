@@ -2217,11 +2217,16 @@
 	      text-align: left;
 	    }
 	    .complete-next-step.is-visible { display: block; }
-	    .complete-next-step.success {
-	      background: #f0fdf4;
-	      border-color: #bbf7d0;
-	      color: #166534;
-	    }
+    .complete-next-step.success {
+      background: #f0fdf4;
+      border-color: #bbf7d0;
+      color: #166534;
+    }
+    .session-complete.perfect-complete .complete-next-step {
+      margin-bottom: 10px;
+      padding: 8px 10px;
+      line-height: 1.38;
+    }
 	    .perfect-quote-panel {
 	      display: none;
 	      margin: -2px 0 14px;
@@ -2550,7 +2555,7 @@
         --complete-action-square-size: min(29vw, 112px);
       }
       .session-complete.perfect-complete {
-        --complete-action-square-size: min(29vw, 112px);
+        --complete-action-square-size: min(27vw, 104px);
       }
       .complete-card { padding: 16px 12px; }
       .complete-route-btn { min-height: 36px; }
@@ -2558,6 +2563,12 @@
     @media (max-height: 700px) {
       body.test-mode .session-complete {
         margin-top: clamp(6px, 1.6svh, 12px);
+      }
+      .session-complete.perfect-complete .complete-next-step {
+        margin-bottom: 8px;
+        padding: 7px 9px;
+        font-size: 11.5px;
+        line-height: 1.32;
       }
       .complete-route-actions { margin-top: 5px; }
       .complete-route-actions:not([hidden]) + .complete-actions {
@@ -22287,34 +22298,35 @@ function setCompleteRouteActionsVisible(visible, missedCount = getMissedReviewWo
 
 function getStudyNextStepMessage(due) {
   if (currentUiLanguage === 'en') {
-    if (due <= 0) return 'Next: stop here for today. Continue with a small round tomorrow.';
-    return 'Next: run the due cards again. Short rounds help memory stick.';
+    if (due <= 0) return 'Stop here for today. Continue with a small round tomorrow.';
+    return 'Run the due cards again. Short rounds help memory stick.';
   }
-  if (due <= 0) return '次の一手: 今日はここで区切ってOK。明日、また少しだけ続ける。';
-  return '次の一手: 出題候補をもう一周。短く回すほど記憶に残りやすい。';
+  if (due <= 0) return '今日はここで区切ってOK。明日、また少しだけ続ける。';
+  return '出題候補をもう一周。短く回すほど記憶に残りやすい。';
 }
 
-function getTestNextStepMessage({ testLength, misses, isMissReview, remainingMisses, isPerfect20 }) {
+function getTestNextStepMessage({ testLength, misses, isMissReview, remainingMisses, isPerfect20, correctStreak = 0 }) {
   const remaining = Number(remainingMisses) || 0;
+  const streak = Math.max(0, Math.floor(Number(correctStreak) || 0));
   if (!testLength) return currentUiLanguage === 'en'
-    ? 'Next: widen the range in Settings to restart.'
-    : '次の一手: 設定で範囲を広げると再開できます。';
+    ? 'Widen the range in Settings to restart.'
+    : '設定で範囲を広げると再開できます。';
   if (misses > 0) return currentUiLanguage === 'en'
-    ? 'Next: use Miss Review to recover today’s misses.'
-    : '次の一手: ミスだけ復習で、今のつまずきをすぐ回収。';
+    ? 'Use Miss Review to recover today’s misses.'
+    : 'ミスだけ復習で、今のつまずきをすぐ回収。';
+  if (isPerfect20) return currentUiLanguage === 'en'
+    ? `${streak} correct in a row! The next 20 will use different words. Keep the streak going.`
+    : `${streak}問連続正解中！ 次の20問は別の単語で出題します。連続記録を伸ばそう。`;
   if (isMissReview && remaining === 0) return '';
   if (!isMissReview && remaining > 0) return currentUiLanguage === 'en'
-    ? `Next: clear ${remaining} ${remaining === 1 ? 'word' : 'words'} in Miss Review, then start another 20.`
-    : `次の一手: ミス復習${remaining}語を先に回収。その後で次の20問へ。`;
-  if (isPerfect20) return currentUiLanguage === 'en'
-    ? 'Next: the next 20 will use different words. Keep the streak going.'
-    : '次の一手: 次の20問は別の単語で出題します。連続記録を伸ばそう。';
+    ? `Clear ${remaining} ${remaining === 1 ? 'word' : 'words'} in Miss Review, then start another 20.`
+    : `ミス復習${remaining}語を先に回収。その後で次の20問へ。`;
   if (isMissReview) return currentUiLanguage === 'en'
-    ? `Next: clear the remaining ${remaining} ${remaining === 1 ? 'word' : 'words'} the same way.`
-    : `次の一手: 残り${remaining}語も、同じ流れで回収。`;
+    ? `Clear the remaining ${remaining} ${remaining === 1 ? 'word' : 'words'} the same way.`
+    : `残り${remaining}語も、同じ流れで回収。`;
   return currentUiLanguage === 'en'
-    ? 'Next: test again while the words are still fresh.'
-    : '次の一手: まだ覚えているうちに、もう一回だけテスト。';
+    ? 'Test again while the words are still fresh.'
+    : 'まだ覚えているうちに、もう一回だけテスト。';
 }
 
 function getCorrectStreakCompleteMessage(correctStreak) {
@@ -22389,17 +22401,17 @@ function getRelationFocusLine(misses, isPerfect20) {
 
 function getRelationNextStepMessage(misses, isPerfect20) {
   if (!testCards.length) return currentUiLanguage === 'en'
-    ? 'Next: widen the range in Settings to restart.'
-    : '次の一手: 設定で範囲を広げると再開できます。';
+    ? 'Widen the range in Settings to restart.'
+    : '設定で範囲を広げると再開できます。';
   if (misses > 0) return currentUiLanguage === 'en'
-    ? 'Next: use Miss Review to recover the relation pairs you missed.'
-    : '次の一手: ミス復習で、間違えた関係ペアだけ回収。';
+    ? 'Use Miss Review to recover the relation pairs you missed.'
+    : 'ミス復習で、間違えた関係ペアだけ回収。';
   if (isPerfect20) return currentUiLanguage === 'en'
-    ? 'Next: keep the clean win, or play one more relation round.'
-    : '次の一手: 満点で一区切り。もう一回ゲームで定着させてもいい。';
+    ? 'Keep the clean win, or play one more relation round.'
+    : '満点で一区切り。もう一回ゲームで定着させてもいい。';
   return currentUiLanguage === 'en'
-    ? 'Next: play again, or switch to today’s 20 for meaning practice.'
-    : '次の一手: もう一回ゲームか、今日の20問で意味選択へ。';
+    ? 'Play again, or switch to today’s 20 for meaning practice.'
+    : 'もう一回ゲームか、今日の20問で意味選択へ。';
 }
 
 function getWeaknessBucketLabel(word) {
@@ -22661,7 +22673,8 @@ function showTestComplete() {
 	  const remainingMisses = getMissedReviewWords().length;
 	  const canContinueMissReview = misses > 0 || (isMissReview && remainingMisses > 0);
 	  const isMissReviewCleared = isMissReview && testCards.length > 0 && misses === 0;
-	  const correctStreakMessage = getCorrectStreakCompleteMessage(getMeta().correctStreak);
+	  const correctStreakCount = Number(getMeta().correctStreak) || 0;
+	  const correctStreakMessage = getCorrectStreakCompleteMessage(correctStreakCount);
 	  if (isPerfect20 && !isRelationGame && !isMissReview) saveLastPerfectTestKeys(testCards);
 	  completeEl.classList.toggle('weakness-cleared', isMissReviewCleared);
 	  completeEl.classList.toggle('perfect-complete', isPerfect20);
@@ -22723,7 +22736,8 @@ function showTestComplete() {
 	      misses,
 	      isMissReview,
 	      remainingMisses,
-	      isPerfect20
+	      isPerfect20,
+	      correctStreak: correctStreakCount
 	    }),
 	    (isMissReviewCleared && remainingMisses === 0) || (isRelationGame && misses === 0) || isPerfect20 ? 'success' : 'normal'
 	  );
