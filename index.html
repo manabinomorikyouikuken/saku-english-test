@@ -22203,8 +22203,8 @@ function getPerfectStarCompleteMessage(progress, currentStreak = progress.streak
   const isCurrentRecord = (Number(currentStreak) || 0) >= progress.streak;
   if (!isCurrentRecord) {
     return currentUiLanguage === 'en'
-      ? `Best record: ${label} ${progress.starCount}/${PERFECT_STAR_MAX_VISIBLE} · ${progress.streak} correct streak`
-      : `最高記録: ${label} ${progress.starCount}/${PERFECT_STAR_MAX_VISIBLE}・${progress.streak}連続正解`;
+      ? `Best record: ${progress.streak} correct streak`
+      : `最高記録: ${progress.streak}連続正解`;
   }
   if (currentUiLanguage === 'en') {
     const action = progress.starCount === PERFECT_STAR_MAX_VISIBLE
@@ -22212,14 +22212,14 @@ function getPerfectStarCompleteMessage(progress, currentStreak = progress.streak
       : progress.starCount === 1 && progress.blocks > 1
         ? `Rank up to ${label}!`
         : `${label} earned!`;
-    return `${action} ${progress.starCount}/${PERFECT_STAR_MAX_VISIBLE} · ${progress.streak} correct streak`;
+    return `${action} ${progress.streak} correct streak`;
   }
   const action = progress.starCount === PERFECT_STAR_MAX_VISIBLE
     ? `${label}完成！`
     : progress.starCount === 1 && progress.blocks > 1
       ? `${label}へ昇格！`
       : `${label}獲得！`;
-  return `${action} ${progress.starCount}/${PERFECT_STAR_MAX_VISIBLE}・${progress.streak}連続正解`;
+  return `${action} ${progress.streak}連続正解`;
 }
 
 function updatePerfectStarComplete(correctStreak, bestCorrectStreak = correctStreak) {
