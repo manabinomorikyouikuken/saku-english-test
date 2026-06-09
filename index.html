@@ -2563,6 +2563,12 @@
         font-size: 12px;
       }
     }
+    .session-complete.weakness-cleared .complete-route-actions {
+      margin-top: clamp(36px, 7svh, 60px);
+    }
+    .session-complete.weakness-cleared .complete-route-actions:not([hidden]) + .complete-actions {
+      margin-top: clamp(32px, 6svh, 56px);
+    }
     @media (max-width: 390px) {
       header { padding: 12px 14px; }
       .stats { gap: 9px; }
