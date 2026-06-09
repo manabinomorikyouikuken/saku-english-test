@@ -2338,6 +2338,9 @@
     .session-complete.perfect-complete .complete-route-actions.no-misses:not([hidden]) + .complete-actions {
       margin-top: clamp(6px, 1.3svh, 12px);
     }
+    .session-complete.perfect-complete:not(.relation-complete) .complete-route-actions.no-misses:not([hidden]) + .complete-actions {
+      margin-top: clamp(26px, 4.6svh, 42px);
+    }
     .session-complete.relation-complete.perfect-complete {
       --complete-action-square-size: min(34vw, 132px);
     }
@@ -2620,6 +2623,9 @@
       .complete-route-actions { gap: 5px; margin-top: 4px; }
       .complete-route-btn { min-height: 34px; font-size: 11.5px; }
       .complete-route-actions:not([hidden]) + .complete-actions {
+        margin-top: 4px;
+      }
+      .session-complete.perfect-complete:not(.relation-complete) .complete-route-actions.no-misses:not([hidden]) + .complete-actions {
         margin-top: 4px;
       }
       .perfect-quote-text { font-size: 13px; line-height: 1.32; }
