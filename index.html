@@ -2180,6 +2180,9 @@
       color: var(--warm-primary-strong);
       font-size: 25px;
     }
+    .session-complete.perfect-complete .complete-icon {
+      display: none;
+    }
     .complete-title { font-size: 19px; font-weight: 800; color: #1a2a4a; margin-bottom: 6px; }
 	    .complete-msg { font-size: 12.5px; color: #64748b; line-height: 1.55; margin-bottom: 14px; white-space: pre-line; }
 	    .complete-msg:empty { display: none; }
@@ -2228,18 +2231,6 @@
 	      text-align: left;
 	    }
 	    .perfect-quote-panel.is-visible { display: block; }
-	    .perfect-badge {
-	      display: inline-block;
-	      margin-bottom: 9px;
-	      padding: 4px 9px;
-	      border-radius: 999px;
-	      background: #f0fdf4;
-	      border: 1px solid #bbf7d0;
-	      color: #15803d;
-	      font-size: 10.5px;
-	      font-weight: 900;
-	      letter-spacing: 0;
-	    }
 	    .perfect-star-complete {
 	      display: none;
 	      margin: 0 0 10px;
@@ -2495,10 +2486,14 @@
         margin-top: clamp(10px, 2svh, 14px);
       }
       .complete-route-btn { min-height: 38px; font-size: 12px; }
+      .perfect-quote-panel { margin-bottom: 10px; padding-top: 8px; }
+      .perfect-star-complete { margin-bottom: 8px; padding: 6px 8px; }
+      .perfect-star-complete .perfect-star-row { min-height: 24px; }
+      .perfect-star-complete .perfect-star-slot { font-size: 22px; }
     }
     @media (max-height: 820px) {
       .session-complete {
-        --complete-action-square-size: min(44vw, 176px);
+        --complete-action-square-size: min(37.5vw, 146px);
       }
       .complete-back-btn {
         border-radius: 18px;
@@ -2509,7 +2504,7 @@
     }
     @media (max-height: 780px) {
       .session-complete {
-        --complete-action-square-size: min(37.5vw, 146px);
+        --complete-action-square-size: min(34vw, 132px);
       }
       body.test-mode .session-complete {
         margin-top: clamp(12px, 2.8svh, 22px);
@@ -2553,6 +2548,11 @@
       .complete-route-btn { min-height: 34px; font-size: 11.5px; }
       .complete-route-actions:not([hidden]) + .complete-actions {
         margin-top: 4px;
+      }
+      .perfect-quote-text { font-size: 13px; line-height: 1.32; }
+      .perfect-quote-source,
+      .perfect-quote-ja {
+        display: none;
       }
       .complete-back-btn {
         border-radius: 14px;
@@ -2715,7 +2715,6 @@
         <div class="complete-focus" id="complete-focus"></div>
         <div class="complete-next-step" id="complete-next-step"></div>
         <div class="perfect-quote-panel" id="perfect-quote-panel" aria-label="満点時の英語名言">
-          <div class="perfect-badge" id="perfect-badge" data-ui-key="perfectBadge">Perfect 20</div>
           <div class="perfect-star-complete" id="perfect-star-complete">
             <div class="perfect-star-row" id="perfect-star-complete-row" aria-hidden="true"></div>
             <div class="perfect-star-complete-msg" id="perfect-star-complete-msg"></div>
@@ -18340,8 +18339,7 @@ const UI_TEXT = {
     relationAgain: 'もう一回ゲーム',
     noCardsMessage: '今の条件では出題できる単語がありません。設定で範囲を広げてください。',
     dataQualityOk: '必須項目、履歴キー重複、略語の元語、略語の音声展開は要確認0件です。',
-    dataQualityProofingNote: '校正優先: 発音注意・R/L・カタカナ注意・略語・句動詞を台帳で先に見る。',
-    perfectBadge: 'Perfect 20'
+    dataQualityProofingNote: '校正優先: 発音注意・R/L・カタカナ注意・略語・句動詞を台帳で先に見る。'
   },
   en: {
     back: 'Back',
@@ -18558,8 +18556,7 @@ const UI_TEXT = {
     relationAgain: 'Play again',
     noCardsMessage: 'There are no cards available with the current settings. Widen the range in Settings.',
     dataQualityOk: 'Required fields, duplicate history keys, abbreviation origins, and abbreviation speech checks have 0 items to check.',
-    dataQualityProofingNote: 'Proofing priority: pronunciation cautions, R/L, katakana gaps, abbreviations, and phrasal verbs first.',
-    perfectBadge: 'Perfect score'
+    dataQualityProofingNote: 'Proofing priority: pronunciation cautions, R/L, katakana gaps, abbreviations, and phrasal verbs first.'
   }
 };
 const CATEGORY_TAGS = {
@@ -22542,7 +22539,7 @@ function showComplete() {
   updateRatingControls();
   document.getElementById('swipe-msg').style.display = 'none';
   const completeEl = document.getElementById('session-complete');
-  completeEl.classList.remove('weakness-cleared');
+  completeEl.classList.remove('weakness-cleared', 'perfect-complete');
   completeEl.style.display = 'block';
   document.getElementById('progress-fill').style.width = '100%';
   document.getElementById('progress-text').textContent = `${sessionCards.length} / ${sessionCards.length}`;
@@ -22587,6 +22584,7 @@ function showTestComplete() {
   setPracticeRouteButtonVisible(false);
   document.getElementById('swipe-msg').style.display = 'none';
   const completeEl = document.getElementById('session-complete');
+  completeEl.classList.remove('perfect-complete');
   completeEl.style.display = 'block';
   document.getElementById('progress-fill').style.width = '100%';
   document.getElementById('progress-text').textContent = `${testCards.length} / ${testCards.length}`;
@@ -22604,10 +22602,11 @@ function showTestComplete() {
 	  const correctStreakMessage = getCorrectStreakCompleteMessage(getMeta().correctStreak);
 	  if (isPerfect20 && !isRelationGame && !isMissReview) saveLastPerfectTestKeys(testCards);
 	  completeEl.classList.toggle('weakness-cleared', isMissReviewCleared);
+	  completeEl.classList.toggle('perfect-complete', isPerfect20);
   completionAction = canContinueMissReview ? 'missReview' : 'restart';
   const completeIcon = document.getElementById('complete-icon');
   completeIcon.className = `complete-icon${isPerfect20 ? ' perfect-score-icon' : ' success-icon'}`;
-  completeIcon.textContent = isPerfect20 ? '20/20' : isRelationGame ? '↔' : '✓';
+  completeIcon.textContent = isPerfect20 ? '' : isRelationGame ? '↔' : '✓';
   document.getElementById('complete-title').textContent = isMissReviewCleared
     ? (remainingMisses === 0 ? uiText('weaknessClearedTitle') : uiText('missReviewClearTitle'))
     : isRelationGame ? (isPerfect20 ? uiText('relationPerfectTitle') : uiText('relationCompleteTitle'))
@@ -22635,7 +22634,7 @@ function showTestComplete() {
         ? `${misses} missed ${misses === 1 ? 'word was' : 'words were'} saved to Miss Review.`
         : `ミスした${misses}語は、ミス復習に残しました。`
       : '';
-  if (misses === 0 && correctStreakMessage) {
+  if (misses === 0 && correctStreakMessage && !isPerfect20) {
     baseCompleteMessage = baseCompleteMessage
       ? `${baseCompleteMessage}\n${correctStreakMessage}`
       : correctStreakMessage;
