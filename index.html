@@ -22318,8 +22318,8 @@ function getTestNextStepMessage({ testLength, misses, isMissReview, remainingMis
     ? 'Use Miss Review to recover today’s misses.'
     : 'ミスだけ復習で、今のつまずきをすぐ回収。';
   if (isPerfect20) return currentUiLanguage === 'en'
-    ? `${streak} correct in a row! The next 20 will use different words. Keep the streak going.`
-    : `${streak}問連続正解中！ 次の20問は別の単語で出題します。連続記録を伸ばそう。`;
+    ? `${streak} correct in a row!`
+    : `${streak}問連続正解中！`;
   if (isMissReview && remaining === 0) return '';
   if (!isMissReview && remaining > 0) return currentUiLanguage === 'en'
     ? `Clear ${remaining} ${remaining === 1 ? 'word' : 'words'} in Miss Review, then start another 20.`
