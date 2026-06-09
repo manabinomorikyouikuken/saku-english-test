@@ -2580,7 +2580,7 @@
       <div class="quick-start-actions test-entry-actions">
         <button class="quick-start-btn primary" type="button" onclick="startQuickTest('wordRelation')" data-ui-key="relationGame">語彙関係ゲーム</button>
         <button class="quick-start-btn" type="button" onclick="startMissReviewSession()" data-ui-key="missReview">ミス復習</button>
-        <button class="quick-start-btn" type="button" onclick="startQuickTest('standardPractice')" data-ui-label-key="today20Short">今日の20問<span data-ui-key="standardScopeSub">標準</span></button>
+        <button class="quick-start-btn" type="button" onclick="startQuickTest('standardPractice')" data-ui-label-key="today20Short">今日の20問<span data-ui-key="standardScopeSub">ミックス</span></button>
       </div>
     </section>
     <div class="card-prompt" id="study-prompt" data-ui-key="studyPrompt">タップすると答えが出るよ</div>
@@ -2682,7 +2682,7 @@
         </div>
       </div>
       <div class="complete-route-actions" id="complete-route-actions" aria-label="次の行動" hidden>
-        <button class="complete-route-btn primary" id="complete-today-btn" type="button" onclick="startQuickTest('standardPractice')" data-ui-label-key="today20Again">もう一回20問<span data-ui-key="standardScopeSub">標準</span></button>
+        <button class="complete-route-btn primary" id="complete-today-btn" type="button" onclick="startQuickTest('standardPractice')" data-ui-label-key="today20Again">もう一回20問<span data-ui-key="standardScopeSub">ミックス</span></button>
         <button class="complete-route-btn" id="complete-miss-review-btn" type="button" onclick="startMissReviewSession()" data-ui-key="missReview">ミス復習</button>
         <button class="complete-route-btn" id="complete-relation-btn" type="button" onclick="startQuickTest('wordRelation')" data-ui-key="relationGame">語彙関係ゲーム</button>
       </div>
@@ -2741,7 +2741,7 @@
     <div class="settings-section-title" data-ui-key="chooseTheme">テーマを選ぶ</div>
     <div class="category-buttons">
       <div class="category-group-label" data-ui-key="categoryGroupStart">入口</div>
-      <button class="category-btn active" type="button" data-category="standardPractice" data-ui-label-key="categoryStandardPractice" onclick="setCategory('standardPractice')">標準<span id="category-count-standardPractice">1208項目</span></button>
+      <button class="category-btn active" type="button" data-category="standardPractice" data-ui-label-key="categoryStandardPractice" onclick="setCategory('standardPractice')">標準ミックス<span id="category-count-standardPractice">1208項目</span></button>
       <button class="category-btn" type="button" data-category="all" data-ui-label-key="categoryAll" onclick="setCategory('all')">全単語<span id="category-count-all">1314項目</span></button>
       <button class="category-btn" type="button" data-category="weakWords" data-ui-label-key="categoryWeakWords" onclick="setCategory('weakWords')">苦手<span id="category-count-weakWords">0項目</span></button>
       <div class="category-group-label" data-ui-key="categoryGroupDaily">日常・実用</div>
@@ -2770,7 +2770,7 @@
       <div class="category-group-label" data-ui-key="categoryGroupRelation">語彙関係</div>
       <button class="category-btn" type="button" data-category="wordRelation" data-ui-label-key="categoryWordRelation" onclick="setCategory('wordRelation')">語彙関係<span id="category-count-wordRelation">42項目</span></button>
     </div>
-    <div class="storage-note" data-ui-key="themeNote">標準は専門語を外した通常練習です。全単語は筋肉名・特別支援教育・ICT/AI略語なども含めます。食べ物は魚・果物・野菜をまとめて練習できます。専門語はテクニカル、筋肉名、特別支援教育から意図して選べます。</div>
+    <div class="storage-note" data-ui-key="themeNote">標準ミックスは、一般語と句動詞を混ぜた総合練習です。句動詞だけ練習したい時は「句動詞」を選びます。全単語は筋肉名・特別支援教育・ICT/AI略語なども含めます。</div>
   </div>
 
   <div class="part-panel" aria-label="品詞選択">
@@ -2793,7 +2793,7 @@
       まずは20問。ミスした語は「ミス復習」に残ります。答えたあとは下の案内を右スワイプで次へ進めます。
     </div>
     <div class="intro-actions">
-      <button class="intro-btn primary" type="button" onclick="startIntroQuickTest()" data-ui-label-key="today20">今日の20問へ<span data-ui-key="standardScopeSub">標準</span></button>
+      <button class="intro-btn primary" type="button" onclick="startIntroQuickTest()" data-ui-label-key="today20">今日の20問へ<span data-ui-key="standardScopeSub">ミックス</span></button>
       <button class="intro-btn" type="button" onclick="dismissIntroPanel()" data-ui-key="close">閉じる</button>
     </div>
   </section>
@@ -2804,7 +2804,7 @@
       <div class="quick-start-note" data-ui-key="quickStartNote">迷ったらここから</div>
     </div>
     <div class="quick-start-actions">
-      <button class="quick-start-btn primary" type="button" onclick="startQuickTest('standardPractice')" data-ui-label-key="today20Short">今日の20問<span data-ui-key="standardScopeSub">標準</span></button>
+      <button class="quick-start-btn primary" type="button" onclick="startQuickTest('standardPractice')" data-ui-label-key="today20Short">今日の20問<span data-ui-key="standardScopeSub">ミックス</span></button>
       <button class="quick-start-btn" type="button" onclick="startQuickTest('wordRelation')" data-ui-key="relationGame">語彙関係ゲーム</button>
       <button class="quick-start-btn" type="button" onclick="startMissReviewSession()" data-ui-key="missReview">ミス復習</button>
       <button class="quick-start-btn" type="button" onclick="startWeakWordsSession()" data-ui-label-key="weakWords">苦手<span data-ui-key="weakWordsSub">つまずき語</span></button>
@@ -17738,7 +17738,7 @@ const PART_LABELS = {
   adverb: '副詞'
 };
 const CATEGORY_LABELS = {
-  standardPractice: '標準',
+  standardPractice: '標準ミックス',
   all: '全単語',
   weakWords: '苦手',
   katakanaGap: 'カタカナ注意',
@@ -18105,7 +18105,7 @@ const UI_TEXT = {
     levelAdvanced: '発展',
     levelNote: 'レベル名は学習の目安です。句動詞・実用は、get up などの句動詞や日常で使うまとまり表現を中心にしています。',
     chooseTheme: 'テーマを選ぶ',
-    categoryStandardPractice: '標準',
+    categoryStandardPractice: '標準ミックス',
     categoryAll: '全単語',
     categoryWeakWords: '苦手',
     categoryGroupStart: '入口',
@@ -18135,7 +18135,7 @@ const UI_TEXT = {
     categoryRlContrast: 'R/L注意',
     categoryWordRelation: '語彙関係',
     katakanaSub: '知ってるつもり',
-    themeNote: '標準は専門語を外した通常練習です。全単語は筋肉名・特別支援教育・ICT/AI略語なども含めます。食べ物は魚・果物・野菜をまとめて練習できます。専門語はテクニカル、筋肉名、特別支援教育から意図して選べます。',
+    themeNote: '標準ミックスは、一般語と句動詞を混ぜた総合練習です。句動詞だけ練習したい時は「句動詞」を選びます。全単語は筋肉名・特別支援教育・ICT/AI略語なども含めます。',
     choosePart: '品詞でしぼる',
     partRandom: 'ランダム',
     partNoun: '名詞',
@@ -18148,7 +18148,7 @@ const UI_TEXT = {
     today20: '今日の20問へ',
     today20Short: '今日の20問',
     today20Again: 'もう一回20問',
-    standardScopeSub: '標準',
+    standardScopeSub: 'ミックス',
     relationGame: '語彙関係ゲーム',
     gameReview: 'ゲーム・復習',
     close: '閉じる',
@@ -18323,7 +18323,7 @@ const UI_TEXT = {
     levelAdvanced: 'Advanced',
     levelNote: 'Level names are study guides. Phrases & practical focuses on phrasal verbs such as get up and useful everyday chunks.',
     chooseTheme: 'Choose theme',
-    categoryStandardPractice: 'Standard',
+    categoryStandardPractice: 'Standard mix',
     categoryAll: 'All words',
     categoryWeakWords: 'Weak',
     categoryGroupStart: 'Start',
@@ -18353,7 +18353,7 @@ const UI_TEXT = {
     categoryRlContrast: 'R/L caution',
     categoryWordRelation: 'Word relations',
     katakanaSub: 'False friends',
-    themeNote: 'Standard practice excludes technical terms. All words includes muscle names, special needs education, and ICT/AI abbreviations. Food combines fish, fruit, and vegetables. Choose Technical, Muscles, or Special needs education when you want those terms.',
+    themeNote: 'Standard mix combines general words and phrasal verbs. Choose Phrasal verbs when you want that mode only. All words includes muscles, special needs education, and ICT/AI abbreviations.',
     choosePart: 'Filter by part of speech',
     partRandom: 'Random',
     partNoun: 'Nouns',
@@ -18366,7 +18366,7 @@ const UI_TEXT = {
     today20: 'Start today’s 20',
     today20Short: 'Today’s 20',
     today20Again: 'Another 20',
-    standardScopeSub: 'Standard',
+    standardScopeSub: 'Mix',
     relationGame: 'Word relation game',
     gameReview: 'Games / Review',
     close: 'Close',
