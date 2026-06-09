@@ -1765,6 +1765,17 @@
       min-height: 0;
       border-radius: 16px;
     }
+    body.test-mode .test-back-toggle-btn {
+      display: inline-flex;
+      visibility: hidden;
+      opacity: 0;
+      pointer-events: none;
+    }
+    body.test-mode .test-back-toggle-btn.is-visible {
+      visibility: visible;
+      opacity: 1;
+      pointer-events: auto;
+    }
     body.test-mode .test-card-face {
       padding: 12px 12px;
     }
@@ -1796,6 +1807,7 @@
     }
     body.test-mode .test-answer-zone {
       --test-action-square-size: min(52vw, 216px);
+      --test-action-align-gap: clamp(56px, 9.4svh, 80px);
       flex: 0 0 auto;
       margin-top: 8px;
     }
@@ -1886,11 +1898,12 @@
     @media (max-height: 780px) {
       body.test-mode .test-answer-zone {
         --test-action-square-size: min(42vw, 164px);
+        --test-action-align-gap: clamp(28px, 5.6svh, 46px);
       }
     }
 
     @media (max-height: 600px) {
-      body.test-mode.test-answered .test-choice-grid {
+      body.test-mode.test-answered.test-feedback-visible .test-choice-grid {
         display: none;
       }
     }
@@ -1985,6 +1998,13 @@
       body.test-mode .swipe-msg { display: none; }
     }
 
+    @media (max-height: 660px) {
+      body.test-mode .test-answer-zone {
+        --test-action-square-size: min(37vw, 144px);
+        --test-action-align-gap: clamp(18px, 4svh, 28px);
+      }
+    }
+
     @media (max-height: 600px) {
       body.test-mode .test-letter-row {
         gap: 5px;
@@ -2002,35 +2022,16 @@
       }
       body.test-mode .test-answer-zone {
         --test-action-square-size: min(24vw, 96px);
+        --test-action-align-gap: 8px;
       }
     }
 
     body.test-mode:not(.test-answered) .test-letter-row {
-      margin-top: clamp(56px, 9.4svh, 80px);
-    }
-    @media (max-height: 760px) {
-      body.test-mode:not(.test-answered) .test-letter-row {
-        margin-top: clamp(28px, 5.6svh, 46px);
-      }
-    }
-    @media (max-height: 600px) {
-      body.test-mode:not(.test-answered) .test-letter-row {
-        margin-top: 8px;
-      }
+      margin-top: var(--test-action-align-gap);
     }
 
     body.test-mode.test-answered:not(.test-feedback-visible) .test-next-btn.is-visible {
-      margin-top: clamp(18px, 3svh, 26px);
-    }
-    @media (max-height: 760px) {
-      body.test-mode.test-answered:not(.test-feedback-visible) .test-next-btn.is-visible {
-        margin-top: clamp(12px, 2.1svh, 18px);
-      }
-    }
-    @media (max-height: 600px) {
-      body.test-mode.test-answered:not(.test-feedback-visible) .test-next-btn.is-visible {
-        margin-top: 8px;
-      }
+      margin-top: var(--test-action-align-gap);
     }
 
     body.test-mode.test-answered .test-feedback.correct-feedback.is-visible ~ .test-answer-zone {
