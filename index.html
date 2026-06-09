@@ -2327,6 +2327,12 @@
     .complete-route-actions.no-misses + .complete-actions .complete-repeat-btn {
       display: inline-flex;
     }
+    .session-complete.perfect-complete {
+      --complete-action-square-size: min(40vw, 160px);
+    }
+    .session-complete.perfect-complete .complete-route-actions.no-misses:not([hidden]) + .complete-actions {
+      margin-top: clamp(6px, 1.3svh, 12px);
+    }
     .complete-route-btn {
       order: 2;
       min-height: 42px;
@@ -2515,6 +2521,9 @@
       .session-complete {
         --complete-action-square-size: min(37.5vw, 146px);
       }
+      .session-complete.perfect-complete {
+        --complete-action-square-size: min(37.5vw, 146px);
+      }
       .complete-back-btn {
         border-radius: 18px;
       }
@@ -2526,6 +2535,9 @@
       .session-complete {
         --complete-action-square-size: min(34vw, 132px);
       }
+      .session-complete.perfect-complete {
+        --complete-action-square-size: min(34vw, 132px);
+      }
       body.test-mode .session-complete {
         margin-top: clamp(12px, 2.8svh, 22px);
       }
@@ -2535,6 +2547,9 @@
     }
     @media (max-height: 660px) {
       .session-complete {
+        --complete-action-square-size: min(29vw, 112px);
+      }
+      .session-complete.perfect-complete {
         --complete-action-square-size: min(29vw, 112px);
       }
       .complete-card { padding: 16px 12px; }
@@ -2555,6 +2570,9 @@
     }
     @media (max-height: 600px) {
       .session-complete {
+        --complete-action-square-size: min(22vw, 88px);
+      }
+      .session-complete.perfect-complete {
         --complete-action-square-size: min(22vw, 88px);
       }
       body.test-mode .session-complete {
