@@ -18546,6 +18546,23 @@ const EXTRA_TECHNICAL_WORD_IDS = new Set([
   'arteriole_noun_science',
   'venule_noun_science'
 ]);
+const DAILY_CARE_WORD_IDS = new Set([
+  'loo_noun_british_daily',
+  'wee_noun_verb_british_daily',
+  'poo_noun_verb_british_daily',
+  'potty_noun_british_daily',
+  'nappy_noun_british_daily',
+  'dummy_noun_british_daily',
+  'tummy_noun_british_daily',
+  'bottom_noun_british_daily',
+  'bum_noun_british_daily',
+  'bib_noun_british_daily',
+  'toddler_noun_british_daily',
+  'pram_noun_british_daily',
+  'cot_noun_british_daily',
+  'tantrum_noun_british_daily',
+  'diaper_noun_us_daily'
+]);
 const SPECIAL_NEEDS_CONDITION_WORD_IDS = new Set([
   'cerebral_palsy_noun_special_needs',
   'down_syndrome_noun_special_needs',
@@ -20981,6 +20998,7 @@ function getChoiceGroup(word) {
   if (SPECIAL_NEEDS_CONDITION_WORD_IDS.has(wordId)) return 'special-needs-condition';
   if (SPECIAL_NEEDS_SUPPORT_WORD_IDS.has(wordId)) return 'special-needs-support';
   if (categories.has('muscle-anatomy')) return 'muscle';
+  if (DAILY_CARE_WORD_IDS.has(wordId)) return 'daily-care';
   const wordText = String(word?.w || '').trim();
   if (ABBREVIATION_MEDICAL_PUBLIC_CHOICE_WORDS.has(wordText)) return 'abbreviation-medical-public';
   if (ABBREVIATION_EDUCATION_LANGUAGE_CHOICE_WORDS.has(wordText)) return 'abbreviation-education-language';
