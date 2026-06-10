@@ -3003,8 +3003,8 @@
     <div class="settings-section-title" data-ui-key="testSettingsTitle">テスト</div>
     <div class="test-choice-count-buttons">
       <button class="test-choice-count-btn" type="button" data-test-choices="2" onclick="setTestChoiceCount(2)" data-ui-key="choice2">2択</button>
-      <button class="test-choice-count-btn" type="button" data-test-choices="3" onclick="setTestChoiceCount(3)" data-ui-key="choice3">3択</button>
-      <button class="test-choice-count-btn active" type="button" data-test-choices="4" onclick="setTestChoiceCount(4)" data-ui-key="choice4">4択</button>
+      <button class="test-choice-count-btn active" type="button" data-test-choices="3" onclick="setTestChoiceCount(3)" data-ui-key="choice3">3択</button>
+      <button class="test-choice-count-btn" type="button" data-test-choices="4" onclick="setTestChoiceCount(4)" data-ui-key="choice4">4択</button>
     </div>
     <div class="storage-note" data-ui-key="testSettingsNote">英単語だけを見て、日本語カードを選びます。テストは20問で区切ります。解答後は出題カードをタップすると裏面を確認できます。</div>
   </div>
@@ -17733,7 +17733,7 @@ const LEVEL_STORAGE_KEY = 'vocab_trainer_level_v1';
 const PART_STORAGE_KEY = 'vocab_trainer_part_v1';
 const CATEGORY_STORAGE_KEY = 'vocab_trainer_category_v1';
 const TEST_CHOICE_COUNT_STORAGE_KEY = 'vocab_trainer_test_choice_count_v2';
-const DEFAULT_TEST_CHOICE_COUNT = 4;
+const DEFAULT_TEST_CHOICE_COUNT = 3;
 const PHONETIC_ASSIST_STORAGE_KEY = 'vocab_trainer_phonetic_assist_v2';
 const FRONT_LEVEL_STORAGE_KEY = 'vocab_trainer_front_level_v2';
 const FRONT_PART_STORAGE_KEY = 'vocab_trainer_front_part_v2';
@@ -21269,6 +21269,71 @@ function normalizeRelationWordText(value) {
   return String(value || '').trim().toLowerCase();
 }
 
+const MEANING_COMPARISON_STOP_PARTS = new Set([
+  'こと',
+  'もの',
+  '人',
+  'する',
+  'ある',
+  'いる',
+  'なる',
+  '名詞',
+  '動詞',
+  '形容詞',
+  '副詞',
+  '前置詞',
+  '接続詞',
+  '助動詞',
+  '間投詞'
+]);
+
+function normalizeMeaningComparisonText(value) {
+  return String(value || '')
+    .normalize('NFKC')
+    .toLowerCase()
+    .replace(/[~〜～]/g, '')
+    .replace(/[「」『』"“”'‘’]/g, '')
+    .replace(/\s+/g, '')
+    .replace(/(名詞|動詞|形容詞|副詞|前置詞|接続詞|助動詞|間投詞)[:：]/g, '')
+    .replace(/^(を|に|へ|が|は|の|と|で|から|まで|より)+/, '')
+    .replace(/(な|の)$/, '')
+    .trim();
+}
+
+function isUsefulMeaningComparisonPart(part) {
+  return part.length >= 2 && !MEANING_COMPARISON_STOP_PARTS.has(part);
+}
+
+function getMeaningComparisonParts(meaning) {
+  return [...new Set(
+    String(meaning || '')
+      .normalize('NFKC')
+      .replace(/\s*\/\s*/g, '、')
+      .split(/[、,，;；:：・()（）\[\]【】「」『』]/)
+      .map(normalizeMeaningComparisonText)
+      .filter(isUsefulMeaningComparisonPart)
+  )];
+}
+
+function meaningsAreTooClose(leftMeaning, rightMeaning) {
+  const left = normalizeMeaningComparisonText(leftMeaning);
+  const right = normalizeMeaningComparisonText(rightMeaning);
+  if (!left || !right) return false;
+  if (left === right) return true;
+  if (Math.min(left.length, right.length) >= 3 && (left.includes(right) || right.includes(left))) return true;
+
+  const leftParts = getMeaningComparisonParts(leftMeaning);
+  const rightParts = getMeaningComparisonParts(rightMeaning);
+  if (!leftParts.length || !rightParts.length) return false;
+  return leftParts.some(leftPart =>
+    rightParts.some(rightPart =>
+      leftPart === rightPart ||
+      (Math.min(leftPart.length, rightPart.length) >= 3 &&
+        (leftPart.includes(rightPart) || rightPart.includes(leftPart)))
+    )
+  );
+}
+
 function getWordRelationSpec(word) {
   return WORD_RELATION_LINKS[getWordIdKey(word)] || null;
 }
@@ -21531,6 +21596,7 @@ function getDistractorPool(correctWord, neededDistractors = currentTestChoiceCou
   const correctKey = getCardKey(correctWord);
   const seenMeanings = new Set([correctWord.m]);
   const seenShortMeanings = new Set([getShortMeaning(correctWord.m)]);
+  const selectedMeanings = [String(correctWord.m || '').trim()].filter(Boolean);
   const selectedKeys = new Set([correctKey]);
   const selected = [];
   const addCandidates = candidates => {
@@ -21539,10 +21605,17 @@ function getDistractorPool(correctWord, neededDistractors = currentTestChoiceCou
       const key = getCardKey(word);
       const meaning = String(word.m || '').trim();
       const shortMeaning = getShortMeaning(meaning);
-      if (selectedKeys.has(key) || !meaning || seenMeanings.has(meaning) || seenShortMeanings.has(shortMeaning)) return;
+      if (
+        selectedKeys.has(key) ||
+        !meaning ||
+        seenMeanings.has(meaning) ||
+        seenShortMeanings.has(shortMeaning) ||
+        selectedMeanings.some(selectedMeaning => meaningsAreTooClose(selectedMeaning, meaning))
+      ) return;
       selectedKeys.add(key);
       seenMeanings.add(meaning);
       seenShortMeanings.add(shortMeaning);
+      selectedMeanings.push(meaning);
       selected.push(word);
     });
   };
