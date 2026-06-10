@@ -1823,7 +1823,7 @@
       --test-action-align-gap: clamp(42px, 6.2svh, 54px);
       --test-correct-action-gap: 6px;
       --test-choice-grid-height: 205px;
-      --test-wrong-choice-grid-height: clamp(80px, 10svh, 98px);
+      --test-wrong-choice-grid-height: clamp(120px, 15svh, 142px);
       flex: 0 0 auto;
       margin-top: 8px;
     }
@@ -22989,7 +22989,7 @@ function fitTestActionButton() {
   const nextButton = document.getElementById('test-next-btn');
   if (!nextButton?.classList.contains('is-visible')) return;
 
-  const safeBottom = window.innerHeight - 10;
+  const safeBottom = window.innerHeight - 34;
   const fits = () => nextButton.getBoundingClientRect().bottom <= safeBottom;
   for (const className of TEST_ACTION_FIT_CLASSES) {
     if (fits()) return;
