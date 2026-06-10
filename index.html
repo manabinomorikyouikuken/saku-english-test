@@ -1539,13 +1539,23 @@
       100% { transform: scale(1); }
     }
     .test-letter-row {
+      --test-letter-gap: 8px;
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 8px;
+      gap: var(--test-letter-gap);
       align-self: center;
       width: var(--test-action-square-size);
       max-width: 100%;
       margin: 9px auto 0;
+    }
+    .test-letter-row.choice-count-2 {
+      min-height: var(--test-action-square-size);
+      align-content: center;
+    }
+    .test-letter-row.choice-count-3 .test-letter-btn:nth-child(3) {
+      grid-column: 1 / -1;
+      justify-self: center;
+      width: calc((var(--test-action-square-size) - var(--test-letter-gap)) / 2);
     }
     .test-letter-btn {
       display: flex;
@@ -1806,11 +1816,13 @@
       flex: 0 1 auto;
       gap: 7px;
       margin-top: 8px;
+      min-height: var(--test-choice-grid-height);
     }
     body.test-mode .test-answer-zone {
       --test-action-square-size: min(44vw, 176px);
       --test-action-align-gap: clamp(42px, 6.2svh, 54px);
       --test-correct-action-gap: 6px;
+      --test-choice-grid-height: 205px;
       --test-wrong-choice-grid-height: 160px;
       flex: 0 0 auto;
       margin-top: 8px;
@@ -1831,7 +1843,8 @@
       font-size: 11px;
     }
     body.test-mode .test-letter-row {
-      gap: 8px;
+      --test-letter-gap: 8px;
+      gap: var(--test-letter-gap);
       margin-top: 8px;
       width: var(--test-action-square-size);
     }
@@ -1935,6 +1948,7 @@
     @media (max-height: 700px) {
       body.test-mode .test-answer-zone {
         --test-action-square-size: min(37.5vw, 146px);
+        --test-choice-grid-height: 186px;
       }
       body.test-mode header { padding: 7px 12px; }
       body.test-mode #learn-view {
@@ -1971,7 +1985,8 @@
         font-size: 20px;
       }
       body.test-mode .test-letter-row {
-        gap: 7px;
+        --test-letter-gap: 7px;
+        gap: var(--test-letter-gap);
         width: var(--test-action-square-size);
       }
       body.test-mode .test-feedback {
@@ -2031,7 +2046,8 @@
 
     @media (max-height: 600px) {
       body.test-mode .test-letter-row {
-        gap: 5px;
+        --test-letter-gap: 5px;
+        gap: var(--test-letter-gap);
         margin-top: 5px;
         width: var(--test-action-square-size);
       }
@@ -2047,6 +2063,7 @@
       body.test-mode .test-answer-zone {
         --test-action-square-size: min(24vw, 96px);
         --test-action-align-gap: 8px;
+        --test-choice-grid-height: 154px;
         --test-wrong-choice-grid-height: clamp(104px, 18.75svh, 114px);
       }
       body.test-mode.test-answered .test-feedback.correct-feedback.is-visible ~ .test-answer-zone .test-choice-grid {
@@ -21731,7 +21748,9 @@ function showTestQuestion() {
   const letterRow = document.getElementById('test-letter-row');
   choiceGrid.innerHTML = '';
   letterRow.innerHTML = '';
-  buildTestChoices(word).forEach((choice, index) => {
+  const choices = buildTestChoices(word);
+  letterRow.className = `test-letter-row choice-count-${choices.length}`;
+  choices.forEach((choice, index) => {
     const label = TEST_CHOICE_LABELS[index] || String(index + 1);
     const choiceDisplayText = getTestChoiceDisplayText(choice, word);
     const button = document.createElement('button');
