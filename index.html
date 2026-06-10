@@ -2853,7 +2853,7 @@
         <button class="complete-route-btn" id="complete-relation-btn" type="button" onclick="startQuickTest('wordRelation')" data-ui-key="relationGame">語彙関係ゲーム</button>
       </div>
       <div class="complete-actions">
-        <button class="complete-repeat-btn" id="complete-repeat-btn" type="button" onclick="startQuickTest('standardPractice')" hidden>もう一回</button>
+        <button class="complete-repeat-btn" id="complete-repeat-btn" type="button" onclick="repeatLastTestScope()" hidden>もう一回</button>
         <button class="complete-back-btn" id="complete-back-btn" type="button" onclick="startSession()" data-ui-key="back" hidden>戻る</button>
         <button class="restart-btn" id="restart-btn" type="button" onclick="restartCurrentMode()">もう一周する</button>
       </div>
@@ -2865,7 +2865,7 @@
 
   <div class="learn-bottom-bar">
     <button class="settings-open-btn mode-btn active" id="learn-mode-btn" type="button" onclick="showLearningTab()" data-ui-key="navPractice">学習</button>
-    <button class="settings-open-btn mode-btn test-open-btn" id="test-mode-btn" type="button" onclick="startQuickTest('standardPractice')" data-ui-key="navTest">テスト</button>
+    <button class="settings-open-btn mode-btn test-open-btn" id="test-mode-btn" type="button" onclick="startCurrentCategoryTest()" data-ui-key="navTest">テスト</button>
     <button class="settings-open-btn" id="settings-mode-btn" type="button" onclick="showSettingsView()" data-ui-key="navSettings">設定</button>
   </div>
 </main>
@@ -7265,6 +7265,7 @@ const WORDS = [
     "exJa": "健康は最優先事項であるべきだ。"
   },
   {
+    "id": "progress_noun",
     "w": "progress",
     "pos": "名詞",
     "level": "高校基礎",
@@ -7330,6 +7331,7 @@ const WORDS = [
     "id": "proof_noun"
   },
   {
+    "id": "proposal_noun",
     "w": "proposal",
     "pos": "名詞",
     "level": "発展",
@@ -8517,6 +8519,7 @@ const WORDS = [
     "exJa": "ごみは正しい箱に入れてください。"
   },
   {
+    "id": "gender_noun",
     "w": "gender",
     "pos": "名詞",
     "level": "中学復習",
@@ -18038,7 +18041,7 @@ const US_IPA_OVERRIDES = {
   english_0465: 'ˈbɔːrdər',
   record_noun: 'ˈrekɚd',
   record_verb: 'rɪˈkɔːrd',
-  english_0394: 'ˈprɑːɡres',
+  progress_noun: 'ˈprɑːɡres',
   progress_verb: 'prəˈɡres',
   english_0181: 'ˌɪntrəˈduːs',
   english_0198: 'prəˈduːs',
@@ -18082,7 +18085,7 @@ const US_IPA_OVERRIDES = {
   english_0492: 'ˈkʌstəmɚ',
   english_0503: 'ɪmˈplɔɪɚ',
   foreigner_noun: 'ˈfɔːrənɚ',
-  english_0517: 'ˈdʒendɚ',
+  gender_noun: 'ˈdʒendɚ',
   therefore_adverb: 'ˈðerfɔːr',
   explorer_noun: 'ɪkˈsplɔːrɚ',
   leader_noun: 'ˈliːdɚ',
@@ -18126,7 +18129,6 @@ const US_IPA_OVERRIDES = {
   pope_noun_religion: 'poʊp',
   muslim_noun_adjective_religion: 'ˈmʌzləm',
   capillary_noun_science: 'ˈkæpəleri',
-  arterioles_noun_science: 'ɑːrˈtɪriˌoʊlz',
   lawyer_noun_profession: 'ˈlɔɪɚ',
   vertical_adjective_direction: 'ˈvɝːtɪkəl',
   smart_adjective_daily: 'smɑːrt',
@@ -18144,7 +18146,7 @@ const US_IPA_OVERRIDES = {
   english_0139: 'kənˈtroʊl',
   english_0257: 'ɪˈmoʊʃənəl',
   english_0375: 'ɡroʊθ',
-  english_0401: 'prəˈpoʊzəl',
+  proposal_noun: 'prəˈpoʊzəl',
   english_0418: 'ɪˈmoʊʃən',
   english_0458: 'əˈproʊtʃ',
   slowly_adverb: 'ˈsloʊli',
@@ -20732,6 +20734,35 @@ function startQuickTest(category) {
   startTestSession();
 }
 
+function getRetestCategory() {
+  return CATEGORY_LABELS[lastTestScopeCategory] ? lastTestScopeCategory : 'standardPractice';
+}
+
+function startCurrentCategoryTest() {
+  markIntroSeen();
+  if (currentCategory === 'weakWords') {
+    startWeakWordsSession();
+    return;
+  }
+  startQuickTest(CATEGORY_LABELS[currentCategory] ? currentCategory : 'standardPractice');
+}
+
+function repeatLastTestScope() {
+  if (completionAction === 'missReview' || testSessionKind === 'missReview') {
+    startMissReviewSession();
+    return;
+  }
+  if (testSessionKind === 'wordRelation') {
+    startQuickTest('wordRelation');
+    return;
+  }
+  if (testSessionKind === 'weakReview') {
+    startWeakWordsSession();
+    return;
+  }
+  startQuickTest(getRetestCategory());
+}
+
 function updateTestChoiceButtons() {
   document.querySelectorAll('.test-choice-count-btn').forEach(btn => {
     btn.classList.toggle('active', Number(btn.dataset.testChoices) === currentTestChoiceCount);
@@ -20995,6 +21026,7 @@ let testAnswered = false;
 let testCardFlipped = false;
 let testMissedKeys = new Set();
 let testSessionKind = 'normal';
+let lastTestScopeCategory = currentCategory;
 let testPerfectQuote = null;
 let completionAction = 'restart';
 
@@ -21382,6 +21414,7 @@ function beginTestSession(cards, kind = 'normal') {
   document.body.classList.remove('test-answered');
   currentMode = 'test';
   testSessionKind = kind;
+  lastTestScopeCategory = currentCategory;
   updateLevelButtons();
   updateCategoryButtons();
   updatePartButtons();
@@ -22204,9 +22237,7 @@ function showPreviousCard() {
 }
 
 function getTestScoreLabel() {
-  const normalTestTitle = currentCategory === 'standardPractice'
-    ? `${uiText('testScore')}（${uiText('categoryStandardPractice')}）`
-    : uiText('testScore');
+  const normalTestTitle = `${uiText('testScore')}（${getUiCategoryLabel(currentCategory)}）`;
   const scoreTitle = testSessionKind === 'missReview'
     ? uiText('missReviewScore')
     : testSessionKind === 'wordRelation'
