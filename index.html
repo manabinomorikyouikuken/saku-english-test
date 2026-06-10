@@ -19688,10 +19688,10 @@ function getPartOfSpeech(word) {
 
 function getPartClass(partOfSpeech) {
   const primary = partOfSpeech.split('・')[0];
-  if (primary === '名詞') return 'pos-noun';
-  if (primary === '動詞') return 'pos-verb';
-  if (primary === '形容詞') return 'pos-adjective';
-  if (primary === '副詞') return 'pos-adverb';
+  if (primary.startsWith('名詞')) return 'pos-noun';
+  if (primary.startsWith('動詞')) return 'pos-verb';
+  if (primary.startsWith('形容詞')) return 'pos-adjective';
+  if (primary.startsWith('副詞')) return 'pos-adverb';
   return 'pos-other';
 }
 
@@ -19708,10 +19708,10 @@ function getPartKey(word) {
 function getPartKeys(word) {
   const parts = String(getPartOfSpeech(word) || '').split('・').map(part => part.trim()).filter(Boolean);
   const keys = [];
-  if (parts.includes('名詞')) keys.push('noun');
-  if (parts.includes('動詞')) keys.push('verb');
-  if (parts.includes('形容詞')) keys.push('adjective');
-  if (parts.includes('副詞')) keys.push('adverb');
+  if (parts.some(part => part.startsWith('名詞'))) keys.push('noun');
+  if (parts.some(part => part.startsWith('動詞'))) keys.push('verb');
+  if (parts.some(part => part.startsWith('形容詞'))) keys.push('adjective');
+  if (parts.some(part => part.startsWith('副詞'))) keys.push('adverb');
   return keys.length ? keys : ['other'];
 }
 
@@ -21494,17 +21494,9 @@ function getDistractorPool(correctWord, neededDistractors = currentTestChoiceCou
   if (selected.length >= neededDistractors) return selected;
   addCandidates(WORDS.filter(word => sameGroup(word) && samePart(word)));
   if (selected.length >= neededDistractors) return selected;
-  addCandidates(activeWords.filter(sameGroup));
-  if (selected.length >= neededDistractors) return selected;
-  addCandidates(WORDS.filter(sameGroup));
-  if (selected.length >= neededDistractors) return selected;
   addCandidates(activeWords.filter(word => sameCategory(word) && samePart(word)));
   if (selected.length >= neededDistractors) return selected;
   addCandidates(WORDS.filter(word => sameCategory(word) && samePart(word)));
-  if (selected.length >= neededDistractors) return selected;
-  addCandidates(activeWords.filter(word => sameCategory(word)));
-  if (selected.length >= neededDistractors) return selected;
-  addCandidates(WORDS.filter(word => sameCategory(word)));
   if (selected.length >= neededDistractors) return selected;
   addCandidates(activeWords.filter(word => sameLevel(word) && samePart(word)));
   if (selected.length >= neededDistractors) return selected;
@@ -21513,6 +21505,18 @@ function getDistractorPool(correctWord, neededDistractors = currentTestChoiceCou
   addCandidates(activeWords.filter(samePart));
   if (selected.length >= neededDistractors) return selected;
   addCandidates(WORDS.filter(samePart));
+  if (selected.length >= neededDistractors) return selected;
+  addCandidates(activeWords.filter(sameGroup));
+  if (selected.length >= neededDistractors) return selected;
+  addCandidates(WORDS.filter(sameGroup));
+  if (selected.length >= neededDistractors) return selected;
+  addCandidates(activeWords.filter(word => sameCategory(word)));
+  if (selected.length >= neededDistractors) return selected;
+  addCandidates(WORDS.filter(word => sameCategory(word)));
+  if (selected.length >= neededDistractors) return selected;
+  addCandidates(activeWords.filter(sameLevel));
+  if (selected.length >= neededDistractors) return selected;
+  addCandidates(WORDS.filter(sameLevel));
   if (selected.length >= neededDistractors) return selected;
   addCandidates(activeWords);
   if (selected.length >= neededDistractors) return selected;
