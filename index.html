@@ -2673,7 +2673,12 @@
       margin-top: clamp(36px, 7svh, 60px);
     }
     .session-complete.weakness-cleared .complete-route-actions:not([hidden]) + .complete-actions {
-      margin-top: clamp(48px, 8svh, 72px);
+      margin-top: clamp(72px, 10svh, 92px);
+    }
+    @media (max-height: 600px) {
+      .session-complete.weakness-cleared .complete-route-actions:not([hidden]) + .complete-actions {
+        margin-top: clamp(40px, 8svh, 48px);
+      }
     }
     @media (max-width: 390px) {
       header { padding: 12px 14px; }
