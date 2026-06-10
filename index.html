@@ -2309,6 +2309,9 @@
       display: flex;
       margin-top: clamp(10px, 2svh, 18px);
     }
+    .complete-route-actions.has-misses:not([hidden]) + .complete-actions {
+      margin-top: clamp(30px, 5svh, 44px);
+    }
     .complete-route-actions:not([hidden]) + .complete-actions .complete-back-btn,
     .complete-route-actions:not([hidden]) + .complete-actions .complete-repeat-btn {
       flex: 0 0 var(--complete-action-square-size);
@@ -2602,6 +2605,9 @@
       .complete-route-actions:not([hidden]) + .complete-actions {
         margin-top: clamp(6px, 1.4svh, 10px);
       }
+      .complete-route-actions.has-misses:not([hidden]) + .complete-actions {
+        margin-top: clamp(16px, 3.4svh, 24px);
+      }
       .complete-route-actions:not([hidden]) + .complete-actions .complete-back-btn {
         border-radius: 17px;
         font-size: 13px;
@@ -2627,6 +2633,9 @@
       .complete-route-actions { gap: 5px; margin-top: 4px; }
       .complete-route-btn { min-height: 34px; font-size: 11.5px; }
       .complete-route-actions:not([hidden]) + .complete-actions {
+        margin-top: 4px;
+      }
+      .complete-route-actions.has-misses:not([hidden]) + .complete-actions {
         margin-top: 4px;
       }
       .session-complete.perfect-complete:not(.relation-complete) .complete-route-actions.no-misses:not([hidden]) + .complete-actions {
