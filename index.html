@@ -2329,6 +2329,9 @@
     .complete-route-actions.no-misses #complete-miss-review-btn {
       display: none !important;
     }
+    .complete-route-actions.has-misses #complete-today-btn {
+      display: none !important;
+    }
     .complete-route-actions.no-misses + .complete-actions .complete-repeat-btn {
       display: inline-flex;
     }
@@ -2386,7 +2389,8 @@
       color: white;
       box-shadow: 0 4px 15px rgba(234,88,12,0.22);
     }
-    .complete-route-actions.no-misses .complete-route-back-btn {
+    .complete-route-actions.no-misses .complete-route-back-btn,
+    .complete-route-actions.has-misses .complete-route-back-btn {
       display: block;
     }
     .complete-route-actions.no-misses #complete-relation-btn {
@@ -22304,11 +22308,10 @@ function updateCompleteRouteActions(missedCount = getMissedReviewWords().length)
   const completeBackButton = document.getElementById('complete-back-btn');
   if (!actions || !routeBackButton || !todayButton || !missButton || !relationButton || !repeatButton || !completeBackButton) return;
   const hasMisses = Number(missedCount) > 0;
-  const recommendedPrefix = currentUiLanguage === 'en' ? 'Recommended: ' : 'おすすめ: ';
   [routeBackButton, todayButton, missButton, relationButton].forEach(button => button.classList.remove('primary'));
   actions.classList.toggle('has-misses', hasMisses);
   actions.classList.toggle('no-misses', !hasMisses);
-  routeBackButton.hidden = hasMisses;
+  routeBackButton.hidden = false;
   routeBackButton.textContent = uiText('back');
   routeBackButton.classList.toggle('primary', !hasMisses);
   setButtonTextWithScope(
@@ -22316,20 +22319,20 @@ function updateCompleteRouteActions(missedCount = getMissedReviewWords().length)
     uiText('today20Again'),
     uiText('standardScopeSub')
   );
-  todayButton.hidden = !hasMisses;
-  todayButton.disabled = !hasMisses;
+  todayButton.hidden = true;
+  todayButton.disabled = true;
   missButton.hidden = !hasMisses;
   missButton.disabled = !hasMisses;
   missButton.textContent = hasMisses
-    ? `${recommendedPrefix}${uiText('missReview')} (${missedCount})`
+    ? `${uiText('missReview')} (${missedCount})`
     : uiText('missReviewEmpty');
   missButton.classList.toggle('primary', hasMisses);
   missButton.setAttribute('aria-disabled', hasMisses ? 'false' : 'true');
   relationButton.textContent = uiText('relationGame');
   relationButton.hidden = false;
-  repeatButton.hidden = hasMisses;
+  repeatButton.hidden = false;
   repeatButton.textContent = uiText('oneMore');
-  completeBackButton.hidden = !hasMisses;
+  completeBackButton.hidden = true;
 }
 
 function setCompleteRouteActionsVisible(visible, missedCount = getMissedReviewWords().length) {
