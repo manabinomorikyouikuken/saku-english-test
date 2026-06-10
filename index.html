@@ -1823,7 +1823,7 @@
       --test-action-align-gap: clamp(42px, 6.2svh, 54px);
       --test-correct-action-gap: 6px;
       --test-choice-grid-height: 205px;
-      --test-wrong-choice-grid-height: 160px;
+      --test-wrong-choice-grid-height: clamp(80px, 10svh, 98px);
       flex: 0 0 auto;
       margin-top: 8px;
     }
@@ -1887,34 +1887,22 @@
       visibility: hidden;
       pointer-events: none;
       height: var(--test-wrong-choice-grid-height);
+      min-height: 0;
       max-height: var(--test-wrong-choice-grid-height);
       overflow: hidden;
     }
-    @media (min-height: 800px) {
-      body.test-mode .test-answer-zone {
-        --test-wrong-choice-grid-height: 164px;
-      }
+    body.test-mode.test-action-compact .test-answer-zone {
+      --test-wrong-choice-grid-height: clamp(42px, 6svh, 56px);
+    }
+    body.test-mode.test-action-tight .test-answer-zone {
+      --test-wrong-choice-grid-height: 0px;
+    }
+    body.test-mode.test-action-ultra .test-answer-zone {
+      --test-action-square-size: min(39vw, 152px);
+      --test-wrong-choice-grid-height: 0px;
     }
     @media (min-height: 781px) and (max-height: 799px) {
-      body.test-mode .test-answer-zone {
-        --test-correct-action-gap: 23px;
-        --test-wrong-choice-grid-height: 160px;
-      }
-    }
-    @media (min-height: 751px) and (max-height: 780px) {
-      body.test-mode .test-answer-zone {
-        --test-wrong-choice-grid-height: 141px;
-      }
-    }
-    @media (min-height: 680px) and (max-height: 750px) {
-      body.test-mode .test-answer-zone {
-        --test-wrong-choice-grid-height: 132px;
-      }
-    }
-    @media (min-height: 601px) and (max-height: 679px) {
-      body.test-mode .test-answer-zone {
-        --test-wrong-choice-grid-height: 120px;
-      }
+      body.test-mode .test-answer-zone { --test-correct-action-gap: 23px; }
     }
     body.test-mode .learn-bottom-bar {
       display: none;
@@ -2064,7 +2052,6 @@
         --test-action-square-size: min(24vw, 96px);
         --test-action-align-gap: 8px;
         --test-choice-grid-height: 154px;
-        --test-wrong-choice-grid-height: clamp(104px, 18.75svh, 114px);
       }
       body.test-mode.test-answered .test-feedback.correct-feedback.is-visible ~ .test-answer-zone .test-choice-grid {
         display: none;
@@ -21799,6 +21786,7 @@ function showTestQuestion() {
   const isRelationQuestion = isRelationTestWord(word);
   testAnswered = false;
   document.body.classList.remove('test-answered', 'test-feedback-visible');
+  clearTestActionFitClasses();
   setTestCardFlipped(false);
   const testWordText = document.getElementById('test-word-text');
   testWordText.className = `test-word-text ${getDisplayWordClass(word)}`.trim();
@@ -22162,6 +22150,7 @@ function answerTestChoice(button, word) {
   setTestCardFlipped(false);
   setTestSwipeHintReady(true);
   updateStats();
+  requestAnimationFrame(fitTestActionButton);
 }
 
 function answerTestChoiceByNumber(key) {
@@ -22986,6 +22975,27 @@ function setTestSwipeHintReady(isReady) {
     'aria-label',
     isReady ? uiText('swipeReadyAria') : uiText('swipeWaitingAria')
   );
+}
+
+const TEST_ACTION_FIT_CLASSES = ['test-action-compact', 'test-action-tight', 'test-action-ultra'];
+
+function clearTestActionFitClasses() {
+  document.body.classList.remove(...TEST_ACTION_FIT_CLASSES);
+}
+
+function fitTestActionButton() {
+  clearTestActionFitClasses();
+  if (currentMode !== 'test' || !testAnswered) return;
+  const nextButton = document.getElementById('test-next-btn');
+  if (!nextButton?.classList.contains('is-visible')) return;
+
+  const safeBottom = window.innerHeight - 10;
+  const fits = () => nextButton.getBoundingClientRect().bottom <= safeBottom;
+  for (const className of TEST_ACTION_FIT_CLASSES) {
+    if (fits()) return;
+    document.body.classList.add(className);
+    void nextButton.offsetHeight;
+  }
 }
 
 function isControlTarget(target) {
