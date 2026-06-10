@@ -932,6 +932,7 @@
     }
     .word-text .word-main {
       display: block;
+      white-space: nowrap;
     }
     .word-text .word-display-sub {
       display: block;
@@ -1364,6 +1365,7 @@
     }
     .test-word-text .word-main {
       display: block;
+      white-space: nowrap;
     }
     .test-word-text .word-display-sub {
       display: block;
@@ -19790,26 +19792,34 @@ function getDisplayWordClass(word) {
 function renderDisplayWordHtml(word) {
   const mainHtml = renderWordWithMorphemes(getDisplayWordText(word));
   const subText = getDisplaySubText(word);
-  if (!subText) return mainHtml;
+  if (!subText) return `<span class="word-main">${mainHtml}</span>`;
   return `<span class="word-main">${mainHtml}</span><span class="word-display-sub">${escapeHtml(subText)}</span>`;
 }
 
-function fitWordText() {
-  const el = document.getElementById('word-text');
+function fitWordElement(el) {
   if (!el) return;
-  const cardFace = el.closest('.card-face');
-  const maxWidth = Math.max(220, (cardFace ? cardFace.clientWidth : window.innerWidth) - 36);
   const hasDisplaySub = el.classList.contains('has-display-sub');
   const isPhrase = el.classList.contains('phrase-word');
   const maxSize = hasDisplaySub ? 58 : isPhrase ? 34 : 44;
-  const minSize = hasDisplaySub ? 42 : isPhrase ? 22 : 24;
+  const minSize = hasDisplaySub ? 36 : isPhrase ? 22 : 19;
   const vwRatio = hasDisplaySub ? 0.13 : isPhrase ? 0.08 : 0.105;
   let size = Math.min(maxSize, Math.max(minSize, window.innerWidth * vwRatio));
   el.style.fontSize = `${size}px`;
+  const cardFace = el.closest('.card-face, .test-card-face, .test-word-card');
+  const fallbackWidth = (cardFace ? cardFace.clientWidth : window.innerWidth) - 44;
+  const maxWidth = Math.max(180, Math.min(el.clientWidth || fallbackWidth, fallbackWidth));
   while (el.scrollWidth > maxWidth && size > minSize) {
     size -= 1;
     el.style.fontSize = `${size}px`;
   }
+}
+
+function fitWordText() {
+  fitWordElement(document.getElementById('word-text'));
+}
+
+function fitTestWordText() {
+  fitWordElement(document.getElementById('test-word-text'));
 }
 
 let activeEnglishVoice = null;
@@ -21335,6 +21345,7 @@ function showCard() {
   wordText.innerHTML = renderDisplayWordHtml(w);
   wordText.setAttribute('aria-label', w.w);
   updateFrontPronunciation(w);
+  fitWordText();
   document.getElementById('level-tag').textContent     = getUiLevelLabel(getWordLevel(w, WORDS.indexOf(w)));
   posTag.className = `pos-tag ${partClass}`;
   posTag.textContent = formatPartOfSpeechForDisplay(partOfSpeech);
@@ -21703,6 +21714,7 @@ function showTestQuestion() {
   testWordText.className = `test-word-text ${getDisplayWordClass(word)}`.trim();
   testWordText.innerHTML = renderDisplayWordHtml(word);
   testWordText.setAttribute('aria-label', word.w);
+  fitTestWordText();
   const testFrontPron = document.getElementById('test-front-pron');
   testFrontPron.textContent = isRelationQuestion ? getRelationPromptText(word) : getTestFrontPronunciationText(word);
   testFrontPron.classList.toggle('relation-prompt', isRelationQuestion);
@@ -23100,6 +23112,7 @@ document.addEventListener('keydown', e => {
 
 window.addEventListener('resize', () => {
   fitWordText();
+  fitTestWordText();
   updateSettingsPagerHeight();
 });
 
