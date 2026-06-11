@@ -307,6 +307,13 @@
     /* Progress */
     .progress-wrap { margin-bottom: 18px; }
     .progress-label { font-size: 12px; color: #666; margin-bottom: 6px; display: flex; justify-content: space-between; }
+    .progress-label span { min-width: 0; }
+    .progress-label span:last-child {
+      text-align: right;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
     .progress-bar { background: #ffe4e6; border-radius: 6px; height: 7px; overflow: hidden; }
     .progress-fill { background: linear-gradient(90deg, #fb923c, #f97316); height: 100%; border-radius: 6px; transition: width 0.4s ease; }
     .quick-start-panel {
@@ -1653,6 +1660,7 @@
       font-weight: 900;
       line-height: 1.35;
       overflow-wrap: anywhere;
+      word-break: break-word;
     }
     .test-feedback-row.correct-answer .test-feedback-value {
       color: #166534;
@@ -1741,8 +1749,16 @@
       margin-bottom: 8px;
     }
     body.test-mode .progress-label {
+      align-items: flex-start;
+      gap: 8px;
       font-size: 11px;
       margin-bottom: 4px;
+    }
+    body.test-mode .progress-label span:first-child {
+      flex: 0 0 auto;
+    }
+    body.test-mode .progress-label span:last-child {
+      flex: 1 1 auto;
     }
     body.test-mode .progress-bar {
       height: 6px;
@@ -8376,7 +8392,7 @@ const WORDS = [
     "pos": "名詞",
     "level": "中学復習",
     "ipa": "ɪmˈplɔɪiː",
-    "ph": "エンプロイー",
+    "ph": "インプロイー",
     "m": "従業員",
     "ex": "Each employee has a different role in the company.",
     "exJa": "それぞれの従業員は会社で異なる役割を持っている。"
@@ -8386,7 +8402,7 @@ const WORDS = [
     "pos": "名詞",
     "level": "中学復習",
     "ipa": "ɪmˈplɔɪə",
-    "ph": "エンプロイヤー",
+    "ph": "インプロイヤー",
     "m": "雇用主",
     "ex": "The employer offered training to new workers.",
     "exJa": "雇用主は新しい働き手に研修を提供した。"
@@ -18472,7 +18488,7 @@ const UI_TEXT = {
     relationAgain: 'もう一回ゲーム',
     oneMore: 'もう一回',
     noCardsMessage: '今の条件では出題できる単語がありません。設定で範囲を広げてください。',
-    dataQualityOk: '必須項目、履歴キー重複、略語の元語、略語の音声展開は要確認0件です。',
+    dataQualityOk: '必須項目、履歴キー重複、略語の元語、略語の音声展開、British IPA固定、発音カナ補助は要確認0件です。',
     dataQualityProofingNote: '校正優先: 発音注意・R/L・カタカナ注意・略語・句動詞を台帳で先に見る。'
   },
   en: {
@@ -18690,7 +18706,7 @@ const UI_TEXT = {
     relationAgain: 'Play again',
     oneMore: 'Again',
     noCardsMessage: 'There are no cards available with the current settings. Widen the range in Settings.',
-    dataQualityOk: 'Required fields, duplicate history keys, abbreviation origins, and abbreviation speech checks have 0 items to check.',
+    dataQualityOk: 'Required fields, duplicate history keys, abbreviation origins, abbreviation speech, fixed British IPA, and kana pronunciation checks have 0 items to check.',
     dataQualityProofingNote: 'Proofing priority: pronunciation cautions, R/L, katakana gaps, abbreviations, and phrasal verbs first.'
   }
 };
@@ -18762,6 +18778,158 @@ const SPECIAL_NEEDS_SUPPORT_WORD_IDS = new Set([
   'individualized_education_program_noun_special_needs',
   'assistive_technology_noun_special_needs',
   'augmentative_alternative_communication_noun_special_needs'
+]);
+const NEWS_REPORTING_CHOICE_WORDS = new Set([
+  'claim',
+  'verify',
+  'news',
+  'reportedly',
+  'alleged',
+  'according to',
+  'spokesperson',
+  'footage'
+]);
+const NEWS_CONFLICT_CHOICE_WORDS = new Set([
+  'ceasefire',
+  'hezbollah',
+  'disarmament',
+  'invade',
+  'invaded',
+  'war',
+  'israel',
+  'surrender',
+  'defeat',
+  'threat',
+  'threaten',
+  'truce',
+  'air strike',
+  'blockade',
+  'border crossing',
+  'hostage',
+  'negotiation',
+  'sanctions'
+]);
+const NEWS_HUMANITARIAN_CHOICE_WORDS = new Set([
+  'evacuation',
+  'civilian',
+  'child abuse',
+  'casualty',
+  'wounded',
+  'humanitarian aid',
+  'refugee',
+  'displaced',
+  'shelter',
+  'death toll'
+]);
+const NEWS_GENERAL_CHOICE_WORDS = new Set([
+  'world',
+  'ward',
+  'possession'
+]);
+const MUSCLE_HEAD_NECK_CHOICE_WORDS = new Set([
+  'masseter',
+  'temporalis',
+  'sternocleidomastoid',
+  'trapezius'
+]);
+const MUSCLE_SHOULDER_ARM_CHOICE_WORDS = new Set([
+  'deltoid',
+  'pectoralis major',
+  'pectoralis minor',
+  'serratus anterior',
+  'latissimus dorsi',
+  'teres major',
+  'supraspinatus',
+  'infraspinatus',
+  'subscapularis',
+  'biceps brachii',
+  'brachialis',
+  'triceps brachii',
+  'brachioradialis',
+  'flexor carpi radialis',
+  'extensor carpi radialis',
+  'levator scapulae'
+]);
+const MUSCLE_TRUNK_CORE_CHOICE_WORDS = new Set([
+  'rectus abdominis',
+  'external oblique',
+  'internal oblique',
+  'transversus abdominis',
+  'erector spinae',
+  'diaphragm',
+  'pelvic floor muscles',
+  'intercostal muscles'
+]);
+const MUSCLE_HIP_LEG_CHOICE_WORDS = new Set([
+  'iliopsoas',
+  'gluteus maximus',
+  'gluteus medius',
+  'tensor fasciae latae',
+  'sartorius',
+  'adductor longus',
+  'gracilis',
+  'quadriceps femoris',
+  'rectus femoris',
+  'vastus lateralis',
+  'vastus medialis',
+  'vastus intermedius',
+  'hamstrings',
+  'biceps femoris',
+  'semitendinosus',
+  'semimembranosus',
+  'tibialis anterior',
+  'gastrocnemius',
+  'soleus',
+  'fibularis longus',
+  'flexor hallucis longus',
+  'extensor hallucis longus'
+]);
+const TECHNICAL_SCIENCE_CHOICE_WORDS = new Set([
+  'capillary',
+  'vessel',
+  'arteriole',
+  'venule'
+]);
+const PRONUNCIATION_COMMON_BRITISH_CHOICE_WORDS = new Set([
+  'diaper',
+  'tomato',
+  'water',
+  'trousers',
+  'glasses',
+  'grass',
+  'grasshopper',
+  'lawyer',
+  'vertical',
+  'cocoa',
+  'cacao'
+]);
+const PRONUNCIATION_EXPRESSIVE_CHOICE_WORDS = new Set([
+  'bloody hell',
+  'blood',
+  'hell',
+  'spiffing',
+  'marvellous',
+  'extraordinarily',
+  'fantastic',
+  'splendid'
+]);
+const PRONUNCIATION_MINIMAL_PAIR_CHOICE_WORDS = new Set([
+  'law',
+  'raw',
+  'low',
+  'row',
+  'light',
+  'right',
+  'lice',
+  'rice',
+  'crap',
+  'clap',
+  'maw',
+  'moe',
+  'hoe',
+  'toe',
+  'cow',
+  'caw'
 ]);
 const WORD_RELATION_LINKS = {
   antonym_hot_adjective: { type: 'antonym', target: 'cold' },
@@ -18928,6 +19096,44 @@ const WORD_RELATION_LINKS = {
 const PROOFING_PRIORITY_TAGS = new Set(
   'pronunciation-note rl-contrast katakana-gap abbreviation phrasal-verb'.split(' ')
 );
+const BRITISH_IPA_EXPECTED_AUDIT_VALUES = {
+  synonym_fast_adjective: 'fɑːst',
+  tomato_noun_food: 'təˈmɑːtəʊ',
+  persona: 'pəˈsəʊnə',
+  phenomenon: 'fɪˈnɒmɪnən',
+  embed_verb: 'ɪmˈbed',
+  employment_noun: 'ɪmˈplɔɪmənt',
+  employee: 'ɪmˈplɔɪiː',
+  employer: 'ɪmˈplɔɪə',
+  evolutionary_adjective: 'ˌiːvəˈluːʃənəri',
+  assumed_adjective: 'əˈsjuːmd',
+  occur: 'əˈkɜː',
+  courage: 'ˈkʌrɪdʒ',
+  correction_noun: 'kəˈrekʃən',
+  motivate: 'ˈməʊtɪveɪt',
+  bridge_tolerate_verb: 'ˈtɒləreɪt',
+  cooperate: 'kəʊˈɒpəreɪt',
+  advance: 'ədˈvɑːns'
+};
+const PHONETIC_ASSIST_EXPECTED_AUDIT_VALUES = {
+  synonym_fast_adjective: 'ファースト',
+  tomato_noun_food: 'トマートウ',
+  persona: 'パソウナ',
+  phenomenon: 'フィノミノン',
+  embed_verb: 'インベッド',
+  employment_noun: 'インプロイメンt',
+  employee: 'インプロイー',
+  employer: 'インプロイヤー',
+  evolutionary_adjective: 'イーヴァルーショナリ',
+  assumed_adjective: 'アシュームd',
+  occur: 'アカー',
+  courage: 'カリッジ',
+  correction_noun: 'カレクション',
+  motivate: 'モウティヴェイt',
+  bridge_tolerate_verb: 'トラレイト',
+  cooperate: 'コウオペレイt',
+  advance: 'アドヴァーンs'
+};
 const PHRASAL_BRIDGE_WORDS = {
   'get up': 'rise',
   'wake up': 'awaken',
@@ -20645,6 +20851,48 @@ function isProofingPriorityWord(word) {
   return [...PROOFING_PRIORITY_TAGS].some(tag => categories.has(tag));
 }
 
+function getAuditExpectedValue(word, table) {
+  const idValue = table[getWordIdKey(word)];
+  if (idValue) return idValue;
+  return table[String(word?.w || '').trim().toLowerCase()] || '';
+}
+
+function getBritishIpaContentIssues(word) {
+  const issues = [];
+  const ipa = String(word?.ipa || '').trim();
+  const expected = getAuditExpectedValue(word, BRITISH_IPA_EXPECTED_AUDIT_VALUES);
+  if (expected && ipa !== expected) issues.push('expected-british-ipa');
+  if (/^\/|\/$/.test(ipa)) issues.push('slash-wrapper');
+  if (/[ɚɝ]/.test(ipa)) issues.push('rhotic-us-symbol');
+  if (/\s{2,}/.test(ipa)) issues.push('extra-space');
+  return issues;
+}
+
+function getPhoneticAssistContentIssues(word) {
+  const issues = [];
+  const ipa = String(word?.ipa || '').trim();
+  const phonetic = String(word?.ph || '').trim();
+  const expected = getAuditExpectedValue(word, PHONETIC_ASSIST_EXPECTED_AUDIT_VALUES);
+  if (expected && phonetic !== expected) issues.push('expected-phonetic-assist');
+  if (/[<>]/.test(phonetic)) issues.push('html-like-character');
+  if (/https?:/i.test(phonetic)) issues.push('url-like-text');
+  if (/^ɪm/.test(ipa) && !phonetic.startsWith('イン')) issues.push('initial-im-not-in');
+  if (/^fɪ/.test(ipa) && !phonetic.startsWith('フィ')) issues.push('initial-fi-not-fi');
+  return issues;
+}
+
+function hasBritishIpaAuditIssue(word) {
+  const ipa = String(word?.ipa || '').trim();
+  if (!ipa) return true;
+  return getBritishIpaContentIssues(word).length > 0;
+}
+
+function hasPhoneticAssistAuditIssue(word) {
+  const phonetic = String(word?.ph || '').trim();
+  if (!phonetic) return true;
+  return getPhoneticAssistContentIssues(word).length > 0;
+}
+
 function updateCategoryButtons() {
   document.querySelectorAll('.category-btn').forEach(btn => {
     btn.classList.toggle('active', btn.dataset.category === currentCategory);
@@ -20673,8 +20921,10 @@ function getDataQualitySummary() {
     const wordText = String(word.w || '').trim();
     return !SPEECH_TEXT_OVERRIDES[wordText];
   }).length;
+  const britishIpaIssues = WORDS.filter(hasBritishIpaAuditIssue).length;
+  const phoneticAssistIssues = WORDS.filter(hasPhoneticAssistAuditIssue).length;
   const proofingPriority = WORDS.filter(isProofingPriorityWord).length;
-  const issueCount = requiredMissing + duplicateKeyGroups + missingOrigins + missingSpeech;
+  const issueCount = requiredMissing + duplicateKeyGroups + missingOrigins + missingSpeech + britishIpaIssues + phoneticAssistIssues;
   const uniqueWords = new Set(
     WORDS.map(word => String(word.w || '').trim().toLowerCase()).filter(Boolean)
   ).size;
@@ -20686,6 +20936,8 @@ function getDataQualitySummary() {
     duplicateKeyGroups,
     missingOrigins,
     missingSpeech,
+    britishIpaIssues,
+    phoneticAssistIssues,
     proofingPriority
   };
 }
@@ -20699,8 +20951,8 @@ function updateDataQualityPanel() {
   const note = summary.issueCount === 0
     ? `${uiText('dataQualityOk')} ${uiText('dataQualityProofingNote')}`
     : currentUiLanguage === 'en'
-      ? `To check: required ${summary.requiredMissing} / duplicate keys ${summary.duplicateKeyGroups} / abbreviation origins ${summary.missingOrigins} / abbreviation speech ${summary.missingSpeech}. ${uiText('dataQualityProofingNote')}`
-      : `要確認: 必須${summary.requiredMissing} / 重複キー${summary.duplicateKeyGroups} / 略語元語${summary.missingOrigins} / 略語音声${summary.missingSpeech}。${uiText('dataQualityProofingNote')}`;
+      ? `To check: required ${summary.requiredMissing} / duplicate keys ${summary.duplicateKeyGroups} / abbreviation origins ${summary.missingOrigins} / abbreviation speech ${summary.missingSpeech} / British IPA ${summary.britishIpaIssues} / kana notes ${summary.phoneticAssistIssues}. ${uiText('dataQualityProofingNote')}`
+      : `要確認: 必須${summary.requiredMissing} / 重複キー${summary.duplicateKeyGroups} / 略語元語${summary.missingOrigins} / 略語音声${summary.missingSpeech} / British IPA${summary.britishIpaIssues} / 発音カナ${summary.phoneticAssistIssues}。${uiText('dataQualityProofingNote')}`;
   setText('data-quality-note', note);
 }
 
@@ -21231,6 +21483,7 @@ function getChoiceGroup(word) {
   if (categories.has('abbreviation-education')) return 'abbreviation-education';
   if (categories.has('abbreviation')) return 'abbreviation';
   if (categories.has('word-relation')) return 'word-relation';
+  if (categories.has('pronunciation-note')) return getChoiceSubdomain(word);
   if (categories.has('katakana-gap')) return 'katakana-gap';
   if (categories.has('rl-contrast')) return 'rl-contrast';
   return 'general';
@@ -21252,6 +21505,75 @@ function isChoiceGroupCompatible(word, referenceWord, allowMixed = false) {
   const group = getChoiceGroup(word);
   const referenceGroup = getChoiceGroup(referenceWord);
   return group === referenceGroup;
+}
+
+function getChoiceDomain(word) {
+  const categories = getWordCategories(word);
+  const wordId = getWordIdKey(word);
+  if (categories.has('muscle-anatomy')) return 'technical-muscle';
+  if (categories.has('special-needs-education')) return 'technical-special-needs';
+  if (categories.has('abbreviation-tech')) return 'technical-abbreviation';
+  if (EXTRA_TECHNICAL_WORD_IDS.has(wordId)) return 'technical-science';
+  if (categories.has('technical')) return 'technical';
+  if (categories.has('food')) return 'food';
+  if (categories.has('phrasal-verb')) return 'phrasal-verb';
+  if (categories.has('atm-banking')) return 'banking';
+  if (categories.has('news-english')) return 'news';
+  if (categories.has('uncountable-noun')) return 'uncountable-noun';
+  if (categories.has('abbreviation')) return 'abbreviation';
+  if (categories.has('word-relation')) return 'word-relation';
+  if (categories.has('katakana-gap')) return 'katakana-gap';
+  if (categories.has('rl-contrast')) return 'rl-contrast';
+  if (categories.has('pronunciation-note')) return 'pronunciation-note';
+  if (DAILY_CARE_WORD_IDS.has(wordId)) return 'daily-care';
+  return 'standard';
+}
+
+function getChoiceSubdomain(word) {
+  if (word?.choiceSubdomain) return word.choiceSubdomain;
+  const categories = getWordCategories(word);
+  const wordId = getWordIdKey(word);
+  const wordText = String(word?.w || '').trim().toLowerCase();
+  if (SPECIAL_NEEDS_CONDITION_WORD_IDS.has(wordId)) return 'special-needs-condition';
+  if (SPECIAL_NEEDS_SUPPORT_WORD_IDS.has(wordId)) return 'special-needs-support';
+  if (MUSCLE_HEAD_NECK_CHOICE_WORDS.has(wordText)) return 'muscle-head-neck';
+  if (MUSCLE_SHOULDER_ARM_CHOICE_WORDS.has(wordText)) return 'muscle-shoulder-arm';
+  if (MUSCLE_TRUNK_CORE_CHOICE_WORDS.has(wordText)) return 'muscle-trunk-core';
+  if (MUSCLE_HIP_LEG_CHOICE_WORDS.has(wordText)) return 'muscle-hip-leg';
+  if (TECHNICAL_SCIENCE_CHOICE_WORDS.has(wordText) || EXTRA_TECHNICAL_WORD_IDS.has(wordId)) return 'technical-science-biology';
+  if (DAILY_CARE_WORD_IDS.has(wordId)) return 'daily-care-childcare';
+  if (NEWS_REPORTING_CHOICE_WORDS.has(wordText)) return 'news-reporting';
+  if (NEWS_CONFLICT_CHOICE_WORDS.has(wordText)) return 'news-conflict';
+  if (NEWS_HUMANITARIAN_CHOICE_WORDS.has(wordText)) return 'news-humanitarian';
+  if (NEWS_GENERAL_CHOICE_WORDS.has(wordText)) return 'news-general';
+  if (categories.has('phrasal-verb')) {
+    const baseVerb = wordText.split(/\s+/)[0] || 'other';
+    return `phrasal-${baseVerb}`;
+  }
+  if (categories.has('food-fish')) return 'food-fish';
+  if (categories.has('food-fruit')) return 'food-fruit';
+  if (categories.has('food-vegetable')) return 'food-vegetable';
+  if (categories.has('abbreviation-tech')) return 'abbreviation-tech';
+  if (categories.has('abbreviation-business')) return 'abbreviation-business';
+  if (categories.has('abbreviation-public')) return 'abbreviation-public';
+  if (categories.has('abbreviation-education')) return 'abbreviation-education';
+  if (categories.has('abbreviation')) return 'abbreviation-general';
+  if (categories.has('word-relation')) return `word-relation-${getPartKey(word)}`;
+  if (categories.has('katakana-gap')) return `katakana-gap-${getPartKey(word)}`;
+  if (categories.has('rl-contrast')) return `rl-contrast-${getPartKey(word)}`;
+  if (PRONUNCIATION_COMMON_BRITISH_CHOICE_WORDS.has(wordText)) return 'pronunciation-common-british';
+  if (PRONUNCIATION_EXPRESSIVE_CHOICE_WORDS.has(wordText)) return 'pronunciation-expressive';
+  if (PRONUNCIATION_MINIMAL_PAIR_CHOICE_WORDS.has(wordText)) return 'pronunciation-minimal-pair';
+  if (categories.has('pronunciation-note')) return `pronunciation-${getPartKey(word)}`;
+  return `${getChoiceDomain(word)}-${getPartKey(word)}`;
+}
+
+function isChoiceDomainCompatible(word, referenceWord) {
+  return getChoiceDomain(word) === getChoiceDomain(referenceWord);
+}
+
+function isChoiceSubdomainCompatible(word, referenceWord) {
+  return getChoiceSubdomain(word) === getChoiceSubdomain(referenceWord);
 }
 
 function normalizeRelationWordText(value) {
@@ -21588,7 +21910,15 @@ function getDistractorPool(correctWord, neededDistractors = currentTestChoiceCou
   const selectedMeanings = [String(correctWord.m || '').trim()].filter(Boolean);
   const selectedKeys = new Set([correctKey]);
   const selected = [];
-  const addCandidates = candidates => {
+  const activeWords = getTestActiveWords();
+  const sameGroup = word => isChoiceGroupCompatible(word, correctWord);
+  const sameCategory = word => sharesChoiceCategoryWith(word, correctWord);
+  const sameLevel = word => getWordLevel(word) === getWordLevel(correctWord);
+  const samePart = word => sharesPartWith(word, correctWord);
+  const sameDomain = word => isChoiceDomainCompatible(word, correctWord);
+  const sameSubdomain = word => isChoiceSubdomainCompatible(word, correctWord);
+  const addCandidates = (candidates, options = {}) => {
+    const requireSamePart = options.requireSamePart !== false;
     shuffle(candidates).forEach(word => {
       if (selected.length >= neededDistractors) return;
       const key = getCardKey(word);
@@ -21596,6 +21926,8 @@ function getDistractorPool(correctWord, neededDistractors = currentTestChoiceCou
       const shortMeaning = getShortMeaning(meaning);
       if (
         selectedKeys.has(key) ||
+        !sameDomain(word) ||
+        (requireSamePart && !samePart(word)) ||
         !meaning ||
         seenMeanings.has(meaning) ||
         seenShortMeanings.has(shortMeaning) ||
@@ -21608,34 +21940,17 @@ function getDistractorPool(correctWord, neededDistractors = currentTestChoiceCou
       selected.push(word);
     });
   };
-  const activeWords = getTestActiveWords();
-  const sameGroup = word => isChoiceGroupCompatible(word, correctWord);
-  const sameCategory = word => sharesChoiceCategoryWith(word, correctWord);
-  const sameLevel = word => getWordLevel(word) === getWordLevel(correctWord);
-  const samePart = word => sharesPartWith(word, correctWord);
-  addCandidates(activeWords.filter(word => sameGroup(word) && samePart(word)));
+  addCandidates(activeWords.filter(sameSubdomain));
   if (selected.length >= neededDistractors) return selected;
-  addCandidates(WORDS.filter(word => sameGroup(word) && samePart(word)));
-  if (selected.length >= neededDistractors) return selected;
-  addCandidates(activeWords.filter(word => sameCategory(word) && samePart(word)));
-  if (selected.length >= neededDistractors) return selected;
-  addCandidates(WORDS.filter(word => sameCategory(word) && samePart(word)));
-  if (selected.length >= neededDistractors) return selected;
-  addCandidates(activeWords.filter(word => sameLevel(word) && samePart(word)));
-  if (selected.length >= neededDistractors) return selected;
-  addCandidates(WORDS.filter(word => sameLevel(word) && samePart(word)));
-  if (selected.length >= neededDistractors) return selected;
-  addCandidates(activeWords.filter(samePart));
-  if (selected.length >= neededDistractors) return selected;
-  addCandidates(WORDS.filter(samePart));
+  addCandidates(WORDS.filter(sameSubdomain));
   if (selected.length >= neededDistractors) return selected;
   addCandidates(activeWords.filter(sameGroup));
   if (selected.length >= neededDistractors) return selected;
   addCandidates(WORDS.filter(sameGroup));
   if (selected.length >= neededDistractors) return selected;
-  addCandidates(activeWords.filter(word => sameCategory(word)));
+  addCandidates(activeWords.filter(sameCategory));
   if (selected.length >= neededDistractors) return selected;
-  addCandidates(WORDS.filter(word => sameCategory(word)));
+  addCandidates(WORDS.filter(sameCategory));
   if (selected.length >= neededDistractors) return selected;
   addCandidates(activeWords.filter(sameLevel));
   if (selected.length >= neededDistractors) return selected;
@@ -21644,6 +21959,22 @@ function getDistractorPool(correctWord, neededDistractors = currentTestChoiceCou
   addCandidates(activeWords);
   if (selected.length >= neededDistractors) return selected;
   addCandidates(WORDS);
+  if (selected.length >= neededDistractors) return selected;
+  addCandidates(activeWords.filter(sameGroup), { requireSamePart: false });
+  if (selected.length >= neededDistractors) return selected;
+  addCandidates(WORDS.filter(sameGroup), { requireSamePart: false });
+  if (selected.length >= neededDistractors) return selected;
+  addCandidates(activeWords.filter(sameCategory), { requireSamePart: false });
+  if (selected.length >= neededDistractors) return selected;
+  addCandidates(WORDS.filter(sameCategory), { requireSamePart: false });
+  if (selected.length >= neededDistractors) return selected;
+  addCandidates(activeWords.filter(sameLevel), { requireSamePart: false });
+  if (selected.length >= neededDistractors) return selected;
+  addCandidates(WORDS.filter(sameLevel), { requireSamePart: false });
+  if (selected.length >= neededDistractors) return selected;
+  addCandidates(activeWords, { requireSamePart: false });
+  if (selected.length >= neededDistractors) return selected;
+  addCandidates(WORDS, { requireSamePart: false });
   return selected;
 }
 
