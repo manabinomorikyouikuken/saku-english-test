@@ -1824,6 +1824,7 @@
       --test-correct-action-gap: 6px;
       --test-choice-grid-height: 205px;
       --test-wrong-choice-grid-height: clamp(120px, 15svh, 142px);
+      --test-action-bottom-extra: 0px;
       flex: 0 0 auto;
       margin-top: 8px;
     }
@@ -1886,9 +1887,9 @@
     body.test-mode.test-answered .test-feedback.wrong-feedback.is-visible ~ .test-answer-zone .test-choice-grid {
       visibility: hidden;
       pointer-events: none;
-      height: var(--test-wrong-choice-grid-height);
+      height: calc(var(--test-wrong-choice-grid-height) + var(--test-action-bottom-extra));
       min-height: 0;
-      max-height: var(--test-wrong-choice-grid-height);
+      max-height: calc(var(--test-wrong-choice-grid-height) + var(--test-action-bottom-extra));
       overflow: hidden;
     }
     body.test-mode.test-action-compact .test-answer-zone {
@@ -21042,6 +21043,7 @@ let testMissedKeys = new Set();
 let testSessionKind = 'normal';
 let lastTestScopeCategory = currentCategory;
 let testPerfectQuote = null;
+let testActionTargetBottom = null;
 let completionAction = 'restart';
 
 function getDueCards() {
@@ -21785,6 +21787,7 @@ function showTestQuestion() {
   const word = testCards[testIndex];
   const isRelationQuestion = isRelationTestWord(word);
   testAnswered = false;
+  testActionTargetBottom = null;
   document.body.classList.remove('test-answered', 'test-feedback-visible');
   clearTestActionFitClasses();
   setTestCardFlipped(false);
@@ -22082,6 +22085,7 @@ function markPickedAnswer(choiceIndex) {
 
 function answerTestChoice(button, word) {
   if (testAnswered) return;
+  testActionTargetBottom = getTestLetterLowerRowBottom();
   testAnswered = true;
   document.body.classList.add('test-answered');
   const isCorrect = button.dataset.correct === 'true';
@@ -22981,6 +22985,17 @@ const TEST_ACTION_FIT_CLASSES = ['test-action-compact', 'test-action-tight', 'te
 
 function clearTestActionFitClasses() {
   document.body.classList.remove(...TEST_ACTION_FIT_CLASSES);
+  document.querySelector('.test-answer-zone')?.style.removeProperty('--test-action-bottom-extra');
+}
+
+function getTestLetterLowerRowBottom() {
+  const letterButtons = [...document.querySelectorAll('.test-letter-btn')];
+  if (!letterButtons.length) return null;
+  const lowerButtons = letterButtons.length === 3 ? letterButtons.slice(1) : letterButtons;
+  const bottoms = lowerButtons
+    .map(button => button.getBoundingClientRect().bottom)
+    .filter(Number.isFinite);
+  return bottoms.length ? Math.max(...bottoms) : null;
 }
 
 function fitTestActionButton() {
@@ -22990,6 +23005,16 @@ function fitTestActionButton() {
   if (!nextButton?.classList.contains('is-visible')) return;
 
   const safeBottom = window.innerHeight - 34;
+  if (Number.isFinite(testActionTargetBottom)) {
+    const targetBottom = Math.min(testActionTargetBottom, safeBottom);
+    const currentBottom = nextButton.getBoundingClientRect().bottom;
+    const extra = Math.max(0, targetBottom - currentBottom);
+    if (extra > 1) {
+      document.querySelector('.test-answer-zone')?.style.setProperty('--test-action-bottom-extra', `${Math.round(extra)}px`);
+      void nextButton.offsetHeight;
+    }
+  }
+
   const fits = () => nextButton.getBoundingClientRect().bottom <= safeBottom;
   for (const className of TEST_ACTION_FIT_CLASSES) {
     if (fits()) return;
