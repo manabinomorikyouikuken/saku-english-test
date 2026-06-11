@@ -1557,7 +1557,7 @@
     }
     .test-letter-row.choice-count-2 {
       min-height: var(--test-action-square-size);
-      align-content: center;
+      align-content: end;
     }
     .test-letter-row.choice-count-3 .test-letter-btn:nth-child(1) {
       grid-column: 1 / -1;
@@ -1683,6 +1683,8 @@
       visibility: hidden;
     }
     .test-next-btn {
+      position: relative;
+      top: var(--test-action-offset-y, 0px);
       display: none;
       align-items: center;
       justify-content: center;
@@ -21816,6 +21818,7 @@ function beginTestSession(cards, kind = 'normal') {
   hideTestEntryPanel();
   document.body.classList.add('test-mode');
   document.body.classList.remove('test-answered');
+  resetCompleteActionAlignment();
   currentMode = 'test';
   testSessionKind = kind;
   lastTestScopeCategory = currentCategory;
@@ -22189,6 +22192,7 @@ function showTestQuestion() {
     letterButton.onclick = () => answerTestChoice(letterButton, word);
     letterRow.appendChild(letterButton);
   });
+  testActionTargetBottom = getTestLetterLowerRowBottom();
 
   const pct = (testIndex / testCards.length) * 100;
   document.getElementById('progress-fill').style.width = pct + '%';
@@ -23146,6 +23150,7 @@ function showComplete() {
   document.getElementById('swipe-msg').style.display = 'none';
   const completeEl = document.getElementById('session-complete');
   completeEl.classList.remove('weakness-cleared', 'perfect-complete', 'relation-complete');
+  resetCompleteActionAlignment();
   completeEl.style.display = 'block';
   document.getElementById('progress-fill').style.width = '100%';
   document.getElementById('progress-text').textContent = `${sessionCards.length} / ${sessionCards.length}`;
@@ -23191,6 +23196,7 @@ function showTestComplete() {
   document.getElementById('swipe-msg').style.display = 'none';
   const completeEl = document.getElementById('session-complete');
   completeEl.classList.remove('perfect-complete', 'relation-complete');
+  resetCompleteActionAlignment();
   completeEl.style.display = 'block';
   document.getElementById('progress-fill').style.width = '100%';
   document.getElementById('progress-text').textContent = `${testCards.length} / ${testCards.length}`;
@@ -23279,6 +23285,7 @@ function showTestComplete() {
 		    testPerfectQuote = null;
 		    setPerfectQuoteVisible(false);
 		  }
+		  requestAnimationFrame(alignCompleteActionButton);
 		}
 
 // ─── 画面操作：学習は理解度ボタン、テストは回答後だけ専用バーでスワイプ ───
@@ -23313,10 +23320,12 @@ function setTestSwipeHintReady(isReady) {
 }
 
 const TEST_ACTION_FIT_CLASSES = ['test-action-compact', 'test-action-tight', 'test-action-ultra'];
+const TEST_ACTION_FALLBACK_BOTTOM_GAP = 80;
 
 function clearTestActionFitClasses() {
   document.body.classList.remove(...TEST_ACTION_FIT_CLASSES);
   document.querySelector('.test-answer-zone')?.style.removeProperty('--test-action-bottom-extra');
+  document.getElementById('test-next-btn')?.style.removeProperty('--test-action-offset-y');
 }
 
 function getTestLetterLowerRowBottom() {
@@ -23329,6 +23338,30 @@ function getTestLetterLowerRowBottom() {
   return bottoms.length ? Math.max(...bottoms) : null;
 }
 
+function getTestActionTargetBottom() {
+  const safeBottom = window.innerHeight - 34;
+  if (Number.isFinite(testActionTargetBottom) && testActionTargetBottom > 0) {
+    return Math.min(testActionTargetBottom, safeBottom);
+  }
+  return Math.min(window.innerHeight - TEST_ACTION_FALLBACK_BOTTOM_GAP, safeBottom);
+}
+
+function applyTestActionBottomExtra(nextButton, targetBottom) {
+  if (!nextButton) return;
+  const currentBottom = nextButton.getBoundingClientRect().bottom;
+  const extra = Math.max(0, targetBottom - currentBottom);
+  if (extra <= 1) return;
+  document.querySelector('.test-answer-zone')?.style.setProperty('--test-action-bottom-extra', `${Math.round(extra)}px`);
+  void nextButton.offsetHeight;
+}
+
+function applyTestActionFineOffset(nextButton, targetBottom) {
+  if (!nextButton) return;
+  const delta = targetBottom - nextButton.getBoundingClientRect().bottom;
+  if (Math.abs(delta) <= 1) return;
+  nextButton.style.setProperty('--test-action-offset-y', `${Math.round(delta)}px`);
+}
+
 function fitTestActionButton() {
   clearTestActionFitClasses();
   if (currentMode !== 'test' || !testAnswered) return;
@@ -23336,22 +23369,47 @@ function fitTestActionButton() {
   if (!nextButton?.classList.contains('is-visible')) return;
 
   const safeBottom = window.innerHeight - 34;
-  if (Number.isFinite(testActionTargetBottom)) {
-    const targetBottom = Math.min(testActionTargetBottom, safeBottom);
-    const currentBottom = nextButton.getBoundingClientRect().bottom;
-    const extra = Math.max(0, targetBottom - currentBottom);
-    if (extra > 1) {
-      document.querySelector('.test-answer-zone')?.style.setProperty('--test-action-bottom-extra', `${Math.round(extra)}px`);
-      void nextButton.offsetHeight;
-    }
-  }
+  const targetBottom = getTestActionTargetBottom();
+  applyTestActionBottomExtra(nextButton, targetBottom);
 
   const fits = () => nextButton.getBoundingClientRect().bottom <= safeBottom;
   for (const className of TEST_ACTION_FIT_CLASSES) {
-    if (fits()) return;
+    if (fits()) break;
     document.body.classList.add(className);
     void nextButton.offsetHeight;
   }
+  applyTestActionBottomExtra(nextButton, targetBottom);
+  applyTestActionFineOffset(nextButton, targetBottom);
+}
+
+function resetCompleteActionAlignment() {
+  const actions = document.querySelector('.complete-actions');
+  if (!actions) return;
+  actions.style.removeProperty('margin-top');
+}
+
+function getVisibleCompleteSquareAction() {
+  return document.querySelector('#complete-repeat-btn:not([hidden])')
+    || document.querySelector('#complete-back-btn:not([hidden])');
+}
+
+function alignCompleteActionButton() {
+  const completeEl = document.getElementById('session-complete');
+  const actions = document.querySelector('.complete-actions');
+  if (!completeEl || !actions || completeEl.style.display === 'none') return;
+  resetCompleteActionAlignment();
+  const actionButton = getVisibleCompleteSquareAction();
+  if (!actionButton) return;
+
+  void actions.offsetHeight;
+  const targetBottom = getTestActionTargetBottom();
+  const actionRect = actionButton.getBoundingClientRect();
+  const currentBottom = actionRect.bottom;
+  if (!Number.isFinite(currentBottom)) return;
+  const baseMargin = parseFloat(getComputedStyle(actions).marginTop) || 0;
+  const nextMargin = Math.max(0, baseMargin + targetBottom - currentBottom);
+  if (Math.abs(nextMargin - baseMargin) <= 1) return;
+  actions.style.marginTop = `${Math.round(nextMargin)}px`;
 }
 
 function isControlTarget(target) {
@@ -23571,6 +23629,8 @@ document.addEventListener('keydown', e => {
 window.addEventListener('resize', () => {
   fitWordText();
   fitTestWordText();
+  if (currentMode === 'test' && testAnswered) fitTestActionButton();
+  requestAnimationFrame(alignCompleteActionButton);
   updateSettingsPagerHeight();
 });
 
