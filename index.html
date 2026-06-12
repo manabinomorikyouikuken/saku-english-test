@@ -2969,7 +2969,7 @@
     <div class="settings-section-title" data-ui-key="chooseTheme">テーマを選ぶ</div>
     <div class="category-buttons">
       <div class="category-group-label" data-ui-key="categoryGroupStart">入口</div>
-      <button class="category-btn active" type="button" data-category="standardPractice" data-ui-label-key="categoryStandardPractice" onclick="setCategory('standardPractice')">標準ミックス<span id="category-count-standardPractice">1208項目</span></button>
+      <button class="category-btn active" type="button" data-category="standardPractice" data-ui-label-key="categoryStandardPractice" onclick="setCategory('standardPractice')">標準ミックス<span id="category-count-standardPractice">965項目</span></button>
       <button class="category-btn" type="button" data-category="all" data-ui-label-key="categoryAll" onclick="setCategory('all')">全単語<span id="category-count-all">1314項目</span></button>
       <button class="category-btn" type="button" data-category="weakWords" data-ui-label-key="categoryWeakWords" onclick="setCategory('weakWords')">苦手<span id="category-count-weakWords">0項目</span></button>
       <div class="category-group-label" data-ui-key="categoryGroupDaily">日常・実用</div>
@@ -18365,7 +18365,7 @@ const UI_TEXT = {
     categoryRlContrast: 'R/L注意',
     categoryWordRelation: '語彙関係',
     katakanaSub: '知ってるつもり',
-    themeNote: '標準ミックスは、一般語と句動詞を混ぜた総合練習です。句動詞だけ練習したい時は「句動詞」を選びます。全単語は筋肉名・特別支援教育・ICT/AI略語なども含めます。',
+    themeNote: '標準ミックスは、一般語を中心にした入口です。句動詞・略語・ニュース英語・銀行・専門語は専用テーマから選びます。',
     choosePart: '品詞でしぼる',
     partRandom: 'ランダム',
     partNoun: '名詞',
@@ -18583,7 +18583,7 @@ const UI_TEXT = {
     categoryRlContrast: 'R/L caution',
     categoryWordRelation: 'Word relations',
     katakanaSub: 'False friends',
-    themeNote: 'Standard mix combines general words and phrasal verbs. Choose Phrasal verbs when you want that mode only. All words includes muscles, special needs education, and ICT/AI abbreviations.',
+    themeNote: 'Standard mix focuses on general words. Phrasal verbs, abbreviations, news English, banking, and technical words stay in dedicated themes.',
     choosePart: 'Filter by part of speech',
     partRandom: 'Random',
     partNoun: 'Nouns',
@@ -18770,6 +18770,20 @@ const CATEGORY_TAGS = {
   rlContrast: 'rl-contrast',
   wordRelation: 'word-relation'
 };
+const STANDARD_PRACTICE_EXCLUDED_CATEGORIES = new Set([
+  'phrasal-verb',
+  'abbreviation',
+  'abbreviation-tech',
+  'abbreviation-business',
+  'abbreviation-public',
+  'abbreviation-education',
+  'news-english',
+  'atm-banking',
+  'technical',
+  'muscle-anatomy',
+  'special-needs-education',
+  'word-relation'
+]);
 const EXTRA_TECHNICAL_WORD_IDS = new Set([
   'capillary_noun_science',
   'vessel_noun_science',
@@ -20635,7 +20649,8 @@ function getWordCategories(word) {
 }
 
 function isStandardPracticeWord(word) {
-  return !getWordCategories(word).has('technical');
+  const categories = getWordCategories(word);
+  return ![...STANDARD_PRACTICE_EXCLUDED_CATEGORIES].some(category => categories.has(category));
 }
 
 function isWeakStudyState(state) {
