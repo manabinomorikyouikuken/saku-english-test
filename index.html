@@ -22974,7 +22974,8 @@ function updateCompleteRouteActions(missedCount = getMissedReviewWords().length)
   relationButton.textContent = uiText('relationGame');
   relationButton.hidden = false;
   repeatButton.hidden = false;
-  const isPerfectRepeat = testCards.length === TEST_CARD_LIMIT && testCorrect === TEST_CARD_LIMIT && testMissedKeys.size === 0;
+  const currentCorrectStreak = Number(getMeta().correctStreak) || 0;
+  const isPerfectRepeat = currentCorrectStreak >= TEST_CARD_LIMIT && testCards.length > 0 && testMissedKeys.size === 0;
   const perfectRepeatLabel = currentUiLanguage === 'en'
     ? 'Grow one more sprout'
     : '🌱をもう1つ育てる';
