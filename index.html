@@ -33,6 +33,7 @@
       display: flex;
       flex-direction: column;
       align-items: center;
+      transition: background-color 0.35s ease, background 0.35s ease;
     }
 
     header {
@@ -19395,6 +19396,13 @@ const ABBREVIATION_ORIGIN_TYPES = {
 const PRONUNCIATION_NOTE_WORDS = new Set(
   'law raw low maw moe hoe toe cow caw progress pronounce pronunciation'.split(' ')
 );
+const DEFAULT_APP_BACKGROUND = '#fff1f5';
+const PERFECT_CHALLENGE_BACKGROUNDS = [
+  '#fff7ed', '#fff4e6', '#fff1dc', '#fef3c7', '#fef9c3',
+  '#f7fee7', '#ecfccb', '#dcfce7', '#d1fae5', '#ccfbf1',
+  '#cffafe', '#ecfeff', '#e0f2fe', '#dbeafe', '#e0e7ff',
+  '#ede9fe', '#f3e8ff', '#f5f3ff', '#f8fafc', '#eef2ff'
+];
 const RL_CONTRAST_PAIRS = {
   law: { label: 'L law（法律） / R raw（生の）' },
   raw: { label: 'R raw（生の） / L law（法律）' },
@@ -19782,6 +19790,17 @@ function getThisWeekReviewCount(meta = getMeta()) {
 
 function getTodayReviewCount(meta = getMeta()) {
   return Number(meta.dailyReviews?.[getDateKey()]) || 0;
+}
+
+function getPerfectChallengeBackground(correctStreak = getMeta().correctStreak) {
+  const streak = Math.max(0, Math.floor(Number(correctStreak) || 0));
+  if (streak < TEST_CARD_LIMIT) return DEFAULT_APP_BACKGROUND;
+  const completedBlocks = Math.floor(streak / TEST_CARD_LIMIT);
+  return PERFECT_CHALLENGE_BACKGROUNDS[(completedBlocks - 1) % PERFECT_CHALLENGE_BACKGROUNDS.length];
+}
+
+function applyPerfectChallengeBackground(correctStreak = getMeta().correctStreak) {
+  document.documentElement.style.setProperty('--app-bg', getPerfectChallengeBackground(correctStreak));
 }
 
 function recordStudyDay() {
@@ -23315,6 +23334,7 @@ function showRandomPerfectQuote() {
 function updateStats() {
   const data = loadData();
   const meta = getMeta(data);
+  applyPerfectChallengeBackground(meta.correctStreak);
   const activeWords = getActiveWords();
   const mastered = activeWords.filter((w, index) => data[getCardKey(w, index)] && data[getCardKey(w, index)].mastered).length;
   const target = activeWords.length;
