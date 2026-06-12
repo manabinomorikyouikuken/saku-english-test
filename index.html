@@ -21531,6 +21531,12 @@ function getChoiceDomain(word) {
   return 'standard';
 }
 
+function getPhrasalParticleKey(wordText) {
+  const parts = String(wordText || '').trim().toLowerCase().split(/\s+/).filter(Boolean);
+  if (parts.length <= 1) return 'other';
+  return parts.slice(1).join('-');
+}
+
 function getChoiceSubdomain(word) {
   if (word?.choiceSubdomain) return word.choiceSubdomain;
   const categories = getWordCategories(word);
@@ -21549,8 +21555,7 @@ function getChoiceSubdomain(word) {
   if (NEWS_HUMANITARIAN_CHOICE_WORDS.has(wordText)) return 'news-humanitarian';
   if (NEWS_GENERAL_CHOICE_WORDS.has(wordText)) return 'news-general';
   if (categories.has('phrasal-verb')) {
-    const baseVerb = wordText.split(/\s+/)[0] || 'other';
-    return `phrasal-${baseVerb}`;
+    return `phrasal-${getPhrasalParticleKey(wordText)}`;
   }
   if (categories.has('food-fish')) return 'food-fish';
   if (categories.has('food-fruit')) return 'food-fruit';
@@ -21645,6 +21650,92 @@ function meaningsAreTooClose(leftMeaning, rightMeaning) {
         (leftPart.includes(rightPart) || rightPart.includes(leftPart)))
     )
   );
+}
+
+function getChoiceQualitySummary(options = {}) {
+  const previousChoiceCount = currentTestChoiceCount;
+  const requestedChoiceCount = Number(options.choiceCount) || DEFAULT_TEST_CHOICE_COUNT;
+  const choiceCount = TEST_CHOICE_COUNT_OPTIONS.includes(requestedChoiceCount)
+    ? requestedChoiceCount
+    : DEFAULT_TEST_CHOICE_COUNT;
+  const limit = Number.isFinite(Number(options.limit)) ? Math.max(0, Number(options.limit)) : WORDS.length;
+  const includeSamples = options.includeSamples !== false;
+  const summary = {
+    total: 0,
+    closeMeaningIssues: 0,
+    domainIssues: 0,
+    avoidableSubdomainIssues: 0,
+    shortDomainPools: 0,
+    samples: []
+  };
+  currentTestChoiceCount = choiceCount;
+  try {
+    const words = WORDS.slice(0, limit);
+    words.forEach(word => {
+      summary.total += 1;
+      const correctKey = getCardKey(word);
+      const neededDistractors = Math.max(1, choiceCount - 1);
+      const validDomainPool = WORDS.filter(candidate =>
+        getCardKey(candidate) !== correctKey
+        && isChoiceDomainCompatible(candidate, word)
+        && sharesPartWith(candidate, word)
+        && !meaningsAreTooClose(candidate.m, word.m)
+      );
+      const validSubdomainPool = validDomainPool.filter(candidate =>
+        isChoiceSubdomainCompatible(candidate, word)
+      );
+      if (validDomainPool.length < neededDistractors) {
+        summary.shortDomainPools += 1;
+      }
+
+      buildMeaningTestChoices(word).forEach(choice => {
+        if (choice.correct) return;
+        const candidate = choice.word;
+        if (meaningsAreTooClose(word.m, candidate.m)) {
+          summary.closeMeaningIssues += 1;
+          if (includeSamples && summary.samples.length < 10) {
+            summary.samples.push({
+              type: 'close-meaning',
+              word: word.w,
+              meaning: word.m,
+              candidate: candidate.w,
+              candidateMeaning: candidate.m
+            });
+          }
+        }
+        if (!isChoiceDomainCompatible(candidate, word)) {
+          summary.domainIssues += 1;
+          if (includeSamples && summary.samples.length < 10) {
+            summary.samples.push({
+              type: 'domain',
+              word: word.w,
+              domain: getChoiceDomain(word),
+              candidate: candidate.w,
+              candidateDomain: getChoiceDomain(candidate)
+            });
+          }
+        }
+        if (
+          validSubdomainPool.length >= neededDistractors
+          && !isChoiceSubdomainCompatible(candidate, word)
+        ) {
+          summary.avoidableSubdomainIssues += 1;
+          if (includeSamples && summary.samples.length < 10) {
+            summary.samples.push({
+              type: 'subdomain',
+              word: word.w,
+              subdomain: getChoiceSubdomain(word),
+              candidate: candidate.w,
+              candidateSubdomain: getChoiceSubdomain(candidate)
+            });
+          }
+        }
+      });
+    });
+  } finally {
+    currentTestChoiceCount = previousChoiceCount;
+  }
+  return summary;
 }
 
 function getWordRelationSpec(word) {
