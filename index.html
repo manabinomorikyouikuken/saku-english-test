@@ -2287,6 +2287,21 @@
 	      color: var(--perfect-star-color, #111827);
 	      -webkit-text-stroke: 0.65px var(--perfect-star-stroke, rgba(255,255,255,0.6));
 	    }
+	    .perfect-star-complete .perfect-growth-sprout {
+	      display: inline-flex;
+	      align-items: center;
+	      justify-content: center;
+	      width: 26px;
+	      color: #15803d;
+	      font-size: 22px;
+	      line-height: 1;
+	      text-shadow: 0 2px 5px rgba(22,101,52,0.14);
+	    }
+	    .perfect-star-complete .perfect-growth-sprout.is-empty {
+	      color: #fed7aa;
+	      font-size: 19px;
+	      text-shadow: none;
+	    }
 	    .perfect-star-complete-msg {
 	      color: #9a3412;
 	      font-size: 11px;
@@ -22852,15 +22867,54 @@ function getPerfectStarCompleteMessage(progress, currentStreak = progress.streak
   return `${action} ${progress.streak}連続正解`;
 }
 
-function updatePerfectStarComplete(correctStreak, bestCorrectStreak = correctStreak) {
-  const displayStreak = Math.max(Number(correctStreak) || 0, Number(bestCorrectStreak) || 0);
-  const progress = getPerfectStarProgress(displayStreak);
+function getPerfectGrowthProgress(correctStreak) {
+  const streak = Math.max(0, Math.floor(Number(correctStreak) || 0));
+  const perfectBlocks = Math.floor(streak / TEST_CARD_LIMIT);
+  const sproutCount = perfectBlocks > 0 ? ((perfectBlocks - 1) % PERFECT_STAR_MAX_VISIBLE) + 1 : 0;
+  const completedStars = Math.floor(perfectBlocks / PERFECT_STAR_MAX_VISIBLE);
+  const isStarGrowthMoment = perfectBlocks > 0 && perfectBlocks % PERFECT_STAR_MAX_VISIBLE === 0;
+  const remainingPerfects = sproutCount > 0 ? PERFECT_STAR_MAX_VISIBLE - sproutCount : PERFECT_STAR_MAX_VISIBLE;
+  return { streak, perfectBlocks, sproutCount, completedStars, isStarGrowthMoment, remainingPerfects };
+}
+
+function renderPerfectGrowthRow(container, progress) {
+  if (!container) return;
+  container.textContent = '';
+  for (let index = 0; index < PERFECT_STAR_MAX_VISIBLE; index++) {
+    const sprout = document.createElement('span');
+    const isEarned = index < progress.sproutCount;
+    sprout.className = `perfect-growth-sprout${isEarned ? '' : ' is-empty'}`;
+    sprout.textContent = isEarned ? '🌱' : '・';
+    container.appendChild(sprout);
+  }
+}
+
+function getPerfectGrowthCompleteMessage(progress) {
+  if (!progress.sproutCount) {
+    return currentUiLanguage === 'en'
+      ? 'A Perfect 20 grows a sprout.'
+      : '20問満点で🌱が育つ。';
+  }
+  if (currentUiLanguage === 'en') {
+    if (progress.isStarGrowthMoment) {
+      return `${progress.streak} correct in a row! Five sprouts grew into a star.`;
+    }
+    return `${progress.streak} correct in a row! ${progress.remainingPerfects} more Perfect 20s to grow a star.`;
+  }
+  if (progress.isStarGrowthMoment) {
+    return `${progress.streak}連続正解中！🌱5つが★に成長。`;
+  }
+  return `${progress.streak}連続正解中！次の★まであと${progress.remainingPerfects}回満点。`;
+}
+
+function updatePerfectStarComplete(correctStreak) {
+  const progress = getPerfectGrowthProgress(correctStreak);
   const panel = document.getElementById('perfect-star-complete');
   if (!panel) return;
-  const isVisible = progress.starCount > 0;
+  const isVisible = progress.sproutCount > 0;
   panel.classList.toggle('is-visible', isVisible);
-  renderPerfectStarRow(document.getElementById('perfect-star-complete-row'), progress);
-  setText('perfect-star-complete-msg', isVisible ? getPerfectStarCompleteMessage(progress, correctStreak) : '');
+  renderPerfectGrowthRow(document.getElementById('perfect-star-complete-row'), progress);
+  setText('perfect-star-complete-msg', isVisible ? getPerfectGrowthCompleteMessage(progress) : '');
 }
 
 function setCompleteFocus(message, tone = 'normal') {
@@ -23195,7 +23249,7 @@ function showRandomPerfectQuote() {
   }
   const quote = testPerfectQuote;
   const meta = getMeta();
-  updatePerfectStarComplete(meta.correctStreak, meta.bestCorrectStreak);
+  updatePerfectStarComplete(meta.correctStreak);
   setText('perfect-quote-text', `"${quote.quote}"`);
   setText('perfect-quote-source', quote.source);
   setText('perfect-quote-ja', quote.ja);
