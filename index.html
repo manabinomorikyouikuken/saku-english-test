@@ -2490,6 +2490,13 @@
       font-weight: 900;
       box-shadow: 0 4px 14px rgba(249,115,22,0.1);
     }
+    .complete-repeat-btn.perfect-repeat-art {
+      background: linear-gradient(180deg, #f0fdf4, #ffffff);
+      color: #15803d;
+      font-size: clamp(34px, 11vw, 54px);
+      line-height: 1;
+      text-shadow: 0 3px 7px rgba(21,128,61,0.16);
+    }
     .restart-btn:active,
     .complete-back-btn:active,
     .complete-repeat-btn:active { transform: scale(0.97); filter: brightness(0.9); }
@@ -22967,7 +22974,17 @@ function updateCompleteRouteActions(missedCount = getMissedReviewWords().length)
   relationButton.textContent = uiText('relationGame');
   relationButton.hidden = false;
   repeatButton.hidden = false;
-  repeatButton.textContent = uiText('oneMore');
+  const isPerfectRepeat = testCards.length === TEST_CARD_LIMIT && testCorrect === TEST_CARD_LIMIT && testMissedKeys.size === 0;
+  const perfectRepeatLabel = currentUiLanguage === 'en'
+    ? 'Grow one more sprout'
+    : '🌱をもう1つ育てる';
+  repeatButton.classList.toggle('perfect-repeat-art', isPerfectRepeat);
+  repeatButton.textContent = isPerfectRepeat ? '🌱' : uiText('oneMore');
+  repeatButton.setAttribute(
+    'aria-label',
+    isPerfectRepeat ? perfectRepeatLabel : uiText('oneMore')
+  );
+  repeatButton.title = isPerfectRepeat ? perfectRepeatLabel : uiText('oneMore');
   completeBackButton.hidden = true;
 }
 
