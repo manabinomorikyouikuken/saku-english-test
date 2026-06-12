@@ -21017,8 +21017,13 @@ function startCurrentCategoryTest() {
 }
 
 function repeatLastTestScope() {
-  if (completionAction === 'missReview' || testSessionKind === 'missReview') {
+  const hasMissReviewWords = getMissedReviewWords().length > 0;
+  if (completionAction === 'missReview' || (testSessionKind === 'missReview' && hasMissReviewWords)) {
     startMissReviewSession();
+    return;
+  }
+  if (testSessionKind === 'missReview') {
+    startQuickTest('standardPractice');
     return;
   }
   if (testSessionKind === 'wordRelation') {
