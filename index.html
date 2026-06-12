@@ -2145,6 +2145,16 @@
         --test-correct-action-gap: clamp(136px, 27.6svh, 166px);
       }
     }
+    .test-next-btn.sprout-next-art,
+    .test-next-btn.sprout-next-art.is-visible,
+    body.test-mode .test-next-btn.sprout-next-art,
+    body.test-mode .test-next-btn.sprout-next-art.is-visible {
+      background: linear-gradient(180deg, #f0fdf4, #ffffff);
+      color: #15803d;
+      font-size: clamp(68px, 22vw, 108px);
+      line-height: 1;
+      text-shadow: 0 3px 7px rgba(21,128,61,0.16);
+    }
 
     /* Complete screen */
     .session-complete {
@@ -22248,6 +22258,18 @@ function updateTestProgressDisplay() {
   document.getElementById('progress-text').textContent = `${answeredCount} / ${testCards.length}`;
 }
 
+function setTestNextButtonSprout(isSprout) {
+  const nextButton = document.getElementById('test-next-btn');
+  if (!nextButton) return;
+  const sproutLabel = currentUiLanguage === 'en'
+    ? 'Next. Grow one more sprout.'
+    : '次へ。🌱をもう1つ育てる。';
+  nextButton.classList.toggle('sprout-next-art', Boolean(isSprout));
+  nextButton.textContent = isSprout ? '🌱' : uiText('next');
+  nextButton.setAttribute('aria-label', isSprout ? sproutLabel : uiText('next'));
+  nextButton.title = isSprout ? sproutLabel : uiText('next');
+}
+
 function showTestQuestion() {
   if (testIndex >= testCards.length || testCards.length === 0) { showTestComplete(); return; }
 
@@ -22272,6 +22294,7 @@ function showTestQuestion() {
   const feedbackEl = document.getElementById('test-feedback');
   feedbackEl.textContent = '';
   feedbackEl.classList.remove('is-visible', 'correct-feedback', 'wrong-feedback', 'streak-milestone', 'streak-special');
+  setTestNextButtonSprout(false);
   document.getElementById('test-next-btn').classList.remove('is-visible');
   setTestSwipeHintReady(false);
 
@@ -22616,6 +22639,7 @@ function answerTestChoice(button, word) {
     cardEl?.classList.add('feedback-visible');
   }
   document.body.classList.toggle('test-feedback-visible', feedbackEl.classList.contains('is-visible'));
+  setTestNextButtonSprout(isCorrect && (Number(correctStreakMeta.correctStreak) || 0) >= TEST_CARD_LIMIT);
   document.getElementById('test-next-btn').classList.add('is-visible');
   setTestCardFlipped(false);
   setTestSwipeHintReady(true);
