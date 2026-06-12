@@ -22236,6 +22236,18 @@ function updateTestCardBack(word) {
   document.getElementById('test-back-example-ja').textContent = word.exJa;
 }
 
+function updateTestProgressDisplay() {
+  if (!testCards.length) {
+    document.getElementById('progress-fill').style.width = '0%';
+    document.getElementById('progress-text').textContent = '0 / 0';
+    return;
+  }
+  const answeredCount = Math.min(testCards.length, testIndex + (testAnswered ? 1 : 0));
+  const pct = (answeredCount / testCards.length) * 100;
+  document.getElementById('progress-fill').style.width = pct + '%';
+  document.getElementById('progress-text').textContent = `${answeredCount} / ${testCards.length}`;
+}
+
 function showTestQuestion() {
   if (testIndex >= testCards.length || testCards.length === 0) { showTestComplete(); return; }
 
@@ -22315,9 +22327,7 @@ function showTestQuestion() {
   });
   testActionTargetBottom = getTestLetterLowerRowBottom();
 
-  const pct = (testIndex / testCards.length) * 100;
-  document.getElementById('progress-fill').style.width = pct + '%';
-  document.getElementById('progress-text').textContent = `${testIndex} / ${testCards.length}`;
+  updateTestProgressDisplay();
   document.getElementById('due-text').textContent = getTestScoreLabel();
   playOneShotCardAudio(word, 'test');
 }
@@ -22610,6 +22620,7 @@ function answerTestChoice(button, word) {
   setTestCardFlipped(false);
   setTestSwipeHintReady(true);
   updateStats();
+  updateTestProgressDisplay();
   requestAnimationFrame(fitTestActionButton);
 }
 
