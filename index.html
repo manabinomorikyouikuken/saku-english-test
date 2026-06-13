@@ -19411,6 +19411,7 @@ const PRONUNCIATION_NOTE_WORDS = new Set(
   'law raw low maw moe hoe toe cow caw progress pronounce pronunciation'.split(' ')
 );
 const DEFAULT_APP_BACKGROUND = '#fff1f5';
+const PERFECT_CHALLENGE_BACKGROUND_STEP = 10;
 const PERFECT_CHALLENGE_BACKGROUNDS = [
   '#ffedd5', '#dbeafe', '#fef3c7', '#ccfbf1', '#fee2e2',
   '#e0f2fe', '#fed7aa', '#dcfce7', '#fce7f3', '#e0e7ff'
@@ -19806,8 +19807,8 @@ function getTodayReviewCount(meta = getMeta()) {
 
 function getPerfectChallengeBackground(correctStreak = getMeta().correctStreak) {
   const streak = Math.max(0, Math.floor(Number(correctStreak) || 0));
-  if (streak < TEST_CARD_LIMIT) return DEFAULT_APP_BACKGROUND;
-  const completedBlocks = Math.floor(streak / TEST_CARD_LIMIT);
+  if (streak < PERFECT_CHALLENGE_BACKGROUND_STEP) return DEFAULT_APP_BACKGROUND;
+  const completedBlocks = Math.floor(streak / PERFECT_CHALLENGE_BACKGROUND_STEP);
   return PERFECT_CHALLENGE_BACKGROUNDS[(completedBlocks - 1) % PERFECT_CHALLENGE_BACKGROUNDS.length];
 }
 
@@ -21084,7 +21085,7 @@ function startCurrentCategoryTest() {
 }
 
 function repeatLastTestScope() {
-  const hasMissReviewWords = getMissedReviewWords().length > 0;
+  const hasMissReviewWords = getScopedMissedReviewWords().length > 0;
   if (completionAction === 'missReview' || (testSessionKind === 'missReview' && hasMissReviewWords)) {
     startMissReviewSession();
     return;
@@ -21293,6 +21294,24 @@ function getMissedReviewWords() {
   });
   if (validKeys.length !== loadMissedReviewKeys().length) saveMissedReviewKeys(validKeys);
   return words;
+}
+
+function getMissReviewScopeCategory() {
+  if (CATEGORY_LABELS[currentCategory]) return currentCategory;
+  if (CATEGORY_LABELS[lastTestScopeCategory]) return lastTestScopeCategory;
+  return 'standardPractice';
+}
+
+function getMissedReviewWordsForCategory(category = 'all') {
+  const missedWords = getMissedReviewWords();
+  if (!category || category === 'all' || category === 'weakWords') return missedWords;
+  const data = loadData();
+  const missedKeys = new Set(loadMissedReviewKeys());
+  return missedWords.filter(word => hasCategory(word, category, data, missedKeys));
+}
+
+function getScopedMissedReviewWords(category = getMissReviewScopeCategory()) {
+  return getMissedReviewWordsForCategory(category);
 }
 
 function addMissedReviewWord(word) {
@@ -22038,7 +22057,7 @@ function startTestSession() {
 
 function startMissReviewSession() {
   markIntroSeen();
-  const missedWords = getMissedReviewWords();
+  const missedWords = getScopedMissedReviewWords();
   if (!missedWords.length) {
     alert(uiText('noMissReviewAlert'));
     return;
@@ -23011,7 +23030,7 @@ function setCompleteNextStep(message, tone = 'normal') {
   element.className = `complete-next-step${cleanMessage ? ' is-visible' : ''}${tone === 'success' ? ' success' : ''}`;
 }
 
-function updateCompleteRouteActions(missedCount = getMissedReviewWords().length) {
+function updateCompleteRouteActions(missedCount = getScopedMissedReviewWords().length) {
   const actions = document.getElementById('complete-route-actions');
   const routeBackButton = document.getElementById('complete-route-back-btn');
   const todayButton = document.getElementById('complete-today-btn');
@@ -23059,7 +23078,7 @@ function updateCompleteRouteActions(missedCount = getMissedReviewWords().length)
   completeBackButton.hidden = true;
 }
 
-function setCompleteRouteActionsVisible(visible, missedCount = getMissedReviewWords().length) {
+function setCompleteRouteActionsVisible(visible, missedCount = getScopedMissedReviewWords().length) {
   const actions = document.getElementById('complete-route-actions');
   if (!actions) return;
   actions.hidden = !visible;
@@ -23447,7 +23466,7 @@ function showTestComplete() {
 	  const isRelationGame = testSessionKind === 'wordRelation';
 	  const misses = testMissedKeys.size;
 	  const isPerfect20 = testCards.length === TEST_CARD_LIMIT && testCorrect === TEST_CARD_LIMIT && misses === 0;
-	  const remainingMisses = getMissedReviewWords().length;
+	  const remainingMisses = getScopedMissedReviewWords().length;
 	  const canContinueMissReview = misses > 0 || (isMissReview && remainingMisses > 0);
 	  const isMissReviewCleared = isMissReview && testCards.length > 0 && misses === 0;
 	  const correctStreakCount = Number(getMeta().correctStreak) || 0;
