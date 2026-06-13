@@ -15625,6 +15625,30 @@ const WORDS = [
     "exJa": "報道によると、その協議は月曜日に始まった。"
   },
   {
+    "id": "officially_adverb_news",
+    "w": "officially",
+    "cat": "news-english",
+    "pos": "副詞",
+    "level": "標準",
+    "ipa": "əˈfɪʃəli",
+    "ph": "アフィシャリ",
+    "m": "公式に、正式に",
+    "ex": "The result was officially announced today.",
+    "exJa": "その結果は今日、公式に発表された。"
+  },
+  {
+    "id": "publicly_adverb_news",
+    "w": "publicly",
+    "cat": "news-english",
+    "pos": "副詞",
+    "level": "標準",
+    "ipa": "ˈpʌblɪkli",
+    "ph": "パブリクリ",
+    "m": "公に、公然と",
+    "ex": "The minister publicly apologised.",
+    "exJa": "その大臣は公に謝罪した。"
+  },
+  {
     "id": "alleged_adjective_news",
     "w": "alleged",
     "cat": "news-english",
@@ -15647,6 +15671,30 @@ const WORDS = [
     "m": "〜によると",
     "ex": "According to the report, the road was closed.",
     "exJa": "その報告によると、道路は閉鎖されていた。"
+  },
+  {
+    "id": "based_on_expression_news",
+    "w": "based on",
+    "cat": "news-english",
+    "pos": "表現",
+    "level": "標準",
+    "ipa": "beɪst ɒn",
+    "ph": "ベイスト オン",
+    "m": "〜に基づいて",
+    "ex": "The article was based on public records.",
+    "exJa": "その記事は公的記録に基づいていた。"
+  },
+  {
+    "id": "in_response_to_expression_news",
+    "w": "in response to",
+    "cat": "news-english",
+    "pos": "表現",
+    "level": "発展",
+    "ipa": "ɪn rɪˈspɒns tuː",
+    "ph": "イン リスポンス トゥ",
+    "m": "〜に応じて、〜を受けて",
+    "ex": "The government acted in response to the report.",
+    "exJa": "政府はその報告を受けて対応した。"
   },
   {
     "id": "death_toll_noun_news",
@@ -15875,6 +15923,30 @@ const WORDS = [
     "m": "なんてことだ、まさか（かなりくだけた強い驚き・いら立ちの表現）",
     "ex": "Bloody hell, that was a close call.",
     "exJa": "なんてことだ、危ないところだった。"
+  },
+  {
+    "id": "cheers_interjection_british",
+    "w": "cheers",
+    "cat": "pronunciation-note",
+    "pos": "感動詞",
+    "level": "標準",
+    "ipa": "tʃɪəz",
+    "ph": "チアーズ",
+    "m": "ありがとう、乾杯（英式でよく使う表現）",
+    "ex": "Cheers for your help.",
+    "exJa": "手伝ってくれてありがとう。"
+  },
+  {
+    "id": "bravo_interjection_british",
+    "w": "bravo",
+    "cat": "pronunciation-note",
+    "pos": "感動詞",
+    "level": "標準",
+    "ipa": "ˌbrɑːˈvəʊ",
+    "ph": "ブラーヴォウ",
+    "m": "よくやった、すばらしい",
+    "ex": "Bravo, that was a splendid answer.",
+    "exJa": "よくやった、それは見事な答えだった。"
   },
   {
     "id": "blood_noun_british",
@@ -18836,8 +18908,12 @@ const NEWS_REPORTING_CHOICE_WORDS = new Set([
   'verify',
   'news',
   'reportedly',
+  'officially',
+  'publicly',
   'alleged',
   'according to',
+  'based on',
+  'in response to',
   'spokesperson',
   'footage'
 ]);
@@ -18957,6 +19033,8 @@ const PRONUNCIATION_COMMON_BRITISH_CHOICE_WORDS = new Set([
 ]);
 const PRONUNCIATION_EXPRESSIVE_CHOICE_WORDS = new Set([
   'bloody hell',
+  'cheers',
+  'bravo',
   'blood',
   'hell',
   'spiffing',
