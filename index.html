@@ -190,6 +190,23 @@
       outline: 3px solid var(--warm-focus);
       outline-offset: 2px;
     }
+    [role="button"]:focus-visible,
+    .card-container:focus-visible,
+    .test-word-card:focus-visible {
+      outline: 3px solid var(--warm-focus);
+      outline-offset: 4px;
+    }
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
 
     .main {
       max-width: 460px;
@@ -286,6 +303,14 @@
       transform: scale(1);
     }
     @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        scroll-behavior: auto !important;
+        transition-duration: 0.01ms !important;
+      }
       .settings-pager,
       .settings-track,
       .settings-pane {
@@ -1472,6 +1497,9 @@
       flex-direction: column;
     }
     .test-choice-card {
+      display: flex;
+      align-items: center;
+      gap: 8px;
       border: 1px solid #f1d8ca;
       background: white;
       color: #334155;
@@ -1487,11 +1515,12 @@
       box-shadow: 0 3px 12px rgba(15,23,42,0.05);
     }
     .test-choice-label {
+      flex: 0 0 auto;
       display: inline-grid;
       place-items: center;
       min-width: 24px;
       height: 24px;
-      margin-right: 8px;
+      margin-right: 0;
       border-radius: 999px;
       background: var(--warm-primary-soft);
       color: var(--warm-primary-strong);
@@ -1500,6 +1529,7 @@
       vertical-align: middle;
     }
     .test-choice-meaning {
+      flex: 1 1 auto;
       vertical-align: middle;
     }
     .test-choice-card.relation-choice .test-choice-meaning {
@@ -1536,6 +1566,24 @@
     .test-letter-btn.wrong {
       background: #ef4444;
       color: white;
+    }
+    .choice-result-tag {
+      flex: 0 0 auto;
+      margin-left: auto;
+      border-radius: 999px;
+      padding: 3px 7px;
+      font-size: 10px;
+      font-weight: 900;
+      line-height: 1;
+      white-space: nowrap;
+    }
+    .test-choice-card.correct .choice-result-tag {
+      background: #dcfce7;
+      color: #166534;
+    }
+    .test-choice-card.wrong .choice-result-tag {
+      background: #fee2e2;
+      color: #991b1b;
     }
     .test-choice-card.answer-pop,
     .test-letter-btn.answer-pop {
@@ -2787,13 +2835,15 @@
   </div>
 </header>
 
+<div class="sr-only" id="a11y-live" role="status" aria-live="polite" aria-atomic="true"></div>
+
 <main id="learn-view" class="main">
   <div class="progress-wrap">
-    <div class="progress-label">
+    <div class="progress-label" aria-live="polite" aria-atomic="true">
       <span id="progress-text">0 / 0</span>
       <span id="due-text">出題候補: 0項目</span>
     </div>
-    <div class="progress-bar">
+    <div class="progress-bar" id="progress-bar" role="progressbar" aria-label="進捗" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
       <div class="progress-fill" id="progress-fill" style="width:0%"></div>
     </div>
   </div>
@@ -2811,7 +2861,7 @@
       </div>
     </section>
     <div class="card-prompt" id="study-prompt" data-ui-key="studyPrompt">タップすると答えが出るよ</div>
-    <div class="card-container" id="card-container" role="button" tabindex="0" aria-label="単語カードを反転">
+    <div class="card-container" id="card-container" role="button" tabindex="0" aria-label="単語カードを反転" onkeydown="handleLearningCardKey(event)">
       <div class="card" id="card">
         <div class="card-face card-front">
           <div class="word-text" id="word-text">—</div>
@@ -2867,7 +2917,7 @@
           </div>
         </div>
       </div>
-      <div class="test-feedback" id="test-feedback"></div>
+      <div class="test-feedback" id="test-feedback" role="status" aria-live="polite" aria-atomic="true"></div>
       <button class="test-back-toggle-btn" id="test-back-toggle-btn" type="button" onclick="toggleTestCardFlip()" aria-controls="test-word-card">Back</button>
       <div class="test-answer-zone">
         <div class="test-choice-grid" id="test-choice-grid"></div>
@@ -2876,9 +2926,9 @@
       </div>
     </div>
 
-    <div id="session-complete" class="session-complete">
+    <div id="session-complete" class="session-complete" role="status" aria-live="polite" aria-atomic="true">
       <div class="complete-card">
-        <div class="complete-icon" id="complete-icon">🎉</div>
+        <div class="complete-icon" id="complete-icon" aria-hidden="true">🎉</div>
         <div class="complete-title" id="complete-title">今回の学習完了！</div>
         <div class="complete-stats">
           <div class="complete-stat">
@@ -5768,7 +5818,7 @@ const WORDS = [
     "ph": "コントロヴァーシャル",
     "m": "論争的な",
     "ex": "This is a controversial topic with many different views.",
-    "exJa": "これは多くの異なる意見がある論争的なテーマだ。"
+    "exJa": "これは多くの異なる意見がある論争的な話題だ。"
   },
   {
     "w": "conventional",
@@ -7541,7 +7591,7 @@ const WORDS = [
     "ph": "ディベーt",
     "m": "討論、議論",
     "ex": "The class held a debate on the topic of climate change.",
-    "exJa": "クラスは気候変動をテーマに討論を行った。"
+    "exJa": "クラスは気候変動という話題について討論を行った。"
   },
   {
     "w": "diet",
@@ -7904,9 +7954,9 @@ const WORDS = [
     "level": "高校基礎",
     "ipa": "ˈtɒpɪk",
     "ph": "トピック",
-    "m": "話題、テーマ",
+    "m": "話題、題目",
     "ex": "Choose a topic that you are genuinely interested in.",
-    "exJa": "本当に興味のあるテーマを選びなさい。"
+    "exJa": "本当に興味のある話題を選びなさい。"
   },
   {
     "w": "waste",
@@ -19588,6 +19638,23 @@ function uiText(key) {
   return UI_TEXT[currentUiLanguage]?.[key] ?? UI_TEXT.ja[key] ?? key;
 }
 
+function announceA11y(message) {
+  const live = document.getElementById('a11y-live');
+  if (!live) return;
+  live.textContent = '';
+  window.setTimeout(() => {
+    live.textContent = message || '';
+  }, 20);
+}
+
+function updateProgressBarA11y(percent, label = '') {
+  const progressBar = document.getElementById('progress-bar');
+  if (!progressBar) return;
+  const value = Math.max(0, Math.min(100, Math.round(Number(percent) || 0)));
+  progressBar.setAttribute('aria-valuenow', String(value));
+  progressBar.setAttribute('aria-valuetext', label || `${value}%`);
+}
+
 function formatItemCount(count) {
   return currentUiLanguage === 'en' ? `${count} ${uiText('items')}` : `${count}${uiText('items')}`;
 }
@@ -19773,6 +19840,7 @@ function updateTestEntryStatus() {
   document.getElementById('progress-fill').style.width = '0%';
   document.getElementById('progress-text').textContent = uiText('testEntryProgress');
   document.getElementById('due-text').textContent = uiText('testEntryDue');
+  updateProgressBarA11y(0, uiText('testEntryProgress'));
 }
 
 function showTestEntryPanel() {
@@ -22019,7 +22087,9 @@ function showCard() {
   const pct = (currentIndex / sessionCards.length) * 100;
   document.getElementById('progress-fill').style.width = pct + '%';
   document.getElementById('progress-text').textContent  = `${currentIndex} / ${sessionCards.length}`;
+  updateProgressBarA11y(pct, `${currentIndex} / ${sessionCards.length}`);
   updateRatingControls();
+  updateLearningCardAria(w);
   playOneShotCardAudio(w, 'learn');
 }
 
@@ -22040,6 +22110,7 @@ function resetCardToFrontInstantly() {
   requestAnimationFrame(() => {
     card.classList.remove('no-transition');
   });
+  updateLearningCardAria();
   return true;
 }
 
@@ -22065,6 +22136,7 @@ function flipCard() {
   triggerHapticFeedback(12);
   updateRatingControls();
   updateSwipeMessage();
+  updateLearningCardAria();
 }
 
 function updateSwipeMessage() {
@@ -22072,6 +22144,26 @@ function updateSwipeMessage() {
   if (!swipeMsg) return;
   swipeMsg.textContent = isFlipped ? uiText('swipeLearnRate') : uiText('swipeLearn');
   swipeMsg.setAttribute('aria-label', swipeMsg.textContent);
+}
+
+function updateLearningCardAria(word = sessionCards[currentIndex]) {
+  const cardContainer = document.getElementById('card-container');
+  if (!cardContainer || !word) return;
+  const frontLabel = currentUiLanguage === 'en'
+    ? `${word.w}. Press Enter or Space to show the meaning.`
+    : `${word.w}。EnterまたはSpaceで意味と例文を表示。`;
+  const backLabel = currentUiLanguage === 'en'
+    ? `${word.w}. Meaning: ${word.m}. Example: ${word.ex}. Press Enter or Space to return to the front.`
+    : `${word.w}。意味: ${word.m}。例文: ${word.exJa || word.ex}。EnterまたはSpaceで表面に戻る。`;
+  cardContainer.setAttribute('aria-label', isFlipped ? backLabel : frontLabel);
+  cardContainer.setAttribute('aria-pressed', isFlipped ? 'true' : 'false');
+}
+
+function handleLearningCardKey(event) {
+  if (event.key !== 'Enter' && event.key !== ' ') return;
+  event.preventDefault();
+  event.stopPropagation();
+  flipCard();
 }
 
 function beginTestSession(cards, kind = 'normal') {
@@ -22379,12 +22471,14 @@ function updateTestProgressDisplay() {
   if (!testCards.length) {
     document.getElementById('progress-fill').style.width = '0%';
     document.getElementById('progress-text').textContent = '0 / 0';
+    updateProgressBarA11y(0, '0 / 0');
     return;
   }
   const answeredCount = Math.min(testCards.length, testIndex + (testAnswered ? 1 : 0));
   const pct = (answeredCount / testCards.length) * 100;
   document.getElementById('progress-fill').style.width = pct + '%';
   document.getElementById('progress-text').textContent = `${answeredCount} / ${testCards.length}`;
+  updateProgressBarA11y(pct, `${answeredCount} / ${testCards.length}`);
 }
 
 function setTestNextButtonSprout(isSprout) {
@@ -22429,9 +22523,16 @@ function showTestQuestion() {
 
   const choiceGrid = document.getElementById('test-choice-grid');
   const letterRow = document.getElementById('test-letter-row');
+  const choices = buildTestChoices(word);
+  choiceGrid.setAttribute('role', 'group');
+  choiceGrid.setAttribute('aria-label', isRelationQuestion
+    ? (currentUiLanguage === 'en' ? 'Choose the related word' : '関係する語を選ぶ')
+    : (currentUiLanguage === 'en' ? 'Choose the meaning' : '意味を選ぶ'));
+  letterRow.setAttribute('aria-label', currentUiLanguage === 'en'
+    ? `${choices.length} answer buttons`
+    : `${choices.length}択の解答ボタン`);
   choiceGrid.innerHTML = '';
   letterRow.innerHTML = '';
-  const choices = buildTestChoices(word);
   letterRow.className = `test-letter-row choice-count-${choices.length}`;
   choices.forEach((choice, index) => {
     const label = TEST_CHOICE_LABELS[index] || String(index + 1);
@@ -22701,6 +22802,19 @@ function markPickedAnswer(choiceIndex) {
   });
 }
 
+function clearChoiceResultTags() {
+  document.querySelectorAll('.choice-result-tag').forEach(tag => tag.remove());
+}
+
+function appendChoiceResultTag(button, label) {
+  if (!button?.classList?.contains('test-choice-card') || !label) return;
+  button.querySelector('.choice-result-tag')?.remove();
+  const tag = document.createElement('span');
+  tag.className = 'choice-result-tag';
+  tag.textContent = label;
+  button.appendChild(tag);
+}
+
 function answerTestChoice(button, word) {
   if (testAnswered) return;
   testActionTargetBottom = getTestLetterLowerRowBottom();
@@ -22729,13 +22843,24 @@ function answerTestChoice(button, word) {
     triggerWrongAnswerCue();
   }
 
+  clearChoiceResultTags();
+  const correctResultText = currentUiLanguage === 'en' ? 'Correct' : '正解';
+  const pickedResultText = currentUiLanguage === 'en' ? 'Picked' : '選択';
   document.querySelectorAll('.test-choice-card, .test-letter-btn').forEach(choiceButton => {
     choiceButton.disabled = true;
-    if (choiceButton.dataset.correct === 'true') choiceButton.classList.add('correct');
+    const currentLabel = choiceButton.getAttribute('aria-label') || choiceButton.textContent.trim();
+    if (choiceButton.dataset.correct === 'true') {
+      choiceButton.classList.add('correct');
+      appendChoiceResultTag(choiceButton, correctResultText);
+      choiceButton.setAttribute('aria-label', `${currentLabel}. ${correctResultText}.`);
+    }
   });
   if (!isCorrect && selectedChoiceIndex !== undefined) {
     document.querySelectorAll(`[data-choice-index="${selectedChoiceIndex}"]`).forEach(choiceButton => {
       choiceButton.classList.add('wrong');
+      appendChoiceResultTag(choiceButton, pickedResultText);
+      const currentLabel = choiceButton.getAttribute('aria-label') || choiceButton.textContent.trim();
+      choiceButton.setAttribute('aria-label', `${currentLabel}. ${pickedResultText}.`);
     });
   }
 
@@ -22772,6 +22897,10 @@ function answerTestChoice(button, word) {
   document.getElementById('test-next-btn').classList.add('is-visible');
   setTestCardFlipped(false);
   setTestSwipeHintReady(true);
+  announceA11y(isCorrect
+    ? (currentUiLanguage === 'en' ? `Correct. ${word.w}.` : `正解です。${word.w}。`)
+    : (currentUiLanguage === 'en' ? `Not correct. The correct answer is ${word.m}.` : `不正解です。正解は${word.m}。`)
+  );
   updateStats();
   updateTestProgressDisplay();
   requestAnimationFrame(fitTestActionButton);
@@ -23490,6 +23619,7 @@ function showComplete() {
   completeEl.style.display = 'block';
   document.getElementById('progress-fill').style.width = '100%';
   document.getElementById('progress-text').textContent = `${sessionCards.length} / ${sessionCards.length}`;
+  updateProgressBarA11y(100, `${sessionCards.length} / ${sessionCards.length}`);
   setPerfectQuoteVisible(false);
   setCompleteRouteActionsVisible(false);
   setCompleteFocus('');
@@ -23536,6 +23666,7 @@ function showTestComplete() {
   completeEl.style.display = 'block';
   document.getElementById('progress-fill').style.width = '100%';
   document.getElementById('progress-text').textContent = `${testCards.length} / ${testCards.length}`;
+  updateProgressBarA11y(100, `${testCards.length} / ${testCards.length}`);
   document.getElementById('due-text').textContent = getTestScoreLabel();
   const completeBackBtn = document.getElementById('complete-back-btn');
   if (completeBackBtn) completeBackBtn.hidden = false;
@@ -23941,18 +24072,20 @@ if (learnCardEl) {
 
 // ─── キーボード操作 ────────────────────────────────────────────────────
 document.addEventListener('keydown', e => {
+  const fromControl = isControlTarget(e.target);
   if (currentMode === 'test') {
-    if (!testAnswered && /^[1-4]$/.test(e.key)) {
+    if (!fromControl && !testAnswered && /^[1-4]$/.test(e.key)) {
       if (answerTestChoiceByNumber(e.key)) e.preventDefault();
       return;
     }
-    if (e.key === 'Enter' && testAnswered) {
+    if (!fromControl && e.key === 'Enter' && testAnswered) {
       e.preventDefault();
       showNextTestQuestion();
     }
     return;
   }
   if (currentMode !== 'learn') return;
+  if (fromControl) return;
   if (e.key === ' ' || e.key === 'Enter' || e.key === 'ArrowUp') { e.preventDefault(); flipCard(); }
   if (e.key === 'ArrowRight') { e.preventDefault(); rate(5); }
   if (e.key === 'ArrowLeft') { e.preventDefault(); showPreviousCard(); }
