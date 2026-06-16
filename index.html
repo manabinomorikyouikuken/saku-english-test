@@ -1068,6 +1068,28 @@
       justify-content: center;
       align-items: center;
     }
+    .test-audio-row {
+      width: min(92%, 420px);
+      min-height: 34px;
+      margin: 8px auto 4px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .test-audio-btn {
+      min-width: 72px;
+      min-height: 32px;
+      font-size: 12px;
+    }
+    .test-audio-status {
+      width: min(92%, 420px);
+      margin: 2px auto 4px;
+      color: #64748b;
+      font-size: 11px;
+      font-weight: 800;
+      line-height: 1.35;
+      text-align: center;
+    }
     .accent-compare-row {
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -2918,6 +2940,10 @@
         </div>
       </div>
       <div class="test-feedback" id="test-feedback" role="status" aria-live="polite" aria-atomic="true"></div>
+      <div class="test-audio-row" id="test-audio-row">
+        <button class="word-audio-btn test-audio-btn" id="test-audio-btn" type="button" onclick="playCurrentTestAudio(event)" aria-label="出題語の発音を聞く">聴く</button>
+      </div>
+      <div class="test-audio-status" id="test-audio-status" role="status" aria-live="polite" hidden></div>
       <button class="test-back-toggle-btn" id="test-back-toggle-btn" type="button" onclick="toggleTestCardFlip()" aria-controls="test-word-card">Back</button>
       <div class="test-answer-zone">
         <div class="test-choice-grid" id="test-choice-grid"></div>
@@ -20503,6 +20529,42 @@ function updateAudioButtons() {
     compareRow.classList.toggle('is-visible', hasTaggedVoice);
     compareRow.hidden = !hasTaggedVoice;
   }
+  const testButton = document.getElementById('test-audio-btn');
+  const testStatus = document.getElementById('test-audio-status');
+  let testStatusText = '';
+  if (testButton) {
+    const { voice } = isSupported
+      ? resolveEnglishVoice(voices, currentSpeechAccent, { allowFallback: true })
+      : { voice: null };
+    testButton.disabled = !isSupported || !voice;
+    if (!isSupported) {
+      testButton.textContent = uiText('audioUnsupported');
+      testButton.setAttribute('aria-label', uiText('audioAriaUnsupported'));
+      testButton.title = uiText('audioUnsupportedNote');
+      testStatusText = uiText('audioUnsupportedNote');
+    } else if (!voices.length) {
+      testButton.textContent = uiText('voiceLoading');
+      testButton.setAttribute('aria-label', uiText('voiceLoadingNote'));
+      testButton.title = uiText('voiceLoadingNote');
+      testStatusText = uiText('voiceLoadingNote');
+    } else if (voice) {
+      testButton.textContent = uiText('audioButtonEnglish');
+      const label = currentUiLanguage === 'en'
+        ? `Listen to the test word. ${getAudioAriaLabel(currentSpeechAccent, { allowFallback: true })}`
+        : `出題語の発音を聞く。${getAudioAriaLabel(currentSpeechAccent, { allowFallback: true })}`;
+      testButton.setAttribute('aria-label', label);
+      testButton.title = label;
+    } else {
+      testButton.textContent = uiText('audioButtonEnglishUnavailable');
+      testButton.setAttribute('aria-label', uiText('audioEnglishUnavailableNote'));
+      testButton.title = uiText('audioEnglishUnavailableNote');
+      testStatusText = uiText('audioEnglishUnavailableNote');
+    }
+  }
+  if (testStatus) {
+    testStatus.textContent = testStatusText;
+    testStatus.hidden = !testStatusText;
+  }
 }
 
 function refreshSpeechVoices() {
@@ -20697,6 +20759,13 @@ function playCurrentLearningAudio(event, accent = currentSpeechAccent) {
 function playFallbackLearningAudio(event) {
   if (currentMode !== 'learn') return;
   speakEnglishWord(sessionCards[currentIndex], event, currentSpeechAccent, { allowFallback: true });
+}
+
+function playCurrentTestAudio(event) {
+  if (currentMode !== 'test') return;
+  const word = testCards[testIndex];
+  if (!word) return;
+  speakEnglishWord(word, event, currentSpeechAccent, { allowFallback: true });
 }
 
 function setLearningAudioButtonVisible(visible) {
@@ -22582,6 +22651,7 @@ function showTestQuestion() {
 
   updateTestProgressDisplay();
   document.getElementById('due-text').textContent = getTestScoreLabel();
+  updateAudioButtons();
   playOneShotCardAudio(word, 'test');
 }
 
