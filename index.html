@@ -408,6 +408,9 @@
       border-color: var(--warm-primary);
       color: white;
     }
+    .quick-start-btn.primary span {
+      color: rgba(255,255,255,0.78);
+    }
     .quick-start-btn:active { transform: scale(0.97); filter: brightness(0.96); }
     .practice-route-btn {
       display: block;
@@ -487,6 +490,9 @@
       background: var(--warm-primary);
       border-color: var(--warm-primary);
       color: white;
+    }
+    .intro-btn.primary span {
+      color: rgba(255,255,255,0.78);
     }
     .intro-btn:active { transform: scale(0.98); filter: brightness(0.96); }
     .learning-summary-panel {
@@ -2533,6 +2539,9 @@
       color: white;
       box-shadow: 0 4px 15px rgba(234,88,12,0.22);
     }
+    .complete-route-btn.primary span {
+      color: rgba(255,255,255,0.78);
+    }
     .complete-route-actions.no-misses .complete-route-back-btn,
     .complete-route-actions.has-misses .complete-route-back-btn {
       display: block;
@@ -2899,7 +2908,9 @@
       <div class="quick-start-actions test-entry-actions">
         <button class="quick-start-btn primary" type="button" onclick="startQuickTest('wordRelation')" data-ui-key="relationGame">語彙関係ゲーム</button>
         <button class="quick-start-btn" type="button" onclick="startMissReviewSession()" data-ui-key="missReview">ミス復習</button>
-        <button class="quick-start-btn" type="button" onclick="startQuickTest('standardPractice')" data-ui-label-key="today20Short">今日の20問<span data-ui-key="standardScopeSub">ミックス</span></button>
+        <button class="quick-start-btn" type="button" onclick="startQuickTest('standardPractice')" data-ui-label-key="today20Short">今日の20問<span data-ui-key="standardScopeSub">一般語</span></button>
+        <button class="quick-start-btn" type="button" onclick="startQuickTest('phrasalVerb')" data-ui-label-key="categoryPhrasalVerb">句動詞<span data-ui-key="test20Sub">20問</span></button>
+        <button class="quick-start-btn" type="button" onclick="startQuickTest('abbreviation')" data-ui-label-key="categoryAbbreviation">略語<span data-ui-key="test20Sub">20問</span></button>
       </div>
     </section>
     <div class="card-prompt" id="study-prompt" data-ui-key="studyPrompt">タップすると答えが出るよ</div>
@@ -3005,7 +3016,7 @@
       </div>
       <div class="complete-route-actions" id="complete-route-actions" aria-label="次の行動" hidden>
         <button class="complete-route-btn complete-route-back-btn" id="complete-route-back-btn" type="button" onclick="startSession()" data-ui-key="back">戻る</button>
-        <button class="complete-route-btn primary" id="complete-today-btn" type="button" onclick="startQuickTest('standardPractice')" data-ui-label-key="today20Again">もう一回20問<span data-ui-key="standardScopeSub">ミックス</span></button>
+        <button class="complete-route-btn primary" id="complete-today-btn" type="button" onclick="startQuickTest('standardPractice')" data-ui-label-key="today20Again">もう一回20問<span data-ui-key="standardScopeSub">一般語</span></button>
         <button class="complete-route-btn" id="complete-miss-review-btn" type="button" onclick="startMissReviewSession()" data-ui-key="missReview">ミス復習</button>
         <button class="complete-route-btn" id="complete-relation-btn" type="button" onclick="startQuickTest('wordRelation')" data-ui-key="relationGame">語彙関係ゲーム</button>
       </div>
@@ -3050,13 +3061,13 @@
   <div class="level-panel" aria-label="レベル選択">
     <div class="settings-section-title" data-ui-key="chooseLevel">レベルを選ぶ</div>
     <div class="level-buttons">
-      <button class="level-btn active" type="button" data-level="all" data-ui-label-key="levelAll" onclick="setLevel('all')">すべて<span id="level-count-all">1130項目</span></button>
-      <button class="level-btn" type="button" data-level="junior" data-ui-label-key="levelJunior" onclick="setLevel('junior')">中学復習<span id="level-count-junior">204項目</span></button>
-      <button class="level-btn" type="button" data-level="highBasic" data-ui-label-key="levelHighBasic" onclick="setLevel('highBasic')">高校基礎<span id="level-count-highBasic">424項目</span></button>
-      <button class="level-btn" type="button" data-level="standard" data-ui-label-key="levelStandard" onclick="setLevel('standard')">句動詞・実用<span id="level-count-standard">157項目</span></button>
-      <button class="level-btn" type="button" data-level="advanced" data-ui-label-key="levelAdvanced" onclick="setLevel('advanced')">発展<span id="level-count-advanced">345項目</span></button>
+      <button class="level-btn active" type="button" data-level="all" data-ui-label-key="levelAll" onclick="setLevel('all')">すべて<span id="level-count-all">1320項目</span></button>
+      <button class="level-btn" type="button" data-level="junior" data-ui-label-key="levelJunior" onclick="setLevel('junior')">中学復習<span id="level-count-junior">243項目</span></button>
+      <button class="level-btn" type="button" data-level="highBasic" data-ui-label-key="levelHighBasic" onclick="setLevel('highBasic')">高校基礎<span id="level-count-highBasic">431項目</span></button>
+      <button class="level-btn" type="button" data-level="standard" data-ui-label-key="levelStandard" onclick="setLevel('standard')">標準・実用<span id="level-count-standard">224項目</span></button>
+      <button class="level-btn" type="button" data-level="advanced" data-ui-label-key="levelAdvanced" onclick="setLevel('advanced')">発展<span id="level-count-advanced">422項目</span></button>
     </div>
-    <div class="storage-note" data-ui-key="levelNote">レベル名は学習の目安です。句動詞・実用は、get up などの句動詞や日常で使うまとまり表現を中心にしています。</div>
+    <div class="storage-note" data-ui-key="levelNote">レベルは難しさの目安です。句動詞や略語だけを出したい時は、テーマから選びます。</div>
   </div>
   </div>
 
@@ -3065,13 +3076,13 @@
     <div class="settings-section-title" data-ui-key="chooseTheme">テーマを選ぶ</div>
     <div class="category-buttons">
       <div class="category-group-label" data-ui-key="categoryGroupStart">入口</div>
-      <button class="category-btn active" type="button" data-category="standardPractice" data-ui-label-key="categoryStandardPractice" onclick="setCategory('standardPractice')">標準ミックス<span id="category-count-standardPractice">965項目</span></button>
-      <button class="category-btn" type="button" data-category="all" data-ui-label-key="categoryAll" onclick="setCategory('all')">全単語<span id="category-count-all">1314項目</span></button>
+      <button class="category-btn active" type="button" data-category="standardPractice" data-ui-label-key="categoryStandardPractice" onclick="setCategory('standardPractice')">一般語ミックス<span id="category-count-standardPractice">967項目</span></button>
+      <button class="category-btn" type="button" data-category="all" data-ui-label-key="categoryAll" onclick="setCategory('all')">全単語<span id="category-count-all">1320項目</span></button>
       <button class="category-btn" type="button" data-category="weakWords" data-ui-label-key="categoryWeakWords" onclick="setCategory('weakWords')">苦手<span id="category-count-weakWords">0項目</span></button>
       <div class="category-group-label" data-ui-key="categoryGroupDaily">日常・実用</div>
       <button class="category-btn" type="button" data-category="katakanaGap" data-ui-label-key="categoryKatakanaGap" onclick="setCategory('katakanaGap')" aria-label="カタカナ注意 知ってるつもりになりやすい語">カタカナ注意<span id="category-count-katakanaGap">33項目</span></button>
       <button class="category-btn" type="button" data-category="phrasalVerb" data-ui-label-key="categoryPhrasalVerb" onclick="setCategory('phrasalVerb')">句動詞<span id="category-count-phrasalVerb">100項目</span></button>
-      <button class="category-btn" type="button" data-category="newsEnglish" data-ui-label-key="categoryNewsEnglish" onclick="setCategory('newsEnglish')">ニュース英語<span id="category-count-newsEnglish">25項目</span></button>
+      <button class="category-btn" type="button" data-category="newsEnglish" data-ui-label-key="categoryNewsEnglish" onclick="setCategory('newsEnglish')">ニュース英語<span id="category-count-newsEnglish">43項目</span></button>
       <button class="category-btn" type="button" data-category="bankingEnglish" data-ui-label-key="categoryBankingEnglish" onclick="setCategory('bankingEnglish')">ATM・銀行<span id="category-count-bankingEnglish">22項目</span></button>
       <button class="category-btn" type="button" data-category="uncountableNoun" data-ui-label-key="categoryUncountableNoun" onclick="setCategory('uncountableNoun')">不可算名詞<span id="category-count-uncountableNoun">7項目</span></button>
       <div class="category-group-label" data-ui-key="categoryGroupFood">食べ物</div>
@@ -3085,8 +3096,8 @@
       <button class="category-btn" type="button" data-category="abbreviationBusiness" data-ui-label-key="categoryAbbreviationBusiness" onclick="setCategory('abbreviationBusiness')">略語 ビジネス<span id="category-count-abbreviationBusiness">13項目</span></button>
       <button class="category-btn" type="button" data-category="abbreviationPublic" data-ui-label-key="categoryAbbreviationPublic" onclick="setCategory('abbreviationPublic')">略語 国際・公的<span id="category-count-abbreviationPublic">24項目</span></button>
       <button class="category-btn" type="button" data-category="abbreviationEducation" data-ui-label-key="categoryAbbreviationEducation" onclick="setCategory('abbreviationEducation')">略語 教育・言語<span id="category-count-abbreviationEducation">1項目</span></button>
-      <button class="category-btn" type="button" data-category="pronunciationNote" data-ui-label-key="categoryPronunciationNote" onclick="setCategory('pronunciationNote')">発音注意<span id="category-count-pronunciationNote">90項目</span></button>
-      <button class="category-btn" type="button" data-category="rlContrast" data-ui-label-key="categoryRlContrast" onclick="setCategory('rlContrast')">R/L注意<span id="category-count-rlContrast">8項目</span></button>
+      <button class="category-btn" type="button" data-category="pronunciationNote" data-ui-label-key="categoryPronunciationNote" onclick="setCategory('pronunciationNote')">発音注意<span id="category-count-pronunciationNote">135項目</span></button>
+      <button class="category-btn" type="button" data-category="rlContrast" data-ui-label-key="categoryRlContrast" onclick="setCategory('rlContrast')">R/L注意<span id="category-count-rlContrast">10項目</span></button>
       <div class="category-group-label" data-ui-key="categoryGroupTechnical">専門</div>
       <button class="category-btn" type="button" data-category="technical" data-ui-label-key="categoryTechnical" onclick="setCategory('technical')">テクニカル<span id="category-count-technical">106項目</span></button>
       <button class="category-btn" type="button" data-category="muscleAnatomy" data-ui-label-key="categoryMuscleAnatomy" onclick="setCategory('muscleAnatomy')">筋肉名<span id="category-count-muscleAnatomy">50項目</span></button>
@@ -3094,7 +3105,7 @@
       <div class="category-group-label" data-ui-key="categoryGroupRelation">語彙関係</div>
       <button class="category-btn" type="button" data-category="wordRelation" data-ui-label-key="categoryWordRelation" onclick="setCategory('wordRelation')">語彙関係<span id="category-count-wordRelation">42項目</span></button>
     </div>
-    <div class="storage-note" data-ui-key="themeNote">標準ミックスは、一般語と句動詞を混ぜた総合練習です。句動詞だけ練習したい時は「句動詞」を選びます。全単語は筋肉名・特別支援教育・ICT/AI略語なども含めます。</div>
+    <div class="storage-note" data-ui-key="themeNote">一般語ミックスは、句動詞・略語・ニュース英語・銀行・専門語を外した入口です。まとまり表現は専用テーマから選びます。</div>
   </div>
 
   <div class="part-panel" aria-label="品詞選択">
@@ -3117,7 +3128,7 @@
       まずは20問。ミスした語は「ミス復習」に残ります。答えたあとは下の案内を右スワイプで次へ進めます。
     </div>
     <div class="intro-actions">
-      <button class="intro-btn primary" type="button" onclick="startIntroQuickTest()" data-ui-label-key="today20">今日の20問へ<span data-ui-key="standardScopeSub">ミックス</span></button>
+      <button class="intro-btn primary" type="button" onclick="startIntroQuickTest()" data-ui-label-key="today20">今日の20問へ<span data-ui-key="standardScopeSub">一般語</span></button>
       <button class="intro-btn" type="button" onclick="dismissIntroPanel()" data-ui-key="close">閉じる</button>
     </div>
   </section>
@@ -3128,12 +3139,13 @@
       <div class="quick-start-note" data-ui-key="quickStartNote">迷ったらここから</div>
     </div>
     <div class="quick-start-actions">
-      <button class="quick-start-btn primary" type="button" onclick="startQuickTest('standardPractice')" data-ui-label-key="today20Short">今日の20問<span data-ui-key="standardScopeSub">ミックス</span></button>
+      <button class="quick-start-btn primary" type="button" onclick="startQuickTest('standardPractice')" data-ui-label-key="today20Short">今日の20問<span data-ui-key="standardScopeSub">一般語</span></button>
+      <button class="quick-start-btn" type="button" onclick="startQuickTest('phrasalVerb')" data-ui-label-key="categoryPhrasalVerb">句動詞<span data-ui-key="test20Sub">20問</span></button>
+      <button class="quick-start-btn" type="button" onclick="startQuickTest('abbreviation')" data-ui-label-key="categoryAbbreviation">略語<span data-ui-key="test20Sub">20問</span></button>
       <button class="quick-start-btn" type="button" onclick="startQuickTest('wordRelation')" data-ui-key="relationGame">語彙関係ゲーム</button>
       <button class="quick-start-btn" type="button" onclick="startMissReviewSession()" data-ui-key="missReview">ミス復習</button>
       <button class="quick-start-btn" type="button" onclick="startWeakWordsSession()" data-ui-label-key="weakWords">苦手<span data-ui-key="weakWordsSub">つまずき語</span></button>
       <button class="quick-start-btn" type="button" onclick="startQuickStudy('katakanaGap')" data-ui-label-key="categoryKatakanaGap">カタカナ注意<span data-ui-key="katakanaSub">知ってるつもり</span></button>
-      <button class="quick-start-btn" type="button" onclick="startQuickStudy('phrasalVerb')" data-ui-key="categoryPhrasalVerb">句動詞</button>
     </div>
   </section>
 
@@ -18120,7 +18132,7 @@ const LEVEL_LABELS = {
   all: 'すべて',
   junior: '中学復習',
   highBasic: '高校基礎',
-  standard: '句動詞・実用',
+  standard: '標準・実用',
   advanced: '発展'
 };
 const LEGACY_LEVEL_MAP = {
@@ -18137,7 +18149,7 @@ const PART_LABELS = {
   adverb: '副詞'
 };
 const CATEGORY_LABELS = {
-  standardPractice: '標準ミックス',
+  standardPractice: '一般語ミックス',
   all: '全単語',
   weakWords: '苦手',
   katakanaGap: 'カタカナ注意',
@@ -18499,11 +18511,11 @@ const UI_TEXT = {
     levelAll: 'すべて',
     levelJunior: '中学復習',
     levelHighBasic: '高校基礎',
-    levelStandard: '句動詞・実用',
+    levelStandard: '標準・実用',
     levelAdvanced: '発展',
-    levelNote: 'レベル名は学習の目安です。句動詞・実用は、get up などの句動詞や日常で使うまとまり表現を中心にしています。',
+    levelNote: 'レベルは難しさの目安です。句動詞や略語だけを出したい時は、テーマから選びます。',
     chooseTheme: 'テーマを選ぶ',
-    categoryStandardPractice: '標準ミックス',
+    categoryStandardPractice: '一般語ミックス',
     categoryAll: '全単語',
     categoryWeakWords: '苦手',
     categoryGroupStart: '入口',
@@ -18533,7 +18545,7 @@ const UI_TEXT = {
     categoryRlContrast: 'R/L注意',
     categoryWordRelation: '語彙関係',
     katakanaSub: '知ってるつもり',
-    themeNote: '標準ミックスは、一般語を中心にした入口です。句動詞・略語・ニュース英語・銀行・専門語は専用テーマから選びます。',
+    themeNote: '一般語ミックスは、句動詞・略語・ニュース英語・銀行・専門語を外した入口です。まとまり表現は専用テーマから選びます。',
     choosePart: '品詞でしぼる',
     partRandom: 'ランダム',
     partNoun: '名詞',
@@ -18546,7 +18558,8 @@ const UI_TEXT = {
     today20: '今日の20問へ',
     today20Short: '今日の20問',
     today20Again: 'もう一回20問',
-    standardScopeSub: 'ミックス',
+    standardScopeSub: '一般語',
+    test20Sub: '20問',
     relationGame: '語彙関係ゲーム',
     gameReview: 'ゲーム・復習',
     close: '閉じる',
@@ -18555,7 +18568,7 @@ const UI_TEXT = {
     testEntryTitle: 'ゲーム・復習',
     testEntryNote: '選んで続ける',
     testEntryProgress: 'ゲーム・復習',
-    testEntryDue: '語彙関係ゲーム / ミス復習 / 今日の20問',
+    testEntryDue: '語彙関係ゲーム / ミス復習 / 一般語・句動詞・略語',
     missReview: 'ミス復習',
     missReviewEmpty: 'ミス復習なし',
     weakWords: '苦手',
@@ -18717,11 +18730,11 @@ const UI_TEXT = {
     levelAll: 'All',
     levelJunior: 'Junior review',
     levelHighBasic: 'High school basics',
-    levelStandard: 'Phrases & practical',
+    levelStandard: 'Standard practical',
     levelAdvanced: 'Advanced',
-    levelNote: 'Level names are study guides. Phrases & practical focuses on phrasal verbs such as get up and useful everyday chunks.',
+    levelNote: 'Levels are difficulty guides. Use Themes when you want only phrasal verbs or abbreviations.',
     chooseTheme: 'Choose theme',
-    categoryStandardPractice: 'Standard mix',
+    categoryStandardPractice: 'General-word mix',
     categoryAll: 'All words',
     categoryWeakWords: 'Weak',
     categoryGroupStart: 'Start',
@@ -18751,7 +18764,7 @@ const UI_TEXT = {
     categoryRlContrast: 'R/L caution',
     categoryWordRelation: 'Word relations',
     katakanaSub: 'False friends',
-    themeNote: 'Standard mix focuses on general words. Phrasal verbs, abbreviations, news English, banking, and technical words stay in dedicated themes.',
+    themeNote: 'General-word mix leaves out phrasal verbs, abbreviations, news English, banking, and technical words. Use a dedicated theme for chunks.',
     choosePart: 'Filter by part of speech',
     partRandom: 'Random',
     partNoun: 'Nouns',
@@ -18764,7 +18777,8 @@ const UI_TEXT = {
     today20: 'Start today’s 20',
     today20Short: 'Today’s 20',
     today20Again: 'Another 20',
-    standardScopeSub: 'Mix',
+    standardScopeSub: 'General',
+    test20Sub: '20 questions',
     relationGame: 'Word relation game',
     gameReview: 'Games / Review',
     close: 'Close',
@@ -18773,7 +18787,7 @@ const UI_TEXT = {
     testEntryTitle: 'Games / Review',
     testEntryNote: 'Choose next practice',
     testEntryProgress: 'Games / Review',
-    testEntryDue: 'Word relations / Miss Review / Today’s 20',
+    testEntryDue: 'Word relations / Miss Review / General, phrasal verbs, abbreviations',
     missReview: 'Miss Review',
     missReviewEmpty: 'No Miss Review',
     weakWords: 'Weak',
