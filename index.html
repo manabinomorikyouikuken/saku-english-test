@@ -3061,11 +3061,11 @@
   <div class="level-panel" aria-label="レベル選択">
     <div class="settings-section-title" data-ui-key="chooseLevel">レベルを選ぶ</div>
     <div class="level-buttons">
-      <button class="level-btn active" type="button" data-level="all" data-ui-label-key="levelAll" onclick="setLevel('all')">すべて<span id="level-count-all">1320項目</span></button>
-      <button class="level-btn" type="button" data-level="junior" data-ui-label-key="levelJunior" onclick="setLevel('junior')">中学復習<span id="level-count-junior">243項目</span></button>
-      <button class="level-btn" type="button" data-level="highBasic" data-ui-label-key="levelHighBasic" onclick="setLevel('highBasic')">高校基礎<span id="level-count-highBasic">431項目</span></button>
+      <button class="level-btn active" type="button" data-level="all" data-ui-label-key="levelAll" onclick="setLevel('all')">すべて<span id="level-count-all">1330項目</span></button>
+      <button class="level-btn" type="button" data-level="junior" data-ui-label-key="levelJunior" onclick="setLevel('junior')">中学復習<span id="level-count-junior">245項目</span></button>
+      <button class="level-btn" type="button" data-level="highBasic" data-ui-label-key="levelHighBasic" onclick="setLevel('highBasic')">高校基礎<span id="level-count-highBasic">434項目</span></button>
       <button class="level-btn" type="button" data-level="standard" data-ui-label-key="levelStandard" onclick="setLevel('standard')">標準・実用<span id="level-count-standard">224項目</span></button>
-      <button class="level-btn" type="button" data-level="advanced" data-ui-label-key="levelAdvanced" onclick="setLevel('advanced')">発展<span id="level-count-advanced">422項目</span></button>
+      <button class="level-btn" type="button" data-level="advanced" data-ui-label-key="levelAdvanced" onclick="setLevel('advanced')">発展<span id="level-count-advanced">427項目</span></button>
     </div>
     <div class="storage-note" data-ui-key="levelNote">レベルは難しさの目安です。句動詞や略語だけを出したい時は、テーマから選びます。</div>
   </div>
@@ -3077,12 +3077,12 @@
     <div class="category-buttons">
       <div class="category-group-label" data-ui-key="categoryGroupStart">入口</div>
       <button class="category-btn active" type="button" data-category="standardPractice" data-ui-label-key="categoryStandardPractice" onclick="setCategory('standardPractice')">一般語ミックス<span id="category-count-standardPractice">967項目</span></button>
-      <button class="category-btn" type="button" data-category="all" data-ui-label-key="categoryAll" onclick="setCategory('all')">全単語<span id="category-count-all">1320項目</span></button>
+      <button class="category-btn" type="button" data-category="all" data-ui-label-key="categoryAll" onclick="setCategory('all')">全単語<span id="category-count-all">1330項目</span></button>
       <button class="category-btn" type="button" data-category="weakWords" data-ui-label-key="categoryWeakWords" onclick="setCategory('weakWords')">苦手<span id="category-count-weakWords">0項目</span></button>
       <div class="category-group-label" data-ui-key="categoryGroupDaily">日常・実用</div>
       <button class="category-btn" type="button" data-category="katakanaGap" data-ui-label-key="categoryKatakanaGap" onclick="setCategory('katakanaGap')" aria-label="カタカナ注意 知ってるつもりになりやすい語">カタカナ注意<span id="category-count-katakanaGap">33項目</span></button>
       <button class="category-btn" type="button" data-category="phrasalVerb" data-ui-label-key="categoryPhrasalVerb" onclick="setCategory('phrasalVerb')">句動詞<span id="category-count-phrasalVerb">100項目</span></button>
-      <button class="category-btn" type="button" data-category="newsEnglish" data-ui-label-key="categoryNewsEnglish" onclick="setCategory('newsEnglish')">ニュース英語<span id="category-count-newsEnglish">43項目</span></button>
+      <button class="category-btn" type="button" data-category="newsEnglish" data-ui-label-key="categoryNewsEnglish" onclick="setCategory('newsEnglish')">ニュース英語<span id="category-count-newsEnglish">53項目</span></button>
       <button class="category-btn" type="button" data-category="bankingEnglish" data-ui-label-key="categoryBankingEnglish" onclick="setCategory('bankingEnglish')">ATM・銀行<span id="category-count-bankingEnglish">22項目</span></button>
       <button class="category-btn" type="button" data-category="uncountableNoun" data-ui-label-key="categoryUncountableNoun" onclick="setCategory('uncountableNoun')">不可算名詞<span id="category-count-uncountableNoun">7項目</span></button>
       <div class="category-group-label" data-ui-key="categoryGroupFood">食べ物</div>
@@ -15757,6 +15757,42 @@ const WORDS = [
     "exJa": "その大臣は公に謝罪した。"
   },
   {
+    "id": "statement_noun_news",
+    "w": "statement",
+    "cat": "news-english",
+    "pos": "名詞",
+    "level": "高校基礎",
+    "ipa": "ˈsteɪtmənt",
+    "ph": "ステイトメント",
+    "m": "声明、発表",
+    "ex": "The UN released a statement after the meeting.",
+    "exJa": "国連は会議の後に声明を出した。"
+  },
+  {
+    "id": "announce_verb_news",
+    "w": "announce",
+    "cat": "news-english",
+    "pos": "動詞",
+    "level": "中学復習",
+    "ipa": "əˈnaʊns",
+    "ph": "アナウンs",
+    "m": "発表する、告知する",
+    "ex": "The agency announced new emergency support.",
+    "exJa": "その機関は新しい緊急支援を発表した。"
+  },
+  {
+    "id": "confirm_verb_news",
+    "w": "confirm",
+    "cat": "news-english",
+    "pos": "動詞",
+    "level": "高校基礎",
+    "ipa": "kənˈfɜːm",
+    "ph": "コンファーム",
+    "m": "確認する、裏づける",
+    "ex": "Officials could not confirm the number at once.",
+    "exJa": "当局はその数をすぐには確認できなかった。"
+  },
+  {
     "id": "alleged_adjective_news",
     "w": "alleged",
     "cat": "news-english",
@@ -15805,6 +15841,78 @@ const WORDS = [
     "exJa": "政府はその報告を受けて対応した。"
   },
   {
+    "id": "aid_noun_news",
+    "w": "aid",
+    "cat": "news-english",
+    "pos": "名詞",
+    "level": "中学復習",
+    "ipa": "eɪd",
+    "ph": "エイd",
+    "m": "援助、支援",
+    "ex": "Aid arrived after the heavy rain.",
+    "exJa": "大雨のあと、援助が届いた。"
+  },
+  {
+    "id": "conflict_noun_news",
+    "w": "conflict",
+    "cat": "news-english",
+    "pos": "名詞",
+    "level": "高校基礎",
+    "ipa": "ˈkɒnflɪkt",
+    "ph": "コンフリクt",
+    "m": "紛争、対立",
+    "ex": "The conflict forced many families to leave home.",
+    "exJa": "その紛争により、多くの家族が家を離れざるを得なくなった。"
+  },
+  {
+    "id": "resolution_noun_news",
+    "w": "resolution",
+    "cat": "news-english",
+    "pos": "名詞",
+    "level": "発展",
+    "ipa": "ˌrezəˈluːʃən",
+    "ph": "レゾリューション",
+    "m": "決議",
+    "ex": "The Security Council adopted a new resolution.",
+    "exJa": "安全保障理事会は新しい決議を採択した。"
+  },
+  {
+    "id": "delegate_noun_news",
+    "w": "delegate",
+    "cat": "news-english",
+    "pos": "名詞",
+    "level": "発展",
+    "ipa": "ˈdelɪɡət",
+    "ph": "デリゲト",
+    "m": "代表、代表者",
+    "ex": "Delegates gathered to discuss the draft plan.",
+    "exJa": "代表者たちは草案を話し合うために集まった。"
+  },
+  {
+    "id": "humanitarian_adjective_news",
+    "w": "humanitarian",
+    "cat": "news-english",
+    "pos": "形容詞",
+    "level": "発展",
+    "ipa": "hjuːˌmænɪˈteəriən",
+    "ph": "ヒューマニテアリアン",
+    "m": "人道的な",
+    "ex": "The group called for a humanitarian pause.",
+    "exJa": "その団体は人道的な一時停止を求めた。"
+  },
+  {
+    "id": "sanction_noun_news",
+    "w": "sanction",
+    "cat": "news-english",
+    "pos": "名詞",
+    "level": "発展",
+    "ipa": "ˈsæŋkʃən",
+    "ph": "サンクション",
+    "m": "制裁",
+    "ex": "The country faced a new economic sanction.",
+    "exJa": "その国は新たな経済制裁を受けた。"
+  },
+  {
     "id": "death_toll_noun_news",
     "w": "death toll",
     "cat": "news-english",
@@ -15839,6 +15947,18 @@ const WORDS = [
     "m": "映像",
     "ex": "New footage showed people leaving the station.",
     "exJa": "新しい映像には人々が駅を離れる様子が映っていた。"
+  },
+  {
+    "id": "secretary_general_noun_news",
+    "w": "Secretary-General",
+    "cat": "news-english",
+    "pos": "名詞",
+    "level": "発展",
+    "ipa": "ˌsekrətəri ˈdʒenərəl",
+    "ph": "セクラタリ ジェネラル",
+    "m": "事務総長",
+    "ex": "The Secretary-General spoke about the crisis.",
+    "exJa": "事務総長はその危機について語った。"
   },
   {
     "id": "withdrawal_noun_atm",
@@ -19017,6 +19137,9 @@ const NEWS_REPORTING_CHOICE_WORDS = new Set([
   'claim',
   'verify',
   'news',
+  'statement',
+  'announce',
+  'confirm',
   'reportedly',
   'officially',
   'publicly',
@@ -19024,11 +19147,13 @@ const NEWS_REPORTING_CHOICE_WORDS = new Set([
   'according to',
   'based on',
   'in response to',
+  'secretary-general',
   'spokesperson',
   'footage'
 ]);
 const NEWS_CONFLICT_CHOICE_WORDS = new Set([
   'ceasefire',
+  'conflict',
   'hezbollah',
   'disarmament',
   'invade',
@@ -19045,14 +19170,18 @@ const NEWS_CONFLICT_CHOICE_WORDS = new Set([
   'border crossing',
   'hostage',
   'negotiation',
+  'resolution',
+  'sanction',
   'sanctions'
 ]);
 const NEWS_HUMANITARIAN_CHOICE_WORDS = new Set([
+  'aid',
   'evacuation',
   'civilian',
   'child abuse',
   'casualty',
   'wounded',
+  'humanitarian',
   'humanitarian aid',
   'refugee',
   'displaced',
@@ -19060,6 +19189,7 @@ const NEWS_HUMANITARIAN_CHOICE_WORDS = new Set([
   'death toll'
 ]);
 const NEWS_GENERAL_CHOICE_WORDS = new Set([
+  'delegate',
   'world',
   'ward',
   'possession'
