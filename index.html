@@ -4,10 +4,14 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="robots" content="noindex,nofollow">
+  <meta name="theme-color" content="#f97316" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#9a3412" media="(prefers-color-scheme: dark)">
   <title>サクサク英単語</title>
   <style>
     :root {
       color-scheme: light;
+      /* 文字サイズの倍率（設定で 1 / 1.12 / 1.25 に切り替え。1のとき従来と同一） */
+      --fs: 1;
       /* 構造色（ライト値は従来のハードコード色と一致＝ライト表示は不変） */
       --app-bg: #fff1f5;
       --surface: #ffffff;
@@ -15,8 +19,8 @@
       --ink: #1a2a4a;
       --text-strong: #334155;
       --text: #475569;
-      --text-muted: #64748b;
-      --text-faint: #94a3b8;
+      --text-muted: #556070;
+      --text-faint: #5b6675;
       --border: #e2e8f0;
       --border-strong: #cbd5e1;
       /* ブランド（オレンジ） */
@@ -58,6 +62,7 @@
       --glass-soft: rgba(255,255,255,0.75);
       --glass-hint: rgba(255,255,255,0.62);
       /* 品詞による単語の色分け */
+      --ipa: #2563eb;
       --pos-noun: #ea580c;
       --pos-verb: #15803d;
       --pos-adjective: #1e3a8a;
@@ -72,8 +77,8 @@
       --ink: #e9eef4;
       --text-strong: #d5dde6;
       --text: #b7c1cc;
-      --text-muted: #9aa6b3;
-      --text-faint: #75818d;
+      --text-muted: #bcc6d1;
+      --text-faint: #a5b1bd;
       --border: #333c46;
       --border-strong: #404a56;
       --warm-primary: #fb923c;
@@ -110,6 +115,7 @@
       --glass: rgba(255,255,255,0.06);
       --glass-soft: rgba(255,255,255,0.05);
       --glass-hint: rgba(255,255,255,0.06);
+      --ipa: #8ab4ff;
       --pos-noun: #fb923c;
       --pos-verb: #4ade80;
       --pos-adjective: #60a5fa;
@@ -125,8 +131,8 @@
         --ink: #e9eef4;
         --text-strong: #d5dde6;
         --text: #b7c1cc;
-        --text-muted: #9aa6b3;
-        --text-faint: #75818d;
+        --text-muted: #bcc6d1;
+        --text-faint: #a5b1bd;
         --border: #333c46;
         --border-strong: #404a56;
         --warm-primary: #fb923c;
@@ -163,6 +169,7 @@
         --glass: rgba(255,255,255,0.06);
         --glass-soft: rgba(255,255,255,0.05);
         --glass-hint: rgba(255,255,255,0.06);
+        --ipa: #8ab4ff;
         --pos-noun: #fb923c;
         --pos-verb: #4ade80;
         --pos-adjective: #60a5fa;
@@ -171,7 +178,9 @@
     }
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     html {
-      -webkit-text-size-adjust: 100%;
+      /* 端末の文字拡大を妨げないため 100% 固定はしない */
+      -webkit-text-size-adjust: auto;
+      text-size-adjust: auto;
       scroll-padding-bottom: calc(96px + env(safe-area-inset-bottom));
     }
     body {
@@ -206,8 +215,8 @@
       gap: 8px;
       min-width: 0;
     }
-    .header-title { font-weight: 700; font-size: 17px; }
-    .header-sub { font-size: 11px; opacity: 0.65; margin-top: 2px; }
+    .header-title { font-weight: 700; font-size: calc(17px * var(--fs)); }
+    .header-sub { font-size: calc(11px * var(--fs)); opacity: 0.65; margin-top: 2px; }
     .test-header-back-btn {
       display: none;
       border: 1px solid rgba(255,255,255,0.38);
@@ -216,7 +225,7 @@
       border-radius: 999px;
       padding: 4px 9px;
       min-height: 28px;
-      font-size: 11px;
+      font-size: calc(11px * var(--fs));
       line-height: 1;
       font-weight: 900;
       cursor: pointer;
@@ -252,7 +261,7 @@
     .perfect-star-slot {
       display: inline-block;
       color: rgba(255,255,255,0.42);
-      font-size: 13px;
+      font-size: calc(13px * var(--fs));
       line-height: 1;
       letter-spacing: 0;
       text-shadow: 0 1px 2px rgba(15,23,42,0.22);
@@ -263,7 +272,7 @@
     }
     .perfect-star-tier-label {
       color: rgba(255,255,255,0.9);
-      font-size: 8px;
+      font-size: calc(8px * var(--fs));
       font-weight: 900;
       line-height: 1;
       letter-spacing: 0;
@@ -284,10 +293,10 @@
     .star-tier-green { --perfect-star-color: #16a34a; --perfect-star-stroke: rgba(220,252,231,0.5); }
     .star-tier-indigo { --perfect-star-color: #4f46e5; --perfect-star-stroke: rgba(224,231,255,0.5); }
     .star-tier-rainbow { --perfect-star-color: #ec4899; --perfect-star-stroke: rgba(252,231,243,0.5); }
-    .stats { display: flex; gap: 18px; font-size: 13px; }
+    .stats { display: flex; gap: 18px; font-size: calc(13px * var(--fs)); }
     .stat-item { text-align: center; }
-    .stat-num { font-size: 20px; font-weight: 700; display: block; line-height: 1; }
-    .stat-label { font-size: 10px; opacity: 0.7; margin-top: 2px; }
+    .stat-num { font-size: calc(20px * var(--fs)); font-weight: 700; display: block; line-height: 1; }
+    .stat-label { font-size: calc(10px * var(--fs)); opacity: 0.7; margin-top: 2px; }
     .settings-open-btn,
     .back-to-learn-btn {
       border: 1px solid rgba(255,255,255,0.35);
@@ -295,7 +304,7 @@
       color: white;
       border-radius: 999px;
       padding: 8px 12px;
-      font-size: 12px;
+      font-size: calc(12px * var(--fs));
       font-weight: 800;
       cursor: pointer;
       touch-action: manipulation;
@@ -322,7 +331,7 @@
       border-color: var(--warm-primary-strong);
       box-shadow: 0 10px 28px rgba(194,65,12,0.24);
       padding: 11px 22px;
-      font-size: 13px;
+      font-size: calc(13px * var(--fs));
       min-height: 48px;
       display: flex;
       align-items: center;
@@ -389,13 +398,13 @@
     }
     .settings-page-title {
       color: var(--ink);
-      font-size: 20px;
+      font-size: calc(20px * var(--fs));
       font-weight: 900;
       line-height: 1.25;
     }
     .settings-page-lead {
       color: var(--text-muted);
-      font-size: 12px;
+      font-size: calc(12px * var(--fs));
       line-height: 1.55;
       margin-top: 4px;
     }
@@ -416,7 +425,7 @@
       color: var(--text-strong);
       border-radius: 12px;
       padding: 8px 3px;
-      font-size: 10.5px;
+      font-size: calc(10.5px * var(--fs));
       line-height: 1.15;
       font-weight: 900;
       cursor: pointer;
@@ -479,14 +488,14 @@
     }
     .settings-section-title {
       color: var(--text-strong);
-      font-size: 13px;
+      font-size: calc(13px * var(--fs));
       font-weight: 900;
       margin-bottom: 9px;
     }
 
     /* Progress */
     .progress-wrap { margin-bottom: 18px; }
-    .progress-label { font-size: 12px; color: var(--text-muted); margin-bottom: 6px; display: flex; justify-content: space-between; }
+    .progress-label { font-size: calc(12px * var(--fs)); color: var(--text-muted); margin-bottom: 6px; display: flex; justify-content: space-between; }
     .progress-label span { min-width: 0; }
     .progress-label span:last-child {
       text-align: right;
@@ -514,13 +523,13 @@
     }
     .quick-start-title {
       color: var(--ink);
-      font-size: 13px;
+      font-size: calc(13px * var(--fs));
       font-weight: 900;
       line-height: 1.25;
     }
     .quick-start-note {
       color: var(--text-muted);
-      font-size: 11px;
+      font-size: calc(11px * var(--fs));
       font-weight: 700;
       white-space: nowrap;
     }
@@ -543,7 +552,7 @@
       border-radius: 12px;
       min-height: 44px;
       padding: 9px 6px;
-      font-size: 12px;
+      font-size: calc(12px * var(--fs));
       font-weight: 900;
       line-height: 1.2;
       cursor: pointer;
@@ -553,7 +562,7 @@
       display: block;
       margin-top: 2px;
       color: var(--text-muted);
-      font-size: 10px;
+      font-size: calc(10px * var(--fs));
       font-weight: 800;
       line-height: 1.15;
     }
@@ -575,7 +584,7 @@
       border-radius: 999px;
       background: rgba(255, 247, 237, 0.9);
       color: var(--text-muted);
-      font-size: 11.5px;
+      font-size: calc(11.5px * var(--fs));
       font-weight: 900;
       cursor: pointer;
       touch-action: manipulation;
@@ -605,13 +614,13 @@
     .intro-panel[hidden] { display: none; }
     .intro-title {
       color: var(--ink);
-      font-size: 13px;
+      font-size: calc(13px * var(--fs));
       font-weight: 900;
       margin-bottom: 6px;
     }
     .intro-text {
       color: var(--text);
-      font-size: 12px;
+      font-size: calc(12px * var(--fs));
       font-weight: 700;
       line-height: 1.55;
       margin-bottom: 10px;
@@ -627,7 +636,7 @@
       border-radius: 12px;
       background: var(--surface);
       color: var(--text-strong);
-      font-size: 12px;
+      font-size: calc(12px * var(--fs));
       font-weight: 900;
       cursor: pointer;
       touch-action: manipulation;
@@ -635,7 +644,7 @@
     .intro-btn span {
       display: block;
       margin-top: 1px;
-      font-size: 10px;
+      font-size: calc(10px * var(--fs));
       font-weight: 800;
       line-height: 1.1;
       opacity: 0.82;
@@ -675,18 +684,18 @@
     }
     .growth-badge-label {
       color: var(--text-muted);
-      font-size: 10px;
+      font-size: calc(10px * var(--fs));
       font-weight: 900;
     }
     .growth-badge-title {
       color: var(--ok);
-      font-size: 12.5px;
+      font-size: calc(12.5px * var(--fs));
       font-weight: 900;
       text-align: right;
     }
     .growth-badge-message {
       color: var(--text-strong);
-      font-size: 11.5px;
+      font-size: calc(11.5px * var(--fs));
       font-weight: 800;
       line-height: 1.45;
     }
@@ -701,13 +710,13 @@
     .learning-summary-num {
       display: block;
       color: var(--ink);
-      font-size: 17px;
+      font-size: calc(17px * var(--fs));
       font-weight: 900;
       line-height: 1;
     }
     .learning-summary-label {
       color: var(--text-muted);
-      font-size: 10px;
+      font-size: calc(10px * var(--fs));
       font-weight: 800;
       line-height: 1.25;
       margin-top: 4px;
@@ -724,7 +733,7 @@
       width: min(92%, 420px);
       margin: 0 auto 8px;
       color: var(--text-faint);
-      font-size: 12px;
+      font-size: calc(12px * var(--fs));
       font-weight: 800;
       text-align: center;
       min-height: 18px;
@@ -758,13 +767,13 @@
     .achievement-num {
       display: block;
       color: var(--ink);
-      font-size: 18px;
+      font-size: calc(18px * var(--fs));
       font-weight: 800;
       line-height: 1;
     }
     .achievement-label {
       color: var(--text-muted);
-      font-size: 10px;
+      font-size: calc(10px * var(--fs));
       line-height: 1.3;
       margin-top: 4px;
     }
@@ -787,27 +796,27 @@
     .data-quality-item strong {
       display: block;
       color: var(--ink);
-      font-size: 17px;
+      font-size: calc(17px * var(--fs));
       font-weight: 900;
       line-height: 1;
     }
     .data-quality-item small {
       display: block;
       color: var(--text-muted);
-      font-size: 10px;
+      font-size: calc(10px * var(--fs));
       font-weight: 800;
       line-height: 1.25;
       margin-top: 4px;
     }
     .level-title {
       color: var(--text-strong);
-      font-size: 12px;
+      font-size: calc(12px * var(--fs));
       font-weight: 800;
       margin-bottom: 9px;
     }
     .part-title {
       color: var(--text-strong);
-      font-size: 12px;
+      font-size: calc(12px * var(--fs));
       font-weight: 800;
       margin-bottom: 9px;
     }
@@ -824,7 +833,7 @@
     .category-group-label {
       grid-column: 1 / -1;
       color: var(--text-muted);
-      font-size: 11px;
+      font-size: calc(11px * var(--fs));
       font-weight: 900;
       letter-spacing: 0;
       padding: 6px 2px 0;
@@ -839,6 +848,7 @@
       grid-template-columns: repeat(3, 1fr);
       gap: 8px;
     }
+    .font-scale-buttons,
     .theme-mode-buttons,
     .ui-language-buttons,
     .phonetic-assist-buttons,
@@ -855,7 +865,8 @@
     .speech-voice-buttons {
       grid-template-columns: 1fr;
     }
-    .theme-mode-buttons {
+    .theme-mode-buttons,
+    .font-scale-buttons {
       grid-template-columns: repeat(3, 1fr);
     }
     .front-display-grid {
@@ -864,7 +875,7 @@
     }
     .front-display-label {
       color: var(--text);
-      font-size: 12px;
+      font-size: calc(12px * var(--fs));
       font-weight: 800;
     }
     .level-btn {
@@ -873,7 +884,7 @@
       color: var(--text-strong);
       border-radius: 12px;
       padding: 10px 8px;
-      font-size: 12px;
+      font-size: calc(12px * var(--fs));
       font-weight: 800;
       cursor: pointer;
       touch-action: manipulation;
@@ -884,7 +895,7 @@
       color: var(--text-strong);
       border-radius: 12px;
       padding: 10px 8px;
-      font-size: 12px;
+      font-size: calc(12px * var(--fs));
       font-weight: 800;
       cursor: pointer;
       touch-action: manipulation;
@@ -895,11 +906,12 @@
       color: var(--text-strong);
       border-radius: 12px;
       padding: 10px 6px;
-      font-size: 12px;
+      font-size: calc(12px * var(--fs));
       font-weight: 800;
       cursor: pointer;
       touch-action: manipulation;
     }
+    .font-scale-btn,
     .theme-mode-btn,
     .ui-language-btn,
     .phonetic-assist-btn,
@@ -914,7 +926,7 @@
       color: var(--text-strong);
       border-radius: 12px;
       padding: 10px 6px;
-      font-size: 12px;
+      font-size: calc(12px * var(--fs));
       font-weight: 800;
       cursor: pointer;
       touch-action: manipulation;
@@ -924,7 +936,7 @@
     .speech-voice-btn span {
       display: block;
       color: var(--text-faint);
-      font-size: 10px;
+      font-size: calc(10px * var(--fs));
       font-weight: 700;
       margin-top: 2px;
     }
@@ -934,7 +946,7 @@
       color: var(--text-strong);
       border-radius: 12px;
       padding: 9px 4px;
-      font-size: 11px;
+      font-size: calc(11px * var(--fs));
       font-weight: 800;
       cursor: pointer;
       touch-action: manipulation;
@@ -942,21 +954,21 @@
     .level-btn span {
       display: block;
       color: var(--text-faint);
-      font-size: 10px;
+      font-size: calc(10px * var(--fs));
       font-weight: 600;
       margin-top: 2px;
     }
     .category-btn span {
       display: block;
       color: var(--text-faint);
-      font-size: 10px;
+      font-size: calc(10px * var(--fs));
       font-weight: 600;
       margin-top: 2px;
     }
     .part-btn span {
       display: block;
       color: var(--text-faint);
-      font-size: 9px;
+      font-size: calc(9px * var(--fs));
       font-weight: 600;
       margin-top: 2px;
     }
@@ -977,6 +989,7 @@
       border-color: var(--warm-primary);
       color: var(--on-primary);
     }
+    .font-scale-btn.active,
     .theme-mode-btn.active,
     .ui-language-btn.active,
     .phonetic-assist-btn.active,
@@ -997,7 +1010,7 @@
       color: var(--text-strong);
       border-radius: 12px;
       padding: 10px 6px;
-      font-size: 12px;
+      font-size: calc(12px * var(--fs));
       font-weight: 800;
       cursor: pointer;
       touch-action: manipulation;
@@ -1018,7 +1031,7 @@
       list-style: none;
       padding: 12px;
       color: var(--text-strong);
-      font-size: 12px;
+      font-size: calc(12px * var(--fs));
       font-weight: 800;
       cursor: pointer;
     }
@@ -1042,14 +1055,14 @@
       color: var(--text-strong);
       border-radius: 11px;
       padding: 10px 6px;
-      font-size: 12px;
+      font-size: calc(12px * var(--fs));
       font-weight: 700;
       cursor: pointer;
       touch-action: manipulation;
     }
     .small-btn:active { transform: scale(0.97); filter: brightness(0.96); }
     .small-btn.danger { color: var(--bad-text); background: var(--bad-soft-alt); border-color: #fecaca; }
-    .storage-note { margin-top: 8px; font-size: 11px; color: var(--text-muted); line-height: 1.5; text-align: center; }
+    .storage-note { margin-top: 8px; font-size: calc(11px * var(--fs)); color: var(--text-muted); line-height: 1.5; text-align: center; }
     .settings-bottom { margin-top: 14px; display: flex; justify-content: center; }
     .settings-bottom .back-to-learn-btn {
       background: var(--warm-primary-strong);
@@ -1060,7 +1073,7 @@
     .pronunciation-guide {
       margin-top: 9px;
       color: var(--text-muted);
-      font-size: 11px;
+      font-size: calc(11px * var(--fs));
       line-height: 1.55;
       text-align: left;
     }
@@ -1111,7 +1124,7 @@
     }
     .word-text {
       order: 1;
-      font-size: clamp(36px, 10vw, 44px);
+      font-size: calc(clamp(36px, 10vw, 44px) * var(--fs));
       font-weight: 800;
       color: var(--ink);
       letter-spacing: 0;
@@ -1137,7 +1150,7 @@
       display: block;
       margin-top: 9px;
       color: var(--text-muted);
-      font-size: clamp(13px, 3.5vw, 16px);
+      font-size: calc(clamp(13px, 3.5vw, 16px) * var(--fs));
       font-weight: 850;
       line-height: 1.32;
       max-width: min(100%, 340px);
@@ -1159,9 +1172,9 @@
     .word-text .morpheme-root { color: currentColor; }
     .ipa-text {
       order: 2;
-      font-size: 17px;
+      font-size: calc(17px * var(--fs));
       font-family: 'Segoe UI', Georgia, 'DejaVu Sans', serif;
-      color: #3b82f6;
+      color: var(--ipa);
       letter-spacing: 0.3px;
     }
     .ipa-accent-label {
@@ -1175,7 +1188,7 @@
     }
     .ipa-text.abbreviation-reading {
       font-family: inherit;
-      font-size: 13px;
+      font-size: calc(13px * var(--fs));
       font-weight: 900;
       color: var(--info);
       letter-spacing: 0.02em;
@@ -1184,14 +1197,14 @@
     .accent-mark { color: #ef4444; font-weight: 700; }
     .phonetic-text {
       order: 4;
-      font-size: 13px;
+      font-size: calc(13px * var(--fs));
       color: var(--text-faint);
       margin-top: 4px;
     }
     .phonetic-text.abbreviation-origin {
       width: min(92%, 320px);
       color: var(--text-muted);
-      font-size: 11px;
+      font-size: calc(11px * var(--fs));
       font-weight: 800;
       line-height: 1.35;
       text-align: center;
@@ -1208,13 +1221,13 @@
       align-items: center;
       justify-content: center;
       min-width: 78px;
-      min-height: 34px;
+      min-height: 44px;
       padding: 0 14px;
       border: 1px solid var(--warm-border);
       border-radius: 999px;
       background: var(--warm-primary-soft);
       color: var(--warm-primary-strong);
-      font-size: 12px;
+      font-size: calc(12px * var(--fs));
       font-weight: 900;
       letter-spacing: 0;
       cursor: pointer;
@@ -1245,13 +1258,13 @@
     .test-audio-btn {
       min-width: 72px;
       min-height: 32px;
-      font-size: 12px;
+      font-size: calc(12px * var(--fs));
     }
     .test-audio-status {
       width: min(92%, 420px);
       margin: 2px auto 4px;
       color: var(--text-muted);
-      font-size: 11px;
+      font-size: calc(11px * var(--fs));
       font-weight: 800;
       line-height: 1.35;
       text-align: center;
@@ -1267,8 +1280,8 @@
     }
     .card-audio-btn {
       min-width: 92px;
-      min-height: 36px;
-      font-size: 12.5px;
+      min-height: 44px;
+      font-size: calc(12.5px * var(--fs));
     }
     .word-audio-btn:active {
       transform: scale(0.96);
@@ -1305,7 +1318,7 @@
       border-radius: 14px;
       background: var(--surface);
       color: var(--text-strong);
-      font-size: 12px;
+      font-size: calc(12px * var(--fs));
       font-weight: 900;
       line-height: 1.15;
       cursor: pointer;
@@ -1334,7 +1347,7 @@
     .level-tag {
       background: var(--warm-primary-soft);
       color: var(--warm-primary-strong);
-      font-size: 11px;
+      font-size: calc(11px * var(--fs));
       font-weight: 700;
       padding: 4px 10px;
       border-radius: 20px;
@@ -1350,7 +1363,7 @@
     .pos-tag {
       background: var(--warm-primary-soft);
       color: var(--warm-primary-strong);
-      font-size: 11px;
+      font-size: calc(11px * var(--fs));
       font-weight: 700;
       padding: 4px 10px;
       border-radius: 20px;
@@ -1363,7 +1376,7 @@
     .part-badge {
       background: var(--warm-primary-soft);
       color: var(--warm-primary-strong);
-      font-size: 11px;
+      font-size: calc(11px * var(--fs));
       font-weight: 600;
       padding: 3px 10px;
       border-radius: 20px;
@@ -1371,7 +1384,7 @@
     }
     .flip-hint {
       margin-top: 14px;
-      font-size: 12px;
+      font-size: calc(12px * var(--fs));
       color: #cbd5e1;
       display: flex;
       align-items: center;
@@ -1386,7 +1399,7 @@
       box-shadow: 0 6px 30px rgba(30,58,95,0.35);
     }
     .meaning-text {
-      font-size: 23px;
+      font-size: calc(23px * var(--fs));
       font-weight: 700;
       text-align: center;
       line-height: 1.4;
@@ -1394,7 +1407,7 @@
     }
     .origin-text {
       color: rgba(255,255,255,0.78);
-      font-size: 12px;
+      font-size: calc(12px * var(--fs));
       font-weight: 700;
       line-height: 1.45;
       margin: -2px 0 12px;
@@ -1405,7 +1418,7 @@
       display: none;
     }
     .meaning-text.multi-pos-meaning {
-      font-size: 20px;
+      font-size: calc(20px * var(--fs));
       line-height: 1.48;
       letter-spacing: 0;
       white-space: pre-line;
@@ -1418,7 +1431,7 @@
       border: 1px solid rgba(255,255,255,0.26);
       background: rgba(255,255,255,0.12);
       color: rgba(255,255,255,0.88);
-      font-size: 11px;
+      font-size: calc(11px * var(--fs));
       font-weight: 800;
       padding: 4px 10px;
       border-radius: 20px;
@@ -1440,14 +1453,14 @@
       margin-bottom: 14px;
     }
     .example-text {
-      font-size: 12.5px;
+      font-size: calc(12.5px * var(--fs));
       text-align: center;
       opacity: 0.9;
       line-height: 1.7;
       font-style: italic;
     }
     .example-ja-text {
-      font-size: 12px;
+      font-size: calc(12px * var(--fs));
       text-align: center;
       opacity: 0.65;
       margin-top: 8px;
@@ -1476,7 +1489,7 @@
       border-radius: 999px;
       background: var(--info-soft);
       color: var(--info);
-      font-size: 13px;
+      font-size: calc(13px * var(--fs));
       font-weight: 900;
       line-height: 1;
       letter-spacing: 0;
@@ -1568,20 +1581,20 @@
     }
     .test-word-text {
       color: var(--ink);
-      font-size: clamp(34px, 10vw, 44px);
+      font-size: calc(clamp(34px, 10vw, 44px) * var(--fs));
       font-weight: 900;
       line-height: 1.1;
       text-align: center;
       overflow-wrap: anywhere;
     }
     .test-word-text.phrase-word {
-      font-size: clamp(24px, 7vw, 34px);
+      font-size: calc(clamp(24px, 7vw, 34px) * var(--fs));
       overflow-wrap: normal;
       word-break: normal;
       line-height: 1.14;
     }
     .test-word-text.has-display-sub {
-      font-size: clamp(46px, 13vw, 58px);
+      font-size: calc(clamp(46px, 13vw, 58px) * var(--fs));
       line-height: 1;
     }
     .test-word-text .word-main {
@@ -1592,13 +1605,13 @@
       display: block;
       margin-top: 8px;
       color: var(--text-muted);
-      font-size: clamp(12px, 3.2vw, 15px);
+      font-size: calc(clamp(12px, 3.2vw, 15px) * var(--fs));
       font-weight: 850;
       line-height: 1.32;
     }
     .test-front-pron {
       color: var(--text-muted);
-      font-size: 12px;
+      font-size: calc(12px * var(--fs));
       font-weight: 850;
       line-height: 1.2;
       text-align: center;
@@ -1610,7 +1623,7 @@
     }
     .test-front-pron.relation-prompt {
       color: #0f766e;
-      font-size: 13px;
+      font-size: calc(13px * var(--fs));
       font-weight: 900;
     }
     .test-front-pron:empty {
@@ -1622,13 +1635,13 @@
       background: var(--warm-primary-soft);
       color: var(--warm-primary-strong);
       padding: 3px 8px;
-      font-size: 10px;
+      font-size: calc(10px * var(--fs));
       font-weight: 900;
       line-height: 1.1;
     }
     .test-back-meaning {
       color: var(--ink);
-      font-size: 17px;
+      font-size: calc(17px * var(--fs));
       font-weight: 900;
       line-height: 1.25;
       display: -webkit-box;
@@ -1638,7 +1651,7 @@
     }
     .test-back-pron {
       color: var(--text-muted);
-      font-size: 11px;
+      font-size: calc(11px * var(--fs));
       font-weight: 800;
       line-height: 1.25;
       overflow: hidden;
@@ -1647,7 +1660,7 @@
     }
     .test-back-origin {
       color: #0f766e;
-      font-size: 10.5px;
+      font-size: calc(10.5px * var(--fs));
       font-weight: 800;
       line-height: 1.25;
       display: -webkit-box;
@@ -1661,7 +1674,7 @@
     .test-back-example,
     .test-back-example-ja {
       color: var(--text);
-      font-size: 10.5px;
+      font-size: calc(10.5px * var(--fs));
       font-weight: 700;
       line-height: 1.25;
       display: -webkit-box;
@@ -1694,7 +1707,7 @@
       border-radius: 14px;
       min-height: 54px;
       padding: 12px 14px;
-      font-size: 14px;
+      font-size: calc(14px * var(--fs));
       font-weight: 800;
       line-height: 1.35;
       text-align: left;
@@ -1712,7 +1725,7 @@
       border-radius: 999px;
       background: var(--warm-primary-soft);
       color: var(--warm-primary-strong);
-      font-size: 12px;
+      font-size: calc(12px * var(--fs));
       font-weight: 900;
       vertical-align: middle;
     }
@@ -1722,7 +1735,7 @@
     }
     .test-choice-card.relation-choice .test-choice-meaning {
       color: #1e3a8a;
-      font-size: 17px;
+      font-size: calc(17px * var(--fs));
       font-weight: 900;
     }
     .test-choice-card:disabled {
@@ -1760,7 +1773,7 @@
       margin-left: auto;
       border-radius: 999px;
       padding: 3px 7px;
-      font-size: 10px;
+      font-size: calc(10px * var(--fs));
       font-weight: 900;
       line-height: 1;
       white-space: nowrap;
@@ -1812,7 +1825,7 @@
       border-radius: 16px;
       min-width: 0;
       min-height: 0;
-      font-size: clamp(21px, 6vw, 28px);
+      font-size: calc(clamp(21px, 6vw, 28px) * var(--fs));
       font-weight: 900;
       cursor: pointer;
       touch-action: manipulation;
@@ -1834,7 +1847,7 @@
       color: var(--warn);
       border-radius: 14px;
       padding: 9px 11px;
-      font-size: 12px;
+      font-size: calc(12px * var(--fs));
       font-weight: 800;
       line-height: 1.45;
       text-align: left;
@@ -1885,7 +1898,7 @@
     }
     .test-feedback-label {
       color: #a16207;
-      font-size: 10px;
+      font-size: calc(10px * var(--fs));
       font-weight: 900;
       line-height: 1.35;
       white-space: nowrap;
@@ -1893,7 +1906,7 @@
     .test-feedback-value {
       min-width: 0;
       color: #78350f;
-      font-size: 12px;
+      font-size: calc(12px * var(--fs));
       font-weight: 900;
       line-height: 1.35;
       overflow-wrap: anywhere;
@@ -1911,7 +1924,7 @@
     }
     .test-feedback-row.feedback-note .test-feedback-value {
       color: var(--warn);
-      font-size: 11px;
+      font-size: calc(11px * var(--fs));
       font-weight: 800;
       line-height: 1.45;
     }
@@ -1934,7 +1947,7 @@
       border-radius: 20px;
       background: var(--warm-primary-soft);
       color: var(--warm-primary-strong);
-      font-size: 15px;
+      font-size: calc(15px * var(--fs));
       font-weight: 900;
       letter-spacing: 0;
       cursor: pointer;
@@ -1970,10 +1983,10 @@
       gap: 10px;
     }
     body.test-mode .stat-num {
-      font-size: 17px;
+      font-size: calc(17px * var(--fs));
     }
     body.test-mode .stat-label {
-      font-size: 9px;
+      font-size: calc(9px * var(--fs));
       margin-top: 1px;
     }
     body.test-mode #learn-view {
@@ -1990,7 +2003,7 @@
     body.test-mode .progress-label {
       align-items: flex-start;
       gap: 8px;
-      font-size: 11px;
+      font-size: calc(11px * var(--fs));
       margin-bottom: 4px;
     }
     body.test-mode .progress-label span:first-child {
@@ -2061,24 +2074,24 @@
       padding: 12px 12px;
     }
     body.test-mode .test-word-text {
-      font-size: clamp(28px, 7.8vw, 38px);
+      font-size: calc(clamp(28px, 7.8vw, 38px) * var(--fs));
       line-height: 1.05;
     }
     body.test-mode .test-front-pron {
-      font-size: 11px;
+      font-size: calc(11px * var(--fs));
     }
     body.test-mode .test-card-back-content {
       gap: 3px;
     }
     body.test-mode .test-back-meaning {
-      font-size: 14px;
+      font-size: calc(14px * var(--fs));
       line-height: 1.18;
     }
     body.test-mode .test-back-pron,
     body.test-mode .test-back-origin,
     body.test-mode .test-back-example,
     body.test-mode .test-back-example-ja {
-      font-size: 9.8px;
+      font-size: calc(9.8px * var(--fs));
       line-height: 1.18;
     }
     body.test-mode .test-choice-grid {
@@ -2102,7 +2115,7 @@
       max-height: 58px;
       padding: 9px 11px;
       border-radius: 12px;
-      font-size: 13px;
+      font-size: calc(13px * var(--fs));
       line-height: 1.25;
       overflow: hidden;
     }
@@ -2110,7 +2123,7 @@
       min-width: 22px;
       height: 22px;
       margin-right: 7px;
-      font-size: 11px;
+      font-size: calc(11px * var(--fs));
     }
     body.test-mode .test-letter-row {
       --test-letter-gap: 8px;
@@ -2123,7 +2136,7 @@
     }
     body.test-mode .test-letter-btn {
       border-radius: 14px;
-      font-size: clamp(20px, 5.8vw, 26px);
+      font-size: calc(clamp(20px, 5.8vw, 26px) * var(--fs));
     }
     body.test-mode .test-feedback {
       display: none;
@@ -2138,7 +2151,7 @@
       display: inline-flex;
       margin-top: 8px;
       border-radius: 20px;
-      font-size: 15px;
+      font-size: calc(15px * var(--fs));
       visibility: hidden;
       opacity: 0;
       pointer-events: none;
@@ -2218,35 +2231,35 @@
       body.test-mode .test-back-toggle-btn {
         width: 84px;
         height: 28px;
-        font-size: 12px;
+        font-size: calc(12px * var(--fs));
       }
       body.test-mode .test-word-card-wrap { flex-basis: clamp(136px, 22svh, 158px); }
       body.test-mode .test-audio-row { bottom: 8px; }
       body.test-mode .test-audio-btn {
         min-width: 64px;
         min-height: 28px;
-        font-size: 11px;
+        font-size: calc(11px * var(--fs));
       }
-      body.test-mode .test-word-text { font-size: clamp(25px, 7.2vw, 34px); }
+      body.test-mode .test-word-text { font-size: calc(clamp(25px, 7.2vw, 34px) * var(--fs)); }
       body.test-mode .test-card-face { padding: 10px 11px; }
       body.test-mode .test-card-front-face { gap: 6px; }
-      body.test-mode .test-front-pron { font-size: 10px; }
-      body.test-mode .test-back-pos { font-size: 9px; padding: 2px 7px; }
-      body.test-mode .test-back-meaning { font-size: 13px; }
+      body.test-mode .test-front-pron { font-size: calc(10px * var(--fs)); }
+      body.test-mode .test-back-pos { font-size: calc(9px * var(--fs)); padding: 2px 7px; }
+      body.test-mode .test-back-meaning { font-size: calc(13px * var(--fs)); }
       body.test-mode .test-back-pron,
       body.test-mode .test-back-origin,
       body.test-mode .test-back-example,
-      body.test-mode .test-back-example-ja { font-size: 9px; }
+      body.test-mode .test-back-example-ja { font-size: calc(9px * var(--fs)); }
       body.test-mode .test-choice-grid { gap: 6px; margin-top: 7px; }
       body.test-mode .test-choice-card {
         min-height: 42px;
         max-height: 52px;
         padding: 8px 10px;
-        font-size: 12.5px;
+        font-size: calc(12.5px * var(--fs));
       }
       body.test-mode .test-letter-btn {
         border-radius: 13px;
-        font-size: 20px;
+        font-size: calc(20px * var(--fs));
       }
       body.test-mode .test-letter-row {
         --test-letter-gap: 7px;
@@ -2256,7 +2269,7 @@
       body.test-mode .test-feedback {
         display: none;
         padding: 6px 9px;
-        font-size: 10px;
+        font-size: calc(10px * var(--fs));
         box-sizing: border-box;
       }
       body.test-mode .test-feedback.is-visible {
@@ -2268,13 +2281,13 @@
         gap: 6px;
       }
       body.test-mode .test-feedback-label {
-        font-size: 9px;
+        font-size: calc(9px * var(--fs));
       }
       body.test-mode .test-feedback-value {
-        font-size: 10.5px;
+        font-size: calc(10.5px * var(--fs));
       }
       body.test-mode .test-feedback-row.feedback-note .test-feedback-value {
-        font-size: 10px;
+        font-size: calc(10px * var(--fs));
       }
       body.test-mode .test-next-btn {
         display: inline-flex;
@@ -2282,7 +2295,7 @@
         height: var(--test-action-square-size);
         margin-top: 6px;
         border-radius: 17px;
-        font-size: 13px;
+        font-size: calc(13px * var(--fs));
         visibility: hidden;
         opacity: 0;
         pointer-events: none;
@@ -2293,7 +2306,7 @@
         height: var(--test-action-square-size);
         margin-top: 6px;
         border-radius: 17px;
-        font-size: 13px;
+        font-size: calc(13px * var(--fs));
         visibility: visible;
         opacity: 1;
         pointer-events: auto;
@@ -2317,12 +2330,12 @@
       }
       body.test-mode .test-letter-btn {
         border-radius: 10px;
-        font-size: 17px;
+        font-size: calc(17px * var(--fs));
       }
       body.test-mode .test-next-btn,
       body.test-mode .test-next-btn.is-visible {
         border-radius: 14px;
-        font-size: 12px;
+        font-size: calc(12px * var(--fs));
       }
       body.test-mode .test-answer-zone {
         --test-action-square-size: min(24vw, 96px);
@@ -2353,7 +2366,7 @@
       min-height: 43px;
       max-height: 50px;
       padding: 8px 10px;
-      font-size: 12.5px;
+      font-size: calc(12.5px * var(--fs));
     }
     body.test-mode.test-answered .test-feedback.correct-feedback.is-visible ~ .test-answer-zone .test-next-btn.is-visible {
       margin-top: var(--test-correct-action-gap);
@@ -2378,7 +2391,7 @@
         min-height: 40px;
         max-height: 46px;
         padding: 7px 9px;
-        font-size: 12px;
+        font-size: calc(12px * var(--fs));
       }
     }
     @media (max-height: 700px) {
@@ -2394,7 +2407,7 @@
         min-height: 38px;
         max-height: 43px;
         padding: 6px 9px;
-        font-size: 11.5px;
+        font-size: calc(11.5px * var(--fs));
       }
     }
     @media (max-height: 600px) {
@@ -2408,7 +2421,7 @@
     body.test-mode .test-next-btn.sprout-next-art.is-visible {
       background: linear-gradient(180deg, #f0fdf4, #ffffff);
       color: var(--ok);
-      font-size: clamp(68px, 22vw, 108px);
+      font-size: calc(clamp(68px, 22vw, 108px) * var(--fs));
       line-height: 1;
       text-shadow: 0 3px 7px rgba(21,128,61,0.16);
     }
@@ -2451,7 +2464,7 @@
       min-height: 42px;
       margin-bottom: 8px;
       color: var(--ink);
-      font-size: 34px;
+      font-size: calc(34px * var(--fs));
       line-height: 1;
       font-weight: 900;
     }
@@ -2462,7 +2475,7 @@
       background: var(--ok-soft);
       border: 1px solid #bbf7d0;
       color: var(--ok);
-      font-size: 18px;
+      font-size: calc(18px * var(--fs));
       box-shadow: 0 8px 24px rgba(21,128,61,0.16);
     }
     .complete-icon.success-icon {
@@ -2470,13 +2483,13 @@
       background: var(--warm-primary-soft);
       border: 1px solid var(--warm-border);
       color: var(--warm-primary-strong);
-      font-size: 25px;
+      font-size: calc(25px * var(--fs));
     }
     .session-complete.perfect-complete .complete-icon {
       display: none;
     }
-    .complete-title { font-size: 19px; font-weight: 800; color: var(--ink); margin-bottom: 6px; }
-	    .complete-msg { font-size: 12.5px; color: var(--text-muted); line-height: 1.55; margin-bottom: 14px; white-space: pre-line; }
+    .complete-title { font-size: calc(19px * var(--fs)); font-weight: 800; color: var(--ink); margin-bottom: 6px; }
+	    .complete-msg { font-size: calc(12.5px * var(--fs)); color: var(--text-muted); line-height: 1.55; margin-bottom: 14px; white-space: pre-line; }
 	    .complete-msg:empty { display: none; }
 	    .complete-focus {
 	      display: none;
@@ -2485,7 +2498,7 @@
 	      border-top: 1px solid var(--border);
 	      border-bottom: 1px solid var(--border);
 	      color: var(--text-strong);
-	      font-size: 12px;
+	      font-size: calc(12px * var(--fs));
 	      font-weight: 900;
 	      line-height: 1.45;
 	      text-align: left;
@@ -2503,7 +2516,7 @@
 	      background: var(--surface-2);
 	      border: 1px solid var(--border);
 	      color: var(--text-strong);
-	      font-size: 12px;
+	      font-size: calc(12px * var(--fs));
 	      font-weight: 900;
 	      line-height: 1.45;
 	      text-align: left;
@@ -2547,7 +2560,7 @@
 	    }
 	    .perfect-star-complete .perfect-star-slot {
 	      color: #fdba74;
-	      font-size: 24px;
+	      font-size: calc(24px * var(--fs));
 	      text-shadow: 0 2px 4px rgba(124,45,18,0.12);
 	    }
 	    .perfect-star-complete .perfect-star-slot.is-earned {
@@ -2560,37 +2573,37 @@
 	      justify-content: center;
 	      width: 26px;
 	      color: var(--ok);
-	      font-size: 22px;
+	      font-size: calc(22px * var(--fs));
 	      line-height: 1;
 	      text-shadow: 0 2px 5px rgba(22,101,52,0.14);
 	    }
 	    .perfect-star-complete .perfect-growth-sprout.is-empty {
 	      color: #fed7aa;
-	      font-size: 19px;
+	      font-size: calc(19px * var(--fs));
 	      text-shadow: none;
 	    }
 	    .perfect-star-complete-msg {
 	      color: var(--warm-primary-strong);
-	      font-size: 11px;
+	      font-size: calc(11px * var(--fs));
 	      font-weight: 900;
 	      line-height: 1.35;
 	    }
 	    .perfect-quote-text {
 	      color: var(--ink);
-	      font-size: 15px;
+	      font-size: calc(15px * var(--fs));
 	      font-weight: 900;
 	      line-height: 1.45;
 	    }
 	    .perfect-quote-source {
 	      margin-top: 5px;
 	      color: var(--text-muted);
-	      font-size: 11px;
+	      font-size: calc(11px * var(--fs));
 	      font-weight: 800;
 	    }
 	    .perfect-quote-ja {
 	      margin-top: 6px;
 	      color: var(--text-muted);
-	      font-size: 10.5px;
+	      font-size: calc(10.5px * var(--fs));
 	      line-height: 1.45;
 	    }
 	    .complete-stats {
@@ -2600,8 +2613,8 @@
       margin-bottom: 16px;
     }
     .complete-stat { text-align: center; }
-    .complete-stat-num { font-size: 24px; font-weight: 800; color: var(--warm-primary-strong); display: block; line-height: 1; }
-    .complete-stat-label { font-size: 10px; color: var(--text-faint); margin-top: 3px; }
+    .complete-stat-num { font-size: calc(24px * var(--fs)); font-weight: 800; color: var(--warm-primary-strong); display: block; line-height: 1; }
+    .complete-stat-label { font-size: calc(10px * var(--fs)); color: var(--text-faint); margin-top: 3px; }
     .complete-route-actions {
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -2627,7 +2640,7 @@
       min-height: 0;
       padding: 0;
       border-radius: 20px;
-      font-size: 15px;
+      font-size: calc(15px * var(--fs));
     }
     .complete-route-actions:not([hidden]) + .complete-actions .restart-btn {
       display: none;
@@ -2672,7 +2685,7 @@
       border-radius: 12px;
       background: var(--warm-primary-soft);
       color: var(--text-strong);
-      font-size: 13px;
+      font-size: calc(13px * var(--fs));
       font-weight: 900;
       cursor: pointer;
       touch-action: manipulation;
@@ -2680,7 +2693,7 @@
     .complete-route-btn span {
       display: block;
       margin-top: 2px;
-      font-size: 10px;
+      font-size: calc(10px * var(--fs));
       font-weight: 800;
       line-height: 1.1;
       opacity: 0.78;
@@ -2734,7 +2747,7 @@
       color: var(--on-primary);
       padding: 12px 24px;
       border-radius: 12px;
-      font-size: 14px;
+      font-size: calc(14px * var(--fs));
       font-weight: 700;
       border: none;
       cursor: pointer;
@@ -2756,19 +2769,19 @@
       color: var(--ink);
       border: 1px solid var(--warm-border);
       border-radius: 20px;
-      font-size: 15px;
+      font-size: calc(15px * var(--fs));
       font-weight: 900;
       box-shadow: 0 4px 14px rgba(249,115,22,0.1);
     }
     .complete-repeat-btn.perfect-repeat-art {
       background: linear-gradient(180deg, #f0fdf4, #ffffff);
       color: var(--ok);
-      font-size: clamp(68px, 22vw, 108px);
+      font-size: calc(clamp(68px, 22vw, 108px) * var(--fs));
       line-height: 1;
       text-shadow: 0 3px 7px rgba(21,128,61,0.16);
     }
     .complete-route-actions:not([hidden]) + .complete-actions .complete-repeat-btn.perfect-repeat-art {
-      font-size: clamp(68px, 22vw, 108px);
+      font-size: calc(clamp(68px, 22vw, 108px) * var(--fs));
     }
     .restart-btn:active,
     .complete-back-btn:active,
@@ -2786,7 +2799,7 @@
       border-radius: 999px;
       border: 1px solid rgba(249,115,22,0.18);
       background: var(--glass-hint);
-      font-size: 12px;
+      font-size: calc(12px * var(--fs));
       color: var(--text-faint);
       font-weight: 800;
       text-align: center;
@@ -2821,38 +2834,38 @@
       .part-panel,
       .level-panel { padding: 10px; }
       .part-buttons { gap: 5px; }
-      .part-btn { padding: 8px 3px; font-size: 10px; }
-      .part-btn span { font-size: 8px; }
+      .part-btn { padding: 8px 3px; font-size: calc(10px * var(--fs)); }
+      .part-btn span { font-size: calc(8px * var(--fs)); }
       .quick-start-panel { margin-bottom: 8px; padding: 10px; }
       .quick-start-head { margin-bottom: 8px; }
-      .quick-start-btn { min-height: 40px; padding: 8px 5px; font-size: 11px; }
+      .quick-start-btn { min-height: 40px; padding: 8px 5px; font-size: calc(11px * var(--fs)); }
       .intro-panel { margin-bottom: 8px; padding: 10px; }
-      .intro-text { font-size: 11.5px; margin-bottom: 8px; }
-      .intro-btn { min-height: 36px; font-size: 11.5px; }
+      .intro-text { font-size: calc(11.5px * var(--fs)); margin-bottom: 8px; }
+      .intro-btn { min-height: 36px; font-size: calc(11.5px * var(--fs)); }
       .learning-summary-panel { margin-bottom: 8px; }
       .learning-summary-item { padding: 7px 5px; }
       .card-prompt { margin-bottom: 6px; }
       .card-container { height: clamp(278px, 46svh, 318px); margin-bottom: 8px; }
       .card-audio-row { min-height: 36px; margin-bottom: 8px; }
-      .card-audio-btn { min-height: 34px; font-size: 11.5px; }
+      .card-audio-btn { min-height: 44px; font-size: calc(11.5px * var(--fs)); }
       .test-word-card-wrap,
       .test-word-card { min-height: 130px; }
-      .test-choice-card { min-height: 48px; font-size: 13px; padding: 10px 12px; }
+      .test-choice-card { min-height: 48px; font-size: calc(13px * var(--fs)); padding: 10px 12px; }
       .card-face { padding: 18px 18px; }
-      .meaning-text { font-size: 21px; margin-bottom: 12px; }
-      .meaning-text.multi-pos-meaning { font-size: 19px; }
+      .meaning-text { font-size: calc(21px * var(--fs)); margin-bottom: 12px; }
+      .meaning-text.multi-pos-meaning { font-size: calc(19px * var(--fs)); }
       .back-pos-tag { top: 14px; }
       .divider { margin-bottom: 10px; }
       .example-text { line-height: 1.55; }
       .example-ja-text { line-height: 1.45; margin-top: 6px; }
       body.test-mode .session-complete { margin-top: clamp(14px, 3.5svh, 28px); }
       .complete-card { padding: 18px 14px; }
-	      .complete-icon { font-size: 32px; margin-bottom: 6px; }
-	      .complete-title { font-size: 18px; }
-	      .complete-msg { font-size: 12px; line-height: 1.45; margin-bottom: 12px; }
+	      .complete-icon { font-size: calc(32px * var(--fs)); margin-bottom: 6px; }
+	      .complete-title { font-size: calc(18px * var(--fs)); }
+	      .complete-msg { font-size: calc(12px * var(--fs)); line-height: 1.45; margin-bottom: 12px; }
 	      .perfect-quote-panel { margin-bottom: 12px; padding-top: 10px; }
-	      .perfect-quote-text { font-size: 14px; }
-	      .complete-stat-num { font-size: 22px; }
+	      .perfect-quote-text { font-size: calc(14px * var(--fs)); }
+	      .complete-stat-num { font-size: calc(22px * var(--fs)); }
       .restart-btn,
       .complete-back-btn {
         padding: 10px 18px;
@@ -2862,11 +2875,11 @@
       .complete-route-actions:not([hidden]) + .complete-actions {
         margin-top: clamp(10px, 2svh, 14px);
       }
-      .complete-route-btn { min-height: 38px; font-size: 12px; }
+      .complete-route-btn { min-height: 38px; font-size: calc(12px * var(--fs)); }
       .perfect-quote-panel { margin-bottom: 10px; padding-top: 8px; }
       .perfect-star-complete { margin-bottom: 8px; padding: 6px 8px; }
       .perfect-star-complete .perfect-star-row { min-height: 24px; }
-      .perfect-star-complete .perfect-star-slot { font-size: 22px; }
+      .perfect-star-complete .perfect-star-slot { font-size: calc(22px * var(--fs)); }
     }
     @media (max-height: 820px) {
       .session-complete {
@@ -2913,7 +2926,7 @@
       .session-complete.perfect-complete .complete-next-step {
         margin-bottom: 8px;
         padding: 7px 9px;
-        font-size: 11.5px;
+        font-size: calc(11.5px * var(--fs));
         line-height: 1.32;
       }
       .session-complete.relation-complete.perfect-complete {
@@ -2935,7 +2948,7 @@
       }
       .complete-route-actions:not([hidden]) + .complete-actions .complete-back-btn {
         border-radius: 17px;
-        font-size: 13px;
+        font-size: calc(13px * var(--fs));
       }
     }
     @media (max-height: 600px) {
@@ -2956,7 +2969,7 @@
       }
       .complete-card { padding: 12px 10px; }
       .complete-route-actions { gap: 5px; margin-top: 4px; }
-      .complete-route-btn { min-height: 34px; font-size: 11.5px; }
+      .complete-route-btn { min-height: 34px; font-size: calc(11.5px * var(--fs)); }
       .complete-route-actions:not([hidden]) + .complete-actions {
         margin-top: 4px;
       }
@@ -2966,7 +2979,7 @@
       .session-complete.perfect-complete:not(.relation-complete) .complete-route-actions.no-misses:not([hidden]) + .complete-actions {
         margin-top: 4px;
       }
-      .perfect-quote-text { font-size: 13px; line-height: 1.32; }
+      .perfect-quote-text { font-size: calc(13px * var(--fs)); line-height: 1.32; }
       .perfect-quote-source,
       .perfect-quote-ja {
         display: none;
@@ -2980,18 +2993,18 @@
         margin-bottom: 2px;
       }
       .session-complete.relation-complete.perfect-complete .perfect-star-complete .perfect-star-slot {
-        font-size: 20px;
+        font-size: calc(20px * var(--fs));
       }
       .session-complete.relation-complete.perfect-complete .perfect-star-complete-msg {
-        font-size: 10.5px;
+        font-size: calc(10.5px * var(--fs));
       }
       .complete-back-btn {
         border-radius: 14px;
-        font-size: 12px;
+        font-size: calc(12px * var(--fs));
       }
       .complete-route-actions:not([hidden]) + .complete-actions .complete-back-btn {
         border-radius: 14px;
-        font-size: 12px;
+        font-size: calc(12px * var(--fs));
       }
     }
     .session-complete.weakness-cleared .complete-route-actions {
@@ -3013,10 +3026,10 @@
     @media (max-width: 390px) {
       header { padding: 12px 14px; }
       .stats { gap: 9px; }
-      .stat-num { font-size: 18px; }
+      .stat-num { font-size: calc(18px * var(--fs)); }
       .settings-open-btn { padding: 8px 10px; }
       .part-buttons { grid-template-columns: repeat(3, 1fr); }
-      .learn-bottom-bar .settings-open-btn { font-size: 12px; }
+      .learn-bottom-bar .settings-open-btn { font-size: calc(12px * var(--fs)); }
       .quick-start-head { display: block; }
       .quick-start-note { margin-top: 3px; white-space: normal; }
       .intro-actions { display: grid; grid-template-columns: 1fr; }
@@ -3335,6 +3348,18 @@
         <button class="theme-mode-btn" type="button" data-theme-mode="dark" onclick="setThemeMode('dark')" data-ui-key="themeDark">ダーク</button>
       </div>
       <div class="storage-note" data-ui-key="themeNote">初期値は自動です。端末の設定（ダークモード）に合わせて画面の明るさを切り替えます。</div>
+    </div>
+  </div>
+
+  <div class="settings-panel">
+    <div class="utility-panel">
+      <div class="settings-section-title" data-ui-key="fontScaleTitle">文字の大きさ</div>
+      <div class="font-scale-buttons" aria-label="文字の大きさ">
+        <button class="font-scale-btn active" type="button" data-font-scale="normal" onclick="setFontScale('normal')" data-ui-key="fontScaleNormal">標準</button>
+        <button class="font-scale-btn" type="button" data-font-scale="large" onclick="setFontScale('large')" data-ui-key="fontScaleLarge">大きめ</button>
+        <button class="font-scale-btn" type="button" data-font-scale="xlarge" onclick="setFontScale('xlarge')" data-ui-key="fontScaleXlarge">最大</button>
+      </div>
+      <div class="storage-note" data-ui-key="fontScaleNote">画面全体の文字を大きくします。端末側の文字サイズ設定とあわせて使えます。</div>
     </div>
   </div>
 
@@ -18878,6 +18903,11 @@ const UI_TEXT = {
     testSettingsNote: '通常は英単語だけを見て、日本語カードを選びます。語彙関係では近い意味の語・反対の意味の語を選びます。テストは20問で区切ります。',
     relationSynonymPrompt: '近い意味の語を選ぶ',
     relationAntonymPrompt: '反対の意味の語を選ぶ',
+    fontScaleTitle: '文字の大きさ',
+    fontScaleNormal: '標準',
+    fontScaleLarge: '大きめ',
+    fontScaleXlarge: '最大',
+    fontScaleNote: '画面全体の文字を大きくします。端末側の文字サイズ設定とあわせて使えます。',
     themeTitle: '画面の明るさ',
     themeSystem: '自動',
     themeLight: 'ライト',
@@ -19103,6 +19133,11 @@ const UI_TEXT = {
     testSettingsNote: 'Usually, choose the Japanese meaning from the English word. In Word relations, choose a close meaning or opposite meaning. Tests stop at 20 questions.',
     relationSynonymPrompt: 'Choose a close meaning',
     relationAntonymPrompt: 'Choose an opposite meaning',
+    fontScaleTitle: 'Text size',
+    fontScaleNormal: 'Normal',
+    fontScaleLarge: 'Large',
+    fontScaleXlarge: 'Largest',
+    fontScaleNote: 'Scales all text. Works together with your device text size setting.',
     themeTitle: 'Appearance',
     themeSystem: 'Auto',
     themeLight: 'Light',
@@ -20384,6 +20419,38 @@ function applyThemeMode(mode, opts) {
 }
 function setThemeMode(mode) {
   applyThemeMode(mode, { persist: true });
+}
+
+const FONT_SCALE_STORAGE_KEY = 'sakuFontScale';
+const FONT_SCALE_VALUES = { normal: 1, large: 1.12, xlarge: 1.25 };
+function getStoredFontScale() {
+  try {
+    const v = localStorage.getItem(FONT_SCALE_STORAGE_KEY);
+    return Object.prototype.hasOwnProperty.call(FONT_SCALE_VALUES, v) ? v : 'normal';
+  } catch (e) { return 'normal'; }
+}
+function updateFontScaleButtons(size) {
+  const s = size || getStoredFontScale();
+  document.querySelectorAll('[data-font-scale]').forEach(function (btn) {
+    const on = btn.getAttribute('data-font-scale') === s;
+    btn.classList.toggle('active', on);
+    btn.setAttribute('aria-pressed', on ? 'true' : 'false');
+  });
+}
+function applyFontScale(size, opts) {
+  const persist = opts && opts.persist;
+  const s = size || getStoredFontScale();
+  if (persist) {
+    try { localStorage.setItem(FONT_SCALE_STORAGE_KEY, s); } catch (e) {}
+  }
+  document.documentElement.style.setProperty('--fs', String(FONT_SCALE_VALUES[s] || 1));
+  updateFontScaleButtons(s);
+  fitWordText();
+  fitTestWordText();
+  updateSettingsPagerHeight();
+}
+function setFontScale(size) {
+  applyFontScale(size, { persist: true });
 }
 if (window.matchMedia) {
   window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function () {
@@ -24584,6 +24651,7 @@ window.addEventListener('resize', () => {
 
 // ─── 初期化 ────────────────────────────────────────────────────────────
 applyThemeMode();
+applyFontScale();
 setupSpeechAudio();
 applyUiLanguage();
 startSession();
