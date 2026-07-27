@@ -7,6 +7,21 @@
   <meta name="theme-color" content="#f97316" media="(prefers-color-scheme: light)">
   <meta name="theme-color" content="#9a3412" media="(prefers-color-scheme: dark)">
   <title>サクサク英単語</title>
+  <script>
+    // 本体を読み込む前にテーマと文字サイズを反映する（暗い設定なのに一瞬白く光るのを防ぐ）
+    (function () {
+      try {
+        var mode = localStorage.getItem('sakuThemeMode');
+        if (mode !== 'light' && mode !== 'dark') mode = 'system';
+        var dark = mode === 'dark' || (mode === 'system' && window.matchMedia
+          && window.matchMedia('(prefers-color-scheme: dark)').matches);
+        document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light');
+        var scales = { normal: 1, large: 1.12, xlarge: 1.25 };
+        var size = localStorage.getItem('sakuFontScale');
+        if (scales[size]) document.documentElement.style.setProperty('--fs', String(scales[size]));
+      } catch (e) {}
+    })();
+  </script>
   <style>
     :root {
       color-scheme: light;
@@ -24,13 +39,13 @@
       --border: #e2e8f0;
       --border-strong: #cbd5e1;
       /* ブランド（オレンジ） */
-      --warm-primary: #ea580c;
+      --warm-primary: #cf4709;
       --warm-primary-strong: #c2410c;
       --warm-primary-soft: #fff7ed;
       --warm-border: #fed7aa;
       --warm-focus: rgba(249,115,22,0.34);
-      --header-grad-1: #f97316;
-      --header-grad-2: #fb923c;
+      --header-grad-1: #c2410c;
+      --header-grad-2: #cf4709;
       /* 意味色（正解=緑 / 誤答=赤 / 情報=青 / 注意=琥珀） */
       --ok: #15803d;
       --ok-strong: #166534;
@@ -121,61 +136,6 @@
       --pos-adjective: #60a5fa;
       --pos-adverb: #c084fc;
     }
-    /* OS設定に追従（ユーザーが明示指定していないとき） */
-    @media (prefers-color-scheme: dark) {
-      :root:not([data-theme="light"]) {
-        color-scheme: dark;
-        --app-bg: #14171c;
-        --surface: #1e242c;
-        --surface-2: #262e38;
-        --ink: #e9eef4;
-        --text-strong: #d5dde6;
-        --text: #b7c1cc;
-        --text-muted: #bcc6d1;
-        --text-faint: #a5b1bd;
-        --border: #333c46;
-        --border-strong: #404a56;
-        --warm-primary: #fb923c;
-        --warm-primary-strong: #fdba74;
-        --warm-primary-soft: #2a1f16;
-        --warm-border: #45351f;
-        --warm-focus: rgba(251,146,60,0.42);
-        --header-grad-1: #9a3412;
-        --header-grad-2: #b45309;
-        --ok: #4ade80;
-        --ok-strong: #86efac;
-        --ok-soft: #16281c;
-        --ok-border: #2f5136;
-        --bad: #f87171;
-        --bad-text: #fca5a5;
-        --bad-soft: #2a1717;
-        --bad-border: #5a2d2d;
-        --info: #60a5fa;
-        --info-soft: #16202e;
-        --info-border: #2d4358;
-        --warn: #fbbf24;
-        --warn-soft: #2a2415;
-        --warn-border: #4a3f1c;
-        --letter-face: #2a323c;
-        --letter-border: #46505c;
-        --bad-soft-alt: #2a1717;
-        --ok-soft-2: #16281c;
-        --ok-chip: #24402c;
-        --bad-chip: #3a2020;
-        --purple-soft: #241a2e;
-        --on-primary: #2a1608;
-        --track: #333c46;
-        --glass-strong: rgba(255,255,255,0.07);
-        --glass: rgba(255,255,255,0.06);
-        --glass-soft: rgba(255,255,255,0.05);
-        --glass-hint: rgba(255,255,255,0.06);
-        --ipa: #8ab4ff;
-        --pos-noun: #fb923c;
-        --pos-verb: #4ade80;
-        --pos-adjective: #60a5fa;
-        --pos-adverb: #c084fc;
-      }
-    }
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     html {
       /* 端末の文字拡大を妨げないため 100% 固定はしない */
@@ -216,7 +176,7 @@
       min-width: 0;
     }
     .header-title { font-weight: 700; font-size: calc(17px * var(--fs)); }
-    .header-sub { font-size: calc(11px * var(--fs)); opacity: 0.65; margin-top: 2px; }
+    .header-sub { font-size: calc(11px * var(--fs)); margin-top: 2px; }
     .test-header-back-btn {
       display: none;
       border: 1px solid rgba(255,255,255,0.38);
@@ -20408,12 +20368,9 @@ function applyThemeMode(mode, opts) {
   if (persist) {
     try { localStorage.setItem(THEME_STORAGE_KEY, m); } catch (e) {}
   }
-  // 自動のときは属性を外し、CSSのprefers-color-schemeに任せる（JSに依存せずOS設定へ即追従）
-  if (m === 'system') {
-    document.documentElement.removeAttribute('data-theme');
-  } else {
-    document.documentElement.setAttribute('data-theme', m);
-  }
+  // 常に解決後の値（light/dark）を書く。head の先出しスクリプトと同じ方式にそろえる
+  const resolved = (m === 'dark' || (m === 'system' && prefersDark())) ? 'dark' : 'light';
+  document.documentElement.setAttribute('data-theme', resolved);
   applyPerfectChallengeBackground();
   updateThemeButtons(m);
 }
